@@ -154,6 +154,15 @@
   .upgrade-tier .tier-speed{font-size:11px; color:var(--dim);}
   .upgrade-tier .tier-cost{font-size:11px; color:var(--dim);}
   .upgrade-tier button.mini{flex-shrink:0;}
+
+  /* Dungeoneering */
+  .dg-bonus{font-size:13px; color:var(--dim); margin-bottom:8px;}
+  .dg-bonus b{color:var(--text);}
+  .token-shop-grid{display:grid; gap:10px; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));}
+  .token-balance{font-size:22px; font-weight:700; color:#fbbf24; margin-bottom:12px;}
+  .token-balance span{font-size:13px; font-weight:400; color:var(--dim);}
+  .reward-placeholder{background:var(--panel2); border:1px dashed var(--line); border-radius:8px;
+    padding:16px; text-align:center; color:var(--dim); font-size:13px; font-style:italic;}
 </style>
 </head>
 <body>
@@ -213,6 +222,14 @@
   </div>
 </div>
 
+<!-- Dungeoneering Token Shop -->
+<div id="tokenShopSection" style="padding:0 14px 14px; max-width:1100px; margin:0 auto;">
+  <div class="card">
+    <h2>🗝️ Dungeoneering Token Shop</h2>
+    <div id="tokenShopContent"></div>
+  </div>
+</div>
+
 <!-- Debug panel (hidden by default) -->
 <div id="debugPanel" style="display:none; padding:0 14px 14px; max-width:1100px; margin:0 auto;">
   <div class="card debug-card">
@@ -222,6 +239,7 @@
       <button class="dbtn" onclick="debugGive('woodcutting',100)">+100 all logs</button>
       <button class="dbtn" onclick="debugGive('mining',1000)">+1000 all ores</button>
       <button class="dbtn" onclick="debugGive('smithing',10)">+10 all bars</button>
+      <button class="dbtn" onclick="state.inventory['dg_tokens']=(state.inventory['dg_tokens']||0)+500;state.itemNames['dg_tokens']='Dungeoneering tokens';render()">+500 DG tokens</button>
       <button class="dbtn" onclick="debugGive('smithing',100)">+100 all bars</button>
       <button class="dbtn" onclick="debugClearInv()">Clear inventory</button>
     </div>
@@ -313,7 +331,7 @@ const SKILL_ROADMAP = [
   {id:'agility',      name:'Agility',      type:'support', maxLevel:99,  implemented:false},
   {id:'thieving',     name:'Thieving',     type:'support', maxLevel:99,  implemented:false},
   {id:'slayer',       name:'Slayer',       type:'support', maxLevel:120, implemented:false},
-  {id:'dungeoneering',name:'Dungeoneering',type:'support', maxLevel:120, implemented:false},
+  {id:'dungeoneering',name:'Dungeoneering',type:'support', maxLevel:120, implemented:true},
   {id:'archaeology',  name:'Archaeology',  type:'support', maxLevel:120, implemented:false},
   // Elite (1)
   {id:'invention',    name:'Invention',    type:'elite', maxLevel:120, implemented:false},
@@ -428,6 +446,11 @@ const ACTIONS = {
     {id:'burn_magic_logs',         name:'Burn magic logs',         label:'Magic logs burned',          levelReq:75,  xp:303.8, ticks:7,  item:null, ingredients:[{item:'magic_logs',         count:1, name:'Magic logs'}]},
     {id:'burn_elder_logs',         name:'Burn elder logs',         label:'Elder logs burned',          levelReq:90,  xp:450,   ticks:8,  item:null, ingredients:[{item:'elder_logs',         count:1, name:'Elder logs'}]},
     {id:'burn_eternal_magic_logs', name:'Burn eternal magic logs', label:'Eternal magic logs burned',  levelReq:100, xp:552,   ticks:9,  item:null, ingredients:[{item:'eternal_magic_logs', count:1, name:'Eternal magic logs'}]},
+  ],
+  dungeoneering:[
+    {id:'small_floor',    name:'Small floor',    levelReq:1,  xp:5000,  baseMaxSecs:900,  baseMinSecs:90,  tokenMult:1,   single:true},
+    {id:'large_floor',    name:'Large floor',    levelReq:1,  xp:12500, baseMaxSecs:1800, baseMinSecs:180, tokenMult:2.5, single:true},
+    {id:'hardmode_floor', name:'Hardmode floor', levelReq:90, xp:30000, baseMaxSecs:3600, baseMinSecs:360, tokenMult:6,   single:true},
   ],
   // fishing: [...]  <-- future skills go here
 };
@@ -555,6 +578,25 @@ function freshState(){
 }
 
 /* ---------- 6. CORE LOOP + OFFLINE ---------- */
+function calcSkillBonus(){
+  const nonDg = SKILL_ROADMAP.filter(s => s.id !== 'dungeoneering');
+  const current = nonDg.reduce((sum, s) => sum + levelForXp(state.skills[s.id].xp), 0);
+  const base    = nonDg.length;
+  const max     = nonDg.reduce((sum, s) => sum + s.maxLevel, 0);
+  return Math.min(1, (current - base) / (max - base));
+}
+
+function calcFloorSecs(action){
+  const secs = action.baseMaxSecs * (1 - 0.9 * calcSkillBonus());
+  return Math.max(action.baseMinSecs, secs);
+}
+
+function getCurrentEffTicks(action){
+  if (state.current?.floorTicks) return state.current.floorTicks;
+  if (action.baseMaxSecs) return Math.round(calcFloorSecs(action) / (TICK_MS / 1000)); // DG fallback
+  return Math.max(1, Math.ceil(action.ticks * getToolSpeedMult(state.current.skillId)));
+}
+
 function getToolSpeedMult(skillId){
   const tiers = TOOLS[skillId];
   if (!tiers) return 1.0;
@@ -578,7 +620,7 @@ function tick(){
     const action = getAction(state.current.skillId, state.current.actionId);
     if (action){
       state.progress++;
-      const effTicks = Math.max(1, Math.ceil(action.ticks * getToolSpeedMult(state.current.skillId)));
+      const effTicks = getCurrentEffTicks(action);
       if (state.progress >= effTicks){
         state.progress = 0;
         completeAction(action);
@@ -602,7 +644,7 @@ function applyOffline(){
 
   const offlineTicks = Math.floor(cappedMs / TICK_MS);
   const totalTicks = state.progress + offlineTicks;
-  const effTicks = Math.max(1, Math.ceil(action.ticks * getToolSpeedMult(state.current.skillId)));
+  const effTicks = getCurrentEffTicks(action);
   const maxCompleted = Math.floor(totalTicks / effTicks);
   state.progress = totalTicks % effTicks;
   if (maxCompleted <= 0) return null;
@@ -645,7 +687,16 @@ function completeAction(action, silent){
   if (after > before && !silent){
     log(`🎉 ${SKILL_BY_ID[state.current.skillId].name} level ${after}!`);
   }
-  if (!silent) checkBonusDrop(state.current.skillId, action);
+  // Award DG tokens on floor completion
+  if (state.current?.skillId === 'dungeoneering' && !silent){
+    const tokens = state.current.earnedTokens || 0;
+    state.inventory['dg_tokens'] = (state.inventory['dg_tokens'] || 0) + tokens;
+    state.itemNames['dg_tokens'] = 'Dungeoneering tokens';
+    log(`⚔️ Floor complete! +${tokens} Dungeoneering tokens.`);
+  }
+  // Stop single-completion actions (floors, future one-shots)
+  if (action.single){ state.current = null; state.progress = 0; }
+  if (!silent) checkBonusDrop(state.current?.skillId, action);
 }
 
 function checkBonusDrop(skillId, action){
@@ -729,13 +780,25 @@ function startAction(skillId, actionId){
   const action = getAction(skillId, actionId);
   if (!action) return;
   if (levelForXp(state.skills[skillId].xp) < action.levelReq) return; // locked
+  // Warn if abandoning an in-progress floor
+  if (state.current?.skillId === 'dungeoneering' && state.current.floorTicks &&
+      (skillId !== 'dungeoneering' || actionId !== state.current.actionId)){
+    log('⚔️ Floor abandoned — you must complete a floor to earn rewards.');
+  }
   if (action.ingredients){
     const missing = action.ingredients.find(
       ing => (state.inventory[ing.item] || 0) < ing.count
     );
     if (missing){ log(`Need ${missing.count}× ${missing.name} to start.`); return; }
   }
-  state.current = { skillId, actionId };
+  if (skillId === 'dungeoneering'){
+    const floorTicks   = Math.round(calcFloorSecs(action) / (TICK_MS / 1000));
+    const dgLevel      = levelForXp(state.skills['dungeoneering'].xp);
+    const earnedTokens = Math.max(1, Math.floor(dgLevel * action.tokenMult));
+    state.current = { skillId, actionId, floorTicks, earnedTokens };
+  } else {
+    state.current = { skillId, actionId };
+  }
   state.progress = 0;
   log(`Started: ${action.name}.`);
   render();
@@ -763,7 +826,18 @@ function render(){
   renderActiveSkill();
   renderInventory();
   renderUpgradeShop();
+  renderTokenShop();
   renderTotalLevel();
+}
+
+function renderTokenShop(){
+  const el = $('tokenShopContent');
+  const tokens = state.inventory['dg_tokens'] || 0;
+  el.innerHTML = `
+    <div class="token-balance">${tokens.toLocaleString()} <span>Dungeoneering tokens</span></div>
+    <div class="token-shop-grid">
+      <div class="reward-placeholder">Rewards coming soon...</div>
+    </div>`;
 }
 
 function renderUpgradeShop(){
@@ -867,8 +941,15 @@ function renderActiveSkill(){
   let actionPct = 0, doing = 'Idle — pick something below.';
   if (state.current && state.current.skillId === s.id){
     const a = getAction(s.id, state.current.actionId);
-    actionPct = (state.progress / a.ticks) * 100;
-    doing = `Now: <b>${a.name}</b>`;
+    const curEffTicks = getCurrentEffTicks(a);
+    actionPct = (state.progress / curEffTicks) * 100;
+    if (s.id === 'dungeoneering'){
+      const remSecs = Math.ceil((curEffTicks - state.progress) * TICK_MS / 1000);
+      const rm = Math.floor(remSecs / 60), rs = remSecs % 60;
+      doing = `Now: <b>${a.name}</b> — ~${rm > 0 ? rm + 'm ' : ''}${rs}s remaining`;
+    } else {
+      doing = `Now: <b>${a.name}</b>`;
+    }
   } else if (state.current){
     doing = `Busy in <b>${SKILL_BY_ID[state.current.skillId].name}</b> (viewing ${s.name})`;
   }
@@ -882,6 +963,14 @@ function renderActiveSkill(){
   if (actions.length === 0){
     list.innerHTML = `<div class="inv-empty">No actions built for ${s.name} yet.</div>`;
     return;
+  }
+  if (s.id === 'dungeoneering'){
+    const bonusPct = Math.round(calcSkillBonus() * 90);
+    const tokens = state.inventory['dg_tokens'] || 0;
+    const bonusDiv = document.createElement('div');
+    bonusDiv.className = 'dg-bonus';
+    bonusDiv.innerHTML = `Skill bonus: <b>${bonusPct}% faster</b> &nbsp;·&nbsp; Tokens: <b>${tokens.toLocaleString()}</b>`;
+    list.appendChild(bonusDiv);
   }
   actions.forEach(a => {
     const unlocked = lvl >= a.levelReq;
@@ -897,8 +986,17 @@ function renderActiveSkill(){
         return `<span style="color:${ok ? 'var(--dim)' : '#e04040'}">${ing.count}× ${ing.name}</span>`;
       }).join(' + ') + '<br>';
     }
+    let metaContent;
+    if (s.id === 'dungeoneering'){
+      const fs = calcFloorSecs(a);
+      const fm = Math.floor(fs / 60), fsc = Math.round(fs % 60);
+      const timeStr = fm > 0 ? `${fm}m${fsc > 0 ? ' ' + fsc + 's' : ''}` : `${fsc}s`;
+      metaContent = `${a.xp.toLocaleString()} xp · ${timeStr}`;
+    } else {
+      metaContent = `${ingLine}${a.xp} xp · ${(a.ticks*TICK_MS/1000).toFixed(1)}s`;
+    }
     btn.innerHTML = `<span>${a.name}${unlocked ? '' : ` 🔒 Lv ${a.levelReq}`}</span>
-                     <span class="meta">${ingLine}${a.xp} xp · ${(a.ticks*TICK_MS/1000).toFixed(1)}s</span>`;
+                     <span class="meta">${metaContent}</span>`;
     if (unlocked) btn.onclick = () => startAction(s.id, a.id);
     list.appendChild(btn);
   });
