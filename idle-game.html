@@ -311,7 +311,7 @@ const SKILL_ROADMAP = [
   {id:'divination',   name:'Divination',   type:'gathering', maxLevel:99,  implemented:false},
   // Artisan (8)
   {id:'crafting',     name:'Crafting',     type:'artisan', maxLevel:110, implemented:false},
-  {id:'fletching',    name:'Fletching',    type:'artisan', maxLevel:110, implemented:false},
+  {id:'fletching',    name:'Fletching',    type:'artisan', maxLevel:110, implemented:true},
   {id:'smithing',     name:'Smithing',     type:'artisan', maxLevel:110, implemented:true},
   {id:'cooking',      name:'Cooking',      type:'artisan', maxLevel:99,  implemented:true},
   {id:'firemaking',   name:'Firemaking',   type:'artisan', maxLevel:110, implemented:true},
@@ -465,6 +465,60 @@ const ACTIONS = {
     {id:'cook_cavefish',          name:'Cook cavefish',          label:'Cavefish cooked',          levelReq:88, xp:214, ticks:4, item:'cooked_cavefish',          itemName:'Cooked cavefish',          ingredients:[{item:'raw_cavefish',          count:1, name:'Raw cavefish'}]},
     {id:'cook_rocktail',          name:'Cook rocktail',          label:'Rocktail cooked',          levelReq:93, xp:225, ticks:4, item:'cooked_rocktail',          itemName:'Cooked rocktail',          ingredients:[{item:'raw_rocktail',          count:1, name:'Raw rocktail'}]},
     {id:'cook_sailfish',          name:'Cook sailfish',          label:'Sailfish cooked',          levelReq:99, xp:270, ticks:5, item:'cooked_sailfish',          itemName:'Cooked sailfish',          ingredients:[{item:'raw_sailfish',          count:1, name:'Raw sailfish'}]},
+  ],
+  fletching:[
+    // --- Headless arrow shafts (1 log → N headless arrows) ---
+    {id:'headless_from_logs',     name:'Fletch headless arrows',           label:'Headless arrows made', levelReq:1,   xp:1,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:15,  splinterable:true, ingredients:[{item:'normal_logs',        count:1, name:'Logs'}]},
+    {id:'headless_from_oak',      name:'Fletch headless arrows (oak)',     label:'Headless arrows made', levelReq:1,   xp:2,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:30,  splinterable:true, ingredients:[{item:'oak_logs',           count:1, name:'Oak logs'}]},
+    {id:'headless_from_willow',   name:'Fletch headless arrows (willow)',  label:'Headless arrows made', levelReq:20,  xp:3,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:45,  splinterable:true, ingredients:[{item:'willow_logs',        count:1, name:'Willow logs'}]},
+    {id:'headless_from_teak',     name:'Fletch headless arrows (teak)',    label:'Headless arrows made', levelReq:30,  xp:4.5,  ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:45,  splinterable:true, ingredients:[{item:'teak_logs',          count:1, name:'Teak logs'}]},
+    {id:'headless_from_maple',    name:'Fletch headless arrows (maple)',   label:'Headless arrows made', levelReq:35,  xp:6,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:60,  splinterable:true, ingredients:[{item:'maple_logs',         count:1, name:'Maple logs'}]},
+    {id:'headless_from_mahogany', name:'Fletch headless arrows (mahogany)',label:'Headless arrows made', levelReq:50,  xp:7.5,  ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:60,  splinterable:true, ingredients:[{item:'mahogany_logs',      count:1, name:'Mahogany logs'}]},
+    {id:'headless_from_yew',      name:'Fletch headless arrows (yew)',     label:'Headless arrows made', levelReq:60,  xp:9,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:75,  splinterable:true, ingredients:[{item:'yew_logs',           count:1, name:'Yew logs'}]},
+    {id:'headless_from_magic',    name:'Fletch headless arrows (magic)',   label:'Headless arrows made', levelReq:75,  xp:10.5, ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:90,  splinterable:true, ingredients:[{item:'magic_logs',         count:1, name:'Magic logs'}]},
+    {id:'headless_from_elder',    name:'Fletch headless arrows (elder)',   label:'Headless arrows made', levelReq:80,  xp:12,   ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:90,  splinterable:true, ingredients:[{item:'elder_logs',         count:1, name:'Elder logs'}]},
+    {id:'headless_from_eternal',  name:'Fletch headless arrows (eternal)', label:'Headless arrows made', levelReq:90,  xp:15,   ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:120, splinterable:true, ingredients:[{item:'eternal_magic_logs', count:1, name:'Eternal magic logs'}]},
+    // --- Shortbows (unstrung) ---
+    {id:'shortbow_u_logs',     name:'Fletch shortbow (u)',          label:'Shortbows fletched', levelReq:5,   xp:5,    ticks:3, item:'shortbow_u',          itemName:'Shortbow (u)',          splinterable:true, ingredients:[{item:'normal_logs',        count:1, name:'Logs'}]},
+    {id:'shortbow_u_oak',      name:'Fletch oak shortbow (u)',      label:'Shortbows fletched', levelReq:20,  xp:16.5, ticks:3, item:'oak_shortbow_u',      itemName:'Oak shortbow (u)',      splinterable:true, ingredients:[{item:'oak_logs',           count:1, name:'Oak logs'}]},
+    {id:'shortbow_u_willow',   name:'Fletch willow shortbow (u)',   label:'Shortbows fletched', levelReq:35,  xp:33.3, ticks:3, item:'willow_shortbow_u',   itemName:'Willow shortbow (u)',   splinterable:true, ingredients:[{item:'willow_logs',        count:1, name:'Willow logs'}]},
+    {id:'shortbow_u_teak',     name:'Fletch teak shortbow (u)',     label:'Shortbows fletched', levelReq:40,  xp:42,   ticks:3, item:'teak_shortbow_u',     itemName:'Teak shortbow (u)',     splinterable:true, ingredients:[{item:'teak_logs',          count:1, name:'Teak logs'}]},
+    {id:'shortbow_u_maple',    name:'Fletch maple shortbow (u)',    label:'Shortbows fletched', levelReq:50,  xp:50,   ticks:3, item:'maple_shortbow_u',    itemName:'Maple shortbow (u)',    splinterable:true, ingredients:[{item:'maple_logs',         count:1, name:'Maple logs'}]},
+    {id:'shortbow_u_mahogany', name:'Fletch mahogany shortbow (u)', label:'Shortbows fletched', levelReq:55, xp:58,   ticks:3, item:'mahogany_shortbow_u', itemName:'Mahogany shortbow (u)', splinterable:true, ingredients:[{item:'mahogany_logs',      count:1, name:'Mahogany logs'}]},
+    {id:'shortbow_u_yew',      name:'Fletch yew shortbow (u)',      label:'Shortbows fletched', levelReq:65,  xp:67.5, ticks:3, item:'yew_shortbow_u',      itemName:'Yew shortbow (u)',      splinterable:true, ingredients:[{item:'yew_logs',           count:1, name:'Yew logs'}]},
+    {id:'shortbow_u_magic',    name:'Fletch magic shortbow (u)',    label:'Shortbows fletched', levelReq:80,  xp:83.3, ticks:3, item:'magic_shortbow_u',    itemName:'Magic shortbow (u)',    splinterable:true, ingredients:[{item:'magic_logs',         count:1, name:'Magic logs'}]},
+    {id:'shortbow_u_elder',    name:'Fletch elder shortbow (u)',    label:'Shortbows fletched', levelReq:90,  xp:100,  ticks:3, item:'elder_shortbow_u',    itemName:'Elder shortbow (u)',    splinterable:true, ingredients:[{item:'elder_logs',         count:1, name:'Elder logs'}]},
+    {id:'shortbow_u_eternal',  name:'Fletch eternal shortbow (u)', label:'Shortbows fletched', levelReq:100, xp:115,  ticks:3, item:'eternal_shortbow_u',  itemName:'Eternal shortbow (u)',  splinterable:true, ingredients:[{item:'eternal_magic_logs', count:1, name:'Eternal magic logs'}]},
+    // --- Longbows (unstrung) ---
+    {id:'longbow_u_logs',     name:'Fletch longbow (u)',          label:'Longbows fletched', levelReq:10,  xp:10,   ticks:4, item:'longbow_u',          itemName:'Longbow (u)',          splinterable:true, ingredients:[{item:'normal_logs',        count:1, name:'Logs'}]},
+    {id:'longbow_u_oak',      name:'Fletch oak longbow (u)',      label:'Longbows fletched', levelReq:25,  xp:25,   ticks:4, item:'oak_longbow_u',      itemName:'Oak longbow (u)',      splinterable:true, ingredients:[{item:'oak_logs',           count:1, name:'Oak logs'}]},
+    {id:'longbow_u_willow',   name:'Fletch willow longbow (u)',   label:'Longbows fletched', levelReq:40,  xp:41.5, ticks:4, item:'willow_longbow_u',   itemName:'Willow longbow (u)',   splinterable:true, ingredients:[{item:'willow_logs',        count:1, name:'Willow logs'}]},
+    {id:'longbow_u_teak',     name:'Fletch teak longbow (u)',     label:'Longbows fletched', levelReq:45,  xp:50,   ticks:4, item:'teak_longbow_u',     itemName:'Teak longbow (u)',     splinterable:true, ingredients:[{item:'teak_logs',          count:1, name:'Teak logs'}]},
+    {id:'longbow_u_maple',    name:'Fletch maple longbow (u)',    label:'Longbows fletched', levelReq:55,  xp:58.3, ticks:4, item:'maple_longbow_u',    itemName:'Maple longbow (u)',    splinterable:true, ingredients:[{item:'maple_logs',         count:1, name:'Maple logs'}]},
+    {id:'longbow_u_mahogany', name:'Fletch mahogany longbow (u)', label:'Longbows fletched', levelReq:60, xp:66,   ticks:4, item:'mahogany_longbow_u', itemName:'Mahogany longbow (u)', splinterable:true, ingredients:[{item:'mahogany_logs',      count:1, name:'Mahogany logs'}]},
+    {id:'longbow_u_yew',      name:'Fletch yew longbow (u)',      label:'Longbows fletched', levelReq:70,  xp:75,   ticks:4, item:'yew_longbow_u',      itemName:'Yew longbow (u)',      splinterable:true, ingredients:[{item:'yew_logs',           count:1, name:'Yew logs'}]},
+    {id:'longbow_u_magic',    name:'Fletch magic longbow (u)',    label:'Longbows fletched', levelReq:85,  xp:91.5, ticks:4, item:'magic_longbow_u',    itemName:'Magic longbow (u)',    splinterable:true, ingredients:[{item:'magic_logs',         count:1, name:'Magic logs'}]},
+    {id:'longbow_u_elder',    name:'Fletch elder longbow (u)',    label:'Longbows fletched', levelReq:95,  xp:110,  ticks:4, item:'elder_longbow_u',    itemName:'Elder longbow (u)',    splinterable:true, ingredients:[{item:'elder_logs',         count:1, name:'Elder logs'}]},
+    {id:'longbow_u_eternal',  name:'Fletch eternal longbow (u)', label:'Longbows fletched', levelReq:105, xp:125,  ticks:4, item:'eternal_longbow_u',  itemName:'Eternal longbow (u)',  splinterable:true, ingredients:[{item:'eternal_magic_logs', count:1, name:'Eternal magic logs'}]},
+    // --- Crossbow stocks (unstrung) — log tier maps to metal tier ---
+    {id:'crossbow_u_bronze',   name:'Fletch bronze crossbow (u)',   label:'Crossbows fletched', levelReq:9,   xp:6,   ticks:3, item:'bronze_crossbow_u',   itemName:'Bronze crossbow (u)',   splinterable:true, ingredients:[{item:'normal_logs',        count:1, name:'Logs'}]},
+    {id:'crossbow_u_iron',     name:'Fletch iron crossbow (u)',     label:'Crossbows fletched', levelReq:39,  xp:32,  ticks:3, item:'iron_crossbow_u',     itemName:'Iron crossbow (u)',     splinterable:true, ingredients:[{item:'oak_logs',           count:1, name:'Oak logs'}]},
+    {id:'crossbow_u_steel',    name:'Fletch steel crossbow (u)',    label:'Crossbows fletched', levelReq:46,  xp:54,  ticks:3, item:'steel_crossbow_u',    itemName:'Steel crossbow (u)',    splinterable:true, ingredients:[{item:'willow_logs',        count:1, name:'Willow logs'}]},
+    {id:'crossbow_u_teak',     name:'Fletch teak crossbow (u)',     label:'Crossbows fletched', levelReq:52,  xp:68,  ticks:3, item:'teak_crossbow_u',     itemName:'Teak crossbow (u)',     splinterable:true, ingredients:[{item:'teak_logs',          count:1, name:'Teak logs'}]},
+    {id:'crossbow_u_adamant',  name:'Fletch adamant crossbow (u)', label:'Crossbows fletched',  levelReq:61,  xp:82,  ticks:3, item:'adamant_crossbow_u',  itemName:'Adamant crossbow (u)', splinterable:true, ingredients:[{item:'maple_logs',         count:1, name:'Maple logs'}]},
+    {id:'crossbow_u_mahogany', name:'Fletch mahogany crossbow (u)',label:'Crossbows fletched',  levelReq:67,  xp:92,  ticks:3, item:'mahogany_crossbow_u', itemName:'Mahogany crossbow (u)',splinterable:true, ingredients:[{item:'mahogany_logs',      count:1, name:'Mahogany logs'}]},
+    {id:'crossbow_u_rune',     name:'Fletch rune crossbow (u)',     label:'Crossbows fletched', levelReq:73,  xp:100, ticks:3, item:'rune_crossbow_u',     itemName:'Rune crossbow (u)',     splinterable:true, ingredients:[{item:'yew_logs',           count:1, name:'Yew logs'}]},
+    {id:'crossbow_u_dragon',   name:'Fletch dragon crossbow (u)',   label:'Crossbows fletched', levelReq:78,  xp:108, ticks:3, item:'dragon_crossbow_u',   itemName:'Dragon crossbow (u)',   splinterable:true, ingredients:[{item:'magic_logs',         count:1, name:'Magic logs'}]},
+    {id:'crossbow_u_elder',    name:'Fletch elder crossbow (u)',    label:'Crossbows fletched', levelReq:87,  xp:115, ticks:3, item:'elder_crossbow_u',    itemName:'Elder crossbow (u)',    splinterable:true, ingredients:[{item:'elder_logs',         count:1, name:'Elder logs'}]},
+    {id:'crossbow_u_superior', name:'Fletch superior crossbow (u)',label:'Crossbows fletched',  levelReq:95,  xp:125, ticks:3, item:'superior_crossbow_u', itemName:'Superior crossbow (u)', splinterable:true, ingredients:[{item:'eternal_magic_logs', count:1, name:'Eternal magic logs'}]},
+    // --- Arrow assembly (15 headless + 15 tips → 15 arrows) ---
+    {id:'arrows_bronze',  name:'Fletch bronze arrows',  label:'Bronze arrows made',  levelReq:1,  xp:19.5,  ticks:3, item:'bronze_arrow',  itemName:'Bronze arrow',  count:15, ingredients:[{item:'headless_arrow', count:15, name:'Headless arrows'},{item:'bronze_arrowhead',  count:15, name:'Bronze arrowheads'}]},
+    {id:'arrows_iron',    name:'Fletch iron arrows',    label:'Iron arrows made',    levelReq:15, xp:37.5,  ticks:3, item:'iron_arrow',    itemName:'Iron arrow',    count:15, ingredients:[{item:'headless_arrow', count:15, name:'Headless arrows'},{item:'iron_arrowhead',    count:15, name:'Iron arrowheads'}]},
+    {id:'arrows_steel',   name:'Fletch steel arrows',   label:'Steel arrows made',   levelReq:30, xp:57,    ticks:3, item:'steel_arrow',   itemName:'Steel arrow',   count:15, ingredients:[{item:'headless_arrow', count:15, name:'Headless arrows'},{item:'steel_arrowhead',   count:15, name:'Steel arrowheads'}]},
+    {id:'arrows_mithril', name:'Fletch mithril arrows', label:'Mithril arrows made', levelReq:45, xp:75,    ticks:3, item:'mithril_arrow', itemName:'Mithril arrow', count:15, ingredients:[{item:'headless_arrow', count:15, name:'Headless arrows'},{item:'mithril_arrowhead', count:15, name:'Mithril arrowheads'}]},
+    {id:'arrows_adamant', name:'Fletch adamant arrows', label:'Adamant arrows made', levelReq:60, xp:112.5, ticks:3, item:'adamant_arrow', itemName:'Adamant arrow', count:15, ingredients:[{item:'headless_arrow', count:15, name:'Headless arrows'},{item:'adamant_arrowhead', count:15, name:'Adamant arrowheads'}]},
+    {id:'arrows_rune',    name:'Fletch rune arrows',    label:'Rune arrows made',    levelReq:75, xp:150,   ticks:3, item:'rune_arrow',    itemName:'Rune arrow',    count:15, ingredients:[{item:'headless_arrow', count:15, name:'Headless arrows'},{item:'rune_arrowhead',    count:15, name:'Rune arrowheads'}]},
+    {id:'arrows_dragon',  name:'Fletch dragon arrows',  label:'Dragon arrows made',  levelReq:90, xp:187.5, ticks:3, item:'dragon_arrow',  itemName:'Dragon arrow',  count:15, ingredients:[{item:'headless_arrow', count:15, name:'Headless arrows'},{item:'dragon_arrowhead',  count:15, name:'Dragon arrowheads'}]},
   ],
   dungeoneering:[
     {id:'small_floor',    name:'Small floor',    levelReq:1,  xp:5000,  baseMaxSecs:900,  baseMinSecs:90,  tokenMult:1,   single:true},
@@ -736,9 +790,22 @@ function completeAction(action, silent){
       return;
     }
   }
+  // Fletching: chance to splinter the log
+  if (state.current?.skillId === 'fletching' && action.splinterable){
+    const fletchLevel = levelForXp(state.skills['fletching'].xp);
+    const noSplinterAt = action.levelReq + 10;
+    const splinterChance = Math.max(0, (noSplinterAt - fletchLevel) / 10 * 0.20);
+    if (Math.random() < splinterChance){
+      state.inventory['wood_pulp'] = (state.inventory['wood_pulp'] || 0) + 1;
+      state.itemNames['wood_pulp'] = 'Wood pulp';
+      if (!silent) log(`💥 The log splinters! You're left with wood pulp.`);
+      return;
+    }
+  }
   // give item (null for consume-only skills like Firemaking)
   if (action.item){
-    state.inventory[action.item] = (state.inventory[action.item] || 0) + 1;
+    const qty = action.count || 1;
+    state.inventory[action.item] = (state.inventory[action.item] || 0) + qty;
     state.itemNames[action.item] = action.itemName;
   }
   // Tavia's rod: 1% chance to upgrade the caught fish to the next tier
