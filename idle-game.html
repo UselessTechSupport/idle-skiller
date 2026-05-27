@@ -237,6 +237,7 @@
     <div class="debug-row">
       <button class="dbtn" onclick="debugGive('mining',100)">+100 all ores</button>
       <button class="dbtn" onclick="debugGive('woodcutting',100)">+100 all logs</button>
+      <button class="dbtn" onclick="debugGive('fishing',100)">+100 all fish</button>
       <button class="dbtn" onclick="debugGive('mining',1000)">+1000 all ores</button>
       <button class="dbtn" onclick="debugGive('smithing',10)">+10 all bars</button>
       <button class="dbtn" onclick="state.inventory['dg_tokens']=(state.inventory['dg_tokens']||0)+500;state.itemNames['dg_tokens']='Dungeoneering tokens';render()">+500 DG tokens</button>
@@ -304,7 +305,7 @@ const SKILL_ROADMAP = [
   // Gathering (6)
   {id:'woodcutting',  name:'Woodcutting',  type:'gathering', maxLevel:110, implemented:true},
   {id:'mining',       name:'Mining',       type:'gathering', maxLevel:110, implemented:true},
-  {id:'fishing',      name:'Fishing',      type:'gathering', maxLevel:99,  implemented:false},
+  {id:'fishing',      name:'Fishing',      type:'gathering', maxLevel:99,  implemented:true},
   {id:'farming',      name:'Farming',      type:'gathering', maxLevel:120, implemented:false},
   {id:'hunter',       name:'Hunter',       type:'gathering', maxLevel:99,  implemented:false},
   {id:'divination',   name:'Divination',   type:'gathering', maxLevel:99,  implemented:false},
@@ -452,7 +453,25 @@ const ACTIONS = {
     {id:'large_floor',    name:'Large floor',    levelReq:1,  xp:12500, baseMaxSecs:1800, baseMinSecs:180, tokenMult:2.5, single:true},
     {id:'hardmode_floor', name:'Hardmode floor', levelReq:90, xp:30000, baseMaxSecs:3600, baseMinSecs:360, tokenMult:6,   single:true},
   ],
-  // fishing: [...]  <-- future skills go here
+  fishing:[
+    {id:'raw_shrimps',          name:'Fish shrimps',          levelReq:1,  xp:10,  ticks:4,  item:'raw_shrimps',          itemName:'Raw shrimps'},
+    {id:'raw_sardine',          name:'Fish sardine',          levelReq:5,  xp:20,  ticks:4,  item:'raw_sardine',          itemName:'Raw sardine'},
+    {id:'raw_herring',          name:'Fish herring',          levelReq:10, xp:30,  ticks:5,  item:'raw_herring',          itemName:'Raw herring'},
+    {id:'raw_anchovies',        name:'Fish anchovies',        levelReq:15, xp:40,  ticks:5,  item:'raw_anchovies',        itemName:'Raw anchovies'},
+    {id:'raw_trout',            name:'Fish trout',            levelReq:20, xp:50,  ticks:5,  item:'raw_trout',            itemName:'Raw trout'},
+    {id:'raw_pike',             name:'Fish pike',             levelReq:25, xp:60,  ticks:6,  item:'raw_pike',             itemName:'Raw pike'},
+    {id:'raw_salmon',           name:'Fish salmon',           levelReq:30, xp:70,  ticks:6,  item:'raw_salmon',           itemName:'Raw salmon'},
+    {id:'raw_tuna',             name:'Fish tuna',             levelReq:35, xp:80,  ticks:7,  item:'raw_tuna',             itemName:'Raw tuna'},
+    {id:'raw_lobster',          name:'Fish lobster',          levelReq:40, xp:90,  ticks:7,  item:'raw_lobster',          itemName:'Raw lobster'},
+    {id:'raw_swordfish',        name:'Fish swordfish',        levelReq:50, xp:100, ticks:8,  item:'raw_swordfish',        itemName:'Raw swordfish'},
+    {id:'raw_monkfish',         name:'Fish monkfish',         levelReq:62, xp:120, ticks:9,  item:'raw_monkfish',         itemName:'Raw monkfish'},
+    {id:'raw_shark',            name:'Fish shark',            levelReq:76, xp:110, ticks:8,  item:'raw_shark',            itemName:'Raw shark'},
+    {id:'raw_great_white_shark',name:'Fish great white shark',levelReq:80, xp:140, ticks:9,  item:'raw_great_white_shark',itemName:'Raw great white shark'},
+    {id:'raw_cavefish',         name:'Fish cavefish',         levelReq:85, xp:300, ticks:15, item:'raw_cavefish',         itemName:'Raw cavefish'},
+    {id:'raw_rocktail',         name:'Fish rocktail',         levelReq:90, xp:380, ticks:18, item:'raw_rocktail',         itemName:'Raw rocktail'},
+    {id:'raw_sailfish',         name:'Fish sailfish',         levelReq:97, xp:420, ticks:19, item:'raw_sailfish',         itemName:'Raw sailfish'},
+  ],
+  // future skills go here
 };
 
 /* Tool upgrade tiers — axes (woodcutting) and pickaxes (mining) */
@@ -482,6 +501,19 @@ const TOOLS = {
     {id:'bane',      name:'Bane pickaxe',      speedMult:0.50, reqLevel:80,  cost:[{item:'bane_bar',       name:'Bane bar',       count:2}]},
     {id:'elder_rune',name:'Elder rune pickaxe',speedMult:0.45, reqLevel:90,  cost:[{item:'elder_rune_bar', name:'Elder rune bar', count:2}]},
     {id:'primal',    name:'Primal pickaxe',    speedMult:0.40, reqLevel:100, cost:[{item:'primal_bar',     name:'Primal bar',     count:2}]},
+  ],
+  fishing:[
+    {id:'bronze',    name:'Bronze fishing rod', speedMult:1.00, reqLevel:1,  cost:[]},
+    {id:'iron',      name:'Iron fishing rod',   speedMult:0.93, reqLevel:1,  cost:[{item:'iron_bar',       name:'Iron bar',       count:2}]},
+    {id:'steel',     name:'Steel fishing rod',  speedMult:0.87, reqLevel:5,  cost:[{item:'steel_bar',      name:'Steel bar',      count:2}]},
+    {id:'mithril',   name:'Mithril fishing rod',speedMult:0.80, reqLevel:20, cost:[{item:'mithril_bar',    name:'Mithril bar',    count:2}]},
+    {id:'adamant',   name:'Adamant fishing rod',speedMult:0.73, reqLevel:30, cost:[{item:'adamant_bar',    name:'Adamant bar',    count:2}]},
+    {id:'rune',      name:'Rune fishing rod',   speedMult:0.67, reqLevel:40, cost:[{item:'rune_bar',       name:'Rune bar',       count:2}]},
+    {id:'orikalkum', name:'Orikalkum fishing rod',speedMult:0.60,reqLevel:60,cost:[{item:'orikalkum_bar',  name:'Orikalkum bar',  count:2}]},
+    {id:'necronium', name:'Necronium fishing rod',speedMult:0.55,reqLevel:70,cost:[{item:'necronium_bar',  name:'Necronium bar',  count:2}]},
+    {id:'bane',      name:'Bane fishing rod',   speedMult:0.50, reqLevel:80, cost:[{item:'bane_bar',       name:'Bane bar',       count:2}]},
+    {id:'elder_rune',name:'Elder rune fishing rod',speedMult:0.45,reqLevel:90,cost:[{item:'elder_rune_bar',name:'Elder rune bar', count:2}]},
+    {id:'primal',    name:'Primal fishing rod', speedMult:0.40, reqLevel:99, cost:[{item:'primal_bar',     name:'Primal bar',     count:2}]},
   ],
 };
 
