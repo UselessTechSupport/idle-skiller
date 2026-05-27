@@ -488,6 +488,8 @@ const TOOLS = {
     {id:'bane',      name:'Bane axe',          speedMult:0.50, reqLevel:80,  cost:[{item:'bane_bar',       name:'Bane bar',       count:2}]},
     {id:'elder_rune',name:'Elder rune axe',    speedMult:0.45, reqLevel:90,  cost:[{item:'elder_rune_bar', name:'Elder rune bar', count:2}]},
     {id:'primal',    name:'Primal axe',        speedMult:0.40, reqLevel:100, cost:[{item:'primal_bar',     name:'Primal bar',     count:2}]},
+    {id:'t99_axe',   name:'T99 axe',           speedMult:0.33, reqLevel:99,  cost:[{item:'t99_tool_charm',  name:'T99 upgrade charm',  count:1}]},
+    {id:'t100_axe',  name:'T100 axe',          speedMult:0.25, reqLevel:100, cost:[{item:'t100_tool_charm', name:'T100 upgrade charm', count:1}]},
   ],
   mining:[
     {id:'bronze',    name:'Bronze pickaxe',    speedMult:1.00, reqLevel:1,   cost:[]},
@@ -501,10 +503,12 @@ const TOOLS = {
     {id:'bane',      name:'Bane pickaxe',      speedMult:0.50, reqLevel:80,  cost:[{item:'bane_bar',       name:'Bane bar',       count:2}]},
     {id:'elder_rune',name:'Elder rune pickaxe',speedMult:0.45, reqLevel:90,  cost:[{item:'elder_rune_bar', name:'Elder rune bar', count:2}]},
     {id:'primal',    name:'Primal pickaxe',    speedMult:0.40, reqLevel:100, cost:[{item:'primal_bar',     name:'Primal bar',     count:2}]},
+    {id:'t99_pick',  name:'T99 pickaxe',       speedMult:0.33, reqLevel:99,  cost:[{item:'t99_tool_charm',  name:'T99 upgrade charm',  count:1}]},
+    {id:'t100_pick', name:'T100 pickaxe',      speedMult:0.25, reqLevel:100, cost:[{item:'t100_tool_charm', name:'T100 upgrade charm', count:1}]},
   ],
   fishing:[
     {id:'fishing_rod', name:'Fishing rod',         speedMult:1.00, reqLevel:1,  cost:[]},
-    {id:'dragon_rod',  name:'Dragon fishing rod',  speedMult:0.75, reqLevel:60, cost:[{item:'dragon_fish',       name:'Dragon fish',       count:1}]},
+    {id:'dragon_rod',  name:'Dragon fishing rod',  speedMult:0.75, reqLevel:60, cost:[{item:'krackens_beak',     name:"Kraken's Beak",     count:1}]},
     {id:'crystal_rod', name:'Crystal fishing rod', speedMult:0.60, reqLevel:1,  cost:[{item:'crystal_tool_seed', name:'Crystal tool seed', count:1}]},
     {id:'tavias_rod',  name:"Tavia's rod",         speedMult:0.45, reqLevel:1,  cost:[{item:'map_to_tavia',      name:'Map to Tavia',      count:1}]},
   ],
@@ -531,9 +535,11 @@ const OPENABLE_ITEMS = {
     {id:'uncut_onyx',        name:'Uncut onyx',        weight:5},
   ]},
   metamorphic_geode:{rewards:[
-    {id:'uncut_dragonstone', name:'Uncut dragonstone', weight:40},
-    {id:'uncut_onyx',        name:'Uncut onyx',        weight:40},
-    {id:'uncut_zenyte',      name:'Uncut zenyte',      weight:20},
+    {id:'uncut_dragonstone',  name:'Uncut dragonstone',  weight:40000},
+    {id:'uncut_onyx',         name:'Uncut onyx',         weight:35000},
+    {id:'coins',              name:'Coins',              weight:20000, count:50000},
+    {id:'dragonstone_charm',  name:'Dragonstone charm',  weight:4999},
+    {id:'uncut_hydrix',       name:'Uncut hydrix',       weight:1},
   ]},
   birds_nest_seeds:{rewards:[
     {id:'acorn',       name:'Acorn',       weight:20},
@@ -704,6 +710,19 @@ function completeAction(action, silent){
     state.inventory[action.item] = (state.inventory[action.item] || 0) + 1;
     state.itemNames[action.item] = action.itemName;
   }
+  // Tavia's rod: 1% chance to upgrade the caught fish to the next tier
+  if (action.item && state.current?.skillId === 'fishing' &&
+      state.tools?.fishing === 'tavias_rod' && Math.random() < 0.01){
+    const fishActions = ACTIONS.fishing;
+    const idx = fishActions.findIndex(a => a.id === state.current.actionId);
+    if (idx >= 0 && idx < fishActions.length - 1){
+      const upgrade = fishActions[idx + 1];
+      state.inventory[action.item]--;
+      state.inventory[upgrade.item] = (state.inventory[upgrade.item] || 0) + 1;
+      state.itemNames[upgrade.item] = upgrade.itemName;
+      if (!silent) log(`✨ Tavia's rod shimmers — you caught a ${upgrade.itemName}!`);
+    }
+  }
   // give xp + check level up
   const skill = state.skills[state.current.skillId];
   const before = levelForXp(skill.xp);
@@ -757,14 +776,14 @@ function checkBonusDrop(skillId, action){
     log(`🪺 A bird's nest falls from the tree!`);
   }
 
-  // Fishing: dragon fish (1% from fish levelReq >= 60)
+  // Fishing: Kraken's Beak (1% from fish levelReq >= 60)
   if (skillId === 'fishing' && action.levelReq >= 60 && Math.random() < 0.01){
-    state.inventory['dragon_fish'] = (state.inventory['dragon_fish'] || 0) + 1;
-    state.itemNames['dragon_fish'] = 'Dragon fish';
-    log('🐉 A dragon fish leaps into your boat!');
+    state.inventory['krackens_beak'] = (state.inventory['krackens_beak'] || 0) + 1;
+    state.itemNames['krackens_beak'] = "Kraken's Beak";
+    log("🦑 You wrestle a Kraken's Beak from the catch!");
   }
-  // Fishing: Map to Tavia (0.1% from fish levelReq >= 85)
-  if (skillId === 'fishing' && action.levelReq >= 85 && Math.random() < 0.001){
+  // Fishing: Map to Tavia (1-in-100,000 from fish levelReq >= 85)
+  if (skillId === 'fishing' && action.levelReq >= 85 && Math.random() < 0.00001){
     state.inventory['map_to_tavia'] = (state.inventory['map_to_tavia'] || 0) + 1;
     state.itemNames['map_to_tavia'] = 'Map to Tavia';
     log("🗺️ You find a mysterious map tucked inside the fish!");
@@ -787,9 +806,11 @@ function openItem(itemId){
   let reward;
   for (const r of entry.rewards){ roll -= r.weight; if (roll <= 0){ reward = r; break; } }
   reward = reward || entry.rewards[entry.rewards.length - 1];
-  state.inventory[reward.id] = (state.inventory[reward.id] || 0) + 1;
+  const qty = reward.count || 1;
+  state.inventory[reward.id] = (state.inventory[reward.id] || 0) + qty;
   state.itemNames[reward.id] = reward.name;
-  log(`📦 Opened ${state.itemNames[itemId]}: received ${reward.name}!`);
+  const qtyStr = qty > 1 ? `${qty.toLocaleString()}× ` : '';
+  log(`📦 Opened ${state.itemNames[itemId]}: received ${qtyStr}${reward.name}!`);
   render();
 }
 
