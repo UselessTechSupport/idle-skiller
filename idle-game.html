@@ -137,6 +137,23 @@
   .tab-btn.active{border-color:var(--accent); color:var(--text);}
   .tab-btn:hover:not(.active){color:var(--text);}
   .inv-row .mini{padding:3px 8px; font-size:12px;}
+
+  /* Upgrade shop */
+  .upgrade-shop-grid{display:grid; gap:14px; grid-template-columns:1fr;}
+  @media(min-width:600px){.upgrade-shop-grid{grid-template-columns:1fr 1fr;}}
+  .upgrade-group h3{font-size:13px; color:var(--dim); text-transform:uppercase;
+    letter-spacing:.05em; margin:0 0 8px;}
+  .upgrade-tier{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    padding:8px 12px; border-radius:6px; margin-bottom:5px;
+    background:var(--panel2); border:1px solid var(--line); font-size:13px;
+  }
+  .upgrade-tier.equipped{border-color:var(--accent); background:var(--accent2);}
+  .upgrade-tier.locked{opacity:.4;}
+  .upgrade-tier .tier-left{display:flex; flex-direction:column; gap:2px;}
+  .upgrade-tier .tier-speed{font-size:11px; color:var(--dim);}
+  .upgrade-tier .tier-cost{font-size:11px; color:var(--dim);}
+  .upgrade-tier button.mini{flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -188,6 +205,14 @@
   </div>
 </div>
 
+<!-- Upgrade Shop -->
+<div id="upgradeShop" style="padding:0 14px 14px; max-width:1100px; margin:0 auto;">
+  <div class="card">
+    <h2>⚒️ Upgrade Shop</h2>
+    <div class="upgrade-shop-grid" id="upgradeShopContent"></div>
+  </div>
+</div>
+
 <!-- Debug panel (hidden by default) -->
 <div id="debugPanel" style="display:none; padding:0 14px 14px; max-width:1100px; margin:0 auto;">
   <div class="card debug-card">
@@ -196,6 +221,7 @@
       <button class="dbtn" onclick="debugGive('mining',100)">+100 all ores</button>
       <button class="dbtn" onclick="debugGive('woodcutting',100)">+100 all logs</button>
       <button class="dbtn" onclick="debugGive('mining',1000)">+1000 all ores</button>
+      <button class="dbtn" onclick="debugGive('smithing',10)">+10 all bars</button>
       <button class="dbtn" onclick="debugGive('smithing',100)">+100 all bars</button>
       <button class="dbtn" onclick="debugClearInv()">Clear inventory</button>
     </div>
@@ -406,6 +432,36 @@ const ACTIONS = {
   // fishing: [...]  <-- future skills go here
 };
 
+/* Tool upgrade tiers — axes (woodcutting) and pickaxes (mining) */
+const TOOLS = {
+  woodcutting:[
+    {id:'bronze',    name:'Bronze axe',        speedMult:1.00, reqLevel:1,   cost:[]},
+    {id:'iron',      name:'Iron axe',          speedMult:0.93, reqLevel:1,   cost:[{item:'iron_bar',       name:'Iron bar',       count:2}]},
+    {id:'steel',     name:'Steel axe',         speedMult:0.87, reqLevel:5,   cost:[{item:'steel_bar',      name:'Steel bar',      count:2}]},
+    {id:'mithril',   name:'Mithril axe',       speedMult:0.80, reqLevel:20,  cost:[{item:'mithril_bar',    name:'Mithril bar',    count:2}]},
+    {id:'adamant',   name:'Adamant axe',       speedMult:0.73, reqLevel:30,  cost:[{item:'adamant_bar',    name:'Adamant bar',    count:2}]},
+    {id:'rune',      name:'Rune axe',          speedMult:0.67, reqLevel:40,  cost:[{item:'rune_bar',       name:'Rune bar',       count:2}]},
+    {id:'orikalkum', name:'Orikalkum axe',     speedMult:0.60, reqLevel:60,  cost:[{item:'orikalkum_bar',  name:'Orikalkum bar',  count:2}]},
+    {id:'necronium', name:'Necronium axe',     speedMult:0.55, reqLevel:70,  cost:[{item:'necronium_bar',  name:'Necronium bar',  count:2}]},
+    {id:'bane',      name:'Bane axe',          speedMult:0.50, reqLevel:80,  cost:[{item:'bane_bar',       name:'Bane bar',       count:2}]},
+    {id:'elder_rune',name:'Elder rune axe',    speedMult:0.45, reqLevel:90,  cost:[{item:'elder_rune_bar', name:'Elder rune bar', count:2}]},
+    {id:'primal',    name:'Primal axe',        speedMult:0.40, reqLevel:100, cost:[{item:'primal_bar',     name:'Primal bar',     count:2}]},
+  ],
+  mining:[
+    {id:'bronze',    name:'Bronze pickaxe',    speedMult:1.00, reqLevel:1,   cost:[]},
+    {id:'iron',      name:'Iron pickaxe',      speedMult:0.93, reqLevel:1,   cost:[{item:'iron_bar',       name:'Iron bar',       count:2}]},
+    {id:'steel',     name:'Steel pickaxe',     speedMult:0.87, reqLevel:5,   cost:[{item:'steel_bar',      name:'Steel bar',      count:2}]},
+    {id:'mithril',   name:'Mithril pickaxe',   speedMult:0.80, reqLevel:20,  cost:[{item:'mithril_bar',    name:'Mithril bar',    count:2}]},
+    {id:'adamant',   name:'Adamant pickaxe',   speedMult:0.73, reqLevel:30,  cost:[{item:'adamant_bar',    name:'Adamant bar',    count:2}]},
+    {id:'rune',      name:'Rune pickaxe',      speedMult:0.67, reqLevel:40,  cost:[{item:'rune_bar',       name:'Rune bar',       count:2}]},
+    {id:'orikalkum', name:'Orikalkum pickaxe', speedMult:0.60, reqLevel:60,  cost:[{item:'orikalkum_bar',  name:'Orikalkum bar',  count:2}]},
+    {id:'necronium', name:'Necronium pickaxe', speedMult:0.55, reqLevel:70,  cost:[{item:'necronium_bar',  name:'Necronium bar',  count:2}]},
+    {id:'bane',      name:'Bane pickaxe',      speedMult:0.50, reqLevel:80,  cost:[{item:'bane_bar',       name:'Bane bar',       count:2}]},
+    {id:'elder_rune',name:'Elder rune pickaxe',speedMult:0.45, reqLevel:90,  cost:[{item:'elder_rune_bar', name:'Elder rune bar', count:2}]},
+    {id:'primal',    name:'Primal pickaxe',    speedMult:0.40, reqLevel:100, cost:[{item:'primal_bar',     name:'Primal bar',     count:2}]},
+  ],
+};
+
 /* Lookup helpers */
 const SKILL_BY_ID = Object.fromEntries(SKILL_ROADMAP.map(s => [s.id, s]));
 function getAction(skillId, actionId){
@@ -493,11 +549,20 @@ function freshState(){
     itemNames: {},          // { itemId: "Display name" }
     current: null,          // { skillId, actionId }
     progress: 0,            // ticks done toward current action
+    tools: {},              // { skillId: tierId }
     lastSaved: Date.now(),
   };
 }
 
 /* ---------- 6. CORE LOOP + OFFLINE ---------- */
+function getToolSpeedMult(skillId){
+  const tiers = TOOLS[skillId];
+  if (!tiers) return 1.0;
+  const equippedId = (state.tools && state.tools[skillId]) || 'bronze';
+  const tier = tiers.find(t => t.id === equippedId);
+  return tier ? tier.speedMult : 1.0;
+}
+
 function tick(){
   // fire spirit expiry + countdown
   if (fireSpirit){
@@ -513,7 +578,8 @@ function tick(){
     const action = getAction(state.current.skillId, state.current.actionId);
     if (action){
       state.progress++;
-      if (state.progress >= action.ticks){
+      const effTicks = Math.max(1, Math.ceil(action.ticks * getToolSpeedMult(state.current.skillId)));
+      if (state.progress >= effTicks){
         state.progress = 0;
         completeAction(action);
       }
@@ -536,8 +602,9 @@ function applyOffline(){
 
   const offlineTicks = Math.floor(cappedMs / TICK_MS);
   const totalTicks = state.progress + offlineTicks;
-  const maxCompleted = Math.floor(totalTicks / action.ticks);
-  state.progress = totalTicks % action.ticks;
+  const effTicks = Math.max(1, Math.ceil(action.ticks * getToolSpeedMult(state.current.skillId)));
+  const maxCompleted = Math.floor(totalTicks / effTicks);
+  state.progress = totalTicks % effTicks;
   if (maxCompleted <= 0) return null;
 
   let completed = 0;
@@ -637,6 +704,27 @@ function openItem(itemId){
   render();
 }
 
+function upgradeTool(skillId, tierId){
+  const tiers = TOOLS[skillId];
+  if (!tiers) return;
+  const tier = tiers.find(t => t.id === tierId);
+  if (!tier) return;
+  const lvl = levelForXp(state.skills[skillId].xp);
+  if (lvl < tier.reqLevel){
+    log(`Need level ${tier.reqLevel} ${SKILL_BY_ID[skillId].name} to use a ${tier.name}.`); return;
+  }
+  for (const c of tier.cost){
+    if ((state.inventory[c.item] || 0) < c.count){
+      log(`Need ${c.count}× ${c.name} to craft a ${tier.name}.`); return;
+    }
+  }
+  for (const c of tier.cost) state.inventory[c.item] -= c.count;
+  if (!state.tools) state.tools = {};
+  state.tools[skillId] = tierId;
+  log(`⚒️ Crafted and equipped a ${tier.name}!`);
+  render();
+}
+
 function startAction(skillId, actionId){
   const action = getAction(skillId, actionId);
   if (!action) return;
@@ -674,7 +762,53 @@ function render(){
   renderSkillList();
   renderActiveSkill();
   renderInventory();
+  renderUpgradeShop();
   renderTotalLevel();
+}
+
+function renderUpgradeShop(){
+  const el = $('upgradeShopContent');
+  el.innerHTML = '';
+  const skillsWithTools = Object.keys(TOOLS).filter(id => SKILL_BY_ID[id]?.implemented);
+  skillsWithTools.forEach(skillId => {
+    const s = SKILL_BY_ID[skillId];
+    const lvl = levelForXp(state.skills[skillId].xp);
+    const equippedId = (state.tools && state.tools[skillId]) || 'bronze';
+    const group = document.createElement('div');
+    group.className = 'upgrade-group';
+    group.innerHTML = `<h3>${s.name}</h3>`;
+    TOOLS[skillId].forEach(tier => {
+      const isEquipped = tier.id === equippedId;
+      const levelOk = lvl >= tier.reqLevel;
+      const canAfford = tier.cost.every(c => (state.inventory[c.item] || 0) >= c.count);
+      const isFree = tier.cost.length === 0;
+      const row = document.createElement('div');
+      row.className = 'upgrade-tier' + (isEquipped ? ' equipped' : '') + (!levelOk ? ' locked' : '');
+      const costText = isFree ? 'Starting tool' : tier.cost.map(c => `${c.count}× ${c.name}`).join(' + ');
+      const pct = Math.round((1 - tier.speedMult) * 100);
+      const speedText = pct === 0 ? 'Base speed' : `${pct}% faster`;
+      let btn = '';
+      if (!isEquipped){
+        if (!levelOk){
+          btn = `<button class="mini" disabled>🔒 Lv ${tier.reqLevel}</button>`;
+        } else if (isFree){
+          btn = `<button class="mini" onclick="upgradeTool('${skillId}','${tier.id}')">Equip</button>`;
+        } else {
+          const style = canAfford ? '' : 'opacity:.5;';
+          btn = `<button class="mini" style="${style}" onclick="upgradeTool('${skillId}','${tier.id}')">${canAfford ? 'Craft' : "Can't afford"}</button>`;
+        }
+      } else {
+        btn = `<span style="font-size:12px;color:var(--accent);">✓ Equipped</span>`;
+      }
+      row.innerHTML = `<div class="tier-left">
+        <span>${tier.name}</span>
+        <span class="tier-speed">${speedText}</span>
+        <span class="tier-cost">${costText}</span>
+      </div>${btn}`;
+      group.appendChild(row);
+    });
+    el.appendChild(group);
+  });
 }
 
 function renderTotalLevel(){
