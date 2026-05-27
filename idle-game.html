@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Idle Skiller — Starter</title>
+<style>
+  /* ============================================================
+     STYLING — deliberately minimal for now ("make it work first").
+     We'll do a proper design pass later.
+     ============================================================ */
+  :root{
+    --bg:#14171c; --panel:#1d222b; --panel2:#252c38;
+    --line:#333c4a; --text:#e6e9ee; --dim:#8a93a3;
+    --accent:#4caf50; --accent2:#2d7d33; --locked:#3a3f4a;
+    --bar:#3a4250;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:system-ui, sans-serif; font-size:15px; line-height:1.4;
+    -webkit-tap-highlight-color:transparent;
+  }
+  header{
+    padding:12px 16px; background:var(--panel); border-bottom:1px solid var(--line);
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  header h1{font-size:17px; margin:0; font-weight:600;}
+  header .total{font-size:13px; color:var(--dim);}
+  .wrap{
+    display:grid; gap:14px; padding:14px; max-width:1100px; margin:0 auto;
+    grid-template-columns:1fr;
+  }
+  @media(min-width:820px){ .wrap{grid-template-columns:260px 1fr 260px;} }
+  .card{
+    background:var(--panel); border:1px solid var(--line);
+    border-radius:8px; padding:12px;
+  }
+  .card h2{font-size:13px; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--dim); margin:0 0 10px;}
+
+  /* Skill list */
+  .skill-group-label{font-size:11px; color:var(--dim); text-transform:uppercase;
+    margin:10px 0 4px; letter-spacing:.05em;}
+  .skill-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:6px 8px; border-radius:6px; font-size:14px; margin-bottom:3px;
+    background:var(--panel2); cursor:default;
+  }
+  .skill-row.playable{cursor:pointer; border-left:3px solid var(--accent);}
+  .skill-row.playable:hover{background:var(--panel2); filter:brightness(1.15);}
+  .skill-row.locked{opacity:.45;}
+  .skill-row.active{outline:2px solid var(--accent);}
+  .skill-row .lvl{font-size:12px; color:var(--dim);}
+
+  /* Trees / actions */
+  .action-btn{
+    width:100%; text-align:left; padding:10px 12px; margin-bottom:8px;
+    background:var(--panel2); color:var(--text); border:1px solid var(--line);
+    border-radius:6px; cursor:pointer; font-size:14px; display:flex;
+    justify-content:space-between; align-items:center; gap:8px;
+  }
+  .action-btn:hover:not(:disabled){border-color:var(--accent);}
+  .action-btn:disabled{opacity:.4; cursor:not-allowed;}
+  .action-btn.selected{border-color:var(--accent); background:var(--accent2);}
+  .action-btn .meta{font-size:12px; color:var(--dim); text-align:right;}
+  .action-btn.selected .meta{color:#cfe9d0;}
+
+  /* Progress bars */
+  .bar{background:var(--bar); border-radius:5px; height:14px; overflow:hidden; margin:6px 0;}
+  .bar > div{background:var(--accent); height:100%; width:0%; transition:width .15s linear;}
+  .bar.xp > div{background:#5b8def;}
+  .barlabel{display:flex; justify-content:space-between; font-size:12px; color:var(--dim);}
+
+  /* Inventory + log */
+  .inv-row{display:flex; justify-content:space-between; padding:4px 0;
+    border-bottom:1px solid var(--line); font-size:14px;}
+  .inv-row:last-child{border-bottom:none;}
+  .inv-empty,.log-empty{color:var(--dim); font-size:13px; font-style:italic;}
+  #log{max-height:220px; overflow-y:auto; font-size:13px;}
+  #log div{padding:3px 0; border-bottom:1px solid var(--line); color:var(--dim);}
+  #log div:first-child{color:var(--text);}
+
+  .now-doing{font-size:13px; color:var(--dim); margin-bottom:4px;}
+  .now-doing b{color:var(--text);}
+  .footer-actions{display:flex; gap:8px; margin-top:10px;}
+  .mini{font-size:12px; padding:6px 10px; background:var(--panel2);
+    border:1px solid var(--line); color:var(--dim); border-radius:6px; cursor:pointer;}
+  .mini:hover{color:var(--text);}
+
+  /* Debug panel */
+  .debug-card{border-color:#c2410c;}
+  .debug-card h2{color:#f97316;}
+  .dbtn{font-size:12px; padding:5px 10px; background:var(--panel2); color:#f97316;
+    border:1px solid #c2410c; border-radius:5px; cursor:pointer;}
+  .dbtn:hover{background:#f9731618;}
+  .debug-row{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px;}
+  .debug-sel,.debug-num{background:var(--panel2); color:var(--text);
+    border:1px solid var(--line); border-radius:4px; padding:4px 8px; font-size:13px;}
+  .debug-num{width:64px;}
+
+  /* Offline modal */
+  .modal-bg{position:fixed; inset:0; background:rgba(0,0,0,.6);
+    display:none; align-items:center; justify-content:center; padding:20px; z-index:10;}
+  .modal-bg.show{display:flex;}
+  .modal{background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:20px; max-width:380px; width:100%;}
+  .modal h3{margin:0 0 10px;}
+  .modal ul{margin:8px 0; padding-left:18px;}
+  .modal button{margin-top:12px; width:100%; padding:10px; background:var(--accent2);
+    color:#fff; border:none; border-radius:6px; font-size:15px; cursor:pointer;}
+
+  /* Fire spirit QTE — centered fullscreen overlay */
+  .fire-spirit-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,.7);
+    display:none; align-items:center; justify-content:center;
+    padding:20px; z-index:10;
+  }
+  .fire-spirit-overlay.show{display:flex;}
+  .fire-spirit-modal{
+    background:#7c2d12; border:2px solid #ea580c; border-radius:12px;
+    padding:24px 28px; max-width:320px; width:100%;
+    display:flex; flex-direction:column; gap:12px; align-items:center; text-align:center;
+    animation:spiritPulse 1.2s ease-in-out infinite;
+  }
+  .fire-spirit-modal .spirit-title{font-size:20px; font-weight:700;}
+  .fire-spirit-modal .spirit-timer{color:#fbbf24; font-size:14px;}
+  @keyframes spiritPulse{
+    0%,100%{box-shadow:0 4px 20px rgba(234,88,12,.4);}
+    50%{box-shadow:0 4px 36px rgba(234,88,12,.9);}
+  }
+
+  /* Inventory tab bar */
+  .tab-bar{display:flex; gap:6px; margin-bottom:8px;}
+  .tab-btn{font-size:12px; padding:5px 10px; background:var(--panel2);
+    border:1px solid var(--line); color:var(--dim); border-radius:6px; cursor:pointer;}
+  .tab-btn.active{border-color:var(--accent); color:var(--text);}
+  .tab-btn:hover:not(.active){color:var(--text);}
+  .inv-row .mini{padding:3px 8px; font-size:12px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⛏️ Idle Skiller <span style="color:var(--dim);font-weight:400;font-size:13px;">starter</span></h1>
+  <span class="total">Total level: <b id="totalLevel">1</b></span>
+  <button class="mini" id="debugToggle" style="color:#f97316;border-color:#c2410c;">🐛 Debug</button>
+</header>
+
+<div class="wrap">
+  <!-- LEFT: all 29 skills -->
+  <div class="card">
+    <h2>Skills (RS3 — 29 total)</h2>
+    <div id="skillList"></div>
+  </div>
+
+  <!-- CENTER: the active skill -->
+  <div class="card">
+    <h2 id="activeSkillTitle">Woodcutting</h2>
+
+    <div class="barlabel"><span>Level <b id="wcLevel">1</b></span><span id="wcXpText">0 / 83 xp</span></div>
+    <div class="bar xp"><div id="wcXpBar"></div></div>
+
+    <div class="now-doing" id="nowDoing">Not chopping anything. Pick a tree below.</div>
+    <div class="bar"><div id="actionBar"></div></div>
+
+    <div id="treeList" style="margin-top:12px;"></div>
+
+    <div class="footer-actions">
+      <button class="mini" id="stopBtn">⏹ Stop</button>
+    </div>
+  </div>
+
+  <!-- RIGHT: inventory + log -->
+  <div class="card">
+    <h2>Inventory</h2>
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tabAll" onclick="setInvTab('all')">All Items</button>
+      <button class="tab-btn" id="tabOpen" onclick="setInvTab('open')">Open Items</button>
+    </div>
+    <div id="inventory"></div>
+    <h2 style="margin-top:16px;">Log</h2>
+    <div id="log"></div>
+    <div class="footer-actions">
+      <button class="mini" id="saveBtn">💾 Save now</button>
+      <button class="mini" id="resetBtn">🗑 Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- Debug panel (hidden by default) -->
+<div id="debugPanel" style="display:none; padding:0 14px 14px; max-width:1100px; margin:0 auto;">
+  <div class="card debug-card">
+    <h2>🐛 Debug Tools</h2>
+    <div class="debug-row">
+      <button class="dbtn" onclick="debugGive('mining',100)">+100 all ores</button>
+      <button class="dbtn" onclick="debugGive('woodcutting',100)">+100 all logs</button>
+      <button class="dbtn" onclick="debugGive('mining',1000)">+1000 all ores</button>
+      <button class="dbtn" onclick="debugGive('smithing',100)">+100 all bars</button>
+      <button class="dbtn" onclick="debugClearInv()">Clear inventory</button>
+    </div>
+    <div class="debug-row">
+      <span style="font-size:13px;color:var(--dim);">Set skill level:</span>
+      <select class="debug-sel" id="debugSkillSel"></select>
+      <input class="debug-num" id="debugLevelIn" type="number" min="1" max="120" value="50">
+      <button class="dbtn" onclick="debugSetLevel()">Set</button>
+    </div>
+  </div>
+</div>
+
+<!-- Fire spirit QTE — centered overlay -->
+<div id="fireSpiritToast" class="fire-spirit-overlay">
+  <div class="fire-spirit-modal">
+    <div class="spirit-title">🔥 A fire spirit appeared!</div>
+    <div class="spirit-timer">Disappears in <b id="spiritTimer">30</b>s</div>
+    <button class="mini" id="catchSpiritBtn" style="width:100%;padding:10px;font-size:15px;color:#f97316;border-color:#ea580c;">Catch it!</button>
+  </div>
+</div>
+
+<!-- Offline-progress popup -->
+<div class="modal-bg" id="offlineModal">
+  <div class="modal">
+    <h3>Welcome back!</h3>
+    <div id="offlineBody"></div>
+    <button id="offlineClose">Collect</button>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   IDLE SKILLER — STARTER BUILD
+   Single-file web game. Open in any browser to play.
+   Designed to grow into a PWA that runs on PC / iPhone / Android.
+
+   HOW THIS FILE IS ORGANISED (read top to bottom):
+     1. CONFIG          — knobs you can tweak
+     2. GAME DATA       — the 29 skills + woodcutting trees (edit these to add content)
+     3. XP MATH         — RuneScape's real experience formula
+     4. STORAGE         — save/load that survives sandboxes and works as a real file
+     5. STATE           — the player's save data
+     6. CORE LOOP       — the 0.6s "tick" + offline catch-up
+     7. ACTIONS         — chopping, granting items/xp, leveling up
+     8. RENDER          — drawing everything to the screen
+     9. WIRING          — buttons, autosave, startup
+   ================================================================ */
+
+/* ---------- 1. CONFIG ---------- */
+const TICK_MS = 600;                  // RuneScape's game tick = 0.6s
+const MAX_OFFLINE_HOURS = 12;         // cap on offline catch-up
+const AUTOSAVE_MS = 10000;            // autosave every 10s
+const SAVE_KEY = 'idleSkillerSave_v1';
+
+/* ---------- 2. GAME DATA ----------
+   SKILL_ROADMAP: every RuneScape 3 skill. `implemented:true` = playable now.
+   To "turn on" a skill later: set implemented:true and add its actions to ACTIONS. */
+const SKILL_TYPES = ['gathering','artisan','combat','support','elite'];
+const TYPE_LABEL  = {gathering:'Gathering', artisan:'Artisan', combat:'Combat', support:'Support', elite:'Elite'};
+
+const SKILL_ROADMAP = [
+  // Gathering (6)
+  {id:'woodcutting',  name:'Woodcutting',  type:'gathering', maxLevel:110, implemented:true},
+  {id:'mining',       name:'Mining',       type:'gathering', maxLevel:110, implemented:true},
+  {id:'fishing',      name:'Fishing',      type:'gathering', maxLevel:99,  implemented:false},
+  {id:'farming',      name:'Farming',      type:'gathering', maxLevel:120, implemented:false},
+  {id:'hunter',       name:'Hunter',       type:'gathering', maxLevel:99,  implemented:false},
+  {id:'divination',   name:'Divination',   type:'gathering', maxLevel:99,  implemented:false},
+  // Artisan (8)
+  {id:'crafting',     name:'Crafting',     type:'artisan', maxLevel:110, implemented:false},
+  {id:'fletching',    name:'Fletching',    type:'artisan', maxLevel:110, implemented:false},
+  {id:'smithing',     name:'Smithing',     type:'artisan', maxLevel:110, implemented:true},
+  {id:'cooking',      name:'Cooking',      type:'artisan', maxLevel:99,  implemented:false},
+  {id:'firemaking',   name:'Firemaking',   type:'artisan', maxLevel:110, implemented:true},
+  {id:'runecrafting', name:'Runecrafting', type:'artisan', maxLevel:110, implemented:false},
+  {id:'construction', name:'Construction', type:'artisan', maxLevel:99,  implemented:false},
+  {id:'herblore',     name:'Herblore',     type:'artisan', maxLevel:120, implemented:false},
+  // Combat (9)
+  {id:'attack',       name:'Attack',       type:'combat', maxLevel:120, implemented:false},
+  {id:'strength',     name:'Strength',     type:'combat', maxLevel:120, implemented:false},
+  {id:'defence',      name:'Defence',      type:'combat', maxLevel:99,  implemented:false},
+  {id:'constitution', name:'Constitution', type:'combat', maxLevel:99,  implemented:false, startLevel:10},
+  {id:'ranged',       name:'Ranged',       type:'combat', maxLevel:120, implemented:false},
+  {id:'magic',        name:'Magic',        type:'combat', maxLevel:120, implemented:false},
+  {id:'prayer',       name:'Prayer',       type:'combat', maxLevel:99,  implemented:false},
+  {id:'summoning',    name:'Summoning',    type:'combat', maxLevel:99,  implemented:false},
+  {id:'necromancy',   name:'Necromancy',   type:'combat', maxLevel:120, implemented:false},
+  // Support (5)
+  {id:'agility',      name:'Agility',      type:'support', maxLevel:99,  implemented:false},
+  {id:'thieving',     name:'Thieving',     type:'support', maxLevel:99,  implemented:false},
+  {id:'slayer',       name:'Slayer',       type:'support', maxLevel:120, implemented:false},
+  {id:'dungeoneering',name:'Dungeoneering',type:'support', maxLevel:120, implemented:false},
+  {id:'archaeology',  name:'Archaeology',  type:'support', maxLevel:120, implemented:false},
+  // Elite (1)
+  {id:'invention',    name:'Invention',    type:'elite', maxLevel:120, implemented:false},
+];
+
+/* ACTIONS: what you can DO in each skill.
+   Woodcutting = trees. Each: level needed, xp per log, how many ticks it takes,
+   and which item it gives. ADD A NEW TREE by copying a line. */
+const ACTIONS = {
+  // RS3 woodcutting. Levels, XP, and tree names match the RS3 wiki.
+  // Ticks are tuned so XP/hr always increases: each tier beats the last.
+  woodcutting: [
+    {id:'normal_logs',        name:'Tree',               levelReq:1,   xp:25,    ticks:5,  item:'normal_logs',        itemName:'Logs'},
+    {id:'oak_logs',           name:'Oak tree',           levelReq:10,  xp:37.5,  ticks:6,  item:'oak_logs',           itemName:'Oak logs'},
+    {id:'willow_logs',        name:'Willow tree',        levelReq:20,  xp:67.5,  ticks:7,  item:'willow_logs',        itemName:'Willow logs'},
+    {id:'teak_logs',          name:'Teak tree',          levelReq:30,  xp:85,    ticks:7,  item:'teak_logs',          itemName:'Teak logs'},
+    {id:'maple_logs',         name:'Maple tree',         levelReq:40,  xp:100,   ticks:8,  item:'maple_logs',         itemName:'Maple logs'},
+    {id:'mahogany_logs',      name:'Mahogany tree',      levelReq:60,  xp:125,   ticks:9,  item:'mahogany_logs',      itemName:'Mahogany logs'},
+    {id:'yew_logs',           name:'Yew tree',           levelReq:70,  xp:187.5, ticks:10, item:'yew_logs',           itemName:'Yew logs'},
+    {id:'magic_logs',         name:'Magic tree',         levelReq:80,  xp:365,   ticks:13, item:'magic_logs',         itemName:'Magic logs'},
+    {id:'elder_logs',         name:'Elder tree',         levelReq:90,  xp:425,   ticks:16, item:'elder_logs',         itemName:'Elder logs'},
+    {id:'eternal_magic_logs', name:'Eternal magic tree', levelReq:100, xp:635,   ticks:20, item:'eternal_magic_logs', itemName:'Eternal magic logs'},
+  ],
+  // RS3 mining (post-2019 rework). Level requirements changed dramatically vs classic:
+  // Mithril 55→30, Adamantite 70→40, Runite 85→50. New high-level ores fill 60–90.
+  // XP for Orichalcite and above are approximated (RS3 uses per-swing dynamic scaling
+  // rather than fixed-per-ore; these values maintain a clean XP/hr progression).
+  mining: [
+    {id:'copper_ore',      name:'Copper rock',       levelReq:1,  xp:17.5, ticks:3,  item:'copper_ore',      itemName:'Copper ore'},
+    {id:'tin_ore',         name:'Tin rock',          levelReq:1,  xp:17.5, ticks:3,  item:'tin_ore',         itemName:'Tin ore'},
+    {id:'iron_ore',        name:'Iron rock',         levelReq:10, xp:35,   ticks:4,  item:'iron_ore',        itemName:'Iron ore'},
+    {id:'coal',            name:'Coal rock',         levelReq:20, xp:50,   ticks:5,  item:'coal',            itemName:'Coal'},
+    {id:'silver_ore',      name:'Silver rock',       levelReq:20, xp:40,   ticks:5,  item:'silver_ore',      itemName:'Silver ore'},
+    {id:'mithril_ore',     name:'Mithril rock',      levelReq:30, xp:80,   ticks:6,  item:'mithril_ore',     itemName:'Mithril ore'},
+    {id:'adamantite_ore',  name:'Adamantite rock',   levelReq:40, xp:95,   ticks:7,  item:'adamantite_ore',  itemName:'Adamantite ore'},
+    {id:'gold_ore',        name:'Gold rock',         levelReq:40, xp:65,   ticks:6,  item:'gold_ore',        itemName:'Gold ore'},
+    {id:'luminite_ore',    name:'Luminite rock',     levelReq:40, xp:65,   ticks:6,  item:'luminite_ore',    itemName:'Luminite ore'},
+    {id:'runite_ore',      name:'Runite rock',       levelReq:50, xp:125,  ticks:8,  item:'runite_ore',      itemName:'Runite ore'},
+    {id:'orichalcite_ore', name:'Orichalcite rock',  levelReq:60, xp:175,  ticks:9,  item:'orichalcite_ore', itemName:'Orichalcite ore'},
+    {id:'drakolith_ore',   name:'Drakolith rock',    levelReq:60, xp:175,  ticks:9,  item:'drakolith_ore',   itemName:'Drakolith ore'},
+    {id:'necrite_ore',     name:'Necrite rock',      levelReq:70, xp:200,  ticks:10, item:'necrite_ore',     itemName:'Necrite ore'},
+    {id:'phasmatite_ore',  name:'Phasmatite rock',   levelReq:70, xp:200,  ticks:10, item:'phasmatite_ore',  itemName:'Phasmatite ore'},
+    {id:'banite_ore',      name:'Banite rock',       levelReq:80, xp:230,  ticks:11, item:'banite_ore',      itemName:'Banite ore'},
+    // Elder rune bar = 2 light + 2 dark animica (4 ores). Represented as one action
+    // that takes 4× the base animica time and awards 4× the XP.
+    {id:'elder_rune_ore',  name:'Elder rune rock',   levelReq:90, xp:1040, ticks:48, item:'elder_rune_ore',  itemName:'Elder rune ore'},
+    // Primal bar = 2 primal ores (10 ores per 5 bars). Base primal rock is slower
+    // than animica; 2 ores per action keeps the ratio accurate to RS3.
+    {id:'primal_ore',      name:'Primal rock',       levelReq:100,xp:1400, ticks:60, item:'primal_ore',      itemName:'Primal ore'},
+  ],
+  // RS3 bar smelting. Ingredients are consumed from inventory on each completion.
+  // XP: classic RS values for Bronze–Rune; scaled estimates for RS3-specific tiers.
+  // Level requirements match RS3's post-2019 Mining & Smithing rework.
+  smithing: [
+    {id:'bronze_bar',     name:'Bronze bar',     levelReq:1,   xp:6.2,  ticks:3,
+     item:'bronze_bar',     itemName:'Bronze bar',
+     ingredients:[{item:'copper_ore',      count:1, name:'Copper ore'},
+                  {item:'tin_ore',         count:1, name:'Tin ore'}]},
+    {id:'iron_bar',       name:'Iron bar',       levelReq:10,  xp:12.5, ticks:3,
+     item:'iron_bar',       itemName:'Iron bar',
+     ingredients:[{item:'iron_ore',        count:2, name:'Iron ore'}]},
+    {id:'silver_bar',     name:'Silver bar',     levelReq:20,  xp:13.7, ticks:3,
+     item:'silver_bar',     itemName:'Silver bar',
+     ingredients:[{item:'silver_ore',      count:1, name:'Silver ore'}]},
+    {id:'steel_bar',      name:'Steel bar',      levelReq:20,  xp:17.5, ticks:3,
+     item:'steel_bar',      itemName:'Steel bar',
+     ingredients:[{item:'iron_ore',        count:1, name:'Iron ore'},
+                  {item:'coal',            count:1, name:'Coal'}]},
+    {id:'mithril_bar',    name:'Mithril bar',    levelReq:30,  xp:30,   ticks:4,
+     item:'mithril_bar',    itemName:'Mithril bar',
+     ingredients:[{item:'mithril_ore',     count:1, name:'Mithril ore'},
+                  {item:'coal',            count:1, name:'Coal'}]},
+    {id:'gold_bar',       name:'Gold bar',       levelReq:40,  xp:22.5, ticks:3,
+     item:'gold_bar',       itemName:'Gold bar',
+     ingredients:[{item:'gold_ore',        count:1, name:'Gold ore'}]},
+    {id:'adamant_bar',    name:'Adamant bar',    levelReq:40,  xp:37.5, ticks:4,
+     item:'adamant_bar',    itemName:'Adamant bar',
+     ingredients:[{item:'adamantite_ore',  count:1, name:'Adamantite ore'},
+                  {item:'luminite_ore',    count:1, name:'Luminite ore'}]},
+    {id:'rune_bar',       name:'Rune bar',       levelReq:50,  xp:50,   ticks:4,
+     item:'rune_bar',       itemName:'Rune bar',
+     ingredients:[{item:'runite_ore',      count:1, name:'Runite ore'},
+                  {item:'luminite_ore',    count:1, name:'Luminite ore'}]},
+    {id:'orikalkum_bar',  name:'Orikalkum bar',  levelReq:60,  xp:65,   ticks:5,
+     item:'orikalkum_bar',  itemName:'Orikalkum bar',
+     ingredients:[{item:'orichalcite_ore', count:1, name:'Orichalcite ore'},
+                  {item:'drakolith_ore',   count:1, name:'Drakolith ore'}]},
+    {id:'necronium_bar',  name:'Necronium bar',  levelReq:70,  xp:80,   ticks:5,
+     item:'necronium_bar',  itemName:'Necronium bar',
+     ingredients:[{item:'necrite_ore',     count:1, name:'Necrite ore'},
+                  {item:'phasmatite_ore',  count:1, name:'Phasmatite ore'}]},
+    {id:'bane_bar',       name:'Bane bar',       levelReq:80,  xp:100,  ticks:6,
+     item:'bane_bar',       itemName:'Bane bar',
+     ingredients:[{item:'banite_ore',      count:2, name:'Banite ore'}]},
+    {id:'elder_rune_bar', name:'Elder rune bar', levelReq:90,  xp:130,  ticks:7,
+     item:'elder_rune_bar', itemName:'Elder rune bar',
+     ingredients:[{item:'elder_rune_ore',  count:1, name:'Elder rune ore'}]},
+    {id:'primal_bar',     name:'Primal bar',     levelReq:100, xp:180,  ticks:10,
+     item:'primal_bar',     itemName:'Primal bar',
+     ingredients:[{item:'primal_ore',      count:1, name:'Primal ore'}]},
+  ],
+  // Firemaking: burns logs for XP only — no output item (item:null).
+  // Levels and XP match RS3 wiki. Ticks tuned so XP/hr rises each tier.
+  firemaking: [
+    {id:'burn_normal_logs',        name:'Burn logs',               label:'Logs burned',               levelReq:1,   xp:40,    ticks:3,  item:null, ingredients:[{item:'normal_logs',        count:1, name:'Logs'}]},
+    {id:'burn_oak_logs',           name:'Burn oak logs',           label:'Oak logs burned',            levelReq:15,  xp:60,    ticks:4,  item:null, ingredients:[{item:'oak_logs',           count:1, name:'Oak logs'}]},
+    {id:'burn_willow_logs',        name:'Burn willow logs',        label:'Willow logs burned',         levelReq:30,  xp:90,    ticks:4,  item:null, ingredients:[{item:'willow_logs',        count:1, name:'Willow logs'}]},
+    {id:'burn_teak_logs',          name:'Burn teak logs',          label:'Teak logs burned',           levelReq:35,  xp:105,   ticks:4,  item:null, ingredients:[{item:'teak_logs',          count:1, name:'Teak logs'}]},
+    {id:'burn_maple_logs',         name:'Burn maple logs',         label:'Maple logs burned',          levelReq:45,  xp:135.5, ticks:5,  item:null, ingredients:[{item:'maple_logs',         count:1, name:'Maple logs'}]},
+    {id:'burn_mahogany_logs',      name:'Burn mahogany logs',      label:'Mahogany logs burned',       levelReq:50,  xp:157.5, ticks:5,  item:null, ingredients:[{item:'mahogany_logs',      count:1, name:'Mahogany logs'}]},
+    {id:'burn_yew_logs',           name:'Burn yew logs',           label:'Yew logs burned',            levelReq:60,  xp:202.5, ticks:6,  item:null, ingredients:[{item:'yew_logs',           count:1, name:'Yew logs'}]},
+    {id:'burn_magic_logs',         name:'Burn magic logs',         label:'Magic logs burned',          levelReq:75,  xp:303.8, ticks:7,  item:null, ingredients:[{item:'magic_logs',         count:1, name:'Magic logs'}]},
+    {id:'burn_elder_logs',         name:'Burn elder logs',         label:'Elder logs burned',          levelReq:90,  xp:450,   ticks:8,  item:null, ingredients:[{item:'elder_logs',         count:1, name:'Elder logs'}]},
+    {id:'burn_eternal_magic_logs', name:'Burn eternal magic logs', label:'Eternal magic logs burned',  levelReq:100, xp:552,   ticks:9,  item:null, ingredients:[{item:'eternal_magic_logs', count:1, name:'Eternal magic logs'}]},
+  ],
+  // fishing: [...]  <-- future skills go here
+};
+
+/* Lookup helpers */
+const SKILL_BY_ID = Object.fromEntries(SKILL_ROADMAP.map(s => [s.id, s]));
+function getAction(skillId, actionId){
+  return (ACTIONS[skillId] || []).find(a => a.id === actionId);
+}
+
+/* Openable items — weighted reward tables */
+const OPENABLE_ITEMS = {
+  sedimentary_geode:{rewards:[
+    {id:'uncut_sapphire',    name:'Uncut sapphire',    weight:50},
+    {id:'uncut_emerald',     name:'Uncut emerald',     weight:30},
+    {id:'uncut_ruby',        name:'Uncut ruby',        weight:15},
+    {id:'uncut_diamond',     name:'Uncut diamond',     weight:5},
+  ]},
+  igneous_geode:{rewards:[
+    {id:'uncut_ruby',        name:'Uncut ruby',        weight:40},
+    {id:'uncut_diamond',     name:'Uncut diamond',     weight:30},
+    {id:'uncut_dragonstone', name:'Uncut dragonstone', weight:25},
+    {id:'uncut_onyx',        name:'Uncut onyx',        weight:5},
+  ]},
+  metamorphic_geode:{rewards:[
+    {id:'uncut_dragonstone', name:'Uncut dragonstone', weight:40},
+    {id:'uncut_onyx',        name:'Uncut onyx',        weight:40},
+    {id:'uncut_zenyte',      name:'Uncut zenyte',      weight:20},
+  ]},
+  birds_nest_seeds:{rewards:[
+    {id:'acorn',       name:'Acorn',       weight:20},
+    {id:'willow_seed', name:'Willow seed', weight:20},
+    {id:'maple_seed',  name:'Maple seed',  weight:20},
+    {id:'yew_seed',    name:'Yew seed',    weight:20},
+    {id:'magic_seed',  name:'Magic seed',  weight:15},
+    {id:'elder_seed',  name:'Elder seed',  weight:5},
+  ]},
+  birds_nest_ring:{rewards:[
+    {id:'gold_ring',     name:'Gold ring',     weight:40},
+    {id:'sapphire_ring', name:'Sapphire ring', weight:25},
+    {id:'emerald_ring',  name:'Emerald ring',  weight:20},
+    {id:'ruby_ring',     name:'Ruby ring',     weight:10},
+    {id:'diamond_ring',  name:'Diamond ring',  weight:5},
+  ]},
+  birds_nest_egg_red:  {rewards:[{id:'red_bird_egg',   name:'Red bird egg',   weight:1}]},
+  birds_nest_egg_blue: {rewards:[{id:'blue_bird_egg',  name:'Blue bird egg',  weight:1}]},
+  birds_nest_egg_green:{rewards:[{id:'green_bird_egg', name:'Green bird egg', weight:1}]},
+};
+
+/* ---------- 3. XP MATH (RuneScape's real formula) ---------- */
+// Cumulative xp needed to REACH a given level. xpForLevel(1)=0, (2)=83, (99)=13,034,431.
+const XP_TABLE = (() => {
+  const table = [0, 0]; // index 0 unused, level 1 = 0 xp
+  let points = 0;
+  for (let lvl = 1; lvl <= 120; lvl++){
+    points += Math.floor(lvl + 300 * Math.pow(2, lvl / 7));
+    table[lvl + 1] = Math.floor(points / 4);
+  }
+  return table;
+})();
+function levelForXp(xp){
+  let lvl = 1;
+  while (lvl < 120 && XP_TABLE[lvl + 1] <= xp) lvl++;
+  return lvl;
+}
+
+/* ---------- 4. STORAGE (sandbox-safe) ----------
+   Tries real localStorage (works when you run this as a saved file).
+   Falls back to memory if a sandbox blocks it, so it never crashes. */
+let storageOK = false;
+try { localStorage.setItem('__t','1'); localStorage.removeItem('__t'); storageOK = true; }
+catch(e){ storageOK = false; }
+const memStore = {};
+function rawSave(k,v){ try{ if(storageOK) localStorage.setItem(k,v); else memStore[k]=v; } catch(e){ memStore[k]=v; } }
+function rawLoad(k){ try{ return storageOK ? localStorage.getItem(k) : (memStore[k] ?? null); } catch(e){ return memStore[k] ?? null; } }
+
+/* ---------- 5. STATE ---------- */
+let state;
+let fireSpirit = null; // { expiresAt: timestamp } — transient, not persisted
+function freshState(){
+  const skills = {};
+  SKILL_ROADMAP.forEach(s => {
+    const startLvl = s.startLevel || 1;
+    skills[s.id] = { xp: XP_TABLE[startLvl] || 0 };
+  });
+  return {
+    skills,
+    inventory: {},          // { itemId: count }
+    itemNames: {},          // { itemId: "Display name" }
+    current: null,          // { skillId, actionId }
+    progress: 0,            // ticks done toward current action
+    lastSaved: Date.now(),
+  };
+}
+
+/* ---------- 6. CORE LOOP + OFFLINE ---------- */
+function tick(){
+  // fire spirit expiry + countdown
+  if (fireSpirit){
+    if (Date.now() >= fireSpirit.expiresAt){
+      log('The fire spirit slipped away...');
+      fireSpirit = null;
+      $('fireSpiritToast').classList.remove('show');
+    } else {
+      $('spiritTimer').textContent = Math.ceil((fireSpirit.expiresAt - Date.now()) / 1000);
+    }
+  }
+  if (state.current){
+    const action = getAction(state.current.skillId, state.current.actionId);
+    if (action){
+      state.progress++;
+      if (state.progress >= action.ticks){
+        state.progress = 0;
+        completeAction(action);
+      }
+    }
+  }
+  render();
+}
+
+// Applies everything that "would have happened" while the game was closed.
+function applyOffline(){
+  const now = Date.now();
+  let elapsed = now - (state.lastSaved || now);
+  if (elapsed < 0) elapsed = 0;
+  const capMs = MAX_OFFLINE_HOURS * 3600 * 1000;
+  const cappedMs = Math.min(elapsed, capMs);
+
+  if (!state.current || cappedMs < TICK_MS) return null;
+  const action = getAction(state.current.skillId, state.current.actionId);
+  if (!action) return null;
+
+  const offlineTicks = Math.floor(cappedMs / TICK_MS);
+  const totalTicks = state.progress + offlineTicks;
+  const maxCompleted = Math.floor(totalTicks / action.ticks);
+  state.progress = totalTicks % action.ticks;
+  if (maxCompleted <= 0) return null;
+
+  let completed = 0;
+  for (let i=0; i<maxCompleted; i++){
+    completeAction(action, true);
+    if (!state.current) break; // ran out of ingredients mid-offline
+    completed++;
+  }
+  if (completed <= 0) return null;
+  return { action, completed, ms: cappedMs };
+}
+
+/* ---------- 7. ACTIONS ---------- */
+function completeAction(action, silent){
+  // consume ingredients (smithing and future crafting skills)
+  if (action.ingredients){
+    for (const ing of action.ingredients){
+      if ((state.inventory[ing.item] || 0) < ing.count){
+        if (!silent) log(`Out of ${ing.name} — stopped.`);
+        state.current = null;
+        state.progress = 0;
+        return;
+      }
+    }
+    for (const ing of action.ingredients)
+      state.inventory[ing.item] -= ing.count;
+  }
+  // give item (null for consume-only skills like Firemaking)
+  if (action.item){
+    state.inventory[action.item] = (state.inventory[action.item] || 0) + 1;
+    state.itemNames[action.item] = action.itemName;
+  }
+  // give xp + check level up
+  const skill = state.skills[state.current.skillId];
+  const before = levelForXp(skill.xp);
+  skill.xp += action.xp;
+  const after = levelForXp(skill.xp);
+  if (after > before && !silent){
+    log(`🎉 ${SKILL_BY_ID[state.current.skillId].name} level ${after}!`);
+  }
+  if (!silent) checkBonusDrop(state.current.skillId, action);
+}
+
+function checkBonusDrop(skillId, action){
+  // Mining: geodes (5% per ore; tier based on level req)
+  if (skillId === 'mining' && Math.random() < 0.05){
+    const hi = action.levelReq > 50;
+    let id   = hi ? 'igneous_geode'  : 'sedimentary_geode';
+    let name = hi ? 'Igneous geode'  : 'Sedimentary geode';
+    if (hi && Math.random() < 0.01){ id = 'metamorphic_geode'; name = 'Metamorphic geode'; }
+    state.inventory[id] = (state.inventory[id] || 0) + 1;
+    state.itemNames[id] = name;
+    log(`💎 Found a ${name.toLowerCase()} while mining!`);
+  }
+
+  // Woodcutting: bird's nests (1% per chop; RS3 type weights)
+  if (skillId === 'woodcutting' && Math.random() < 0.01){
+    const roll = Math.random();
+    let id, name;
+    if (roll < 0.04){
+      const eggs = [
+        ['birds_nest_egg_red',   "Bird's nest (red egg)"],
+        ['birds_nest_egg_blue',  "Bird's nest (blue egg)"],
+        ['birds_nest_egg_green', "Bird's nest (green egg)"],
+      ];
+      [id, name] = eggs[Math.floor(Math.random() * 3)];
+    } else if (roll < 0.36){
+      id = 'birds_nest_ring';  name = "Bird's nest (ring)";
+    } else {
+      id = 'birds_nest_seeds'; name = "Bird's nest (seeds)";
+    }
+    state.inventory[id] = (state.inventory[id] || 0) + 1;
+    state.itemNames[id] = name;
+    log(`🪺 A bird's nest falls from the tree!`);
+  }
+
+  // Firemaking: fire spirit QTE (15% per burn; only one spirit at a time)
+  if (skillId === 'firemaking' && !fireSpirit && Math.random() < 0.15){
+    fireSpirit = { expiresAt: Date.now() + 30000 };
+    $('fireSpiritToast').classList.add('show');
+    log(`🔥 A fire spirit appeared! Catch it before it disappears!`);
+  }
+}
+
+function openItem(itemId){
+  if ((state.inventory[itemId] || 0) < 1) return;
+  state.inventory[itemId]--;
+  const entry = OPENABLE_ITEMS[itemId];
+  const totalWeight = entry.rewards.reduce((s, r) => s + r.weight, 0);
+  let roll = Math.random() * totalWeight;
+  let reward;
+  for (const r of entry.rewards){ roll -= r.weight; if (roll <= 0){ reward = r; break; } }
+  reward = reward || entry.rewards[entry.rewards.length - 1];
+  state.inventory[reward.id] = (state.inventory[reward.id] || 0) + 1;
+  state.itemNames[reward.id] = reward.name;
+  log(`📦 Opened ${state.itemNames[itemId]}: received ${reward.name}!`);
+  render();
+}
+
+function startAction(skillId, actionId){
+  const action = getAction(skillId, actionId);
+  if (!action) return;
+  if (levelForXp(state.skills[skillId].xp) < action.levelReq) return; // locked
+  if (action.ingredients){
+    const missing = action.ingredients.find(
+      ing => (state.inventory[ing.item] || 0) < ing.count
+    );
+    if (missing){ log(`Need ${missing.count}× ${missing.name} to start.`); return; }
+  }
+  state.current = { skillId, actionId };
+  state.progress = 0;
+  log(`Started: ${action.name}.`);
+  render();
+}
+function stopAction(){
+  if (state.current){
+    state.current = null;
+    state.progress = 0;
+    log('Stopped.');
+    render();
+  }
+}
+
+/* ---------- 8. RENDER ---------- */
+const $ = id => document.getElementById(id);
+let logLines = [];
+function log(msg){
+  logLines.unshift(msg);
+  if (logLines.length > 30) logLines.pop();
+  renderLog();
+}
+
+function render(){
+  renderSkillList();
+  renderActiveSkill();
+  renderInventory();
+  renderTotalLevel();
+}
+
+function renderTotalLevel(){
+  let total = 0;
+  SKILL_ROADMAP.forEach(s => total += levelForXp(state.skills[s.id].xp));
+  $('totalLevel').textContent = total;
+}
+
+function renderSkillList(){
+  const el = $('skillList');
+  el.innerHTML = '';
+  SKILL_TYPES.forEach(type => {
+    const skillsOfType = SKILL_ROADMAP.filter(s => s.type === type);
+    const label = document.createElement('div');
+    label.className = 'skill-group-label';
+    label.textContent = TYPE_LABEL[type];
+    el.appendChild(label);
+    skillsOfType.forEach(s => {
+      const lvl = levelForXp(state.skills[s.id].xp);
+      const row = document.createElement('div');
+      row.className = 'skill-row ' + (s.implemented ? 'playable' : 'locked');
+      if (state.current && state.current.skillId === s.id) row.classList.add('active');
+      row.innerHTML = `<span>${s.name}${s.implemented ? '' : ' <span class="lvl">(soon)</span>'}</span>
+                       <span class="lvl">${lvl}/${s.maxLevel}</span>`;
+      if (s.implemented) row.onclick = () => selectSkill(s.id);
+      el.appendChild(row);
+    });
+  });
+}
+
+let viewedSkill = 'woodcutting';
+function selectSkill(id){ viewedSkill = id; render(); }
+
+let inventoryTab = 'all';
+function setInvTab(tab){ inventoryTab = tab; renderInventory(); }
+
+function renderActiveSkill(){
+  const s = SKILL_BY_ID[viewedSkill];
+  const skill = state.skills[s.id];
+  const lvl = levelForXp(skill.xp);
+  $('activeSkillTitle').textContent = s.name;
+  $('wcLevel').textContent = lvl;
+
+  // xp bar toward next level
+  const curBase = XP_TABLE[lvl];
+  const nextReq = lvl >= s.maxLevel ? skill.xp : XP_TABLE[lvl + 1];
+  const into = skill.xp - curBase;
+  const span = Math.max(1, nextReq - curBase);
+  const pct = lvl >= s.maxLevel ? 100 : Math.min(100, (into / span) * 100);
+  $('wcXpBar').style.width = pct + '%';
+  $('wcXpText').textContent = lvl >= s.maxLevel
+    ? `MAX (${Math.floor(skill.xp).toLocaleString()} xp)`
+    : `${Math.floor(skill.xp).toLocaleString()} / ${nextReq.toLocaleString()} xp`;
+
+  // current action progress
+  let actionPct = 0, doing = 'Idle — pick something below.';
+  if (state.current && state.current.skillId === s.id){
+    const a = getAction(s.id, state.current.actionId);
+    actionPct = (state.progress / a.ticks) * 100;
+    doing = `Now: <b>${a.name}</b>`;
+  } else if (state.current){
+    doing = `Busy in <b>${SKILL_BY_ID[state.current.skillId].name}</b> (viewing ${s.name})`;
+  }
+  $('nowDoing').innerHTML = doing;
+  $('actionBar').style.width = actionPct + '%';
+
+  // action buttons
+  const list = $('treeList');
+  list.innerHTML = '';
+  const actions = ACTIONS[s.id] || [];
+  if (actions.length === 0){
+    list.innerHTML = `<div class="inv-empty">No actions built for ${s.name} yet.</div>`;
+    return;
+  }
+  actions.forEach(a => {
+    const unlocked = lvl >= a.levelReq;
+    const selected = state.current && state.current.skillId === s.id && state.current.actionId === a.id;
+    const btn = document.createElement('button');
+    btn.className = 'action-btn' + (selected ? ' selected' : '');
+    btn.disabled = !unlocked;
+    let ingLine = '';
+    if (a.ingredients){
+      ingLine = a.ingredients.map(ing => {
+        const have = state.inventory[ing.item] || 0;
+        const ok   = have >= ing.count;
+        return `<span style="color:${ok ? 'var(--dim)' : '#e04040'}">${ing.count}× ${ing.name}</span>`;
+      }).join(' + ') + '<br>';
+    }
+    btn.innerHTML = `<span>${a.name}${unlocked ? '' : ` 🔒 Lv ${a.levelReq}`}</span>
+                     <span class="meta">${ingLine}${a.xp} xp · ${(a.ticks*TICK_MS/1000).toFixed(1)}s</span>`;
+    if (unlocked) btn.onclick = () => startAction(s.id, a.id);
+    list.appendChild(btn);
+  });
+}
+
+function renderInventory(){
+  const el = $('inventory');
+  const items = Object.keys(state.inventory).filter(k => state.inventory[k] > 0);
+
+  $('tabAll').classList.toggle('active', inventoryTab === 'all');
+  $('tabOpen').classList.toggle('active', inventoryTab === 'open');
+
+  if (inventoryTab === 'open'){
+    const openable = items.filter(k => OPENABLE_ITEMS[k]);
+    if (openable.length === 0){ el.innerHTML = '<div class="inv-empty">No openable items.</div>'; return; }
+    el.innerHTML = '';
+    openable.forEach(k => {
+      const row = document.createElement('div');
+      row.className = 'inv-row';
+      row.innerHTML = `<span>${state.itemNames[k] || k}</span>
+                       <span style="display:flex;align-items:center;gap:8px;">
+                         <span>${state.inventory[k].toLocaleString()}</span>
+                         <button class="mini" onclick="openItem('${k}')">Open</button>
+                       </span>`;
+      el.appendChild(row);
+    });
+    return;
+  }
+
+  if (items.length === 0){ el.innerHTML = '<div class="inv-empty">Empty.</div>'; return; }
+  el.innerHTML = '';
+  items.forEach(k => {
+    const row = document.createElement('div');
+    row.className = 'inv-row';
+    row.innerHTML = `<span>${state.itemNames[k] || k}</span><span>${state.inventory[k].toLocaleString()}</span>`;
+    el.appendChild(row);
+  });
+}
+
+function renderLog(){
+  const el = $('log');
+  if (logLines.length === 0){ el.innerHTML = '<div class="log-empty">Nothing yet.</div>'; return; }
+  el.innerHTML = logLines.map(l => `<div>${l}</div>`).join('');
+}
+
+/* ---------- 9. WIRING + STARTUP ---------- */
+function save(){
+  state.lastSaved = Date.now();
+  rawSave(SAVE_KEY, JSON.stringify(state));
+}
+function load(){
+  const raw = rawLoad(SAVE_KEY);
+  if (!raw) return false;
+  try {
+    const loaded = JSON.parse(raw);
+    state = Object.assign(freshState(), loaded); // merge so new skills appear in old saves
+    // make sure every roadmap skill exists in the save (forward-compat)
+    SKILL_ROADMAP.forEach(s => { if (!state.skills[s.id]) state.skills[s.id] = { xp: XP_TABLE[s.startLevel||1]||0 }; });
+    return true;
+  } catch(e){ return false; }
+}
+
+function showOffline(result){
+  if (!result) return;
+  const mins = Math.round(result.ms / 60000);
+  const h = Math.floor(mins/60), m = mins%60;
+  const timeStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
+  $('offlineBody').innerHTML =
+    `<p>You were away for <b>${timeStr}</b>.</p>
+     <ul><li>${result.completed.toLocaleString()} × ${result.action.label || result.action.itemName}</li>
+     <li>${Math.floor(result.completed * result.action.xp).toLocaleString()} xp</li></ul>`;
+  $('offlineModal').classList.add('show');
+}
+
+function init(){
+  const hadSave = load();
+  if (!hadSave){ state = freshState(); log('New game started. Welcome!'); }
+  else { log('Save loaded.'); }
+
+  const offline = applyOffline();
+  showOffline(offline);
+
+  render();
+  renderLog();
+
+  // the heartbeat
+  setInterval(tick, TICK_MS);
+  setInterval(save, AUTOSAVE_MS);
+}
+
+// buttons
+$('stopBtn').onclick = stopAction;
+$('saveBtn').onclick = () => { save(); log('Saved.'); };
+$('resetBtn').onclick = () => {
+  if (confirm('Wipe your save and start over?')){
+    state = freshState(); logLines = []; viewedSkill = 'woodcutting';
+    save(); render(); renderLog(); log('Save reset.');
+  }
+};
+$('offlineClose').onclick = () => $('offlineModal').classList.remove('show');
+$('catchSpiritBtn').onclick = () => {
+  if (!fireSpirit) return;
+  state.inventory['fire_spirit'] = (state.inventory['fire_spirit'] || 0) + 1;
+  state.itemNames['fire_spirit'] = 'Fire spirit';
+  fireSpirit = null;
+  $('fireSpiritToast').classList.remove('show');
+  log('🔥 You caught the fire spirit!');
+  render();
+};
+
+/* ---------- DEBUG TOOLS ---------- */
+// Give N of every item producible by a skill (ores, logs, or bars)
+function debugGive(skillId, n){
+  (ACTIONS[skillId] || []).forEach(a => {
+    if (!a.item) return; // skip consume-only actions (e.g. firemaking)
+    state.inventory[a.item] = (state.inventory[a.item] || 0) + n;
+    state.itemNames[a.item] = a.itemName;
+  });
+  log(`Debug: +${n}× all ${skillId} items.`);
+  render();
+}
+function debugClearInv(){
+  state.inventory = {}; state.itemNames = {};
+  log('Debug: inventory cleared.');
+  render();
+}
+function debugSetLevel(){
+  const skillId = $('debugSkillSel').value;
+  const lvl     = Math.min(120, Math.max(1, parseInt($('debugLevelIn').value) || 1));
+  state.skills[skillId].xp = XP_TABLE[lvl] || 0;
+  log(`Debug: ${SKILL_BY_ID[skillId].name} → level ${lvl}.`);
+  render();
+}
+// Populate skill dropdown and wire toggle button
+$('debugSkillSel').innerHTML = SKILL_ROADMAP.map(
+  s => `<option value="${s.id}">${s.name}</option>`
+).join('');
+$('debugToggle').onclick = () => {
+  const p = $('debugPanel');
+  p.style.display = p.style.display === 'none' ? 'block' : 'none';
+};
+
+// save when leaving / backgrounding (important on mobile)
+window.addEventListener('beforeunload', save);
+document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
+
+init();
+</script>
+</body>
+</html>
