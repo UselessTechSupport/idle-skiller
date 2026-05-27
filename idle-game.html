@@ -503,17 +503,10 @@ const TOOLS = {
     {id:'primal',    name:'Primal pickaxe',    speedMult:0.40, reqLevel:100, cost:[{item:'primal_bar',     name:'Primal bar',     count:2}]},
   ],
   fishing:[
-    {id:'bronze',    name:'Bronze fishing rod', speedMult:1.00, reqLevel:1,  cost:[]},
-    {id:'iron',      name:'Iron fishing rod',   speedMult:0.93, reqLevel:1,  cost:[{item:'iron_bar',       name:'Iron bar',       count:2}]},
-    {id:'steel',     name:'Steel fishing rod',  speedMult:0.87, reqLevel:5,  cost:[{item:'steel_bar',      name:'Steel bar',      count:2}]},
-    {id:'mithril',   name:'Mithril fishing rod',speedMult:0.80, reqLevel:20, cost:[{item:'mithril_bar',    name:'Mithril bar',    count:2}]},
-    {id:'adamant',   name:'Adamant fishing rod',speedMult:0.73, reqLevel:30, cost:[{item:'adamant_bar',    name:'Adamant bar',    count:2}]},
-    {id:'rune',      name:'Rune fishing rod',   speedMult:0.67, reqLevel:40, cost:[{item:'rune_bar',       name:'Rune bar',       count:2}]},
-    {id:'orikalkum', name:'Orikalkum fishing rod',speedMult:0.60,reqLevel:60,cost:[{item:'orikalkum_bar',  name:'Orikalkum bar',  count:2}]},
-    {id:'necronium', name:'Necronium fishing rod',speedMult:0.55,reqLevel:70,cost:[{item:'necronium_bar',  name:'Necronium bar',  count:2}]},
-    {id:'bane',      name:'Bane fishing rod',   speedMult:0.50, reqLevel:80, cost:[{item:'bane_bar',       name:'Bane bar',       count:2}]},
-    {id:'elder_rune',name:'Elder rune fishing rod',speedMult:0.45,reqLevel:90,cost:[{item:'elder_rune_bar',name:'Elder rune bar', count:2}]},
-    {id:'primal',    name:'Primal fishing rod', speedMult:0.40, reqLevel:99, cost:[{item:'primal_bar',     name:'Primal bar',     count:2}]},
+    {id:'fishing_rod', name:'Fishing rod',         speedMult:1.00, reqLevel:1,  cost:[]},
+    {id:'dragon_rod',  name:'Dragon fishing rod',  speedMult:0.75, reqLevel:60, cost:[{item:'dragon_fish',       name:'Dragon fish',       count:1}]},
+    {id:'crystal_rod', name:'Crystal fishing rod', speedMult:0.60, reqLevel:1,  cost:[{item:'crystal_tool_seed', name:'Crystal tool seed', count:1}]},
+    {id:'tavias_rod',  name:"Tavia's rod",         speedMult:0.45, reqLevel:1,  cost:[{item:'map_to_tavia',      name:'Map to Tavia',      count:1}]},
   ],
 };
 
@@ -764,6 +757,19 @@ function checkBonusDrop(skillId, action){
     log(`🪺 A bird's nest falls from the tree!`);
   }
 
+  // Fishing: dragon fish (1% from fish levelReq >= 60)
+  if (skillId === 'fishing' && action.levelReq >= 60 && Math.random() < 0.01){
+    state.inventory['dragon_fish'] = (state.inventory['dragon_fish'] || 0) + 1;
+    state.itemNames['dragon_fish'] = 'Dragon fish';
+    log('🐉 A dragon fish leaps into your boat!');
+  }
+  // Fishing: Map to Tavia (0.1% from fish levelReq >= 85)
+  if (skillId === 'fishing' && action.levelReq >= 85 && Math.random() < 0.001){
+    state.inventory['map_to_tavia'] = (state.inventory['map_to_tavia'] || 0) + 1;
+    state.itemNames['map_to_tavia'] = 'Map to Tavia';
+    log("🗺️ You find a mysterious map tucked inside the fish!");
+  }
+
   // Firemaking: fire spirit QTE (15% per burn; only one spirit at a time)
   if (skillId === 'firemaking' && !fireSpirit && Math.random() < 0.15){
     fireSpirit = { expiresAt: Date.now() + 30000 };
@@ -879,40 +885,56 @@ function renderUpgradeShop(){
   skillsWithTools.forEach(skillId => {
     const s = SKILL_BY_ID[skillId];
     const lvl = levelForXp(state.skills[skillId].xp);
-    const equippedId = (state.tools && state.tools[skillId]) || 'bronze';
+    const tiers = TOOLS[skillId];
+    const equippedId = (state.tools && state.tools[skillId]) || tiers[0].id;
+    const equippedIdx = tiers.findIndex(t => t.id === equippedId);
+    const equipped = tiers[equippedIdx] || tiers[0];
+    const next = tiers[equippedIdx + 1];
+
     const group = document.createElement('div');
     group.className = 'upgrade-group';
     group.innerHTML = `<h3>${s.name}</h3>`;
-    TOOLS[skillId].forEach(tier => {
-      const isEquipped = tier.id === equippedId;
-      const levelOk = lvl >= tier.reqLevel;
-      const canAfford = tier.cost.every(c => (state.inventory[c.item] || 0) >= c.count);
-      const isFree = tier.cost.length === 0;
-      const row = document.createElement('div');
-      row.className = 'upgrade-tier' + (isEquipped ? ' equipped' : '') + (!levelOk ? ' locked' : '');
-      const costText = isFree ? 'Starting tool' : tier.cost.map(c => `${c.count}× ${c.name}`).join(' + ');
-      const pct = Math.round((1 - tier.speedMult) * 100);
-      const speedText = pct === 0 ? 'Base speed' : `${pct}% faster`;
+
+    // Currently equipped row
+    const pctNow = Math.round((1 - equipped.speedMult) * 100);
+    const curRow = document.createElement('div');
+    curRow.className = 'upgrade-tier equipped';
+    curRow.innerHTML = `<div class="tier-left">
+      <span>${equipped.name}</span>
+      <span class="tier-speed">${pctNow === 0 ? 'Base speed' : pctNow + '% faster'}</span>
+    </div><span style="font-size:12px;color:var(--accent);">✓ Equipped</span>`;
+    group.appendChild(curRow);
+
+    // Next upgrade row, or max-tier message
+    if (!next){
+      const maxRow = document.createElement('div');
+      maxRow.className = 'upgrade-tier';
+      maxRow.style.cssText = 'opacity:.4;justify-content:center;font-size:12px;color:var(--dim);';
+      maxRow.textContent = 'Maximum tier reached';
+      group.appendChild(maxRow);
+    } else {
+      const levelOk = lvl >= next.reqLevel;
+      const isFree = next.cost.length === 0;
+      const canAfford = isFree || next.cost.every(c => (state.inventory[c.item] || 0) >= c.count);
+      const costText = isFree ? 'No cost' : next.cost.map(c => `${c.count}× ${c.name}`).join(' + ');
+      const pctNext = Math.round((1 - next.speedMult) * 100);
       let btn = '';
-      if (!isEquipped){
-        if (!levelOk){
-          btn = `<button class="mini" disabled>🔒 Lv ${tier.reqLevel}</button>`;
-        } else if (isFree){
-          btn = `<button class="mini" onclick="upgradeTool('${skillId}','${tier.id}')">Equip</button>`;
-        } else {
-          const style = canAfford ? '' : 'opacity:.5;';
-          btn = `<button class="mini" style="${style}" onclick="upgradeTool('${skillId}','${tier.id}')">${canAfford ? 'Craft' : "Can't afford"}</button>`;
-        }
+      if (!levelOk){
+        btn = `<button class="mini" disabled>🔒 Lv ${next.reqLevel}</button>`;
+      } else if (isFree){
+        btn = `<button class="mini" onclick="upgradeTool('${skillId}','${next.id}')">Equip</button>`;
       } else {
-        btn = `<span style="font-size:12px;color:var(--accent);">✓ Equipped</span>`;
+        btn = `<button class="mini" ${canAfford ? '' : 'style="opacity:.5;"'} onclick="upgradeTool('${skillId}','${next.id}')">${canAfford ? 'Craft' : "Can't afford"}</button>`;
       }
-      row.innerHTML = `<div class="tier-left">
-        <span>${tier.name}</span>
-        <span class="tier-speed">${speedText}</span>
+      const nextRow = document.createElement('div');
+      nextRow.className = 'upgrade-tier' + (!levelOk ? ' locked' : '');
+      nextRow.innerHTML = `<div class="tier-left">
+        <span>↑ ${next.name}</span>
+        <span class="tier-speed">${pctNext}% faster</span>
         <span class="tier-cost">${costText}</span>
       </div>${btn}`;
-      group.appendChild(row);
-    });
+      group.appendChild(nextRow);
+    }
     el.appendChild(group);
   });
 }
