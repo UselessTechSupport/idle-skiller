@@ -723,6 +723,19 @@ function completeAction(action, silent){
     for (const ing of action.ingredients)
       state.inventory[ing.item] -= ing.count;
   }
+  // Cooking: chance to accidentally burn the fish
+  if (state.current?.skillId === 'cooking' && action.ingredients){
+    const cookingLevel = levelForXp(state.skills['cooking'].xp);
+    const noBurnAt = action.levelReq + 10;
+    let burnChance = Math.max(0, (noBurnAt - cookingLevel) / 10 * 0.20);
+    if ((state.inventory['cooking_gauntlets'] || 0) > 0) burnChance *= 0.5;
+    if (Math.random() < burnChance){
+      state.inventory['burnt_food'] = (state.inventory['burnt_food'] || 0) + 1;
+      state.itemNames['burnt_food'] = 'Burnt food';
+      if (!silent) log(`🔥 You accidentally burn the fish!`);
+      return;
+    }
+  }
   // give item (null for consume-only skills like Firemaking)
   if (action.item){
     state.inventory[action.item] = (state.inventory[action.item] || 0) + 1;
