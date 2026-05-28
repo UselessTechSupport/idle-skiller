@@ -10,7 +10,7 @@ Progress is saved automatically to `localStorage` every 30 seconds. Offline gain
 
 ## Current state
 
-**9 of 29 skills implemented.** The game is actively in development.
+**10 of 29 skills implemented.** The game is actively in development.
 
 ### Implemented skills
 
@@ -19,6 +19,7 @@ Progress is saved automatically to `localStorage` every 30 seconds. Offline gain
 | Woodcutting | Gathering | 9 trees (Tree → Eternal magic) | Tool upgrades (bronze axe → T100) |
 | Mining | Gathering | 12 rocks (Copper → Primal) | Tool upgrades (bronze pickaxe → T100) |
 | Fishing | Gathering | 16 fish (Shrimps → Sailfish) | Rod upgrades (wood → T99); bonus Kraken's Beak drop |
+| Divination | Gathering | 10 wisps (Pale → Incandescent) | Produces divine energy; transmutation use coming later |
 | Smithing | Artisan | 10 bars (Bronze → Primal) | Consumes ore; produces bars used by tool upgrades |
 | Firemaking | Artisan | 10 log tiers | Consumes logs |
 | Cooking | Artisan | 16 fish (Shrimps → Sailfish) | Burn mechanic (scales with level); cooking gauntlets halve burn chance |
@@ -41,7 +42,7 @@ Progress is saved automatically to `localStorage` every 30 seconds. Offline gain
 
 ### Not yet implemented (planned)
 
-**Gathering:** Farming, Hunter, Divination
+**Gathering:** Farming, Hunter
 
 **Artisan:** Runecrafting, Construction, Herblore
 - Fletching stringing (bowstring + unstrung bow → strung bow, 0 XP) — deferred

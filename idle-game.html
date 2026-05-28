@@ -329,7 +329,7 @@ const SKILL_ROADMAP = [
   {id:'fishing',      name:'Fishing',      type:'gathering', maxLevel:99,  implemented:true},
   {id:'farming',      name:'Farming',      type:'gathering', maxLevel:120, implemented:false},
   {id:'hunter',       name:'Hunter',       type:'gathering', maxLevel:99,  implemented:false},
-  {id:'divination',   name:'Divination',   type:'gathering', maxLevel:99,  implemented:false},
+  {id:'divination',   name:'Divination',   type:'gathering', maxLevel:99,  implemented:true},
   // Artisan (8)
   {id:'crafting',     name:'Crafting',     type:'artisan', maxLevel:110, implemented:true},
   {id:'fletching',    name:'Fletching',    type:'artisan', maxLevel:110, implemented:true},
@@ -628,6 +628,18 @@ const ACTIONS = {
     {id:'raw_rocktail',         name:'Fish rocktail',         levelReq:90, xp:380, ticks:18, item:'raw_rocktail',         itemName:'Raw rocktail'},
     {id:'raw_sailfish',         name:'Fish sailfish',         levelReq:97, xp:420, ticks:19, item:'raw_sailfish',         itemName:'Raw sailfish'},
   ],
+  divination:[
+    {id:'pale_wisp',          name:'Pale wisp',          levelReq:1,  xp:5,    ticks:5,  item:'pale_energy',          itemName:'Pale energy'},
+    {id:'flickering_wisp',    name:'Flickering wisp',    levelReq:10, xp:8,    ticks:5,  item:'flickering_energy',    itemName:'Flickering energy'},
+    {id:'bright_wisp',        name:'Bright wisp',        levelReq:20, xp:10.5, ticks:6,  item:'bright_energy',        itemName:'Bright energy'},
+    {id:'gleaming_wisp',      name:'Gleaming wisp',      levelReq:30, xp:14,   ticks:6,  item:'gleaming_energy',      itemName:'Gleaming energy'},
+    {id:'vibrant_wisp',       name:'Vibrant wisp',       levelReq:40, xp:17,   ticks:7,  item:'vibrant_energy',       itemName:'Vibrant energy'},
+    {id:'lustrous_wisp',      name:'Lustrous wisp',      levelReq:50, xp:20.5, ticks:7,  item:'lustrous_energy',      itemName:'Lustrous energy'},
+    {id:'brilliant_wisp',     name:'Brilliant wisp',     levelReq:60, xp:24,   ticks:8,  item:'brilliant_energy',     itemName:'Brilliant energy'},
+    {id:'radiant_wisp',       name:'Radiant wisp',       levelReq:70, xp:27.5, ticks:8,  item:'radiant_energy',       itemName:'Radiant energy'},
+    {id:'luminous_wisp',      name:'Luminous wisp',      levelReq:80, xp:31,   ticks:9,  item:'luminous_energy',      itemName:'Luminous energy'},
+    {id:'incandescent_wisp',  name:'Incandescent wisp',  levelReq:90, xp:34.5, ticks:10, item:'incandescent_energy',  itemName:'Incandescent energy'},
+  ],
   // future skills go here
 };
 
@@ -785,7 +797,7 @@ function freshState(){
     progress: 0,            // ticks done toward current action
     tools: {},              // { skillId: tierId }
     equipment: { head:null, body:null, legs:null, feet:null, gloves:null, neck:null, cape:null, ring:null, pet:null },
-    stats:     { attack:1, range:1, mage:1, defence:1, necromancy:1, prayer:1, summoning:1, dropRate:1 },
+    stats:     { attack:1, range:1, mage:1, defence:1, necromancy:1, prayer:1, summoning:1, dropRate:0 },
     lastSaved: Date.now(),
   };
 }
