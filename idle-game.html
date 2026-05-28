@@ -970,6 +970,29 @@ const FOOD_HEALS = {
   cooked_rocktail:55, cooked_sailfish:70,
 };
 
+const FAIL_MECHANICS = {
+  cooking: {
+    trigger: action => !!action.ingredients,
+    chance: 0.20, zeroAt: 10,
+    product: 'burnt_food', productName: 'Burnt food',
+    halvingItem: 'cooking_gauntlets',
+    msg: '🔥 You accidentally burn the fish!',
+  },
+  fletching: {
+    trigger: action => !!action.splinterable,
+    chance: 0.20, zeroAt: 10,
+    product: 'wood_pulp', productName: 'Wood pulp',
+    msg: '💥 The log splinters! You\'re left with wood pulp.',
+  },
+  divination: {
+    trigger: action => !!action.transmute,
+    chance: 0.10, flat: true,
+    product: 'divine_dust', productName: 'Divine dust',
+    qtyFn: action => Math.floor(action.levelReq / 9) + 1,
+    msgFn: qty => `The transmutation breaks down. You receive ${qty} divine dust.`,
+  },
+};
+
 const STAT_DEFS = [
   {key:'attack',     label:'Attack'},
   {key:'range',      label:'Range'},
@@ -1028,8 +1051,9 @@ function freshState(){
     stats:     { attack:1, range:1, mage:1, defence:1, necromancy:1, prayer:1, summoning:1, dropRate:0 },
     farming:   { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false },
     combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50 },
-    upgrades:  {},
-    lastSaved: Date.now(),
+    upgrades:     {},
+    saveVersion:  1,
+    lastSaved:    Date.now(),
   };
 }
 
@@ -1052,6 +1076,30 @@ function calcStats(){
       if (k in s) s[k] += v;
   }
   return s;
+}
+
+function grantItem(id, name, qty=1){
+  state.inventory[id] = (state.inventory[id] || 0) + qty;
+  if (name) state.itemNames[id] = name;
+}
+
+function grantXp(skillId, xp, silent=false){
+  const sk = state.skills[skillId];
+  if (!sk) return;
+  const before = levelForXp(sk.xp);
+  sk.xp += xp;
+  const after = levelForXp(sk.xp);
+  if (after > before && !silent) log(`🎉 ${SKILL_BY_ID[skillId].name} level ${after}!`);
+  if (skillId === 'constitution' && after > before) state.combat.maxHp = after * 10;
+}
+
+function canAfford(action){
+  if (!action.ingredients) return null;
+  return action.ingredients.find(ing => (state.inventory[ing.item] || 0) < ing.count) || null;
+}
+function consumeIngredients(action){
+  if (!action.ingredients) return;
+  for (const ing of action.ingredients) state.inventory[ing.item] -= ing.count;
 }
 
 function getAttackBonus(styleId, stats){
@@ -1085,7 +1133,7 @@ function equipItem(itemId){
   if (!slot || (state.inventory[itemId] || 0) < 1) return;
   const current = state.equipment[slot];
   if (current){
-    state.inventory[current] = (state.inventory[current] || 0) + 1;
+    grantItem(current);
   }
   state.inventory[itemId]--;
   if (state.inventory[itemId] <= 0) delete state.inventory[itemId];
@@ -1096,7 +1144,7 @@ function equipItem(itemId){
 function unequipItem(slot){
   const itemId = state.equipment[slot];
   if (!itemId) return;
-  state.inventory[itemId] = (state.inventory[itemId] || 0) + 1;
+  grantItem(itemId);
   state.equipment[slot] = null;
   render();
 }
@@ -1196,13 +1244,8 @@ function harvestCrop(){
   const maxY = Math.min(15, 7 + Math.floor(farmLevel / 10));
   const qty  = minY + Math.floor(Math.random() * (maxY - minY + 1));
   const xp   = Math.floor(30 + farmLevel * 1.5);
-  state.inventory[state.farming.herb] = (state.inventory[state.farming.herb] || 0) + qty;
-  state.itemNames[state.farming.herb]  = state.farming.herbName;
-  const farmSkill = state.skills['farming'];
-  const lvBefore  = levelForXp(farmSkill.xp);
-  farmSkill.xp   += xp;
-  const lvAfter   = levelForXp(farmSkill.xp);
-  if (lvAfter > lvBefore) log(`🎉 Farming level ${lvAfter}!`);
+  grantItem(state.farming.herb, state.farming.herbName, qty);
+  grantXp('farming', xp);
   log(`Harvested ${qty} ${state.farming.herbName}. (+${xp} xp)`);
   const seedId = state.farming.seed;
   Object.assign(state.farming, { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false });
@@ -1610,57 +1653,30 @@ function applyOffline(){
 function completeAction(action, silent){
   // consume ingredients (smithing and future crafting skills)
   if (action.ingredients){
-    for (const ing of action.ingredients){
-      if ((state.inventory[ing.item] || 0) < ing.count){
-        if (!silent) log(`Out of ${ing.name} — stopped.`);
-        state.current = null;
-        state.progress = 0;
-        return;
-      }
-    }
-    for (const ing of action.ingredients)
-      state.inventory[ing.item] -= ing.count;
+    const missing = canAfford(action);
+    if (missing){ if (!silent) log(`Out of ${missing.name} — stopped.`); state.current = null; state.progress = 0; return; }
+    consumeIngredients(action);
   }
-  // Cooking: chance to accidentally burn the fish
-  if (state.current?.skillId === 'cooking' && action.ingredients){
-    const cookingLevel = levelForXp(state.skills['cooking'].xp);
-    const noBurnAt = action.levelReq + 10;
-    let burnChance = Math.max(0, (noBurnAt - cookingLevel) / 10 * 0.20);
-    if ((state.inventory['cooking_gauntlets'] || 0) > 0) burnChance *= 0.5;
-    if (Math.random() < burnChance){
-      state.inventory['burnt_food'] = (state.inventory['burnt_food'] || 0) + 1;
-      state.itemNames['burnt_food'] = 'Burnt food';
-      if (!silent) log(`🔥 You accidentally burn the fish!`);
-      return;
+  // Failure mechanics (cooking burn, fletching splinter, divination transmute fail)
+  const failDef = FAIL_MECHANICS[state.current?.skillId];
+  if (failDef && failDef.trigger(action)){
+    const level = levelForXp(state.skills[state.current.skillId].xp);
+    let chance = failDef.chance;
+    if (!failDef.flat){
+      const noBadAt = action.levelReq + failDef.zeroAt;
+      chance = Math.max(0, (noBadAt - level) / failDef.zeroAt * chance);
     }
-  }
-  // Fletching: chance to splinter the log
-  if (state.current?.skillId === 'fletching' && action.splinterable){
-    const fletchLevel = levelForXp(state.skills['fletching'].xp);
-    const noSplinterAt = action.levelReq + 10;
-    const splinterChance = Math.max(0, (noSplinterAt - fletchLevel) / 10 * 0.20);
-    if (Math.random() < splinterChance){
-      state.inventory['wood_pulp'] = (state.inventory['wood_pulp'] || 0) + 1;
-      state.itemNames['wood_pulp'] = 'Wood pulp';
-      if (!silent) log(`💥 The log splinters! You're left with wood pulp.`);
-      return;
-    }
-  }
-  // Divination: 10% flat chance to fail transmutation → divine dust
-  if (state.current?.skillId === 'divination' && action.transmute){
-    if (Math.random() < 0.10){
-      const dust = Math.floor(action.levelReq / 9) + 1;
-      state.inventory['divine_dust'] = (state.inventory['divine_dust'] || 0) + dust;
-      state.itemNames['divine_dust'] = 'Divine dust';
-      if (!silent) log(`The transmutation breaks down. You receive ${dust} divine dust.`);
+    if (failDef.halvingItem && (state.inventory[failDef.halvingItem] || 0) > 0) chance *= 0.5;
+    if (Math.random() < chance){
+      const qty = failDef.qtyFn ? failDef.qtyFn(action) : 1;
+      grantItem(failDef.product, failDef.productName, qty);
+      if (!silent) log(failDef.msgFn ? failDef.msgFn(qty) : failDef.msg);
       return;
     }
   }
   // give item (null for consume-only skills like Firemaking)
   if (action.item){
-    const qty = action.count || 1;
-    state.inventory[action.item] = (state.inventory[action.item] || 0) + qty;
-    state.itemNames[action.item] = action.itemName;
+    grantItem(action.item, action.itemName, action.count || 1);
   }
   // Tavia's rod: 1% chance to upgrade the caught fish to the next tier
   if (action.item && state.current?.skillId === 'fishing' &&
@@ -1670,8 +1686,7 @@ function completeAction(action, silent){
     if (idx >= 0 && idx < fishActions.length - 1){
       const upgrade = fishActions[idx + 1];
       state.inventory[action.item]--;
-      state.inventory[upgrade.item] = (state.inventory[upgrade.item] || 0) + 1;
-      state.itemNames[upgrade.item] = upgrade.itemName;
+      grantItem(upgrade.item, upgrade.itemName);
       if (!silent) log(`✨ Tavia's rod shimmers — you caught a ${upgrade.itemName}!`);
     }
   }
@@ -1684,19 +1699,11 @@ function completeAction(action, silent){
       ['constitution', base * 0.5],
       ...(state.combat.defensive ? [['defence', base * 0.5]] : []),
     ];
-    for (const [sid, xp] of xpGrants){
-      const sk = state.skills[sid];
-      const before = levelForXp(sk.xp);
-      sk.xp += xp;
-      const after = levelForXp(sk.xp);
-      if (after > before && !silent) log(`🎉 ${SKILL_BY_ID[sid].name} level ${after}!`);
-      if (sid === 'constitution' && after > before) state.combat.maxHp = after * 10;
-    }
+    for (const [sid, xp] of xpGrants) grantXp(sid, xp, silent);
     for (const drop of (action.drops || [])){
       if (Math.random() < drop.chance){
         const qty = (drop.min || 1) + Math.floor(Math.random() * ((drop.max || 1) - (drop.min || 1) + 1));
-        state.inventory[drop.item] = (state.inventory[drop.item] || 0) + qty;
-        state.itemNames[drop.item] = drop.itemName;
+        grantItem(drop.item, drop.itemName, qty);
         if (!silent && drop.notable) log(`+${qty} ${drop.itemName}`);
       }
     }
@@ -1704,19 +1711,12 @@ function completeAction(action, silent){
     return;
   }
   // give xp + check level up
-  const skill = state.skills[state.current.skillId];
-  const before = levelForXp(skill.xp);
-  skill.xp += action.xp;
-  const after = levelForXp(skill.xp);
-  if (after > before && !silent){
-    log(`🎉 ${SKILL_BY_ID[state.current.skillId].name} level ${after}!`);
-  }
+  grantXp(state.current.skillId, action.xp, silent);
   // Award DG tokens on floor completion; refresh cached values for next loop
   if (state.current?.skillId === 'dungeoneering' && !silent){
     const dgLevel = levelForXp(state.skills['dungeoneering'].xp);
     const tokens  = Math.max(1, Math.floor(dgLevel * action.tokenMult));
-    state.inventory['dg_tokens'] = (state.inventory['dg_tokens'] || 0) + tokens;
-    state.itemNames['dg_tokens'] = 'Dungeoneering tokens';
+    grantItem('dg_tokens', 'Dungeoneering tokens', tokens);
     log(`⚔️ Floor complete! +${tokens} tokens.`);
     state.current.earnedTokens = tokens;
     state.current.floorTicks   = Math.round(calcFloorSecs(action) / (TICK_MS / 1000));
@@ -1733,8 +1733,7 @@ function checkBonusDrop(skillId, action){
     let id   = hi ? 'igneous_geode'  : 'sedimentary_geode';
     let name = hi ? 'Igneous geode'  : 'Sedimentary geode';
     if (hi && Math.random() < 0.01){ id = 'metamorphic_geode'; name = 'Metamorphic geode'; }
-    state.inventory[id] = (state.inventory[id] || 0) + 1;
-    state.itemNames[id] = name;
+    grantItem(id, name);
     log(`💎 Found a ${name.toLowerCase()} while mining!`);
   }
 
@@ -1754,21 +1753,18 @@ function checkBonusDrop(skillId, action){
     } else {
       id = 'birds_nest_seeds'; name = "Bird's nest (seeds)";
     }
-    state.inventory[id] = (state.inventory[id] || 0) + 1;
-    state.itemNames[id] = name;
+    grantItem(id, name);
     log(`🪺 A bird's nest falls from the tree!`);
   }
 
   // Fishing: Kraken's Beak (1% from fish levelReq >= 60)
   if (skillId === 'fishing' && action.levelReq >= 60 && Math.random() < 0.01){
-    state.inventory['krackens_beak'] = (state.inventory['krackens_beak'] || 0) + 1;
-    state.itemNames['krackens_beak'] = "Kraken's Beak";
+    grantItem('krackens_beak', "Kraken's Beak");
     log("🦑 You wrestle a Kraken's Beak from the catch!");
   }
   // Fishing: Map to Tavia (1-in-100,000 from fish levelReq >= 85)
   if (skillId === 'fishing' && action.levelReq >= 85 && Math.random() < 0.00001){
-    state.inventory['map_to_tavia'] = (state.inventory['map_to_tavia'] || 0) + 1;
-    state.itemNames['map_to_tavia'] = 'Map to Tavia';
+    grantItem('map_to_tavia', 'Map to Tavia');
     log("🗺️ You find a mysterious map tucked inside the fish!");
   }
 
@@ -1790,8 +1786,7 @@ function openItem(itemId){
   for (const r of entry.rewards){ roll -= r.weight; if (roll <= 0){ reward = r; break; } }
   reward = reward || entry.rewards[entry.rewards.length - 1];
   const qty = reward.count || 1;
-  state.inventory[reward.id] = (state.inventory[reward.id] || 0) + qty;
-  state.itemNames[reward.id] = reward.name;
+  grantItem(reward.id, reward.name, qty);
   const qtyStr = qty > 1 ? `${qty.toLocaleString()}× ` : '';
   log(`📦 Opened ${state.itemNames[itemId]}: received ${qtyStr}${reward.name}!`);
   render();
@@ -1827,12 +1822,8 @@ function startAction(skillId, actionId){
       (skillId !== 'dungeoneering' || actionId !== state.current.actionId)){
     log('⚔️ Floor abandoned — you must complete a floor to earn rewards.');
   }
-  if (action.ingredients){
-    const missing = action.ingredients.find(
-      ing => (state.inventory[ing.item] || 0) < ing.count
-    );
-    if (missing){ log(`Need ${missing.count}× ${missing.name} to start.`); return; }
-  }
+  const missing = canAfford(action);
+  if (missing){ log(`Need ${missing.count}× ${missing.name} to start.`); return; }
   if (skillId === 'dungeoneering'){
     const floorTicks   = Math.round(calcFloorSecs(action) / (TICK_MS / 1000));
     const dgLevel      = levelForXp(state.skills['dungeoneering'].xp);
@@ -2256,6 +2247,7 @@ function init(){
   if (!Array.isArray(state.combat.foodQueue)) state.combat.foodQueue = [];
   if (!state.upgrades) state.upgrades = {};
   if (state.combat.autoEatThreshold == null) state.combat.autoEatThreshold = 50;
+  if (!state.saveVersion) state.saveVersion = 1; // v0 → v1: no data migration needed
 
   // Farming: mark ready if crop matured while offline (timestamps survive saves)
   if (state.farming?.seed && !state.farming.ready &&
@@ -2284,8 +2276,7 @@ $('resetBtn').onclick = () => {
 $('offlineClose').onclick = () => $('offlineModal').classList.remove('show');
 $('catchSpiritBtn').onclick = () => {
   if (!fireSpirit) return;
-  state.inventory['fire_spirit'] = (state.inventory['fire_spirit'] || 0) + 1;
-  state.itemNames['fire_spirit'] = 'Fire spirit';
+  grantItem('fire_spirit', 'Fire spirit');
   fireSpirit = null;
   $('fireSpiritToast').classList.remove('show');
   log('🔥 You caught the fire spirit!');
