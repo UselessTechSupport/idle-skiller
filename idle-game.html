@@ -143,6 +143,21 @@
     letter-spacing:0.06em; padding:14px 4px 4px; border-bottom:1px solid var(--border); margin-bottom:4px;}
   .action-category-header:first-child{padding-top:2px;}
 
+  /* Equipment tab */
+  .equip-grid{display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:14px;}
+  .equip-slot{background:var(--panel2); border:1px solid var(--line); border-radius:6px;
+    padding:8px 10px; display:flex; flex-direction:column; gap:3px;}
+  .equip-slot.wide{grid-column:1/-1;}
+  .slot-label{font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--dim);}
+  .slot-item{font-size:13px;}
+  .slot-item.empty{color:var(--dim); font-style:italic;}
+  .equip-stats-heading{font-size:12px; font-weight:600; color:var(--dim); text-transform:uppercase;
+    letter-spacing:.05em; margin:0 0 6px; border-bottom:1px solid var(--line); padding-bottom:4px;}
+  .stats-grid{display:grid; grid-template-columns:1fr 1fr; gap:4px;}
+  .stat-entry{display:flex; justify-content:space-between; align-items:center;
+    font-size:12px; padding:4px 6px; background:var(--panel2); border-radius:4px;}
+  .stat-entry .stat-val{font-weight:600; color:var(--accent);}
+
   /* Upgrade shop */
   .upgrade-shop-grid{display:grid; gap:14px; grid-template-columns:1fr;}
   @media(min-width:600px){.upgrade-shop-grid{grid-template-columns:1fr 1fr;}}
@@ -208,6 +223,7 @@
     <div class="tab-bar">
       <button class="tab-btn active" id="tabAll" onclick="setInvTab('all')">All Items</button>
       <button class="tab-btn" id="tabOpen" onclick="setInvTab('open')">Open Items</button>
+      <button class="tab-btn" id="tabEquip" onclick="setInvTab('equip')">Equipment</button>
     </div>
     <div id="inventory"></div>
     <h2 style="margin-top:16px;">Log</h2>
@@ -702,6 +718,29 @@ const OPENABLE_ITEMS = {
   birds_nest_egg_green:{rewards:[{id:'green_bird_egg', name:'Green bird egg', weight:1}]},
 };
 
+const EQUIPMENT_SLOTS = [
+  {id:'head',   label:'Head'},
+  {id:'neck',   label:'Neck'},
+  {id:'cape',   label:'Cape'},
+  {id:'ring',   label:'Ring'},
+  {id:'body',   label:'Body'},
+  {id:'gloves', label:'Gloves'},
+  {id:'legs',   label:'Legs'},
+  {id:'feet',   label:'Feet'},
+  {id:'pet',    label:'Pet', wide:true},
+];
+
+const STAT_DEFS = [
+  {key:'attack',     label:'Attack'},
+  {key:'range',      label:'Range'},
+  {key:'mage',       label:'Mage'},
+  {key:'defence',    label:'Defence'},
+  {key:'necromancy', label:'Necromancy'},
+  {key:'prayer',     label:'Prayer'},
+  {key:'summoning',  label:'Summoning'},
+  {key:'dropRate',   label:'Drop Rate', pct:true},
+];
+
 /* ---------- 3. XP MATH (RuneScape's real formula) ---------- */
 // Cumulative xp needed to REACH a given level. xpForLevel(1)=0, (2)=83, (99)=13,034,431.
 const XP_TABLE = (() => {
@@ -745,6 +784,8 @@ function freshState(){
     current: null,          // { skillId, actionId }
     progress: 0,            // ticks done toward current action
     tools: {},              // { skillId: tierId }
+    equipment: { head:null, body:null, legs:null, feet:null, gloves:null, neck:null, cape:null, ring:null, pet:null },
+    stats:     { attack:1, range:1, mage:1, defence:1, necromancy:1, prayer:1, summoning:1, dropRate:1 },
     lastSaved: Date.now(),
   };
 }
@@ -756,6 +797,12 @@ function calcSkillBonus(){
   const base    = nonDg.length;
   const max     = nonDg.reduce((sum, s) => sum + s.maxLevel, 0);
   return Math.min(1, (current - base) / (max - base));
+}
+
+function calcStats(){
+  // Returns live combat stats: base values + equipment bonuses.
+  // Equipment bonuses accumulate here once the gear stat system is built.
+  return Object.assign({}, state.stats);
 }
 
 function calcFloorSecs(action){
@@ -1258,6 +1305,42 @@ function renderInventory(){
 
   $('tabAll').classList.toggle('active', inventoryTab === 'all');
   $('tabOpen').classList.toggle('active', inventoryTab === 'open');
+  $('tabEquip').classList.toggle('active', inventoryTab === 'equip');
+
+  if (inventoryTab === 'equip'){
+    const stats = calcStats();
+    el.innerHTML = '';
+
+    const grid = document.createElement('div');
+    grid.className = 'equip-grid';
+    EQUIPMENT_SLOTS.forEach(slot => {
+      const div = document.createElement('div');
+      div.className = 'equip-slot' + (slot.wide ? ' wide' : '');
+      const equipped = state.equipment[slot.id];
+      div.innerHTML = `<span class="slot-label">${slot.label}</span>
+                       <span class="slot-item${equipped ? '' : ' empty'}">${
+                         equipped ? (state.itemNames[equipped] || equipped) : 'Empty'
+                       }</span>`;
+      grid.appendChild(div);
+    });
+    el.appendChild(grid);
+
+    const heading = document.createElement('div');
+    heading.className = 'equip-stats-heading';
+    heading.textContent = 'Stats';
+    el.appendChild(heading);
+
+    const sgrid = document.createElement('div');
+    sgrid.className = 'stats-grid';
+    STAT_DEFS.forEach(({key, label, pct}) => {
+      const entry = document.createElement('div');
+      entry.className = 'stat-entry';
+      entry.innerHTML = `<span>${label}</span><span class="stat-val">${pct ? '+' + stats[key] + '%' : stats[key]}</span>`;
+      sgrid.appendChild(entry);
+    });
+    el.appendChild(sgrid);
+    return;
+  }
 
   if (inventoryTab === 'open'){
     const openable = items.filter(k => OPENABLE_ITEMS[k]);
