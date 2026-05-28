@@ -284,6 +284,15 @@
   </div>
 </div>
 
+<!-- Wilderness PKer QTE — same layout as fire spirit -->
+<div id="wildernessPkToast" class="fire-spirit-overlay">
+  <div class="fire-spirit-modal">
+    <div class="spirit-title">⚔️ A player is targeting you!</div>
+    <div class="spirit-timer">Flee in <b id="pkTimer">15</b>s or lose coins</div>
+    <button class="mini" id="rollPkBtn" style="width:100%;padding:10px;font-size:15px;color:#f87171;border-color:#ef4444;">Roll to fight!</button>
+  </div>
+</div>
+
 <!-- Offline-progress popup -->
 <div class="modal-bg" id="offlineModal">
   <div class="modal">
@@ -371,7 +380,7 @@ const SKILL_ROADMAP = [
   {id:'summoning',    name:'Summoning',    type:'combat', maxLevel:99,  implemented:false},
   {id:'necromancy',   name:'Necromancy',   type:'combat', maxLevel:120, implemented:true},
   // Support (5)
-  {id:'agility',      name:'Agility',      type:'support', maxLevel:99,  implemented:false},
+  {id:'agility',      name:'Agility',      type:'support', maxLevel:99,  implemented:true},
   {id:'thieving',     name:'Thieving',     type:'support', maxLevel:99,  implemented:true},
   {id:'slayer',       name:'Slayer',       type:'support', maxLevel:120, implemented:false},
   {id:'dungeoneering',name:'Dungeoneering',type:'support', maxLevel:120, implemented:true},
@@ -630,6 +639,15 @@ const ACTIONS = {
     {id:'small_floor',    name:'Small floor',    levelReq:1,  xp:5000,  baseMaxSecs:900,  baseMinSecs:90,  tokenMult:1  },
     {id:'large_floor',    name:'Large floor',    levelReq:1,  xp:12500, baseMaxSecs:1800, baseMinSecs:180, tokenMult:2.5},
     {id:'hardmode_floor', name:'Hardmode floor', levelReq:90, xp:30000, baseMaxSecs:3600, baseMinSecs:360, tokenMult:6  },
+  ],
+  agility:[
+    {id:'gnome_stronghold',  name:'Gnome Stronghold',    levelReq:1,  xp:86,   ticks:10, coinReward:15},
+    {id:'wilderness_course', name:'Wilderness Course',    levelReq:1,  xp:0,    ticks:18, wilderness:true, xpBase:150, xpPerLevel:4, pkCoinBase:200, pkCoinPerLevel:15, coinReward:75},
+    {id:'barbarian_outpost', name:'Barbarian Outpost',    levelReq:35, xp:152,  ticks:14, coinReward:40},
+    {id:'ape_atoll',         name:'Ape Atoll Course',     levelReq:48, xp:420,  ticks:20, coinReward:80},
+    {id:'serenity',          name:'Serenity Course',      levelReq:60, xp:380,  ticks:17, coinReward:110},
+    {id:'hefin_course',      name:'Hefin Agility Course', levelReq:70, xp:2000, ticks:25,
+     questReq:'elf_city', skillReqs:[{id:'agility',lvl:70},{id:'thieving',lvl:70}], coinReward:175},
   ],
   thieving:[
     // --- Pickpocket --- (catchZeroAt:10 = safe within 10 levels of req)
@@ -1096,6 +1114,7 @@ function rawLoad(k){ try{ return storageOK ? localStorage.getItem(k) : (memStore
 /* ---------- 5. STATE ---------- */
 let state;
 let fireSpirit = null; // { expiresAt: timestamp } — transient, not persisted
+let wildernessEncounter = null; // { expiresAt, coins } — transient, not persisted
 function freshState(){
   const skills = {};
   SKILL_ROADMAP.forEach(s => {
@@ -1114,6 +1133,7 @@ function freshState(){
     farming:   { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false },
     combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50 },
     upgrades:     {},
+    quests:       {},  // { questId: true } — completed quests
     saveVersion:  1,
     lastSaved:    Date.now(),
   };
@@ -1637,6 +1657,10 @@ function getCurrentEffTicks(action){
     }
     return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20))));
   }
+  if (state.current?.skillId === 'runecrafting'){
+    const agilLevel = levelForXp(state.skills.agility.xp);
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25))));
+  }
   return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId)));
 }
 
@@ -1657,6 +1681,19 @@ function tick(){
       $('fireSpiritToast').classList.remove('show');
     } else {
       $('spiritTimer').textContent = Math.ceil((fireSpirit.expiresAt - Date.now()) / 1000);
+    }
+  }
+  // Wilderness PKer: countdown — auto-lose if timer expires
+  if (wildernessEncounter){
+    if (Date.now() >= wildernessEncounter.expiresAt){
+      const lost = wildernessEncounter.coins;
+      state.inventory['coins'] = Math.max(0, (state.inventory['coins'] || 0) - lost);
+      if ((state.inventory['coins'] || 0) === 0) delete state.inventory['coins'];
+      log(`⚔️ You couldn't escape! Lost ${lost.toLocaleString()} coins.`);
+      wildernessEncounter = null;
+      $('wildernessPkToast').classList.remove('show');
+    } else {
+      $('pkTimer').textContent = Math.ceil((wildernessEncounter.expiresAt - Date.now()) / 1000);
     }
   }
   if (state.current){
@@ -1808,6 +1845,29 @@ function completeAction(action, silent){
     grantXp('thieving', action.xp, silent);
     return;
   }
+  // Agility: scaled XP for wilderness, coin reward per lap, crystal seed for Hefin, PKer encounter trigger
+  if (state.current?.skillId === 'agility'){
+    const agilLevel = levelForXp(state.skills.agility.xp);
+    const xp = action.xpBase != null
+      ? action.xpBase + agilLevel * (action.xpPerLevel || 0)
+      : action.xp;
+    if (action.wilderness && !silent && !wildernessEncounter && Math.random() < 0.15){
+      const coins = action.pkCoinBase + agilLevel * (action.pkCoinPerLevel || 0);
+      wildernessEncounter = { expiresAt: Date.now() + 15000, coins };
+      $('wildernessPkToast').classList.add('show');
+      $('pkTimer').textContent = '15';
+      log(`⚔️ A player is targeting you! You have 15s to roll.`);
+    }
+    if (action.coinReward){
+      grantItem('coins', 'Coins', action.coinReward);
+    }
+    if (action.questReq === 'elf_city' && Math.random() < 0.01){
+      grantItem('crystal_tool_seed', 'Crystal tool seed');
+      if (!silent) log(`💎 Found a crystal tool seed on the Hefin course!`);
+    }
+    grantXp('agility', xp, silent);
+    return;
+  }
   // Combat: multi-skill XP distribution + loot drops
   if (state.current?.skillId && COMBAT_SKILL_IDS.has(state.current.skillId)){
     const styleId = state.current.skillId;
@@ -1892,6 +1952,14 @@ function checkBonusDrop(skillId, action){
     $('fireSpiritToast').classList.add('show');
     log(`🔥 A fire spirit appeared! Catch it before it disappears!`);
   }
+}
+
+function completeQuest(questId){
+  if (!state.quests) state.quests = {};
+  state.quests[questId] = true;
+  const name = questId === 'elf_city' ? 'Accessing Elf City' : questId;
+  log(`✨ Quest complete: ${name}! The Hefin course is now accessible.`);
+  render();
 }
 
 function openItem(itemId){
@@ -2192,6 +2260,17 @@ function renderActiveSkill(){
     bonusDiv.innerHTML = `Skill bonus: <b>${bonusPct}% faster</b> &nbsp;·&nbsp; Tokens: <b>${tokens.toLocaleString()}</b>`;
     list.appendChild(bonusDiv);
   }
+  if (s.id === 'agility'){
+    const agilDiv  = document.createElement('div');
+    agilDiv.className = 'dg-bonus';
+    const agilLevel  = levelForXp(state.skills.agility.xp);
+    const pickBonus  = Math.round(agilLevel / 99 * 20);
+    const lockBonus  = Math.round(agilLevel / 99 * 30);
+    const rcBonus    = Math.round(agilLevel / 99 * 25);
+    const lootBonus  = Math.round(agilLevel / 99 * 50);
+    agilDiv.innerHTML = `Bonuses: <b>+${pickBonus}%</b> thieving pick · <b>+${lockBonus}%</b> thieving lock · <b>+${rcBonus}%</b> runecrafting · <b>${lootBonus}%</b> extra loot`;
+    list.appendChild(agilDiv);
+  }
   if (s.id === 'thieving'){
     const agilLevel   = levelForXp(state.skills.agility.xp);
     const thievDiv    = document.createElement('div');
@@ -2218,6 +2297,23 @@ function renderActiveSkill(){
     const btn = document.createElement('button');
     btn.className = 'action-btn' + (selected ? ' selected' : '');
     btn.disabled = !unlocked;
+    // Quest-gated actions (e.g. Hefin course)
+    if (a.questReq && !state.quests?.[a.questReq]){
+      const reqs = a.skillReqs || [];
+      const skillReqsMet = reqs.every(r => levelForXp(state.skills[r.id].xp) >= r.lvl);
+      const reqText = reqs.map(r => `Lv${r.lvl} ${SKILL_BY_ID[r.id].name}`).join(', ');
+      const questLabel = a.questReq === 'elf_city' ? 'Accessing Elf City' : a.questReq;
+      if (skillReqsMet){
+        btn.disabled = false;
+        btn.innerHTML = `<span>${a.name}</span><span class="meta" style="color:#4ade80">All reqs met — Complete quest to unlock</span>`;
+        btn.onclick = () => { completeQuest(a.questReq); };
+      } else {
+        btn.disabled = true;
+        btn.innerHTML = `<span>${a.name} 🔒</span><span class="meta">Requires: ${reqText} + Quest: ${questLabel}</span>`;
+      }
+      list.appendChild(btn);
+      return;
+    }
     let ingLine = '';
     if (a.ingredients){
       ingLine = a.ingredients.map(ing => {
@@ -2232,8 +2328,15 @@ function renderActiveSkill(){
       const fm = Math.floor(fs / 60), fsc = Math.round(fs % 60);
       const timeStr = fm > 0 ? `${fm}m${fsc > 0 ? ' ' + fsc + 's' : ''}` : `${fsc}s`;
       metaContent = `${a.xp.toLocaleString()} xp · ${timeStr}`;
+    } else if (a.xpBase != null){
+      const curAgilLevel = levelForXp(state.skills[s.id].xp);
+      const scaledXp = a.xpBase + curAgilLevel * (a.xpPerLevel || 0);
+      const coinBadge = a.coinReward ? ` · 🪙 ${a.coinReward}` : '';
+      const riskBadge = a.wilderness ? ' · <span style="color:#f87171">⚔️ Risk</span>' : '';
+      metaContent = `${scaledXp} xp · ${(a.ticks*TICK_MS/1000).toFixed(1)}s${coinBadge}${riskBadge}`;
     } else {
-      metaContent = `${ingLine}${a.xp} xp · ${(a.ticks*TICK_MS/1000).toFixed(1)}s`;
+      const coinBadge = a.coinReward ? ` · 🪙 ${a.coinReward}` : '';
+      metaContent = `${ingLine}${a.xp} xp · ${(a.ticks*TICK_MS/1000).toFixed(1)}s${coinBadge}`;
     }
     btn.innerHTML = `<span>${a.name}${unlocked ? '' : ` 🔒 Lv ${a.levelReq}`}</span>
                      <span class="meta">${metaContent}</span>`;
@@ -2383,6 +2486,7 @@ function init(){
   if (!state.upgrades) state.upgrades = {};
   if (state.combat.autoEatThreshold == null) state.combat.autoEatThreshold = 50;
   if (!state.saveVersion) state.saveVersion = 1; // v0 → v1: no data migration needed
+  if (!state.quests) state.quests = {};
   if (state.current?.skillId === 'thieving' && state.current.stunTicks)
     state.current.stunTicks = 0; // don't resume mid-stun after reload
 
@@ -2417,6 +2521,28 @@ $('catchSpiritBtn').onclick = () => {
   fireSpirit = null;
   $('fireSpiritToast').classList.remove('show');
   log('🔥 You caught the fire spirit!');
+  render();
+};
+$('rollPkBtn').onclick = () => {
+  if (!wildernessEncounter) return;
+  const agilLevel = levelForXp(state.skills.agility.xp);
+  const combatSkills = ['melee','defence','constitution','ranged','magic','necromancy'];
+  const maxCombat = Math.max(...combatSkills.map(id => levelForXp(state.skills[id].xp)));
+  const playerScore   = maxCombat + agilLevel * 0.5;
+  const opponentScore = 30 + Math.random() * 70;
+  const playerRoll    = Math.random() * playerScore;
+  const opponentRoll  = Math.random() * opponentScore;
+  const coins = wildernessEncounter.coins;
+  if (playerRoll > opponentRoll){
+    grantItem('coins', 'Coins', coins);
+    log(`⚔️ You beat the PKer! Gained ${coins.toLocaleString()} coins.`);
+  } else {
+    state.inventory['coins'] = Math.max(0, (state.inventory['coins'] || 0) - coins);
+    if (state.inventory['coins'] === 0) delete state.inventory['coins'];
+    log(`⚔️ The PKer got you... Lost ${coins.toLocaleString()} coins.`);
+  }
+  wildernessEncounter = null;
+  $('wildernessPkToast').classList.remove('show');
   render();
 };
 
