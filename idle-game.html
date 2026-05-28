@@ -371,7 +371,7 @@ const SKILL_ROADMAP = [
   {id:'cooking',      name:'Cooking',      type:'artisan', maxLevel:99,  implemented:true},
   {id:'firemaking',   name:'Firemaking',   type:'artisan', maxLevel:110, implemented:true},
   {id:'runecrafting', name:'Runecrafting', type:'artisan', maxLevel:110, implemented:true},
-  {id:'construction', name:'Construction', type:'artisan', maxLevel:99,  implemented:false},
+  {id:'construction', name:'Construction', type:'artisan', maxLevel:99,  implemented:true},
   {id:'herblore',     name:'Herblore',     type:'artisan', maxLevel:120, implemented:true},
   // Combat (9)
   {id:'melee',        name:'Melee',        type:'combat', maxLevel:120, implemented:true},
@@ -852,6 +852,18 @@ const ACTIONS = {
     {id:'infuse_noxious_scythe',      name:'Infuse Noxious scythe',      levelReq:105, xp:0, ticks:1, comingSoon:true},
     {id:'infuse_praesul_wand',        name:'Infuse Praesul wand',        levelReq:110, xp:0, ticks:1, comingSoon:true},
   ],
+  construction:[
+    {id:'make_plank',          name:'Make plank',          label:'Planks made', levelReq:1,  xp:29,  ticks:4,  item:'plank',          itemName:'Plank',          ingredients:[{item:'normal_logs',        count:1, name:'Logs'}]},
+    {id:'make_oak_plank',      name:'Make oak plank',      label:'Planks made', levelReq:15, xp:60,  ticks:4,  item:'oak_plank',      itemName:'Oak plank',      ingredients:[{item:'oak_logs',           count:1, name:'Oak logs'}]},
+    {id:'make_willow_plank',   name:'Make willow plank',   label:'Planks made', levelReq:25, xp:82,  ticks:5,  item:'willow_plank',   itemName:'Willow plank',   ingredients:[{item:'willow_logs',        count:1, name:'Willow logs'}]},
+    {id:'make_teak_plank',     name:'Make teak plank',     label:'Planks made', levelReq:35, xp:105, ticks:5,  item:'teak_plank',     itemName:'Teak plank',     ingredients:[{item:'teak_logs',          count:1, name:'Teak logs'}]},
+    {id:'make_maple_plank',    name:'Make maple plank',    label:'Planks made', levelReq:45, xp:120, ticks:6,  item:'maple_plank',    itemName:'Maple plank',    ingredients:[{item:'maple_logs',         count:1, name:'Maple logs'}]},
+    {id:'make_mahogany_plank', name:'Make mahogany plank', label:'Planks made', levelReq:55, xp:140, ticks:6,  item:'mahogany_plank', itemName:'Mahogany plank', ingredients:[{item:'mahogany_logs',      count:1, name:'Mahogany logs'}]},
+    {id:'make_yew_plank',      name:'Make yew plank',      label:'Planks made', levelReq:65, xp:200, ticks:7,  item:'yew_plank',      itemName:'Yew plank',      ingredients:[{item:'yew_logs',           count:1, name:'Yew logs'}]},
+    {id:'make_magic_plank',    name:'Make magic plank',    label:'Planks made', levelReq:75, xp:300, ticks:8,  item:'magic_plank',    itemName:'Magic plank',    ingredients:[{item:'magic_logs',         count:1, name:'Magic logs'}]},
+    {id:'make_elder_plank',    name:'Make elder plank',    label:'Planks made', levelReq:85, xp:390, ticks:10, item:'elder_plank',    itemName:'Elder plank',    ingredients:[{item:'elder_logs',         count:1, name:'Elder logs'}]},
+    {id:'make_eternal_plank',  name:'Make eternal plank',  label:'Planks made', levelReq:95, xp:550, ticks:12, item:'eternal_plank',  itemName:'Eternal plank',  ingredients:[{item:'eternal_magic_logs', count:1, name:'Eternal magic logs'}]},
+  ],
   combat:[
     // ── Mobs ─────────────────────────────────────────────────────────────────
     {id:'goblin',       name:'Goblin',        category:'Mobs', levelReq:1,  xp:20,   ticks:4,  stats:{hp:5,   attack:3,  defence:1},
@@ -984,6 +996,16 @@ const HEADLESS_LOG_TIERS = [
   {item:'willow_logs',        name:'Willow logs',        levelReq:20, xp:3,   count:45},
   {item:'oak_logs',           name:'Oak logs',           levelReq:1,  xp:2,   count:30},
   {item:'normal_logs',        name:'Logs',               levelReq:1,  xp:1,   count:15},
+];
+
+const CONSTRUCTION_SHOP = [
+  { id:'sawmill',       name:'Sawmill',       desc:'Woodcutting is 10% faster.',  plankType:'oak_plank',      plankName:'Oak plank',      cost:50  },
+  { id:'furnace',       name:'Furnace',       desc:'Smithing is 10% faster.',     plankType:'teak_plank',     plankName:'Teak plank',     cost:75  },
+  { id:'cooking_range', name:'Cooking range', desc:'Halves cooking burn chance.', plankType:'teak_plank',     plankName:'Teak plank',     cost:75  },
+  { id:'herb_patch',    name:'Herb patch',    desc:'Crops grow 25% faster.',      plankType:'mahogany_plank', plankName:'Mahogany plank', cost:100 },
+  { id:'study',         name:'Study',         desc:'Runecrafting is 15% faster.', plankType:'yew_plank',      plankName:'Yew plank',      cost:100 },
+  { id:'workshop',      name:'Workshop',      desc:'Fletching is 10% faster.',    plankType:'yew_plank',      plankName:'Yew plank',      cost:100 },
+  { id:'manor',         name:'Grand manor',   desc:'All XP gains are 5% higher.', plankType:'elder_plank',    plankName:'Elder plank',    cost:150 },
 ];
 
 /* Lookup helpers */
@@ -1221,6 +1243,7 @@ function grantItem(id, name, qty=1){
 function grantXp(skillId, xp, silent=false){
   const sk = state.skills[skillId];
   if (!sk) return;
+  if (state.upgrades?.manor) xp *= 1.05;
   const before = levelForXp(sk.xp);
   sk.xp += xp;
   const after = levelForXp(sk.xp);
@@ -1316,6 +1339,18 @@ function buyDgUpgrade(id){
   state.inventory['dg_tokens'] -= item.cost;
   state.upgrades[id] = true;
   log(`Purchased: ${item.name}!`);
+  render();
+}
+
+function buyConstructionUpgrade(id){
+  const item = CONSTRUCTION_SHOP.find(i => i.id === id);
+  if (!item || state.upgrades[id]) return;
+  const have = state.inventory[item.plankType] || 0;
+  if (have < item.cost){ log(`Need ${item.cost}× ${item.plankName}.`); return; }
+  state.inventory[item.plankType] = have - item.cost;
+  if (state.inventory[item.plankType] <= 0) delete state.inventory[item.plankType];
+  state.upgrades[id] = true;
+  log(`Built: ${item.name}! ${item.desc}`);
   render();
 }
 
@@ -1651,8 +1686,9 @@ function renderFarmTab(){
     el.appendChild(plantRow);
   } else {
     const elapsed   = Date.now() - f.plantedAt;
-    const pct       = Math.min(100, Math.floor(elapsed / FARM_GROW_MS * 100));
-    const remaining = Math.max(0, Math.ceil((f.plantedAt + FARM_GROW_MS - Date.now()) / 1000));
+    const growMs    = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1);
+    const pct       = Math.min(100, Math.floor(elapsed / growMs * 100));
+    const remaining = Math.max(0, Math.ceil((f.plantedAt + growMs - Date.now()) / 1000));
     const mins = Math.floor(remaining / 60);
     const secs = remaining % 60;
 
@@ -1712,9 +1748,18 @@ function getCurrentEffTicks(action){
   }
   if (state.current?.skillId === 'runecrafting'){
     const agilLevel = levelForXp(state.skills.agility.xp);
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25))));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting')));
   }
-  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId)));
+  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId) * getConstructionMult(state.current.skillId)));
+}
+
+function getConstructionMult(skillId){
+  let mult = 1.0;
+  if (skillId === 'woodcutting'  && state.upgrades?.sawmill)  mult *= 0.90;
+  if (skillId === 'smithing'     && state.upgrades?.furnace)  mult *= 0.90;
+  if (skillId === 'runecrafting' && state.upgrades?.study)    mult *= 0.85;
+  if (skillId === 'fletching'    && state.upgrades?.workshop) mult *= 0.90;
+  return mult;
 }
 
 function getToolSpeedMult(skillId){
@@ -1777,7 +1822,8 @@ function tick(){
   }
   // Farming: detect crop becoming ready and log once
   if (state.farming?.seed && !state.farming.ready) {
-    if (Date.now() >= state.farming.plantedAt + FARM_GROW_MS) {
+    const growMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1);
+    if (Date.now() >= state.farming.plantedAt + growMs) {
       state.farming.ready = true;
       log(`Your ${state.farming.seedName} are ready to harvest!`);
     }
@@ -1873,6 +1919,7 @@ function completeAction(action, silent){
       chance = Math.max(0, (noBadAt - level) / failDef.zeroAt * chance);
     }
     if (failDef.halvingItem && (state.inventory[failDef.halvingItem] || 0) > 0) chance *= 0.5;
+    if (state.current?.skillId === 'cooking' && state.upgrades?.cooking_range) chance *= 0.5;
     if (Math.random() < chance){
       const qty = failDef.qtyFn ? failDef.qtyFn(action) : 1;
       grantItem(failDef.product, failDef.productName, qty);
@@ -2448,6 +2495,37 @@ function renderActiveSkill(){
     if (unlocked) btn.onclick = () => startAction(s.id, a.id);
     list.appendChild(btn);
   });
+
+  if (s.id === 'construction'){
+    const shopHdr = document.createElement('div');
+    shopHdr.className = 'action-category-header';
+    shopHdr.textContent = 'Construction Shop';
+    list.appendChild(shopHdr);
+    CONSTRUCTION_SHOP.forEach(item => {
+      const owned   = !!state.upgrades[item.id];
+      const have    = state.inventory[item.plankType] || 0;
+      const canBuy  = have >= item.cost;
+      const card    = document.createElement('div');
+      card.className = 'upgrade-tier' + (owned ? ' equipped' : '');
+      card.innerHTML = `<div class="tier-left">
+        <span>${item.name}</span>
+        <span class="tier-speed">${item.desc}</span>
+        <span class="tier-cost">${item.cost}× ${item.plankName} (have: ${have.toLocaleString()})</span>
+      </div>`;
+      const btn = document.createElement('button');
+      btn.className = 'mini';
+      if (owned){
+        btn.textContent = '✓ Built';
+        btn.disabled = true;
+      } else {
+        btn.textContent = canBuy ? 'Build' : `Need ${(item.cost - have).toLocaleString()} more`;
+        btn.disabled = !canBuy;
+        btn.onclick = () => buyConstructionUpgrade(item.id);
+      }
+      card.appendChild(btn);
+      list.appendChild(card);
+    });
+  }
 }
 
 function renderInventory(){
@@ -2597,8 +2675,9 @@ function init(){
   if (state.current?.actionId?.startsWith('headless_from_')) state.current.actionId = 'headless_auto';
 
   // Farming: mark ready if crop matured while offline (timestamps survive saves)
+  const _offlineGrowMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1);
   if (state.farming?.seed && !state.farming.ready &&
-      Date.now() >= state.farming.plantedAt + FARM_GROW_MS) {
+      Date.now() >= state.farming.plantedAt + _offlineGrowMs) {
     state.farming.ready = true;
   }
   showOffline(offline);
