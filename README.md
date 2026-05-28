@@ -10,7 +10,7 @@ Progress is saved automatically to `localStorage` every 30 seconds. Offline gain
 
 ## Current state
 
-**10 of 29 skills implemented.** The game is actively in development.
+**11 of 29 skills implemented.** The game is actively in development.
 
 ### Implemented skills
 
@@ -19,12 +19,13 @@ Progress is saved automatically to `localStorage` every 30 seconds. Offline gain
 | Woodcutting | Gathering | 9 trees (Tree → Eternal magic) | Tool upgrades (bronze axe → T100) |
 | Mining | Gathering | 12 rocks (Copper → Primal) | Tool upgrades (bronze pickaxe → T100) |
 | Fishing | Gathering | 16 fish (Shrimps → Sailfish) | Rod upgrades (wood → T99); bonus Kraken's Beak drop |
-| Divination | Gathering | 10 wisps (Pale → Incandescent) | Produces divine energy; transmutation use coming later |
+| Divination | Gathering | 10 wisps (Pale → Incandescent) + 44 transmutation actions | Gathers divine energy; transmutes gathered items up 1 tier (flat 10% breakdown → divine dust) |
 | Smithing | Artisan | 10 bars (Bronze → Primal) | Consumes ore; produces bars used by tool upgrades |
 | Firemaking | Artisan | 10 log tiers | Consumes logs |
 | Cooking | Artisan | 16 fish (Shrimps → Sailfish) | Burn mechanic (scales with level); cooking gauntlets halve burn chance |
 | Fletching | Artisan | 47 actions | Headless arrows, unstrung bows, unstrung crossbows, arrow assembly; splinter mechanic on log consumption |
 | Crafting | Artisan | 53 actions | Gem cutting (7 gems), jewellery (rings + amulets), leather armour, dragonhide armour (5 tiers), mage armour (3 tiers); action categories shown as headers in UI |
+| Herblore | Artisan | 21 actions (7 potion types × 3 tiers) | Herbs from future Farming/combat drops; consumption system deferred |
 | Dungeoneering | Support | 12 floors (F1 → Occult) | Earns tokens; token shop for passive bonuses and special items |
 
 ### Engine features
@@ -33,7 +34,7 @@ Progress is saved automatically to `localStorage` every 30 seconds. Offline gain
 - **Real RS3 XP curve** — level 2 = 83 XP, level 99 ≈ 13M XP, level 120 cap supported
 - **Ingredient system** — actions can require and consume items from inventory
 - **Multi-item production** — a single action can produce batches (e.g. 15–120 headless arrows per log)
-- **Failure mechanics** — cooking burns fish; fletching splinters logs. Both scale from ~20% at level requirement to 0% at level requirement +10
+- **Failure mechanics** — cooking burns fish; fletching splinters logs (both scale ~20%→0% over 10 levels); divination transmutation has a flat 10% breakdown chance (produces divine dust, scales with tier)
 - **Tool upgrade shop** — per-skill tool tiers that increase tick speed
 - **Offline progress** — calculates gains for up to 12h while the tab was closed
 - **Save/load/autosave** — localStorage with in-memory fallback for sandboxed environments
@@ -44,7 +45,7 @@ Progress is saved automatically to `localStorage` every 30 seconds. Offline gain
 
 **Gathering:** Farming, Hunter
 
-**Artisan:** Runecrafting, Construction, Herblore
+**Artisan:** Runecrafting, Construction
 - Fletching stringing (bowstring + unstrung bow → strung bow, 0 XP) — deferred
 - Smithing arrowheads (enables arrow assembly in Fletching) — deferred
 
