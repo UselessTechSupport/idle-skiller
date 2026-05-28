@@ -316,6 +316,16 @@ const TICK_MS = 600;                  // RuneScape's game tick = 0.6s
 const MAX_OFFLINE_HOURS = 12;         // cap on offline catch-up
 const FARM_GROW_MS = 5 * 60 * 1000;  // herb growth time: 5 minutes
 
+const COMBAT_STYLES = [
+  {id:'melee',      label:'Melee'},
+  {id:'ranged',     label:'Range'},
+  {id:'magic',      label:'Mage'},
+  {id:'necromancy', label:'Necromancy'},
+];
+const COMBAT_SKILL_IDS = new Set(
+  ['melee','defence','constitution','ranged','magic','prayer','summoning','necromancy']
+);
+
 const SEEDS = [
   {id:'tarromin_seed',    name:'Tarromin seed',    herb:'tarromin',    herbName:'Tarromin'},
   {id:'ranarr_seed',      name:'Ranarr seed',      herb:'ranarr_weed', herbName:'Ranarr weed'},
@@ -352,15 +362,14 @@ const SKILL_ROADMAP = [
   {id:'construction', name:'Construction', type:'artisan', maxLevel:99,  implemented:false},
   {id:'herblore',     name:'Herblore',     type:'artisan', maxLevel:120, implemented:true},
   // Combat (9)
-  {id:'attack',       name:'Attack',       type:'combat', maxLevel:120, implemented:false},
-  {id:'strength',     name:'Strength',     type:'combat', maxLevel:120, implemented:false},
-  {id:'defence',      name:'Defence',      type:'combat', maxLevel:99,  implemented:false},
-  {id:'constitution', name:'Constitution', type:'combat', maxLevel:99,  implemented:false, startLevel:10},
-  {id:'ranged',       name:'Ranged',       type:'combat', maxLevel:120, implemented:false},
-  {id:'magic',        name:'Magic',        type:'combat', maxLevel:120, implemented:false},
+  {id:'melee',        name:'Melee',        type:'combat', maxLevel:120, implemented:true},
+  {id:'defence',      name:'Defence',      type:'combat', maxLevel:99,  implemented:true},
+  {id:'constitution', name:'Constitution', type:'combat', maxLevel:99,  implemented:true, startLevel:10},
+  {id:'ranged',       name:'Ranged',       type:'combat', maxLevel:120, implemented:true},
+  {id:'magic',        name:'Magic',        type:'combat', maxLevel:120, implemented:true},
   {id:'prayer',       name:'Prayer',       type:'combat', maxLevel:99,  implemented:false},
   {id:'summoning',    name:'Summoning',    type:'combat', maxLevel:99,  implemented:false},
-  {id:'necromancy',   name:'Necromancy',   type:'combat', maxLevel:120, implemented:false},
+  {id:'necromancy',   name:'Necromancy',   type:'combat', maxLevel:120, implemented:true},
   // Support (5)
   {id:'agility',      name:'Agility',      type:'support', maxLevel:99,  implemented:false},
   {id:'thieving',     name:'Thieving',     type:'support', maxLevel:99,  implemented:false},
@@ -730,6 +739,78 @@ const ACTIONS = {
     {id:'brew_prayer',            name:'Prayer potion',            label:'Potions brewed', category:'Prayer Potions',     levelReq:50, xp:75,  ticks:3, item:'prayer_potion',            itemName:'Prayer potion',            ingredients:[{item:'lesser_prayer_potion',     count:1, name:'Lesser prayer potion'},  {item:'torstol',     count:1, name:'Torstol'}]},
     {id:'brew_supreme_prayer',    name:'Supreme prayer potion',    label:'Potions brewed', category:'Prayer Potions',     levelReq:90, xp:150, ticks:3, item:'supreme_prayer_potion',    itemName:'Supreme prayer potion',    ingredients:[{item:'prayer_potion',            count:1, name:'Prayer potion'},          {item:'torstol',     count:1, name:'Torstol'}]},
   ],
+  combat:[
+    // ── Mobs ─────────────────────────────────────────────────────────────────
+    {id:'goblin',       name:'Goblin',        category:'Mobs', levelReq:1,  xp:20,   ticks:4,
+      drops:[{item:'bones',       itemName:'Bones',       chance:1.0, min:1, max:1,  notable:false}]},
+    {id:'cow',          name:'Cow',           category:'Mobs', levelReq:1,  xp:30,   ticks:5,
+      drops:[{item:'bones',       itemName:'Bones',       chance:1.0, min:1, max:1,  notable:false},
+             {item:'cowhide',     itemName:'Cowhide',     chance:1.0, min:1, max:1,  notable:true}]},
+    {id:'guard',        name:'Guard',         category:'Mobs', levelReq:10, xp:55,   ticks:5,
+      drops:[{item:'bones',       itemName:'Bones',       chance:1.0, min:1, max:1,  notable:false}]},
+    {id:'barbarian',    name:'Barbarian',     category:'Mobs', levelReq:15, xp:80,   ticks:6,
+      drops:[{item:'bones',       itemName:'Bones',       chance:1.0, min:1, max:1,  notable:false}]},
+    {id:'hill_giant',   name:'Hill Giant',    category:'Mobs', levelReq:20, xp:130,  ticks:7,
+      drops:[{item:'big_bones',   itemName:'Big bones',   chance:1.0, min:1, max:1,  notable:true}]},
+    {id:'moss_giant',   name:'Moss Giant',    category:'Mobs', levelReq:30, xp:220,  ticks:9,
+      drops:[{item:'big_bones',   itemName:'Big bones',   chance:1.0, min:1, max:1,  notable:false},
+             {item:'tarromin_seed', itemName:'Tarromin seed', chance:0.05, min:1, max:2, notable:true}]},
+    {id:'fire_giant',   name:'Fire Giant',    category:'Mobs', levelReq:50, xp:400,  ticks:12,
+      drops:[{item:'big_bones',   itemName:'Big bones',   chance:1.0, min:1, max:1,  notable:false},
+             {item:'tarromin_seed', itemName:'Tarromin seed', chance:0.08, min:1, max:2, notable:true}]},
+    {id:'green_dragon', name:'Green Dragon',  category:'Mobs', levelReq:55, xp:500,  ticks:13,
+      drops:[{item:'dragon_bones', itemName:'Dragon bones', chance:1.0, min:1, max:1, notable:true},
+             {item:'green_dhide',  itemName:'Green dragonhide', chance:1.0, min:1, max:1, notable:true}]},
+    {id:'blue_dragon',  name:'Blue Dragon',   category:'Mobs', levelReq:65, xp:650,  ticks:15,
+      drops:[{item:'dragon_bones', itemName:'Dragon bones', chance:1.0, min:1, max:1, notable:true},
+             {item:'blue_dhide',   itemName:'Blue dragonhide', chance:1.0, min:1, max:1, notable:true}]},
+    {id:'black_dragon', name:'Black Dragon',  category:'Mobs', levelReq:80, xp:900,  ticks:18,
+      drops:[{item:'dragon_bones', itemName:'Dragon bones', chance:1.0, min:1, max:1, notable:true},
+             {item:'black_dhide',  itemName:'Black dragonhide', chance:1.0, min:1, max:1, notable:true}]},
+    {id:'dark_beast',   name:'Dark Beast',    category:'Mobs', levelReq:90, xp:1100, ticks:21,
+      drops:[{item:'big_bones',   itemName:'Big bones',   chance:1.0, min:1, max:1,  notable:false}]},
+    // ── Slayer Monsters ───────────────────────────────────────────────────────
+    {id:'crawling_hand',     name:'Crawling Hand',     category:'Slayer Monsters', levelReq:5,  xp:45,  ticks:5,
+      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
+    {id:'cave_crawler',      name:'Cave Crawler',      category:'Slayer Monsters', levelReq:10, xp:70,  ticks:6,
+      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
+    {id:'banshee',           name:'Banshee',           category:'Slayer Monsters', levelReq:15, xp:95,  ticks:7,
+      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
+    {id:'rock_slug',         name:'Rock Slug',         category:'Slayer Monsters', levelReq:20, xp:130, ticks:8,
+      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
+    {id:'cockatrice',        name:'Cockatrice',        category:'Slayer Monsters', levelReq:25, xp:175, ticks:8,
+      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
+    {id:'infernal_mage',     name:'Infernal Mage',     category:'Slayer Monsters', levelReq:45, xp:300, ticks:10,
+      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
+    {id:'bloodveld',         name:'Bloodveld',         category:'Slayer Monsters', levelReq:50, xp:370, ticks:11,
+      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
+    {id:'aberrant_spectre',  name:'Aberrant Spectre',  category:'Slayer Monsters', levelReq:60, xp:510, ticks:13,
+      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
+    {id:'dust_devil',        name:'Dust Devil',        category:'Slayer Monsters', levelReq:65, xp:600, ticks:14,
+      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
+    {id:'abyssal_demon',     name:'Abyssal Demon',     category:'Slayer Monsters', levelReq:85, xp:900, ticks:19,
+      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false},
+             {item:'abyssal_whip', itemName:'Abyssal whip', chance:0.01, min:1, max:1, notable:true}]},
+    // ── Bosses ────────────────────────────────────────────────────────────────
+    {id:'giant_mole', name:'Giant Mole',          category:'Bosses', levelReq:30,  xp:800,   ticks:50,
+      drops:[{item:'big_bones',       itemName:'Big bones',         chance:1.0,  min:1, max:1,  notable:false},
+             {item:'mole_skin',       itemName:'Mole skin',         chance:1.0,  min:1, max:1,  notable:true}]},
+    {id:'kbd',        name:'King Black Dragon',   category:'Bosses', levelReq:60,  xp:2500,  ticks:130,
+      drops:[{item:'dragon_bones',    itemName:'Dragon bones',      chance:1.0,  min:1, max:1,  notable:false},
+             {item:'kbd_heads',       itemName:"KBD heads",         chance:0.05, min:1, max:1,  notable:true}]},
+    {id:'dag_kings',  name:'Dagannoth Kings',     category:'Bosses', levelReq:75,  xp:4000,  ticks:180,
+      drops:[{item:'big_bones',       itemName:'Big bones',         chance:1.0,  min:1, max:1,  notable:false},
+             {item:'berserker_ring',  itemName:'Berserker ring',    chance:0.04, min:1, max:1,  notable:true}]},
+    {id:'zilyana',    name:'Commander Zilyana',   category:'Bosses', levelReq:85,  xp:6000,  ticks:220,
+      drops:[{item:'dragon_bones',    itemName:'Dragon bones',      chance:1.0,  min:1, max:1,  notable:false},
+             {item:'saradomin_sword', itemName:'Saradomin sword',   chance:0.02, min:1, max:1,  notable:true}]},
+    {id:'graardor',   name:'General Graardor',    category:'Bosses', levelReq:85,  xp:6000,  ticks:220,
+      drops:[{item:'dragon_bones',      itemName:'Dragon bones',    chance:1.0,  min:1, max:1,  notable:false},
+             {item:'bandos_chestplate', itemName:'Bandos chestplate', chance:0.02, min:1, max:1, notable:true}]},
+    {id:'nex',        name:'Nex',                 category:'Bosses', levelReq:100, xp:10000, ticks:350,
+      drops:[{item:'dragon_bones',    itemName:'Dragon bones',      chance:1.0,  min:1, max:1,  notable:false},
+             {item:'torva_platebody', itemName:'Torva platebody',   chance:0.01, min:1, max:1,  notable:true}]},
+  ],
   // future skills go here
 };
 
@@ -776,7 +857,8 @@ const TOOLS = {
 /* Lookup helpers */
 const SKILL_BY_ID = Object.fromEntries(SKILL_ROADMAP.map(s => [s.id, s]));
 function getAction(skillId, actionId){
-  return (ACTIONS[skillId] || []).find(a => a.id === actionId);
+  const src = COMBAT_SKILL_IDS.has(skillId) ? ACTIONS.combat : (ACTIONS[skillId] || []);
+  return src?.find(a => a.id === actionId);
 }
 
 /* Openable items — weighted reward tables */
@@ -889,6 +971,7 @@ function freshState(){
     equipment: { head:null, body:null, legs:null, feet:null, gloves:null, neck:null, cape:null, ring:null, pet:null },
     stats:     { attack:1, range:1, mage:1, defence:1, necromancy:1, prayer:1, summoning:1, dropRate:0 },
     farming:   { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false },
+    combat:    { style:'melee', defensive:false, tab:'mobs' },
     lastSaved: Date.now(),
   };
 }
@@ -941,6 +1024,120 @@ function harvestCrop(){
   Object.assign(state.farming, { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false });
   if (state.farming.autoReplant && (state.inventory[seedId] || 0) > 0) plantSeed(seedId);
   else render();
+}
+
+function renderCombatPanel(){
+  const styleId = state.combat.style;
+  const sk  = state.skills[styleId];
+  const lvl = levelForXp(sk.xp);
+  const s   = SKILL_BY_ID[styleId];
+
+  $('activeSkillTitle').textContent = 'Combat';
+  $('wcLevel').textContent = lvl;
+
+  const curBase = XP_TABLE[lvl];
+  const nextReq = lvl >= s.maxLevel ? sk.xp : XP_TABLE[lvl + 1];
+  const pct = lvl >= s.maxLevel ? 100 : Math.min(100, (sk.xp - curBase) / Math.max(1, nextReq - curBase) * 100);
+  $('wcXpBar').style.width = pct + '%';
+  $('wcXpText').textContent = lvl >= s.maxLevel
+    ? `MAX (${Math.floor(sk.xp).toLocaleString()} xp)`
+    : `${Math.floor(sk.xp).toLocaleString()} / ${nextReq.toLocaleString()} xp`;
+
+  let actionPct = 0, doing = 'Idle — choose a target below.';
+  if (state.current && COMBAT_SKILL_IDS.has(state.current.skillId)){
+    const a = getAction(state.current.skillId, state.current.actionId);
+    if (a){ actionPct = (state.progress / a.ticks) * 100; doing = `Fighting: <b>${a.name}</b>`; }
+  }
+  $('nowDoing').innerHTML = doing;
+  $('actionBar').style.width = actionPct + '%';
+
+  const list = $('treeList');
+  list.innerHTML = '';
+
+  // Style selector
+  const styleBar = document.createElement('div');
+  styleBar.style.cssText = 'display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;';
+  COMBAT_STYLES.forEach(cs => {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (state.combat.style === cs.id ? ' active' : '');
+    btn.textContent = cs.label;
+    btn.onclick = () => {
+      if (state.current && COMBAT_SKILL_IDS.has(state.current.skillId)){
+        state.current = null; state.progress = 0;
+      }
+      state.combat.style = cs.id;
+      render();
+    };
+    styleBar.appendChild(btn);
+  });
+  list.appendChild(styleBar);
+
+  // Defensive toggle
+  const defRow = document.createElement('div');
+  defRow.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px;';
+  defRow.innerHTML = `<span style="color:var(--dim)">Defensive:</span>
+    <button class="mini" onclick="state.combat.defensive=!state.combat.defensive;render()">
+      ${state.combat.defensive ? 'ON' : 'OFF'}
+    </button>
+    <span style="color:var(--dim);font-size:12px;">${state.combat.defensive
+      ? '50% ' + SKILL_BY_ID[styleId].name + ' · 50% Defence · 50% Constitution'
+      : '100% ' + SKILL_BY_ID[styleId].name + ' · 50% Constitution'}</span>`;
+  list.appendChild(defRow);
+
+  // Mini skill stats
+  const constLvl = levelForXp(state.skills.constitution.xp);
+  const defLvl   = levelForXp(state.skills.defence.xp);
+  const miniStats = document.createElement('div');
+  miniStats.style.cssText = 'font-size:12px;color:var(--dim);margin-bottom:10px;';
+  miniStats.textContent = `Constitution: ${constLvl}  ·  Defence: ${defLvl}`;
+  list.appendChild(miniStats);
+
+  // Sub-tabs
+  const tabs = [{id:'mobs',label:'Mobs'},{id:'slayer',label:'Slayer'},{id:'bosses',label:'Bosses'},{id:'quests',label:'Quests'}];
+  const tabBar = document.createElement('div');
+  tabBar.className = 'tab-bar';
+  tabBar.style.marginBottom = '10px';
+  tabs.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (state.combat.tab === t.id ? ' active' : '');
+    btn.textContent = t.label;
+    btn.onclick = () => { state.combat.tab = t.id; render(); };
+    tabBar.appendChild(btn);
+  });
+  list.appendChild(tabBar);
+
+  // Mob list
+  const catMap = {mobs:'Mobs', slayer:'Slayer Monsters', bosses:'Bosses'};
+  const category = catMap[state.combat.tab];
+  const mobs = state.combat.tab === 'quests' ? [] : (ACTIONS.combat || []).filter(a => a.category === category);
+  const combatLvl = lvl;
+
+  if (state.combat.tab === 'quests'){
+    const empty = document.createElement('div');
+    empty.className = 'inv-empty';
+    empty.textContent = 'Quests coming soon.';
+    list.appendChild(empty);
+  } else {
+    mobs.forEach(a => {
+      const unlocked = combatLvl >= a.levelReq;
+      const selected = state.current && COMBAT_SKILL_IDS.has(state.current.skillId) && state.current.actionId === a.id;
+      const btn = document.createElement('button');
+      btn.className = 'action-btn' + (selected ? ' selected' : '');
+      btn.disabled = !unlocked;
+      const dropPreview = (a.drops || []).filter(d => d.notable).map(d => d.itemName).join(', ');
+      const dropStr = dropPreview ? `<br><span style="color:var(--dim);font-size:11px;">Drops: ${dropPreview}</span>` : '';
+      btn.innerHTML = `<span>${a.name}${unlocked ? '' : ` 🔒 Lv ${a.levelReq}`}${dropStr}</span>
+                       <span class="meta">${a.xp} xp · ${(a.ticks * TICK_MS / 1000).toFixed(1)}s</span>`;
+      if (unlocked) btn.onclick = () => startAction(styleId, a.id);
+      list.appendChild(btn);
+    });
+    if (mobs.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'inv-empty';
+      empty.textContent = 'Nothing here yet.';
+      list.appendChild(empty);
+    }
+  }
 }
 
 function renderFarmTab(){
@@ -1175,6 +1372,33 @@ function completeAction(action, silent){
       state.itemNames[upgrade.item] = upgrade.itemName;
       if (!silent) log(`✨ Tavia's rod shimmers — you caught a ${upgrade.itemName}!`);
     }
+  }
+  // Combat: multi-skill XP distribution + loot drops
+  if (state.current?.skillId && COMBAT_SKILL_IDS.has(state.current.skillId)){
+    const styleId = state.current.skillId;
+    const base    = action.xp;
+    const xpGrants = [
+      [styleId,        state.combat.defensive ? base * 0.5 : base],
+      ['constitution', base * 0.5],
+      ...(state.combat.defensive ? [['defence', base * 0.5]] : []),
+    ];
+    for (const [sid, xp] of xpGrants){
+      const sk = state.skills[sid];
+      const before = levelForXp(sk.xp);
+      sk.xp += xp;
+      const after = levelForXp(sk.xp);
+      if (after > before && !silent) log(`🎉 ${SKILL_BY_ID[sid].name} level ${after}!`);
+    }
+    for (const drop of (action.drops || [])){
+      if (Math.random() < drop.chance){
+        const qty = (drop.min || 1) + Math.floor(Math.random() * ((drop.max || 1) - (drop.min || 1) + 1));
+        state.inventory[drop.item] = (state.inventory[drop.item] || 0) + qty;
+        state.itemNames[drop.item] = drop.itemName;
+        if (!silent && drop.notable) log(`+${qty} ${drop.itemName}`);
+      }
+    }
+    if (!silent) checkBonusDrop(state.current?.skillId, action);
+    return;
   }
   // give xp + check level up
   const skill = state.skills[state.current.skillId];
@@ -1436,12 +1660,21 @@ function renderSkillList(){
       const row = document.createElement('div');
       row.className = 'skill-row ' + (s.implemented ? 'playable' : 'locked');
       if (state.current && state.current.skillId === s.id) row.classList.add('active');
+      if (s.type === 'combat' && state.current && COMBAT_SKILL_IDS.has(state.current.skillId))
+        row.classList.add('active');
       if (s.background) {
         let badge = '';
         if (s.id === 'farming' && state.farming?.seed)
           badge = state.farming.ready ? ' 🌿' : ' 🌱';
         row.innerHTML = `<span>${s.name}</span><span class="lvl">${lvl}/${s.maxLevel}${badge}</span>`;
         row.onclick = () => setInvTab('farm');
+      } else if (s.type === 'combat' && s.implemented) {
+        row.innerHTML = `<span>${s.name}</span><span class="lvl">${lvl}/${s.maxLevel}</span>`;
+        const styleMap = {melee:'melee', ranged:'ranged', magic:'magic', necromancy:'necromancy'};
+        row.onclick = () => {
+          if (styleMap[s.id]) state.combat.style = styleMap[s.id];
+          selectSkill(s.id);
+        };
       } else {
         row.innerHTML = `<span>${s.name}${s.implemented ? '' : ' <span class="lvl">(soon)</span>'}</span>
                          <span class="lvl">${lvl}/${s.maxLevel}</span>`;
@@ -1460,6 +1693,7 @@ function setInvTab(tab){ inventoryTab = tab; renderInventory(); }
 
 function renderActiveSkill(){
   const s = SKILL_BY_ID[viewedSkill];
+  if (s.type === 'combat') { renderCombatPanel(); return; }
   const skill = state.skills[s.id];
   const lvl = levelForXp(skill.xp);
   $('activeSkillTitle').textContent = s.name;

@@ -10,7 +10,7 @@ Progress is saved automatically to `localStorage` every 30 seconds. Offline gain
 
 ## Current state
 
-**12 of 29 skills implemented.** The game is actively in development.
+**17 of 29 skills implemented.** The game is actively in development.
 
 ### Implemented skills
 
@@ -28,6 +28,9 @@ Progress is saved automatically to `localStorage` every 30 seconds. Offline gain
 | Farming | Gathering | 7 herb seeds (background skill) | Grows in 5 min; harvest for 3–15 herbs; auto-replant toggle; runs while doing other skills |
 | Herblore | Artisan | 21 actions (7 potion types × 3 tiers) | Herbs from Farming/combat drops; consumption system deferred |
 | Dungeoneering | Support | 3 floor types (Small, Large, Hardmode) | Earns tokens; auto-loops until stopped; token shop coming |
+| Melee / Ranged / Magic / Necromancy | Combat | 11 mobs, 10 slayer monsters, 6 bosses | 4 combat styles; Defensive mode splits XP with Defence; Constitution trains passively per kill |
+| Defence | Combat | trained via combat | Gains XP in Defensive mode |
+| Constitution | Combat | trained via combat | Gains XP on every kill (50% of action XP) |
 
 ### Engine features
 
