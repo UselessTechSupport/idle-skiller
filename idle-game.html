@@ -370,7 +370,7 @@ const SKILL_ROADMAP = [
   {id:'smithing',     name:'Smithing',     type:'artisan', maxLevel:110, implemented:true},
   {id:'cooking',      name:'Cooking',      type:'artisan', maxLevel:99,  implemented:true},
   {id:'firemaking',   name:'Firemaking',   type:'artisan', maxLevel:110, implemented:true},
-  {id:'runecrafting', name:'Runecrafting', type:'artisan', maxLevel:110, implemented:false},
+  {id:'runecrafting', name:'Runecrafting', type:'artisan', maxLevel:110, implemented:true},
   {id:'construction', name:'Construction', type:'artisan', maxLevel:99,  implemented:false},
   {id:'herblore',     name:'Herblore',     type:'artisan', maxLevel:120, implemented:true},
   // Combat (9)
@@ -436,6 +436,7 @@ const ACTIONS = {
     // Primal bar = 2 primal ores (10 ores per 5 bars). Base primal rock is slower
     // than animica; 2 ores per action keeps the ratio accurate to RS3.
     {id:'primal_ore',      name:'Primal rock',       levelReq:100,xp:1400, ticks:60, item:'primal_ore',      itemName:'Primal ore'},
+    {id:'rune_essence',    name:'Rune essence rock', levelReq:1,  xp:5,    ticks:4,  item:'rune_essence',    itemName:'Rune essence'},
   ],
   // RS3 bar smelting. Ingredients are consumed from inventory on each completion.
   // XP: classic RS values for Bronze–Rune; scaled estimates for RS3-specific tiers.
@@ -808,6 +809,48 @@ const ACTIONS = {
     {id:'brew_lesser_prayer',     name:'Lesser prayer potion',     label:'Potions brewed', category:'Prayer Potions',     levelReq:1,  xp:25,  ticks:3, item:'lesser_prayer_potion',     itemName:'Lesser prayer potion',     ingredients:[{item:'torstol',                   count:1, name:'Torstol'}]},
     {id:'brew_prayer',            name:'Prayer potion',            label:'Potions brewed', category:'Prayer Potions',     levelReq:50, xp:75,  ticks:3, item:'prayer_potion',            itemName:'Prayer potion',            ingredients:[{item:'lesser_prayer_potion',     count:1, name:'Lesser prayer potion'},  {item:'torstol',     count:1, name:'Torstol'}]},
     {id:'brew_supreme_prayer',    name:'Supreme prayer potion',    label:'Potions brewed', category:'Prayer Potions',     levelReq:90, xp:150, ticks:3, item:'supreme_prayer_potion',    itemName:'Supreme prayer potion',    ingredients:[{item:'prayer_potion',            count:1, name:'Prayer potion'},          {item:'torstol',     count:1, name:'Torstol'}]},
+  ],
+  runecrafting:[
+    // --- Rune Crafting (essence mined in Mining skill) ---
+    {id:'craft_air',    name:'Craft air runes',    label:'Runes crafted', category:'Rune Crafting',
+     levelReq:1,  xp:30,  ticks:10, item:'air_rune',    itemName:'Air rune',    count:15,
+     ingredients:[{item:'rune_essence', count:2, name:'Rune essence'}]},
+    {id:'craft_water',  name:'Craft water runes',  label:'Runes crafted', category:'Rune Crafting',
+     levelReq:5,  xp:40,  ticks:10, item:'water_rune',  itemName:'Water rune',  count:12,
+     ingredients:[{item:'rune_essence', count:2, name:'Rune essence'}]},
+    {id:'craft_earth',  name:'Craft earth runes',  label:'Runes crafted', category:'Rune Crafting',
+     levelReq:9,  xp:45,  ticks:11, item:'earth_rune',  itemName:'Earth rune',  count:10,
+     ingredients:[{item:'rune_essence', count:2, name:'Rune essence'}]},
+    {id:'craft_fire',   name:'Craft fire runes',   label:'Runes crafted', category:'Rune Crafting',
+     levelReq:14, xp:55,  ticks:11, item:'fire_rune',   itemName:'Fire rune',   count:10,
+     ingredients:[{item:'rune_essence', count:2, name:'Rune essence'}]},
+    {id:'craft_mind',   name:'Craft mind runes',   label:'Runes crafted', category:'Rune Crafting',
+     levelReq:20, xp:60,  ticks:12, item:'mind_rune',   itemName:'Mind rune',   count:8,
+     ingredients:[{item:'rune_essence', count:3, name:'Rune essence'}]},
+    {id:'craft_cosmic', name:'Craft cosmic runes', label:'Runes crafted', category:'Rune Crafting',
+     levelReq:27, xp:75,  ticks:12, item:'cosmic_rune', itemName:'Cosmic rune', count:5,
+     ingredients:[{item:'rune_essence', count:3, name:'Rune essence'}]},
+    {id:'craft_nature', name:'Craft nature runes', label:'Runes crafted', category:'Rune Crafting',
+     levelReq:44, xp:100, ticks:14, item:'nature_rune', itemName:'Nature rune', count:3,
+     ingredients:[{item:'rune_essence', count:4, name:'Rune essence'}]},
+    {id:'craft_law',    name:'Craft law runes',    label:'Runes crafted', category:'Rune Crafting',
+     levelReq:54, xp:125, ticks:15, item:'law_rune',    itemName:'Law rune',    count:2,
+     ingredients:[{item:'rune_essence', count:4, name:'Rune essence'}]},
+    {id:'craft_death',  name:'Craft death runes',  label:'Runes crafted', category:'Rune Crafting',
+     levelReq:65, xp:175, ticks:16, item:'death_rune',  itemName:'Death rune',  count:2,
+     ingredients:[{item:'rune_essence', count:5, name:'Rune essence'}]},
+    {id:'craft_blood',  name:'Craft blood runes',  label:'Runes crafted', category:'Rune Crafting',
+     levelReq:77, xp:230, ticks:17, item:'blood_rune',  itemName:'Blood rune',  count:1,
+     ingredients:[{item:'rune_essence', count:5, name:'Rune essence'}]},
+    {id:'craft_soul',   name:'Craft soul runes',   label:'Runes crafted', category:'Rune Crafting',
+     levelReq:90, xp:300, ticks:18, item:'soul_rune',   itemName:'Soul rune',   count:1,
+     ingredients:[{item:'rune_essence', count:6, name:'Rune essence'}]},
+    // --- Infuse Magic Gear (Coming Soon: lv90-110) ---
+    {id:'infuse_armadyl_battlestaff', name:'Infuse Armadyl battlestaff', levelReq:90,  xp:0, ticks:1, comingSoon:true},
+    {id:'infuse_noxious_staff',       name:'Infuse Noxious staff',       levelReq:95,  xp:0, ticks:1, comingSoon:true},
+    {id:'infuse_seismic_wand',        name:'Infuse Seismic wand',        levelReq:100, xp:0, ticks:1, comingSoon:true},
+    {id:'infuse_noxious_scythe',      name:'Infuse Noxious scythe',      levelReq:105, xp:0, ticks:1, comingSoon:true},
+    {id:'infuse_praesul_wand',        name:'Infuse Praesul wand',        levelReq:110, xp:0, ticks:1, comingSoon:true},
   ],
   combat:[
     // ── Mobs ─────────────────────────────────────────────────────────────────
@@ -2313,6 +2356,14 @@ function renderActiveSkill(){
     thievDiv.innerHTML = `Agility bonus: <b>+${bonusPick}% pick</b> · <b>+${bonusLock}% lock speed</b> · <b>${bonusLoot}%</b> extra loot${slipStr}`;
     list.appendChild(thievDiv);
   }
+  if (s.id === 'runecrafting'){
+    const rcDiv = document.createElement('div');
+    rcDiv.className = 'dg-bonus';
+    const agilLevel = levelForXp(state.skills.agility.xp);
+    const rcBonus = Math.round(agilLevel / 99 * 25);
+    rcDiv.innerHTML = `Agility bonus: <b>+${rcBonus}%</b> speed · Mine rune essence in Mining · Runes used for spells (coming soon)`;
+    list.appendChild(rcDiv);
+  }
   const hasLocked = actions.some(a => lvl < a.levelReq);
   $('actionFilterBar').style.display = hasLocked ? 'block' : 'none';
   $('hideLockBtn').classList.toggle('active', hideLockedActions);
@@ -2332,6 +2383,13 @@ function renderActiveSkill(){
     const btn = document.createElement('button');
     btn.className = 'action-btn' + (selected ? ' selected' : '');
     btn.disabled = !unlocked;
+    // Coming soon — disabled tease (e.g. infuse magic gear)
+    if (a.comingSoon){
+      btn.disabled = true;
+      btn.innerHTML = `<span>${a.name}</span><span class="meta" style="color:#6b7280">✨ Coming soon</span>`;
+      list.appendChild(btn);
+      return;
+    }
     // Quest-gated actions (e.g. Hefin course)
     if (a.questReq && !state.quests?.[a.questReq]){
       const reqs = a.skillReqs || [];
