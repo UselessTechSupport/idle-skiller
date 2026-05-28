@@ -618,9 +618,9 @@ const ACTIONS = {
     {id:'craft_lunar_legs',        name:'Lunar legs',        label:'Lunar legs made',         levelReq:67, xp:125, ticks:4, item:'lunar_legs',        itemName:'Lunar legs',        category:'Mage Armour', ingredients:[{item:'suqah_hide',count:3,name:'Suqah hide'}]},
   ],
   dungeoneering:[
-    {id:'small_floor',    name:'Small floor',    levelReq:1,  xp:5000,  baseMaxSecs:900,  baseMinSecs:90,  tokenMult:1,   single:true},
-    {id:'large_floor',    name:'Large floor',    levelReq:1,  xp:12500, baseMaxSecs:1800, baseMinSecs:180, tokenMult:2.5, single:true},
-    {id:'hardmode_floor', name:'Hardmode floor', levelReq:90, xp:30000, baseMaxSecs:3600, baseMinSecs:360, tokenMult:6,   single:true},
+    {id:'small_floor',    name:'Small floor',    levelReq:1,  xp:5000,  baseMaxSecs:900,  baseMinSecs:90,  tokenMult:1  },
+    {id:'large_floor',    name:'Large floor',    levelReq:1,  xp:12500, baseMaxSecs:1800, baseMinSecs:180, tokenMult:2.5},
+    {id:'hardmode_floor', name:'Hardmode floor', levelReq:90, xp:30000, baseMaxSecs:3600, baseMinSecs:360, tokenMult:6  },
   ],
   fishing:[
     {id:'raw_shrimps',          name:'Fish shrimps',          levelReq:1,  xp:10,  ticks:4,  item:'raw_shrimps',          itemName:'Raw shrimps'},
@@ -955,26 +955,35 @@ function renderFarmTab(){
     el.appendChild(msg);
 
     const available = SEEDS.filter(s => (state.inventory[s.id] || 0) > 0);
+    const plantRow = document.createElement('div');
+    plantRow.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:10px;';
+
+    const sel = document.createElement('select');
+    sel.id = 'seedDropdown';
+    sel.style.cssText = 'flex:1;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font-size:13px;';
     if (available.length === 0) {
-      const hint = document.createElement('div');
-      hint.style.color = '#666';
-      hint.textContent = 'No seeds in inventory.';
-      el.appendChild(hint);
+      const opt = document.createElement('option');
+      opt.textContent = 'No seeds in inventory';
+      opt.disabled = true;
+      sel.appendChild(opt);
     } else {
       available.forEach(s => {
-        const row = document.createElement('div');
-        row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;';
-        const lbl = document.createElement('span');
-        lbl.textContent = `${s.name} ×${state.inventory[s.id]}`;
-        const btn = document.createElement('button');
-        btn.className = 'mini';
-        btn.textContent = 'Plant';
-        btn.onclick = () => plantSeed(s.id);
-        row.appendChild(lbl);
-        row.appendChild(btn);
-        el.appendChild(row);
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = `${s.name} ×${state.inventory[s.id]}`;
+        sel.appendChild(opt);
       });
     }
+
+    const plantBtn = document.createElement('button');
+    plantBtn.className = 'mini';
+    plantBtn.textContent = 'Plant';
+    plantBtn.disabled = available.length === 0;
+    plantBtn.onclick = () => { const d = document.getElementById('seedDropdown'); if (d) plantSeed(d.value); };
+
+    plantRow.appendChild(sel);
+    plantRow.appendChild(plantBtn);
+    el.appendChild(plantRow);
   } else {
     const elapsed   = Date.now() - f.plantedAt;
     const pct       = Math.min(100, Math.floor(elapsed / FARM_GROW_MS * 100));
@@ -1008,16 +1017,14 @@ function renderFarmTab(){
     }
   }
 
-  // Auto-replant toggle (shown whenever a crop is in play)
-  if (f.seed) {
-    const tog = document.createElement('div');
-    tog.style.cssText = 'display:flex;align-items:center;gap:8px;margin-top:4px;';
-    tog.innerHTML = `<span>Auto-replant:</span>
-      <button class="mini" onclick="state.farming.autoReplant=!state.farming.autoReplant;render()">
-        ${f.autoReplant ? 'ON' : 'OFF'}
-      </button>`;
-    el.appendChild(tog);
-  }
+  // Auto-replant toggle — always visible
+  const tog = document.createElement('div');
+  tog.style.cssText = 'display:flex;align-items:center;gap:8px;margin-top:8px;';
+  tog.innerHTML = `<span style="color:var(--dim);font-size:13px;">Auto-replant:</span>
+    <button class="mini" onclick="state.farming.autoReplant=!state.farming.autoReplant;render()">
+      ${f.autoReplant ? 'ON' : 'OFF'}
+    </button>`;
+  el.appendChild(tog);
 }
 
 function calcFloorSecs(action){
@@ -1177,12 +1184,15 @@ function completeAction(action, silent){
   if (after > before && !silent){
     log(`🎉 ${SKILL_BY_ID[state.current.skillId].name} level ${after}!`);
   }
-  // Award DG tokens on floor completion
+  // Award DG tokens on floor completion; refresh cached values for next loop
   if (state.current?.skillId === 'dungeoneering' && !silent){
-    const tokens = state.current.earnedTokens || 0;
+    const dgLevel = levelForXp(state.skills['dungeoneering'].xp);
+    const tokens  = Math.max(1, Math.floor(dgLevel * action.tokenMult));
     state.inventory['dg_tokens'] = (state.inventory['dg_tokens'] || 0) + tokens;
     state.itemNames['dg_tokens'] = 'Dungeoneering tokens';
-    log(`⚔️ Floor complete! +${tokens} Dungeoneering tokens.`);
+    log(`⚔️ Floor complete! +${tokens} tokens.`);
+    state.current.earnedTokens = tokens;
+    state.current.floorTicks   = Math.round(calcFloorSecs(action) / (TICK_MS / 1000));
   }
   // Stop single-completion actions (floors, future one-shots)
   if (action.single){ state.current = null; state.progress = 0; }

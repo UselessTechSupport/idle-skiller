@@ -27,7 +27,7 @@ Progress is saved automatically to `localStorage` every 30 seconds. Offline gain
 | Crafting | Artisan | 53 actions | Gem cutting (7 gems), jewellery (rings + amulets), leather armour, dragonhide armour (5 tiers), mage armour (3 tiers); action categories shown as headers in UI |
 | Farming | Gathering | 7 herb seeds (background skill) | Grows in 5 min; harvest for 3–15 herbs; auto-replant toggle; runs while doing other skills |
 | Herblore | Artisan | 21 actions (7 potion types × 3 tiers) | Herbs from Farming/combat drops; consumption system deferred |
-| Dungeoneering | Support | 12 floors (F1 → Occult) | Earns tokens; token shop for passive bonuses and special items |
+| Dungeoneering | Support | 3 floor types (Small, Large, Hardmode) | Earns tokens; auto-loops until stopped; token shop coming |
 
 ### Engine features
 
