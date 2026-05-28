@@ -372,7 +372,7 @@ const SKILL_ROADMAP = [
   {id:'necromancy',   name:'Necromancy',   type:'combat', maxLevel:120, implemented:true},
   // Support (5)
   {id:'agility',      name:'Agility',      type:'support', maxLevel:99,  implemented:false},
-  {id:'thieving',     name:'Thieving',     type:'support', maxLevel:99,  implemented:false},
+  {id:'thieving',     name:'Thieving',     type:'support', maxLevel:99,  implemented:true},
   {id:'slayer',       name:'Slayer',       type:'support', maxLevel:120, implemented:false},
   {id:'dungeoneering',name:'Dungeoneering',type:'support', maxLevel:120, implemented:true},
   {id:'archaeology',  name:'Archaeology',  type:'support', maxLevel:120, implemented:false},
@@ -631,6 +631,63 @@ const ACTIONS = {
     {id:'large_floor',    name:'Large floor',    levelReq:1,  xp:12500, baseMaxSecs:1800, baseMinSecs:180, tokenMult:2.5},
     {id:'hardmode_floor', name:'Hardmode floor', levelReq:90, xp:30000, baseMaxSecs:3600, baseMinSecs:360, tokenMult:6  },
   ],
+  thieving:[
+    // --- Pickpocket --- (catchZeroAt:10 = safe within 10 levels of req)
+    {id:'pickpocket_man',     name:'Pickpocket Man',          category:'Pickpocket', levelReq:1,  xp:8,      ticks:3,
+     catchChance:0.45, catchZeroAt:10, stunTicks:3,
+     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:5,   max:20,  notable:false}]},
+    {id:'pickpocket_farmer',  name:'Pickpocket Farmer',       category:'Pickpocket', levelReq:10, xp:14.5,   ticks:3,
+     catchChance:0.40, catchZeroAt:10, stunTicks:3,
+     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:15,  max:40,  notable:false},
+            {item:'herb_seed', itemName:'Herb seed', chance:0.10, min:1, max:3, notable:false}]},
+    {id:'pickpocket_warrior', name:'Pickpocket Warrior',      category:'Pickpocket', levelReq:25, xp:26,     ticks:4,
+     catchChance:0.38, catchZeroAt:10, stunTicks:4,
+     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:20,  max:60,  notable:false}]},
+    {id:'pickpocket_guard',   name:'Pickpocket Guard',        category:'Pickpocket', levelReq:40, xp:46,     ticks:4,
+     catchChance:0.35, catchZeroAt:10, stunTicks:4,
+     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:30,  max:80,  notable:false},
+            {item:'uncut_sapphire', itemName:'Uncut sapphire', chance:0.05, min:1, max:1, notable:true}]},
+    {id:'pickpocket_knight',  name:'Pickpocket Knight',       category:'Pickpocket', levelReq:55, xp:84.3,   ticks:4,
+     catchChance:0.30, catchZeroAt:10, stunTicks:5,
+     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:50,  max:120, notable:false}]},
+    {id:'pickpocket_paladin', name:'Pickpocket Paladin',      category:'Pickpocket', levelReq:70, xp:151.75, ticks:5,
+     catchChance:0.25, catchZeroAt:10, stunTicks:5,
+     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:80,  max:200, notable:false},
+            {item:'uncut_emerald', itemName:'Uncut emerald', chance:0.08, min:1, max:1, notable:false}]},
+    {id:'pickpocket_gnome',   name:'Pickpocket Gnome',        category:'Pickpocket', levelReq:75, xp:198.5,  ticks:5,
+     catchChance:0.20, catchZeroAt:10, stunTicks:5,
+     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:100, max:300, notable:false}]},
+    {id:'pickpocket_hero',    name:'Pickpocket Hero',         category:'Pickpocket', levelReq:80, xp:163.3,  ticks:5,
+     catchChance:0.22, catchZeroAt:10, stunTicks:5,
+     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:100, max:250, notable:false},
+            {item:'uncut_ruby', itemName:'Uncut ruby', chance:0.10, min:1, max:1, notable:true}]},
+    {id:'pickpocket_elf',     name:'Pickpocket Elf',          category:'Pickpocket', levelReq:85, xp:353,    ticks:5,
+     catchChance:0.18, catchZeroAt:10, stunTicks:6,
+     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:200, max:400, notable:false},
+            {item:'crystal_shard', itemName:'Crystal shard', chance:0.15, min:1, max:3, notable:false}]},
+    {id:'pickpocket_dwarf',   name:'Pickpocket Dwarf trader', category:'Pickpocket', levelReq:90, xp:556,    ticks:6,
+     catchChance:0.15, catchZeroAt:10, stunTicks:6,
+     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:300, max:600, notable:false},
+            {item:'uncut_diamond', itemName:'Uncut diamond', chance:0.10, min:1, max:1, notable:true}]},
+    // --- Lock ---
+    {id:'lock_wooden_chest',  name:'Wooden chest',   category:'Lock', levelReq:1,  xp:12,  ticks:5, lock:true,
+     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:10,   max:40,   notable:false}]},
+    {id:'lock_bronze',        name:'Bronze lock',    category:'Lock', levelReq:10, xp:25,  ticks:5, lock:true,
+     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:40,   max:100,  notable:false},
+            {item:'herb_seed', itemName:'Herb seed', chance:0.15, min:1, max:2, notable:false}]},
+    {id:'lock_iron',          name:'Iron lock',      category:'Lock', levelReq:25, xp:45,  ticks:6, lock:true,
+     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:100,  max:300,  notable:false},
+            {item:'uncut_sapphire', itemName:'Uncut sapphire', chance:0.10, min:1, max:1, notable:false}]},
+    {id:'lock_steel',         name:'Steel lock',     category:'Lock', levelReq:45, xp:75,  ticks:7, lock:true,
+     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:300,  max:800,  notable:false},
+            {item:'steel_bar', itemName:'Steel bar', chance:0.12, min:1, max:3, notable:false}]},
+    {id:'lock_dragon',        name:'Dragon lock',    category:'Lock', levelReq:65, xp:120, ticks:8, lock:true,
+     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:800,  max:1500, notable:false},
+            {item:'uncut_dragonstone', itemName:'Uncut dragonstone', chance:0.08, min:1, max:1, notable:true}]},
+    {id:'lock_ancient_vault', name:'Ancient vault',  category:'Lock', levelReq:85, xp:200, ticks:9, lock:true,
+     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:1500, max:3000, notable:false},
+            {item:'uncut_onyx', itemName:'Uncut onyx', chance:0.05, min:1, max:1, notable:true}]},
+  ],
   fishing:[
     {id:'raw_shrimps',          name:'Fish shrimps',          levelReq:1,  xp:10,  ticks:4,  item:'raw_shrimps',          itemName:'Raw shrimps'},
     {id:'raw_sardine',          name:'Fish sardine',          levelReq:5,  xp:20,  ticks:4,  item:'raw_sardine',          itemName:'Raw sardine'},
@@ -851,6 +908,11 @@ const TOOLS = {
     {id:'dragon_rod',  name:'Dragon fishing rod',  speedMult:0.75, reqLevel:60, cost:[{item:'krackens_beak',     name:"Kraken's Beak",     count:1}]},
     {id:'crystal_rod', name:'Crystal fishing rod', speedMult:0.60, reqLevel:1,  cost:[{item:'crystal_tool_seed', name:'Crystal tool seed', count:1}]},
     {id:'tavias_rod',  name:"Tavia's rod",         speedMult:0.45, reqLevel:1,  cost:[{item:'map_to_tavia',      name:'Map to Tavia',      count:1}]},
+  ],
+  thieving:[
+    {id:'rusty_lockpick',  name:'Rusty lockpick',  speedMult:1.00, reqLevel:1,  cost:[], slipChance:0.30},
+    {id:'bronze_lockpick', name:'Bronze lockpick', speedMult:0.85, reqLevel:20, cost:[{item:'bronze_bar', name:'Bronze bar', count:1}]},
+    {id:'iron_lockpick',   name:'Iron lockpick',   speedMult:0.70, reqLevel:40, cost:[{item:'iron_bar',   name:'Iron bar',   count:2}]},
   ],
 };
 
@@ -1565,13 +1627,23 @@ function calcFloorSecs(action){
 function getCurrentEffTicks(action){
   if (state.current?.floorTicks) return state.current.floorTicks;
   if (action.baseMaxSecs) return Math.round(calcFloorSecs(action) / (TICK_MS / 1000)); // DG fallback
-  return Math.max(1, Math.ceil(action.ticks * getToolSpeedMult(state.current.skillId)));
+  const base = action.ticks || 1;
+  if (state.current?.skillId === 'thieving'){
+    const agilLevel = levelForXp(state.skills.agility.xp);
+    if (action.lock){
+      const toolMult = getToolSpeedMult('thieving');
+      const agilMult = 1 - (agilLevel / 99 * 0.30);
+      return Math.max(1, Math.ceil(base * toolMult * agilMult));
+    }
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20))));
+  }
+  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId)));
 }
 
 function getToolSpeedMult(skillId){
   const tiers = TOOLS[skillId];
   if (!tiers) return 1.0;
-  const equippedId = (state.tools && state.tools[skillId]) || 'bronze';
+  const equippedId = (state.tools && state.tools[skillId]) || tiers[0]?.id || 'bronze';
   const tier = tiers.find(t => t.id === equippedId);
   return tier ? tier.speedMult : 1.0;
 }
@@ -1590,6 +1662,9 @@ function tick(){
   if (state.current){
     if (COMBAT_SKILL_IDS.has(state.current.skillId)){
       combatTick();
+    } else if (state.current.skillId === 'thieving' && (state.current.stunTicks || 0) > 0){
+      state.current.stunTicks--;
+      if (state.current.stunTicks === 0) log('✓ Stun wore off — back to work.');
     } else {
       const action = getAction(state.current.skillId, state.current.actionId);
       if (action){
@@ -1657,6 +1732,27 @@ function completeAction(action, silent){
     if (missing){ if (!silent) log(`Out of ${missing.name} — stopped.`); state.current = null; state.progress = 0; return; }
     consumeIngredients(action);
   }
+  // Pickpocket: chance to get caught → stun, no loot/xp this tick
+  if (state.current?.skillId === 'thieving' && action.catchChance && !action.lock){
+    const level    = levelForXp(state.skills.thieving.xp);
+    const zeroAt   = action.catchZeroAt || 10;
+    const noCatchAt = action.levelReq + zeroAt;
+    const catchChance = Math.max(0, (noCatchAt - level) / zeroAt * action.catchChance);
+    if (Math.random() < catchChance){
+      state.current.stunTicks = action.stunTicks || 5;
+      const secs = Math.ceil(state.current.stunTicks * TICK_MS / 1000);
+      if (!silent) log(`🚨 Caught! Stunned for ${secs}s.`);
+      return;
+    }
+  }
+  // Lockpick slip: rusty lockpick can slip on locks (no loot, no stun)
+  if (state.current?.skillId === 'thieving' && action.lock){
+    const tier = (TOOLS.thieving || []).find(t => t.id === (state.tools?.thieving || 'rusty_lockpick'));
+    if (tier?.slipChance && Math.random() < tier.slipChance){
+      if (!silent) log('🔒 The lockpick slips — no reward this time.');
+      return;
+    }
+  }
   // Failure mechanics (cooking burn, fletching splinter, divination transmute fail)
   const failDef = FAIL_MECHANICS[state.current?.skillId];
   if (failDef && failDef.trigger(action)){
@@ -1689,6 +1785,28 @@ function completeAction(action, silent){
       grantItem(upgrade.item, upgrade.itemName);
       if (!silent) log(`✨ Tavia's rod shimmers — you caught a ${upgrade.itemName}!`);
     }
+  }
+  // Thieving: process drops table + agility extra-loot bonus
+  if (state.current?.skillId === 'thieving'){
+    for (const drop of (action.drops || [])){
+      if (Math.random() < drop.chance){
+        const qty = (drop.min||1) + Math.floor(Math.random() * ((drop.max||1)-(drop.min||1)+1));
+        grantItem(drop.item, drop.itemName, qty);
+        if (!silent && drop.notable) log(`✨ +${qty} ${drop.itemName}!`);
+      }
+    }
+    const agilLevel = levelForXp(state.skills.agility.xp);
+    if (agilLevel > 1 && Math.random() < (agilLevel / 99 * 0.50)){
+      for (const drop of (action.drops || [])){
+        if (Math.random() < drop.chance){
+          const qty = (drop.min||1) + Math.floor(Math.random() * ((drop.max||1)-(drop.min||1)+1));
+          grantItem(drop.item, drop.itemName, qty);
+        }
+      }
+      if (!silent) log('✨ Agility — extra loot!');
+    }
+    grantXp('thieving', action.xp, silent);
+    return;
   }
   // Combat: multi-skill XP distribution + loot drops
   if (state.current?.skillId && COMBAT_SKILL_IDS.has(state.current.skillId)){
@@ -2047,6 +2165,11 @@ function renderActiveSkill(){
     } else {
       doing = `Now: <b>${a.name}</b>`;
     }
+    if (s.id === 'thieving' && (state.current?.stunTicks || 0) > 0){
+      const secs = Math.ceil(state.current.stunTicks * TICK_MS / 1000);
+      doing = `🚨 Caught! Stunned — ${secs}s remaining`;
+      actionPct = 0;
+    }
   } else if (state.current){
     doing = `Busy in <b>${SKILL_BY_ID[state.current.skillId].name}</b> (viewing ${s.name})`;
   }
@@ -2068,6 +2191,18 @@ function renderActiveSkill(){
     bonusDiv.className = 'dg-bonus';
     bonusDiv.innerHTML = `Skill bonus: <b>${bonusPct}% faster</b> &nbsp;·&nbsp; Tokens: <b>${tokens.toLocaleString()}</b>`;
     list.appendChild(bonusDiv);
+  }
+  if (s.id === 'thieving'){
+    const agilLevel   = levelForXp(state.skills.agility.xp);
+    const thievDiv    = document.createElement('div');
+    thievDiv.className = 'dg-bonus';
+    const bonusLoot   = Math.round(agilLevel / 99 * 50);
+    const bonusPick   = Math.round(agilLevel / 99 * 20);
+    const bonusLock   = Math.round(agilLevel / 99 * 30);
+    const equippedTier = (TOOLS.thieving || []).find(t => t.id === (state.tools?.thieving || 'rusty_lockpick'));
+    const slipStr     = equippedTier?.slipChance ? ` &nbsp;·&nbsp; <b style="color:#e04040">${Math.round(equippedTier.slipChance*100)}% lock slip</b>` : '';
+    thievDiv.innerHTML = `Agility bonus: <b>+${bonusPick}% pick</b> · <b>+${bonusLock}% lock speed</b> · <b>${bonusLoot}%</b> extra loot${slipStr}`;
+    list.appendChild(thievDiv);
   }
   let lastCat = null;
   actions.forEach(a => {
@@ -2248,6 +2383,8 @@ function init(){
   if (!state.upgrades) state.upgrades = {};
   if (state.combat.autoEatThreshold == null) state.combat.autoEatThreshold = 50;
   if (!state.saveVersion) state.saveVersion = 1; // v0 → v1: no data migration needed
+  if (state.current?.skillId === 'thieving' && state.current.stunTicks)
+    state.current.stunTicks = 0; // don't resume mid-stun after reload
 
   // Farming: mark ready if crop matured while offline (timestamps survive saves)
   if (state.farming?.seed && !state.farming.ready &&
