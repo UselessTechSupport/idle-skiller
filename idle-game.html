@@ -224,6 +224,7 @@
       <button class="tab-btn active" id="tabAll" onclick="setInvTab('all')">All Items</button>
       <button class="tab-btn" id="tabOpen" onclick="setInvTab('open')">Open Items</button>
       <button class="tab-btn" id="tabEquip" onclick="setInvTab('equip')">Equipment</button>
+      <button class="tab-btn" id="tabFarm" onclick="setInvTab('farm')">Farm</button>
     </div>
     <div id="inventory"></div>
     <h2 style="margin-top:16px;">Log</h2>
@@ -313,6 +314,17 @@
 /* ---------- 1. CONFIG ---------- */
 const TICK_MS = 600;                  // RuneScape's game tick = 0.6s
 const MAX_OFFLINE_HOURS = 12;         // cap on offline catch-up
+const FARM_GROW_MS = 5 * 60 * 1000;  // herb growth time: 5 minutes
+
+const SEEDS = [
+  {id:'tarromin_seed',    name:'Tarromin seed',    herb:'tarromin',    herbName:'Tarromin'},
+  {id:'ranarr_seed',      name:'Ranarr seed',      herb:'ranarr_weed', herbName:'Ranarr weed'},
+  {id:'dwarf_weed_seed',  name:'Dwarf weed seed',  herb:'dwarf_weed',  herbName:'Dwarf weed'},
+  {id:'lantadyme_seed',   name:'Lantadyme seed',   herb:'lantadyme',   herbName:'Lantadyme'},
+  {id:'fellstalk_seed',   name:'Fellstalk seed',   herb:'fellstalk',   herbName:'Fellstalk'},
+  {id:'spirit_weed_seed', name:'Spirit weed seed', herb:'spirit_weed', herbName:'Spirit weed'},
+  {id:'torstol_seed',     name:'Torstol seed',     herb:'torstol',     herbName:'Torstol'},
+];
 const AUTOSAVE_MS = 10000;            // autosave every 10s
 const SAVE_KEY = 'idleSkillerSave_v1';
 
@@ -327,7 +339,7 @@ const SKILL_ROADMAP = [
   {id:'woodcutting',  name:'Woodcutting',  type:'gathering', maxLevel:110, implemented:true},
   {id:'mining',       name:'Mining',       type:'gathering', maxLevel:110, implemented:true},
   {id:'fishing',      name:'Fishing',      type:'gathering', maxLevel:99,  implemented:true},
-  {id:'farming',      name:'Farming',      type:'gathering', maxLevel:120, implemented:false},
+  {id:'farming',      name:'Farming',      type:'gathering', maxLevel:120, implemented:true, background:true},
   {id:'hunter',       name:'Hunter',       type:'gathering', maxLevel:99,  implemented:false},
   {id:'divination',   name:'Divination',   type:'gathering', maxLevel:99,  implemented:true},
   // Artisan (8)
@@ -876,6 +888,7 @@ function freshState(){
     tools: {},              // { skillId: tierId }
     equipment: { head:null, body:null, legs:null, feet:null, gloves:null, neck:null, cape:null, ring:null, pet:null },
     stats:     { attack:1, range:1, mage:1, defence:1, necromancy:1, prayer:1, summoning:1, dropRate:0 },
+    farming:   { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false },
     lastSaved: Date.now(),
   };
 }
@@ -893,6 +906,118 @@ function calcStats(){
   // Returns live combat stats: base values + equipment bonuses.
   // Equipment bonuses accumulate here once the gear stat system is built.
   return Object.assign({}, state.stats);
+}
+
+function plantSeed(seedId){
+  const seed = SEEDS.find(s => s.id === seedId);
+  if (!seed || (state.inventory[seedId] || 0) < 1) return;
+  if (state.farming.seed){ log('Already have a crop growing.'); return; }
+  state.inventory[seedId]--;
+  Object.assign(state.farming, {
+    seed: seedId, seedName: seed.name,
+    herb: seed.herb, herbName: seed.herbName,
+    plantedAt: Date.now(), ready: false,
+  });
+  log(`Planted ${seed.name}.`);
+  render();
+}
+
+function harvestCrop(){
+  if (!state.farming.seed || !state.farming.ready) return;
+  const farmLevel = levelForXp(state.skills.farming.xp);
+  const minY = Math.max(3, 3 + Math.floor(farmLevel / 20));
+  const maxY = Math.min(15, 7 + Math.floor(farmLevel / 10));
+  const qty  = minY + Math.floor(Math.random() * (maxY - minY + 1));
+  const xp   = Math.floor(30 + farmLevel * 1.5);
+  state.inventory[state.farming.herb] = (state.inventory[state.farming.herb] || 0) + qty;
+  state.itemNames[state.farming.herb]  = state.farming.herbName;
+  const farmSkill = state.skills['farming'];
+  const lvBefore  = levelForXp(farmSkill.xp);
+  farmSkill.xp   += xp;
+  const lvAfter   = levelForXp(farmSkill.xp);
+  if (lvAfter > lvBefore) log(`🎉 Farming level ${lvAfter}!`);
+  log(`Harvested ${qty} ${state.farming.herbName}. (+${xp} xp)`);
+  const seedId = state.farming.seed;
+  Object.assign(state.farming, { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false });
+  if (state.farming.autoReplant && (state.inventory[seedId] || 0) > 0) plantSeed(seedId);
+  else render();
+}
+
+function renderFarmTab(){
+  const el = $('inventory');
+  el.innerHTML = '';
+  const f = state.farming;
+
+  if (!f.seed) {
+    const msg = document.createElement('div');
+    msg.style.cssText = 'color:#aaa;margin-bottom:10px;';
+    msg.textContent = 'No crop planted.';
+    el.appendChild(msg);
+
+    const available = SEEDS.filter(s => (state.inventory[s.id] || 0) > 0);
+    if (available.length === 0) {
+      const hint = document.createElement('div');
+      hint.style.color = '#666';
+      hint.textContent = 'No seeds in inventory.';
+      el.appendChild(hint);
+    } else {
+      available.forEach(s => {
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;';
+        const lbl = document.createElement('span');
+        lbl.textContent = `${s.name} ×${state.inventory[s.id]}`;
+        const btn = document.createElement('button');
+        btn.className = 'mini';
+        btn.textContent = 'Plant';
+        btn.onclick = () => plantSeed(s.id);
+        row.appendChild(lbl);
+        row.appendChild(btn);
+        el.appendChild(row);
+      });
+    }
+  } else {
+    const elapsed   = Date.now() - f.plantedAt;
+    const pct       = Math.min(100, Math.floor(elapsed / FARM_GROW_MS * 100));
+    const remaining = Math.max(0, Math.ceil((f.plantedAt + FARM_GROW_MS - Date.now()) / 1000));
+    const mins = Math.floor(remaining / 60);
+    const secs = remaining % 60;
+
+    const nameDiv = document.createElement('div');
+    nameDiv.style.cssText = 'font-weight:bold;margin-bottom:8px;';
+    nameDiv.textContent = f.ready ? `${f.seedName} — READY!` : `${f.seedName} growing...`;
+    el.appendChild(nameDiv);
+
+    if (!f.ready) {
+      const barWrap = document.createElement('div');
+      barWrap.style.cssText = 'background:#333;border-radius:4px;height:12px;margin-bottom:6px;overflow:hidden;';
+      const bar = document.createElement('div');
+      bar.style.cssText = `background:#4ade80;height:100%;width:${pct}%;`;
+      barWrap.appendChild(bar);
+      el.appendChild(barWrap);
+      const timeDiv = document.createElement('div');
+      timeDiv.style.cssText = 'color:#aaa;font-size:0.85em;margin-bottom:10px;';
+      timeDiv.textContent = `${mins}m ${secs < 10 ? '0' : ''}${secs}s remaining`;
+      el.appendChild(timeDiv);
+    } else {
+      const btn = document.createElement('button');
+      btn.className = 'mini';
+      btn.style.cssText = 'background:#4ade80;color:#000;margin-bottom:10px;';
+      btn.textContent = 'Harvest';
+      btn.onclick = harvestCrop;
+      el.appendChild(btn);
+    }
+  }
+
+  // Auto-replant toggle (shown whenever a crop is in play)
+  if (f.seed) {
+    const tog = document.createElement('div');
+    tog.style.cssText = 'display:flex;align-items:center;gap:8px;margin-top:4px;';
+    tog.innerHTML = `<span>Auto-replant:</span>
+      <button class="mini" onclick="state.farming.autoReplant=!state.farming.autoReplant;render()">
+        ${f.autoReplant ? 'ON' : 'OFF'}
+      </button>`;
+    el.appendChild(tog);
+  }
 }
 
 function calcFloorSecs(action){
@@ -934,6 +1059,13 @@ function tick(){
         state.progress = 0;
         completeAction(action);
       }
+    }
+  }
+  // Farming: detect crop becoming ready and log once
+  if (state.farming?.seed && !state.farming.ready) {
+    if (Date.now() >= state.farming.plantedAt + FARM_GROW_MS) {
+      state.farming.ready = true;
+      log(`Your ${state.farming.seedName} are ready to harvest!`);
     }
   }
   render();
@@ -1294,9 +1426,17 @@ function renderSkillList(){
       const row = document.createElement('div');
       row.className = 'skill-row ' + (s.implemented ? 'playable' : 'locked');
       if (state.current && state.current.skillId === s.id) row.classList.add('active');
-      row.innerHTML = `<span>${s.name}${s.implemented ? '' : ' <span class="lvl">(soon)</span>'}</span>
-                       <span class="lvl">${lvl}/${s.maxLevel}</span>`;
-      if (s.implemented) row.onclick = () => selectSkill(s.id);
+      if (s.background) {
+        let badge = '';
+        if (s.id === 'farming' && state.farming?.seed)
+          badge = state.farming.ready ? ' 🌿' : ' 🌱';
+        row.innerHTML = `<span>${s.name}</span><span class="lvl">${lvl}/${s.maxLevel}${badge}</span>`;
+        row.onclick = () => setInvTab('farm');
+      } else {
+        row.innerHTML = `<span>${s.name}${s.implemented ? '' : ' <span class="lvl">(soon)</span>'}</span>
+                         <span class="lvl">${lvl}/${s.maxLevel}</span>`;
+        if (s.implemented) row.onclick = () => selectSkill(s.id);
+      }
       el.appendChild(row);
     });
   });
@@ -1406,6 +1546,8 @@ function renderInventory(){
   $('tabAll').classList.toggle('active', inventoryTab === 'all');
   $('tabOpen').classList.toggle('active', inventoryTab === 'open');
   $('tabEquip').classList.toggle('active', inventoryTab === 'equip');
+  $('tabFarm').classList.toggle('active', inventoryTab === 'farm');
+  if (inventoryTab === 'farm'){ renderFarmTab(); return; }
 
   if (inventoryTab === 'equip'){
     const stats = calcStats();
@@ -1510,6 +1652,11 @@ function init(){
   else { log('Save loaded.'); }
 
   const offline = applyOffline();
+  // Farming: mark ready if crop matured while offline (timestamps survive saves)
+  if (state.farming?.seed && !state.farming.ready &&
+      Date.now() >= state.farming.plantedAt + FARM_GROW_MS) {
+    state.farming.ready = true;
+  }
   showOffline(offline);
 
   render();

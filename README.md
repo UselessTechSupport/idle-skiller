@@ -10,7 +10,7 @@ Progress is saved automatically to `localStorage` every 30 seconds. Offline gain
 
 ## Current state
 
-**11 of 29 skills implemented.** The game is actively in development.
+**12 of 29 skills implemented.** The game is actively in development.
 
 ### Implemented skills
 
@@ -25,7 +25,8 @@ Progress is saved automatically to `localStorage` every 30 seconds. Offline gain
 | Cooking | Artisan | 16 fish (Shrimps → Sailfish) | Burn mechanic (scales with level); cooking gauntlets halve burn chance |
 | Fletching | Artisan | 47 actions | Headless arrows, unstrung bows, unstrung crossbows, arrow assembly; splinter mechanic on log consumption |
 | Crafting | Artisan | 53 actions | Gem cutting (7 gems), jewellery (rings + amulets), leather armour, dragonhide armour (5 tiers), mage armour (3 tiers); action categories shown as headers in UI |
-| Herblore | Artisan | 21 actions (7 potion types × 3 tiers) | Herbs from future Farming/combat drops; consumption system deferred |
+| Farming | Gathering | 7 herb seeds (background skill) | Grows in 5 min; harvest for 3–15 herbs; auto-replant toggle; runs while doing other skills |
+| Herblore | Artisan | 21 actions (7 potion types × 3 tiers) | Herbs from Farming/combat drops; consumption system deferred |
 | Dungeoneering | Support | 12 floors (F1 → Occult) | Earns tokens; token shop for passive bonuses and special items |
 
 ### Engine features
@@ -43,7 +44,7 @@ Progress is saved automatically to `localStorage` every 30 seconds. Offline gain
 
 ### Not yet implemented (planned)
 
-**Gathering:** Farming, Hunter
+**Gathering:** Hunter
 
 **Artisan:** Runecrafting, Construction
 - Fletching stringing (bowstring + unstrung bow → strung bow, 0 XP) — deferred
