@@ -957,6 +957,15 @@ const EQUIP_SLOTS = {
   dragonstone_amulet:'neck', onyx_amulet:'neck', hydrix_amulet:'neck', gold_amulet:'neck',
 };
 
+const FOOD_HEALS = {
+  cooked_shrimps:3, cooked_sardine:4, cooked_anchovies:3,
+  cooked_herring:5, cooked_trout:8, cooked_pike:10,
+  cooked_salmon:12, cooked_tuna:15, cooked_lobster:20,
+  cooked_swordfish:25, cooked_monkfish:30, cooked_shark:40,
+  cooked_great_white_shark:45, cooked_cavefish:50,
+  cooked_rocktail:55, cooked_sailfish:70,
+};
+
 const STAT_DEFS = [
   {key:'attack',     label:'Attack'},
   {key:'range',      label:'Range'},
@@ -1014,7 +1023,7 @@ function freshState(){
     equipment: { head:null, weapon:null, neck:null, cape:null, ring:null, body:null, gloves:null, legs:null, feet:null, pet:null },
     stats:     { attack:1, range:1, mage:1, defence:1, necromancy:1, prayer:1, summoning:1, dropRate:0 },
     farming:   { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false },
-    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0 },
+    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[] },
     lastSaved: Date.now(),
   };
 }
@@ -1084,6 +1093,30 @@ function unequipItem(slot){
   if (!itemId) return;
   state.inventory[itemId] = (state.inventory[itemId] || 0) + 1;
   state.equipment[slot] = null;
+  render();
+}
+
+function eatFood(index){
+  const itemId = state.combat.foodQueue[index];
+  if (!itemId) return;
+  if ((state.inventory[itemId] || 0) < 1){ log(`No ${state.itemNames[itemId] || itemId} left.`); return; }
+  const heal = FOOD_HEALS[itemId] || 0;
+  state.inventory[itemId]--;
+  if (state.inventory[itemId] <= 0) delete state.inventory[itemId];
+  state.combat.hp = Math.min(state.combat.maxHp, state.combat.hp + heal);
+  log(`Ate ${state.itemNames[itemId] || itemId} (+${heal} HP). [${state.combat.hp}/${state.combat.maxHp}]`);
+  render();
+}
+
+function addFoodToQueue(itemId){
+  if (!FOOD_HEALS[itemId]) return;
+  if (state.combat.foodQueue.length >= 5) return;
+  state.combat.foodQueue.push(itemId);
+  render();
+}
+
+function removeFoodFromQueue(index){
+  state.combat.foodQueue.splice(index, 1);
   render();
 }
 
@@ -1197,6 +1230,70 @@ function renderCombatPanel(){
       <div style="height:100%;width:${hpPct}%;background:#22c55e;border-radius:4px;transition:width .3s;"></div>
     </div>`;
   list.appendChild(hpDiv);
+
+  // Food queue section
+  const foodSection = document.createElement('div');
+  foodSection.style.cssText = 'margin-bottom:10px;';
+
+  const foodLabel = document.createElement('div');
+  foodLabel.style.cssText = 'font-size:12px;color:var(--dim);margin-bottom:4px;';
+  foodLabel.textContent = `Food (${state.combat.foodQueue.length}/5)`;
+  foodSection.appendChild(foodLabel);
+
+  const slotsRow = document.createElement('div');
+  slotsRow.style.cssText = 'display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;';
+  state.combat.foodQueue.forEach((itemId, i) => {
+    const qty  = state.inventory[itemId] || 0;
+    const heal = FOOD_HEALS[itemId] || 0;
+    const pill = document.createElement('div');
+    pill.style.cssText = 'display:flex;align-items:center;gap:3px;background:var(--panel2);border-radius:4px;padding:2px 6px;font-size:12px;';
+    const nameSpan = document.createElement('span');
+    nameSpan.title = `+${heal} HP`;
+    nameSpan.textContent = `${state.itemNames[itemId] || itemId} ×${qty}`;
+    const eatBtn = document.createElement('button');
+    eatBtn.className = 'mini';
+    eatBtn.style.cssText = 'padding:1px 6px;font-size:11px;';
+    eatBtn.textContent = `Eat (+${heal})`;
+    eatBtn.disabled = qty < 1;
+    eatBtn.onclick = () => eatFood(i);
+    const rmBtn = document.createElement('button');
+    rmBtn.className = 'mini';
+    rmBtn.style.cssText = 'padding:1px 5px;font-size:11px;color:var(--dim);';
+    rmBtn.textContent = '×';
+    rmBtn.onclick = () => removeFoodFromQueue(i);
+    pill.appendChild(nameSpan);
+    pill.appendChild(eatBtn);
+    pill.appendChild(rmBtn);
+    slotsRow.appendChild(pill);
+  });
+  foodSection.appendChild(slotsRow);
+
+  if (state.combat.foodQueue.length < 5){
+    const availableFood = Object.keys(state.inventory).filter(
+      k => FOOD_HEALS[k] && state.inventory[k] > 0
+    );
+    if (availableFood.length > 0){
+      const addRow = document.createElement('div');
+      addRow.style.cssText = 'display:flex;gap:4px;';
+      const sel = document.createElement('select');
+      sel.style.cssText = 'flex:1;background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:3px;font-size:12px;';
+      availableFood.forEach(k => {
+        const opt = document.createElement('option');
+        opt.value = k;
+        opt.textContent = `${state.itemNames[k] || k} ×${state.inventory[k]} (+${FOOD_HEALS[k]} HP)`;
+        sel.appendChild(opt);
+      });
+      const addBtn = document.createElement('button');
+      addBtn.className = 'mini';
+      addBtn.textContent = '+ Queue';
+      addBtn.onclick = () => addFoodToQueue(sel.value);
+      addRow.appendChild(sel);
+      addRow.appendChild(addBtn);
+      foodSection.appendChild(addRow);
+    }
+  }
+
+  list.appendChild(foodSection);
 
   // Style selector
   const styleBar = document.createElement('div');
@@ -1419,9 +1516,8 @@ function tick(){
   // Passive HP regen — 1% maxHp every 10s
   if (state.combat.maxHp && state.combat.hp < state.combat.maxHp){
     const now = Date.now();
-    if (now - (state.combat.lastRegen || 0) >= 10000){
-      state.combat.hp = Math.min(state.combat.maxHp,
-        state.combat.hp + Math.max(1, Math.floor(state.combat.maxHp * 0.01)));
+    if (now - (state.combat.lastRegen || 0) >= 30000){
+      state.combat.hp = Math.min(state.combat.maxHp, state.combat.hp + 1);
       state.combat.lastRegen = now;
     }
   }
@@ -2085,6 +2181,7 @@ function init(){
   if (!state.combat.hp || state.combat.hp <= 0) state.combat.hp = state.combat.maxHp;
   state.combat.hp = Math.min(state.combat.hp, state.combat.maxHp);
   if (!('weapon' in state.equipment)) state.equipment.weapon = null;
+  if (!Array.isArray(state.combat.foodQueue)) state.combat.foodQueue = [];
 
   // Farming: mark ready if crop matured while offline (timestamps survive saves)
   if (state.farming?.seed && !state.farming.ready &&
