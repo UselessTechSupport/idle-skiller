@@ -957,6 +957,10 @@ const EQUIP_SLOTS = {
   dragonstone_amulet:'neck', onyx_amulet:'neck', hydrix_amulet:'neck', gold_amulet:'neck',
 };
 
+const DG_SHOP = [
+  { id:'auto_eat', name:'Auto-Eat', desc:'Automatically eats queued food when HP drops below the set threshold.', cost:500 },
+];
+
 const FOOD_HEALS = {
   cooked_shrimps:3, cooked_sardine:4, cooked_anchovies:3,
   cooked_herring:5, cooked_trout:8, cooked_pike:10,
@@ -1023,7 +1027,8 @@ function freshState(){
     equipment: { head:null, weapon:null, neck:null, cape:null, ring:null, body:null, gloves:null, legs:null, feet:null, pet:null },
     stats:     { attack:1, range:1, mage:1, defence:1, necromancy:1, prayer:1, summoning:1, dropRate:0 },
     farming:   { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false },
-    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[] },
+    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50 },
+    upgrades:  {},
     lastSaved: Date.now(),
   };
 }
@@ -1120,6 +1125,17 @@ function removeFoodFromQueue(index){
   render();
 }
 
+function buyDgUpgrade(id){
+  const item = DG_SHOP.find(i => i.id === id);
+  if (!item || state.upgrades[id]) return;
+  const tokens = state.inventory['dg_tokens'] || 0;
+  if (tokens < item.cost){ log(`Need ${item.cost} tokens.`); return; }
+  state.inventory['dg_tokens'] -= item.cost;
+  state.upgrades[id] = true;
+  log(`Purchased: ${item.name}!`);
+  render();
+}
+
 function combatTick(){
   const action = getAction(state.current.skillId, state.current.actionId);
   if (!action) return;
@@ -1131,6 +1147,14 @@ function combatTick(){
   state.combat.mobHp = Math.max(0, state.combat.mobHp - playerDmg);
   const mobDmg = calcMobDamage(action);
   state.combat.hp = Math.max(0, state.combat.hp - mobDmg);
+  // Auto-eat: fire before death check so food can save the player
+  if (state.upgrades?.auto_eat && state.combat.foodQueue.length > 0){
+    const threshold = state.combat.maxHp * ((state.combat.autoEatThreshold || 50) / 100);
+    if (state.combat.hp < threshold){
+      const idx = state.combat.foodQueue.findIndex(id => (state.inventory[id] || 0) > 0);
+      if (idx >= 0) eatFood(idx);
+    }
+  }
   if (state.combat.hp <= 0){
     log('☠️ You have been defeated! You retreat to safety.');
     state.current      = null;
@@ -1267,6 +1291,28 @@ function renderCombatPanel(){
     slotsRow.appendChild(pill);
   });
   foodSection.appendChild(slotsRow);
+
+  // Auto-eat threshold selector — visible only after upgrade purchased
+  if (state.upgrades?.auto_eat){
+    const aeRow = document.createElement('div');
+    aeRow.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:6px;';
+    const aeLabel = document.createElement('span');
+    aeLabel.style.color = 'var(--dim)';
+    aeLabel.textContent = 'Auto-eat at:';
+    const thSel = document.createElement('select');
+    thSel.style.cssText = 'background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:2px 4px;font-size:12px;';
+    [25, 50, 60, 75, 90].forEach(pct => {
+      const o = document.createElement('option');
+      o.value = pct;
+      o.textContent = pct + '% HP';
+      o.selected = (state.combat.autoEatThreshold || 50) === pct;
+      thSel.appendChild(o);
+    });
+    thSel.onchange = () => { state.combat.autoEatThreshold = +thSel.value; };
+    aeRow.appendChild(aeLabel);
+    aeRow.appendChild(thSel);
+    foodSection.appendChild(aeRow);
+  }
 
   if (state.combat.foodQueue.length < 5){
     const availableFood = Object.keys(state.inventory).filter(
@@ -1833,11 +1879,37 @@ function render(){
 function renderTokenShop(){
   const el = $('tokenShopContent');
   const tokens = state.inventory['dg_tokens'] || 0;
-  el.innerHTML = `
-    <div class="token-balance">${tokens.toLocaleString()} <span>Dungeoneering tokens</span></div>
-    <div class="token-shop-grid">
-      <div class="reward-placeholder">Rewards coming soon...</div>
-    </div>`;
+  el.innerHTML = `<div class="token-balance">${tokens.toLocaleString()} <span>Dungeoneering tokens</span></div>`;
+
+  const grid = document.createElement('div');
+  grid.className = 'token-shop-grid';
+
+  DG_SHOP.forEach(item => {
+    const owned = !!state.upgrades[item.id];
+    const canAfford = tokens >= item.cost;
+    const card = document.createElement('div');
+    card.className = 'upgrade-tier' + (owned ? ' equipped' : '');
+    card.style.cssText = 'flex-direction:column;align-items:flex-start;gap:4px;';
+    card.innerHTML = `
+      <div style="font-weight:600;">${item.name}</div>
+      <div style="font-size:12px;color:var(--dim);">${item.desc}</div>
+      <div style="font-size:12px;color:var(--dim);">Cost: ${item.cost.toLocaleString()} tokens</div>`;
+    const btn = document.createElement('button');
+    btn.className = 'mini';
+    btn.style.marginTop = '4px';
+    if (owned){
+      btn.textContent = '✓ Owned';
+      btn.disabled = true;
+    } else {
+      btn.textContent = canAfford ? 'Buy' : `Need ${item.cost - tokens} more`;
+      btn.disabled = !canAfford;
+      btn.onclick = () => buyDgUpgrade(item.id);
+    }
+    card.appendChild(btn);
+    grid.appendChild(card);
+  });
+
+  el.appendChild(grid);
 }
 
 function renderUpgradeShop(){
@@ -2182,6 +2254,8 @@ function init(){
   state.combat.hp = Math.min(state.combat.hp, state.combat.maxHp);
   if (!('weapon' in state.equipment)) state.equipment.weapon = null;
   if (!Array.isArray(state.combat.foodQueue)) state.combat.foodQueue = [];
+  if (!state.upgrades) state.upgrades = {};
+  if (state.combat.autoEatThreshold == null) state.combat.autoEatThreshold = 50;
 
   // Farming: mark ready if crop matured while offline (timestamps survive saves)
   if (state.farming?.seed && !state.farming.ready &&
