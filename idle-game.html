@@ -210,7 +210,10 @@
     <div class="now-doing" id="nowDoing">Not chopping anything. Pick a tree below.</div>
     <div class="bar"><div id="actionBar"></div></div>
 
-    <div id="treeList" style="margin-top:12px;"></div>
+    <div id="actionFilterBar" style="margin-bottom:6px;display:none;">
+      <button class="tab-btn" id="hideLockBtn">🔒 Hide locked</button>
+    </div>
+    <div id="treeList" style="margin-top:4px;"></div>
 
     <div class="footer-actions">
       <button class="mini" id="stopBtn">⏹ Stop</button>
@@ -518,17 +521,9 @@ const ACTIONS = {
     {id:'cook_sailfish',          name:'Cook sailfish',          label:'Sailfish cooked',          levelReq:99, xp:270, ticks:5, item:'cooked_sailfish',          itemName:'Cooked sailfish',          ingredients:[{item:'raw_sailfish',          count:1, name:'Raw sailfish'}]},
   ],
   fletching:[
-    // --- Headless arrow shafts (1 log → N headless arrows) ---
-    {id:'headless_from_logs',     name:'Fletch headless arrows',           label:'Headless arrows made', levelReq:1,   xp:1,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:15,  splinterable:true, ingredients:[{item:'normal_logs',        count:1, name:'Logs'}]},
-    {id:'headless_from_oak',      name:'Fletch headless arrows (oak)',     label:'Headless arrows made', levelReq:1,   xp:2,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:30,  splinterable:true, ingredients:[{item:'oak_logs',           count:1, name:'Oak logs'}]},
-    {id:'headless_from_willow',   name:'Fletch headless arrows (willow)',  label:'Headless arrows made', levelReq:20,  xp:3,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:45,  splinterable:true, ingredients:[{item:'willow_logs',        count:1, name:'Willow logs'}]},
-    {id:'headless_from_teak',     name:'Fletch headless arrows (teak)',    label:'Headless arrows made', levelReq:30,  xp:4.5,  ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:45,  splinterable:true, ingredients:[{item:'teak_logs',          count:1, name:'Teak logs'}]},
-    {id:'headless_from_maple',    name:'Fletch headless arrows (maple)',   label:'Headless arrows made', levelReq:35,  xp:6,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:60,  splinterable:true, ingredients:[{item:'maple_logs',         count:1, name:'Maple logs'}]},
-    {id:'headless_from_mahogany', name:'Fletch headless arrows (mahogany)',label:'Headless arrows made', levelReq:50,  xp:7.5,  ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:60,  splinterable:true, ingredients:[{item:'mahogany_logs',      count:1, name:'Mahogany logs'}]},
-    {id:'headless_from_yew',      name:'Fletch headless arrows (yew)',     label:'Headless arrows made', levelReq:60,  xp:9,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:75,  splinterable:true, ingredients:[{item:'yew_logs',           count:1, name:'Yew logs'}]},
-    {id:'headless_from_magic',    name:'Fletch headless arrows (magic)',   label:'Headless arrows made', levelReq:75,  xp:10.5, ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:90,  splinterable:true, ingredients:[{item:'magic_logs',         count:1, name:'Magic logs'}]},
-    {id:'headless_from_elder',    name:'Fletch headless arrows (elder)',   label:'Headless arrows made', levelReq:80,  xp:12,   ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:90,  splinterable:true, ingredients:[{item:'elder_logs',         count:1, name:'Elder logs'}]},
-    {id:'headless_from_eternal',  name:'Fletch headless arrows (eternal)', label:'Headless arrows made', levelReq:90,  xp:15,   ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:120, splinterable:true, ingredients:[{item:'eternal_magic_logs', count:1, name:'Eternal magic logs'}]},
+    // --- Headless arrow shafts (auto-uses best log in inventory) ---
+    {id:'headless_auto', name:'Fletch headless arrows', label:'Headless arrows made',
+     levelReq:1, xp:0, ticks:2, item:'headless_arrow', itemName:'Headless arrow', splinterable:true, autoLog:true},
     // --- Shortbows (unstrung) ---
     {id:'shortbow_u_logs',     name:'Fletch shortbow (u)',          label:'Shortbows fletched', levelReq:5,   xp:5,    ticks:3, item:'shortbow_u',          itemName:'Shortbow (u)',          splinterable:true, ingredients:[{item:'normal_logs',        count:1, name:'Logs'}]},
     {id:'shortbow_u_oak',      name:'Fletch oak shortbow (u)',      label:'Shortbows fletched', levelReq:20,  xp:16.5, ticks:3, item:'oak_shortbow_u',      itemName:'Oak shortbow (u)',      splinterable:true, ingredients:[{item:'oak_logs',           count:1, name:'Oak logs'}]},
@@ -934,6 +929,20 @@ const TOOLS = {
   ],
 };
 
+/* Headless-arrow log tiers (best-first for auto-select) */
+const HEADLESS_LOG_TIERS = [
+  {item:'eternal_magic_logs', name:'Eternal magic logs', levelReq:90, xp:15,  count:120},
+  {item:'elder_logs',         name:'Elder logs',         levelReq:80, xp:12,  count:90},
+  {item:'magic_logs',         name:'Magic logs',         levelReq:75, xp:10.5,count:90},
+  {item:'yew_logs',           name:'Yew logs',           levelReq:60, xp:9,   count:75},
+  {item:'mahogany_logs',      name:'Mahogany logs',      levelReq:50, xp:7.5, count:60},
+  {item:'maple_logs',         name:'Maple logs',         levelReq:35, xp:6,   count:60},
+  {item:'teak_logs',          name:'Teak logs',          levelReq:30, xp:4.5, count:45},
+  {item:'willow_logs',        name:'Willow logs',        levelReq:20, xp:3,   count:45},
+  {item:'oak_logs',           name:'Oak logs',           levelReq:1,  xp:2,   count:30},
+  {item:'normal_logs',        name:'Logs',               levelReq:1,  xp:1,   count:15},
+];
+
 /* Lookup helpers */
 const SKILL_BY_ID = Object.fromEntries(SKILL_ROADMAP.map(s => [s.id, s]));
 function getAction(skillId, actionId){
@@ -1115,6 +1124,7 @@ function rawLoad(k){ try{ return storageOK ? localStorage.getItem(k) : (memStore
 let state;
 let fireSpirit = null; // { expiresAt: timestamp } — transient, not persisted
 let wildernessEncounter = null; // { expiresAt, coins } — transient, not persisted
+let hideLockedActions = false;
 function freshState(){
   const skills = {};
   SKILL_ROADMAP.forEach(s => {
@@ -1790,6 +1800,26 @@ function completeAction(action, silent){
       return;
     }
   }
+  // Headless arrows: auto-select best available log
+  if (action.autoLog){
+    const fletchLevel = levelForXp(state.skills.fletching.xp);
+    const tier = HEADLESS_LOG_TIERS.find(
+      t => fletchLevel >= t.levelReq && (state.inventory[t.item] || 0) >= 1
+    );
+    if (!tier){ if (!silent) log('Out of logs — stopped.'); state.current = null; state.progress = 0; return; }
+    state.inventory[tier.item]--;
+    const failDef = FAIL_MECHANICS.fletching;
+    const noBadAt = 1 + failDef.zeroAt;
+    const splinterChance = Math.max(0, (noBadAt - fletchLevel) / failDef.zeroAt * failDef.chance);
+    if (Math.random() < splinterChance){
+      grantItem(failDef.product, failDef.productName);
+      if (!silent) log(failDef.msg);
+      return;
+    }
+    grantItem('headless_arrow', 'Headless arrow', tier.count);
+    grantXp('fletching', tier.xp, silent);
+    return;
+  }
   // Failure mechanics (cooking burn, fletching splinter, divination transmute fail)
   const failDef = FAIL_MECHANICS[state.current?.skillId];
   if (failDef && failDef.trigger(action)){
@@ -2040,7 +2070,7 @@ const $ = id => document.getElementById(id);
 let logLines = [];
 function log(msg){
   logLines.unshift(msg);
-  if (logLines.length > 30) logLines.pop();
+  if (logLines.length > 60) logLines.pop();
   renderLog();
 }
 
@@ -2283,8 +2313,13 @@ function renderActiveSkill(){
     thievDiv.innerHTML = `Agility bonus: <b>+${bonusPick}% pick</b> · <b>+${bonusLock}% lock speed</b> · <b>${bonusLoot}%</b> extra loot${slipStr}`;
     list.appendChild(thievDiv);
   }
+  const hasLocked = actions.some(a => lvl < a.levelReq);
+  $('actionFilterBar').style.display = hasLocked ? 'block' : 'none';
+  $('hideLockBtn').classList.toggle('active', hideLockedActions);
+  $('hideLockBtn').textContent = hideLockedActions ? '🔓 Show all' : '🔒 Hide locked';
+  const visibleActions = hideLockedActions ? actions.filter(a => lvl >= a.levelReq) : actions;
   let lastCat = null;
-  actions.forEach(a => {
+  visibleActions.forEach(a => {
     if (a.category && a.category !== lastCat){
       lastCat = a.category;
       const hdr = document.createElement('div');
@@ -2327,16 +2362,28 @@ function renderActiveSkill(){
       const fs = calcFloorSecs(a);
       const fm = Math.floor(fs / 60), fsc = Math.round(fs % 60);
       const timeStr = fm > 0 ? `${fm}m${fsc > 0 ? ' ' + fsc + 's' : ''}` : `${fsc}s`;
-      metaContent = `${a.xp.toLocaleString()} xp · ${timeStr}`;
+      const dgXphr = Math.round(a.xp * 6000 / Math.max(1, calcFloorSecs(a) / (TICK_MS/1000)));
+      metaContent = `${a.xp.toLocaleString()} xp · ${timeStr} · ${dgXphr.toLocaleString()} xp/hr`;
+    } else if (a.autoLog){
+      const fletchLevel = levelForXp(state.skills[s.id].xp);
+      const tier = HEADLESS_LOG_TIERS.find(
+        t => fletchLevel >= t.levelReq && (state.inventory[t.item] || 0) >= 1
+      );
+      const tierStr = tier
+        ? `${tier.name} → ${tier.count} arrows, ${tier.xp} xp`
+        : 'No logs in inventory';
+      metaContent = `Uses best log: ${tierStr} · ${(a.ticks*TICK_MS/1000).toFixed(1)}s`;
     } else if (a.xpBase != null){
       const curAgilLevel = levelForXp(state.skills[s.id].xp);
       const scaledXp = a.xpBase + curAgilLevel * (a.xpPerLevel || 0);
       const coinBadge = a.coinReward ? ` · 🪙 ${a.coinReward}` : '';
       const riskBadge = a.wilderness ? ' · <span style="color:#f87171">⚔️ Risk</span>' : '';
-      metaContent = `${scaledXp} xp · ${(a.ticks*TICK_MS/1000).toFixed(1)}s${coinBadge}${riskBadge}`;
+      const xphr = Math.round(scaledXp * 6000 / a.ticks);
+      metaContent = `${scaledXp} xp · ${(a.ticks*TICK_MS/1000).toFixed(1)}s${coinBadge}${riskBadge} · ${xphr.toLocaleString()} xp/hr`;
     } else {
       const coinBadge = a.coinReward ? ` · 🪙 ${a.coinReward}` : '';
-      metaContent = `${ingLine}${a.xp} xp · ${(a.ticks*TICK_MS/1000).toFixed(1)}s${coinBadge}`;
+      const xphr = a.xp > 0 ? ` · ${Math.round(a.xp * 6000 / a.ticks).toLocaleString()} xp/hr` : '';
+      metaContent = `${ingLine}${a.xp} xp · ${(a.ticks*TICK_MS/1000).toFixed(1)}s${coinBadge}${xphr}`;
     }
     btn.innerHTML = `<span>${a.name}${unlocked ? '' : ` 🔒 Lv ${a.levelReq}`}</span>
                      <span class="meta">${metaContent}</span>`;
@@ -2489,6 +2536,7 @@ function init(){
   if (!state.quests) state.quests = {};
   if (state.current?.skillId === 'thieving' && state.current.stunTicks)
     state.current.stunTicks = 0; // don't resume mid-stun after reload
+  if (state.current?.actionId?.startsWith('headless_from_')) state.current.actionId = 'headless_auto';
 
   // Farming: mark ready if crop matured while offline (timestamps survive saves)
   if (state.farming?.seed && !state.farming.ready &&
@@ -2523,6 +2571,7 @@ $('catchSpiritBtn').onclick = () => {
   log('🔥 You caught the fire spirit!');
   render();
 };
+$('hideLockBtn').onclick = () => { hideLockedActions = !hideLockedActions; renderActiveSkill(); };
 $('rollPkBtn').onclick = () => {
   if (!wildernessEncounter) return;
   const agilLevel = levelForXp(state.skills.agility.xp);
