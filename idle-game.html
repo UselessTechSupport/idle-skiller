@@ -138,6 +138,11 @@
   .tab-btn:hover:not(.active){color:var(--text);}
   .inv-row .mini{padding:3px 8px; font-size:12px;}
 
+  /* Crafting category headers */
+  .action-category-header{font-size:12px; font-weight:600; color:var(--dim); text-transform:uppercase;
+    letter-spacing:0.06em; padding:14px 4px 4px; border-bottom:1px solid var(--border); margin-bottom:4px;}
+  .action-category-header:first-child{padding-top:2px;}
+
   /* Upgrade shop */
   .upgrade-shop-grid{display:grid; gap:14px; grid-template-columns:1fr;}
   @media(min-width:600px){.upgrade-shop-grid{grid-template-columns:1fr 1fr;}}
@@ -310,7 +315,7 @@ const SKILL_ROADMAP = [
   {id:'hunter',       name:'Hunter',       type:'gathering', maxLevel:99,  implemented:false},
   {id:'divination',   name:'Divination',   type:'gathering', maxLevel:99,  implemented:false},
   // Artisan (8)
-  {id:'crafting',     name:'Crafting',     type:'artisan', maxLevel:110, implemented:false},
+  {id:'crafting',     name:'Crafting',     type:'artisan', maxLevel:110, implemented:true},
   {id:'fletching',    name:'Fletching',    type:'artisan', maxLevel:110, implemented:true},
   {id:'smithing',     name:'Smithing',     type:'artisan', maxLevel:110, implemented:true},
   {id:'cooking',      name:'Cooking',      type:'artisan', maxLevel:99,  implemented:true},
@@ -519,6 +524,70 @@ const ACTIONS = {
     {id:'arrows_adamant', name:'Fletch adamant arrows', label:'Adamant arrows made', levelReq:60, xp:112.5, ticks:3, item:'adamant_arrow', itemName:'Adamant arrow', count:15, ingredients:[{item:'headless_arrow', count:15, name:'Headless arrows'},{item:'adamant_arrowhead', count:15, name:'Adamant arrowheads'}]},
     {id:'arrows_rune',    name:'Fletch rune arrows',    label:'Rune arrows made',    levelReq:75, xp:150,   ticks:3, item:'rune_arrow',    itemName:'Rune arrow',    count:15, ingredients:[{item:'headless_arrow', count:15, name:'Headless arrows'},{item:'rune_arrowhead',    count:15, name:'Rune arrowheads'}]},
     {id:'arrows_dragon',  name:'Fletch dragon arrows',  label:'Dragon arrows made',  levelReq:90, xp:187.5, ticks:3, item:'dragon_arrow',  itemName:'Dragon arrow',  count:15, ingredients:[{item:'headless_arrow', count:15, name:'Headless arrows'},{item:'dragon_arrowhead',  count:15, name:'Dragon arrowheads'}]},
+  ],
+  crafting:[
+    // --- Gem Cutting ---
+    {id:'cut_sapphire',    name:'Cut sapphire',    label:'Sapphires cut',    levelReq:20,  xp:50,    ticks:2, item:'sapphire',    itemName:'Sapphire',    category:'Gem Cutting', ingredients:[{item:'uncut_sapphire',    count:1, name:'Uncut sapphire'}]},
+    {id:'cut_emerald',     name:'Cut emerald',     label:'Emeralds cut',     levelReq:27,  xp:67.5,  ticks:2, item:'emerald',     itemName:'Emerald',     category:'Gem Cutting', ingredients:[{item:'uncut_emerald',     count:1, name:'Uncut emerald'}]},
+    {id:'cut_ruby',        name:'Cut ruby',        label:'Rubies cut',       levelReq:34,  xp:85,    ticks:2, item:'ruby',        itemName:'Ruby',        category:'Gem Cutting', ingredients:[{item:'uncut_ruby',        count:1, name:'Uncut ruby'}]},
+    {id:'cut_diamond',     name:'Cut diamond',     label:'Diamonds cut',     levelReq:43,  xp:107.5, ticks:2, item:'diamond',     itemName:'Diamond',     category:'Gem Cutting', ingredients:[{item:'uncut_diamond',     count:1, name:'Uncut diamond'}]},
+    {id:'cut_dragonstone', name:'Cut dragonstone', label:'Dragonstones cut', levelReq:55,  xp:137.5, ticks:2, item:'dragonstone', itemName:'Dragonstone', category:'Gem Cutting', ingredients:[{item:'uncut_dragonstone', count:1, name:'Uncut dragonstone'}]},
+    {id:'cut_onyx',        name:'Cut onyx',        label:'Onyx cut',         levelReq:67,  xp:167.5, ticks:2, item:'onyx',        itemName:'Onyx',        category:'Gem Cutting', ingredients:[{item:'uncut_onyx',        count:1, name:'Uncut onyx'}]},
+    {id:'cut_hydrix',      name:'Cut hydrix',      label:'Hydrix cut',       levelReq:79,  xp:197.5, ticks:2, item:'hydrix',      itemName:'Hydrix',      category:'Gem Cutting', ingredients:[{item:'uncut_hydrix',      count:1, name:'Uncut hydrix'}]},
+
+    // --- Jewellery ---
+    {id:'craft_gold_ring',          name:'Gold ring',          label:'Gold rings made',          levelReq:5,   xp:15,  ticks:2, item:'gold_ring',          itemName:'Gold ring',          category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'}]},
+    {id:'craft_gold_amulet',        name:'Gold amulet',        label:'Gold amulets made',        levelReq:8,   xp:30,  ticks:2, item:'gold_amulet',        itemName:'Gold amulet',        category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'}]},
+    {id:'craft_sapphire_ring',      name:'Sapphire ring',      label:'Sapphire rings made',      levelReq:20,  xp:40,  ticks:2, item:'sapphire_ring',      itemName:'Sapphire ring',      category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'sapphire',    count:1,name:'Sapphire'}]},
+    {id:'craft_sapphire_amulet',    name:'Sapphire amulet',    label:'Sapphire amulets made',    levelReq:22,  xp:65,  ticks:2, item:'sapphire_amulet',    itemName:'Sapphire amulet',    category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'sapphire',    count:1,name:'Sapphire'}]},
+    {id:'craft_emerald_ring',       name:'Emerald ring',       label:'Emerald rings made',       levelReq:27,  xp:55,  ticks:2, item:'emerald_ring',       itemName:'Emerald ring',       category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'emerald',     count:1,name:'Emerald'}]},
+    {id:'craft_emerald_amulet',     name:'Emerald amulet',     label:'Emerald amulets made',     levelReq:31,  xp:70,  ticks:2, item:'emerald_amulet',     itemName:'Emerald amulet',     category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'emerald',     count:1,name:'Emerald'}]},
+    {id:'craft_ruby_ring',          name:'Ruby ring',          label:'Ruby rings made',          levelReq:34,  xp:70,  ticks:2, item:'ruby_ring',          itemName:'Ruby ring',          category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'ruby',        count:1,name:'Ruby'}]},
+    {id:'craft_ruby_amulet',        name:'Ruby amulet',        label:'Ruby amulets made',        levelReq:50,  xp:85,  ticks:2, item:'ruby_amulet',        itemName:'Ruby amulet',        category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'ruby',        count:1,name:'Ruby'}]},
+    {id:'craft_diamond_ring',       name:'Diamond ring',       label:'Diamond rings made',       levelReq:43,  xp:85,  ticks:2, item:'diamond_ring',       itemName:'Diamond ring',       category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'diamond',     count:1,name:'Diamond'}]},
+    {id:'craft_diamond_amulet',     name:'Diamond amulet',     label:'Diamond amulets made',     levelReq:70,  xp:100, ticks:2, item:'diamond_amulet',     itemName:'Diamond amulet',     category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'diamond',     count:1,name:'Diamond'}]},
+    {id:'craft_dragonstone_ring',   name:'Dragonstone ring',   label:'Dragonstone rings made',   levelReq:55,  xp:100, ticks:2, item:'dragonstone_ring',   itemName:'Dragonstone ring',   category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'dragonstone', count:1,name:'Dragonstone'}]},
+    {id:'craft_dragonstone_amulet', name:'Dragonstone amulet', label:'Dragonstone amulets made', levelReq:80,  xp:150, ticks:2, item:'dragonstone_amulet', itemName:'Dragonstone amulet', category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'dragonstone', count:1,name:'Dragonstone'}]},
+    {id:'craft_onyx_ring',          name:'Onyx ring',          label:'Onyx rings made',          levelReq:67,  xp:115, ticks:2, item:'onyx_ring',          itemName:'Onyx ring',          category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'onyx',        count:1,name:'Onyx'}]},
+    {id:'craft_onyx_amulet',        name:'Onyx amulet',        label:'Onyx amulets made',        levelReq:90,  xp:165, ticks:2, item:'onyx_amulet',        itemName:'Onyx amulet',        category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'onyx',        count:1,name:'Onyx'}]},
+    {id:'craft_hydrix_ring',        name:'Hydrix ring',        label:'Hydrix rings made',        levelReq:79,  xp:130, ticks:2, item:'hydrix_ring',        itemName:'Hydrix ring',        category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'hydrix',      count:1,name:'Hydrix'}]},
+    {id:'craft_hydrix_amulet',      name:'Hydrix amulet',      label:'Hydrix amulets made',      levelReq:100, xp:180, ticks:2, item:'hydrix_amulet',      itemName:'Hydrix amulet',      category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'hydrix',      count:1,name:'Hydrix'}]},
+
+    // --- Leather Armour (leather from future combat/hunter) ---
+    {id:'craft_leather_gloves',    name:'Leather gloves',    label:'Leather gloves made',    levelReq:1,  xp:13.8,  ticks:2, item:'leather_gloves',    itemName:'Leather gloves',    category:'Leather Armour', ingredients:[{item:'leather',count:1,name:'Leather'}]},
+    {id:'craft_leather_boots',     name:'Leather boots',     label:'Leather boots made',     levelReq:7,  xp:16.25, ticks:2, item:'leather_boots',     itemName:'Leather boots',     category:'Leather Armour', ingredients:[{item:'leather',count:1,name:'Leather'}]},
+    {id:'craft_leather_cowl',      name:'Leather cowl',      label:'Leather cowls made',     levelReq:9,  xp:18.5,  ticks:2, item:'leather_cowl',      itemName:'Leather cowl',      category:'Leather Armour', ingredients:[{item:'leather',count:1,name:'Leather'}]},
+    {id:'craft_leather_vambraces', name:'Leather vambraces', label:'Leather vambraces made', levelReq:11, xp:22,    ticks:2, item:'leather_vambraces', itemName:'Leather vambraces', category:'Leather Armour', ingredients:[{item:'leather',count:1,name:'Leather'}]},
+    {id:'craft_leather_body',      name:'Leather body',      label:'Leather bodies made',    levelReq:14, xp:25,    ticks:2, item:'leather_body',      itemName:'Leather body',      category:'Leather Armour', ingredients:[{item:'leather',count:3,name:'Leather'}]},
+    {id:'craft_leather_chaps',     name:'Leather chaps',     label:'Leather chaps made',     levelReq:18, xp:27,    ticks:2, item:'leather_chaps',     itemName:'Leather chaps',     category:'Leather Armour', ingredients:[{item:'leather',count:2,name:'Leather'}]},
+
+    // --- Dragonhide Armour (hides from future combat; royal overlaps black — same as RS3) ---
+    {id:'craft_green_dhide_vambs', name:"Green d'hide vambraces", label:"Green d'hide vambraces made", levelReq:57, xp:62,  ticks:3, item:'green_dhide_vambs', itemName:"Green d'hide vambraces", category:'Dragonhide Armour', ingredients:[{item:'green_dragonhide', count:1, name:'Green dragonhide'}]},
+    {id:'craft_green_dhide_chaps', name:"Green d'hide chaps",     label:"Green d'hide chaps made",     levelReq:60, xp:124, ticks:3, item:'green_dhide_chaps', itemName:"Green d'hide chaps",     category:'Dragonhide Armour', ingredients:[{item:'green_dragonhide', count:2, name:'Green dragonhide'}]},
+    {id:'craft_green_dhide_body',  name:"Green d'hide body",      label:"Green d'hide bodies made",    levelReq:63, xp:186, ticks:3, item:'green_dhide_body',  itemName:"Green d'hide body",      category:'Dragonhide Armour', ingredients:[{item:'green_dragonhide', count:3, name:'Green dragonhide'}]},
+    {id:'craft_blue_dhide_vambs',  name:"Blue d'hide vambraces",  label:"Blue d'hide vambraces made",  levelReq:66, xp:70,  ticks:3, item:'blue_dhide_vambs',  itemName:"Blue d'hide vambraces",  category:'Dragonhide Armour', ingredients:[{item:'blue_dragonhide',  count:1, name:'Blue dragonhide'}]},
+    {id:'craft_blue_dhide_chaps',  name:"Blue d'hide chaps",      label:"Blue d'hide chaps made",      levelReq:68, xp:140, ticks:3, item:'blue_dhide_chaps',  itemName:"Blue d'hide chaps",      category:'Dragonhide Armour', ingredients:[{item:'blue_dragonhide',  count:2, name:'Blue dragonhide'}]},
+    {id:'craft_blue_dhide_body',   name:"Blue d'hide body",       label:"Blue d'hide bodies made",     levelReq:71, xp:210, ticks:3, item:'blue_dhide_body',   itemName:"Blue d'hide body",       category:'Dragonhide Armour', ingredients:[{item:'blue_dragonhide',  count:3, name:'Blue dragonhide'}]},
+    {id:'craft_red_dhide_vambs',   name:"Red d'hide vambraces",   label:"Red d'hide vambraces made",   levelReq:73, xp:78,  ticks:3, item:'red_dhide_vambs',   itemName:"Red d'hide vambraces",   category:'Dragonhide Armour', ingredients:[{item:'red_dragonhide',   count:1, name:'Red dragonhide'}]},
+    {id:'craft_red_dhide_chaps',   name:"Red d'hide chaps",       label:"Red d'hide chaps made",       levelReq:75, xp:156, ticks:3, item:'red_dhide_chaps',   itemName:"Red d'hide chaps",       category:'Dragonhide Armour', ingredients:[{item:'red_dragonhide',   count:2, name:'Red dragonhide'}]},
+    {id:'craft_red_dhide_body',    name:"Red d'hide body",        label:"Red d'hide bodies made",      levelReq:77, xp:234, ticks:3, item:'red_dhide_body',    itemName:"Red d'hide body",        category:'Dragonhide Armour', ingredients:[{item:'red_dragonhide',   count:3, name:'Red dragonhide'}]},
+    {id:'craft_black_dhide_vambs', name:"Black d'hide vambraces", label:"Black d'hide vambraces made", levelReq:79, xp:86,  ticks:3, item:'black_dhide_vambs', itemName:"Black d'hide vambraces", category:'Dragonhide Armour', ingredients:[{item:'black_dragonhide', count:1, name:'Black dragonhide'}]},
+    {id:'craft_black_dhide_chaps', name:"Black d'hide chaps",     label:"Black d'hide chaps made",     levelReq:82, xp:172, ticks:3, item:'black_dhide_chaps', itemName:"Black d'hide chaps",     category:'Dragonhide Armour', ingredients:[{item:'black_dragonhide', count:2, name:'Black dragonhide'}]},
+    {id:'craft_black_dhide_body',  name:"Black d'hide body",      label:"Black d'hide bodies made",    levelReq:84, xp:258, ticks:3, item:'black_dhide_body',  itemName:"Black d'hide body",      category:'Dragonhide Armour', ingredients:[{item:'black_dragonhide', count:3, name:'Black dragonhide'}]},
+    {id:'craft_royal_dhide_vambs', name:"Royal d'hide vambraces", label:"Royal d'hide vambraces made", levelReq:81, xp:107, ticks:3, item:'royal_dhide_vambs', itemName:"Royal d'hide vambraces", category:'Dragonhide Armour', ingredients:[{item:'royal_dragonhide', count:1, name:'Royal dragonhide'}]},
+    {id:'craft_royal_dhide_chaps', name:"Royal d'hide chaps",     label:"Royal d'hide chaps made",     levelReq:84, xp:214, ticks:3, item:'royal_dhide_chaps', itemName:"Royal d'hide chaps",     category:'Dragonhide Armour', ingredients:[{item:'royal_dragonhide', count:2, name:'Royal dragonhide'}]},
+    {id:'craft_royal_dhide_body',  name:"Royal d'hide body",      label:"Royal d'hide bodies made",    levelReq:86, xp:321, ticks:3, item:'royal_dhide_body',  itemName:"Royal d'hide body",      category:'Dragonhide Armour', ingredients:[{item:'royal_dragonhide', count:3, name:'Royal dragonhide'}]},
+
+    // --- Mage Armour (cloth/bark/suqah_hide from future skills; masterwork deferred) ---
+    {id:'craft_cloth_hat',         name:'Cloth hat',         label:'Cloth hats made',         levelReq:20, xp:20,  ticks:2, item:'cloth_hat',         itemName:'Cloth hat',         category:'Mage Armour', ingredients:[{item:'cloth',count:1,name:'Cloth'}]},
+    {id:'craft_cloth_robe_top',    name:'Cloth robe top',    label:'Cloth robe tops made',    levelReq:25, xp:45,  ticks:3, item:'cloth_robe_top',    itemName:'Cloth robe top',    category:'Mage Armour', ingredients:[{item:'cloth',count:2,name:'Cloth'}]},
+    {id:'craft_cloth_robe_bottom', name:'Cloth robe bottom', label:'Cloth robe bottoms made', levelReq:20, xp:35,  ticks:3, item:'cloth_robe_bottom', itemName:'Cloth robe bottom', category:'Mage Armour', ingredients:[{item:'cloth',count:2,name:'Cloth'}]},
+    {id:'craft_splitbark_helm',    name:'Splitbark helm',    label:'Splitbark helms made',    levelReq:55, xp:80,  ticks:3, item:'splitbark_helm',    itemName:'Splitbark helm',    category:'Mage Armour', ingredients:[{item:'bark',count:1,name:'Bark'},{item:'fine_cloth',count:1,name:'Fine cloth'}]},
+    {id:'craft_splitbark_top',     name:'Splitbark top',     label:'Splitbark tops made',     levelReq:55, xp:112, ticks:3, item:'splitbark_top',     itemName:'Splitbark top',     category:'Mage Armour', ingredients:[{item:'bark',count:3,name:'Bark'},{item:'fine_cloth',count:3,name:'Fine cloth'}]},
+    {id:'craft_splitbark_bottom',  name:'Splitbark bottom',  label:'Splitbark bottoms made',  levelReq:57, xp:95,  ticks:3, item:'splitbark_bottom',  itemName:'Splitbark bottom',  category:'Mage Armour', ingredients:[{item:'bark',count:2,name:'Bark'},{item:'fine_cloth',count:2,name:'Fine cloth'}]},
+    {id:'craft_lunar_helm',        name:'Lunar helm',        label:'Lunar helms made',        levelReq:65, xp:95,  ticks:3, item:'lunar_helm',        itemName:'Lunar helm',        category:'Mage Armour', ingredients:[{item:'suqah_hide',count:2,name:'Suqah hide'}]},
+    {id:'craft_lunar_torso',       name:'Lunar torso',       label:'Lunar torsos made',       levelReq:65, xp:142, ticks:4, item:'lunar_torso',       itemName:'Lunar torso',       category:'Mage Armour', ingredients:[{item:'suqah_hide',count:4,name:'Suqah hide'}]},
+    {id:'craft_lunar_legs',        name:'Lunar legs',        label:'Lunar legs made',         levelReq:67, xp:125, ticks:4, item:'lunar_legs',        itemName:'Lunar legs',        category:'Mage Armour', ingredients:[{item:'suqah_hide',count:3,name:'Suqah hide'}]},
   ],
   dungeoneering:[
     {id:'small_floor',    name:'Small floor',    levelReq:1,  xp:5000,  baseMaxSecs:900,  baseMinSecs:90,  tokenMult:1,   single:true},
@@ -1145,7 +1214,15 @@ function renderActiveSkill(){
     bonusDiv.innerHTML = `Skill bonus: <b>${bonusPct}% faster</b> &nbsp;·&nbsp; Tokens: <b>${tokens.toLocaleString()}</b>`;
     list.appendChild(bonusDiv);
   }
+  let lastCat = null;
   actions.forEach(a => {
+    if (a.category && a.category !== lastCat){
+      lastCat = a.category;
+      const hdr = document.createElement('div');
+      hdr.className = 'action-category-header';
+      hdr.textContent = a.category;
+      list.appendChild(hdr);
+    }
     const unlocked = lvl >= a.levelReq;
     const selected = state.current && state.current.skillId === s.id && state.current.actionId === a.id;
     const btn = document.createElement('button');

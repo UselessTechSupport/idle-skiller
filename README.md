@@ -10,7 +10,7 @@ Progress is saved automatically to `localStorage` every 30 seconds. Offline gain
 
 ## Current state
 
-**8 of 29 skills implemented.** The game is actively in development.
+**9 of 29 skills implemented.** The game is actively in development.
 
 ### Implemented skills
 
@@ -23,6 +23,7 @@ Progress is saved automatically to `localStorage` every 30 seconds. Offline gain
 | Firemaking | Artisan | 10 log tiers | Consumes logs |
 | Cooking | Artisan | 16 fish (Shrimps → Sailfish) | Burn mechanic (scales with level); cooking gauntlets halve burn chance |
 | Fletching | Artisan | 47 actions | Headless arrows, unstrung bows, unstrung crossbows, arrow assembly; splinter mechanic on log consumption |
+| Crafting | Artisan | 53 actions | Gem cutting (7 gems), jewellery (rings + amulets), leather armour, dragonhide armour (5 tiers), mage armour (3 tiers); action categories shown as headers in UI |
 | Dungeoneering | Support | 12 floors (F1 → Occult) | Earns tokens; token shop for passive bonuses and special items |
 
 ### Engine features
@@ -42,7 +43,7 @@ Progress is saved automatically to `localStorage` every 30 seconds. Offline gain
 
 **Gathering:** Farming, Hunter, Divination
 
-**Artisan:** Crafting, Runecrafting, Construction, Herblore
+**Artisan:** Runecrafting, Construction, Herblore
 - Fletching stringing (bowstring + unstrung bow → strung bow, 0 XP) — deferred
 - Smithing arrowheads (enables arrow assembly in Fletching) — deferred
 
