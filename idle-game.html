@@ -6,8 +6,7 @@
 <title>Idle Skiller — Starter</title>
 <style>
   /* ============================================================
-     STYLING — deliberately minimal for now ("make it work first").
-     We'll do a proper design pass later.
+     STYLING
      ============================================================ */
   :root{
     --bg:#14171c; --panel:#1d222b; --panel2:#252c38;
@@ -28,10 +27,61 @@
   header h1{font-size:17px; margin:0; font-weight:600;}
   header .total{font-size:13px; color:var(--dim);}
   .wrap{
-    display:grid; gap:14px; padding:14px; max-width:1100px; margin:0 auto;
+    display:grid; gap:14px; padding:14px; max-width:1160px; margin:0 auto;
     grid-template-columns:1fr;
   }
-  @media(min-width:820px){ .wrap{grid-template-columns:260px 1fr 260px;} }
+  @media(min-width:820px){ .wrap{grid-template-columns:240px 1fr 300px;} }
+
+  /* Right panel scrolls independently on desktop */
+  @media(min-width:820px){
+    .panel-right{ overflow-y:auto; max-height:calc(100vh - 56px); }
+  }
+
+  /* Mobile: active skill first, then right panel, then skills */
+  @media(max-width:819px){
+    .panel-skills{ order:3; }
+    .panel-active{ order:1; }
+    .panel-right { order:2; }
+  }
+
+  /* Mobile sticky jump nav */
+  .mobile-nav{
+    display:none;
+  }
+  @media(max-width:819px){
+    .mobile-nav{
+      display:flex; gap:6px; padding:8px 12px;
+      background:var(--panel); border-bottom:1px solid var(--line);
+      position:sticky; top:0; z-index:20;
+      overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch;
+    }
+    .mobile-nav a{
+      font-size:12px; padding:5px 10px; border-radius:6px;
+      background:var(--panel2); color:var(--dim);
+      text-decoration:none; flex-shrink:0;
+    }
+    .mobile-nav a:active{ background:var(--accent2); color:var(--text); }
+  }
+
+  /* Collapsible section headers */
+  .sec-hdr{
+    display:flex; justify-content:space-between; align-items:center;
+    cursor:pointer; padding:6px 2px; margin:12px 0 6px;
+    border-bottom:1px solid var(--line); font-size:11px;
+    text-transform:uppercase; letter-spacing:.06em; color:var(--dim);
+    user-select:none; gap:6px;
+  }
+  .sec-hdr:hover{ color:var(--text); }
+  .sec-hdr .chev{ font-size:10px; transition:transform .15s; flex-shrink:0; }
+  .sec-hdr.collapsed .chev{ transform:rotate(-90deg); }
+  .sec-hdr .sec-badge{ font-size:11px; font-weight:600; margin-left:auto; color:var(--text); text-transform:none; letter-spacing:0; }
+  .sec-body.collapsed{ display:none; }
+  .sec-anchor{ scroll-margin-top:48px; }
+
+  /* Section colour accents */
+  .sec-hdr.equip-hdr  { border-color:#5b8def55; color:#5b8def; }
+  .sec-hdr.prayer-hdr { border-color:#a78bfa55; color:#a78bfa; }
+  .sec-hdr.inv-hdr    { border-bottom-color:var(--accent); color:var(--accent); }
   .card{
     background:var(--panel); border:1px solid var(--line);
     border-radius:8px; padding:12px;
@@ -77,7 +127,7 @@
     border-bottom:1px solid var(--line); font-size:14px;}
   .inv-row:last-child{border-bottom:none;}
   .inv-empty,.log-empty{color:var(--dim); font-size:13px; font-style:italic;}
-  #log{max-height:220px; overflow-y:auto; font-size:13px;}
+  #log{max-height:180px; overflow-y:auto; font-size:13px;}
   #log div{padding:3px 0; border-bottom:1px solid var(--line); color:var(--dim);}
   #log div:first-child{color:var(--text);}
 
@@ -130,13 +180,9 @@
     50%{box-shadow:0 4px 36px rgba(234,88,12,.9);}
   }
 
-  /* Inventory tab bar */
-  .tab-bar{display:flex; gap:6px; margin-bottom:8px;}
-  .tab-btn{font-size:12px; padding:5px 10px; background:var(--panel2);
-    border:1px solid var(--line); color:var(--dim); border-radius:6px; cursor:pointer;}
-  .tab-btn.active{border-color:var(--accent); color:var(--text);}
-  .tab-btn:hover:not(.active){color:var(--text);}
   .inv-row .mini{padding:3px 8px; font-size:12px;}
+  /* mini.selected = active prayer in HUD */
+  .mini.selected{ border-color:#a78bfa; color:#a78bfa; background:rgba(167,139,250,.12); }
 
   /* Crafting category headers */
   .action-category-header{font-size:12px; font-weight:600; color:var(--dim); text-transform:uppercase;
@@ -193,15 +239,24 @@
   <button class="mini" id="debugToggle" style="color:#f97316;border-color:#c2410c;">🐛 Debug</button>
 </header>
 
+<nav class="mobile-nav">
+  <a href="#sec-active">▶ Play</a>
+  <a href="#sec-equip">⚔️ Equip</a>
+  <a href="#sec-prayer">🙏 Prayer</a>
+  <a href="#sec-inv">🎒 Items</a>
+  <a href="#sec-log">📜 Log</a>
+  <a href="#sec-skills">🏆 Skills</a>
+</nav>
+
 <div class="wrap">
   <!-- LEFT: all 29 skills -->
-  <div class="card">
+  <div class="card panel-skills" id="sec-skills">
     <h2>Skills (RS3 — 29 total)</h2>
     <div id="skillList"></div>
   </div>
 
   <!-- CENTER: the active skill -->
-  <div class="card">
+  <div class="card panel-active" id="sec-active">
     <h2 id="activeSkillTitle">Woodcutting</h2>
 
     <div class="barlabel"><span>Level <b id="wcLevel">1</b></span><span id="wcXpText">0 / 83 xp</span></div>
@@ -211,7 +266,7 @@
     <div class="bar"><div id="actionBar"></div></div>
 
     <div id="actionFilterBar" style="margin-bottom:6px;display:none;">
-      <button class="tab-btn" id="hideLockBtn">🔒 Hide locked</button>
+      <button class="mini" id="hideLockBtn">🔒 Hide locked</button>
     </div>
     <div id="treeList" style="margin-top:4px;"></div>
 
@@ -220,20 +275,57 @@
     </div>
   </div>
 
-  <!-- RIGHT: inventory + log -->
-  <div class="card">
-    <h2>Inventory</h2>
-    <div class="tab-bar">
-      <button class="tab-btn active" id="tabAll" onclick="setInvTab('all')">All Items</button>
-      <button class="tab-btn" id="tabOpen" onclick="setInvTab('open')">Open Items</button>
-      <button class="tab-btn" id="tabEquip" onclick="setInvTab('equip')">Equipment</button>
-      <button class="tab-btn" id="tabFarm" onclick="setInvTab('farm')">Farm</button>
+  <!-- RIGHT: equipment + prayer + inventory + log -->
+  <div class="card panel-right">
+
+    <!-- Equipment -->
+    <div id="sec-equip" class="sec-anchor">
+      <div class="sec-hdr equip-hdr" onclick="toggleSection('equip')">
+        ⚔️ Equipment
+        <span class="chev">▼</span>
+      </div>
+      <div id="sec-body-equip" class="sec-body">
+        <div id="equipPanel"></div>
+      </div>
     </div>
-    <div id="inventory"></div>
-    <h2 style="margin-top:16px;">Log</h2>
-    <div id="log"></div>
-    <div class="footer-actions">
-      <button class="mini" id="saveBtn">💾 Save now</button>
+
+    <!-- Prayer HUD -->
+    <div id="sec-prayer" class="sec-anchor">
+      <div class="sec-hdr prayer-hdr" onclick="toggleSection('prayer')">
+        🙏 Prayer
+        <span id="prayerHudPoints" class="sec-badge"></span>
+        <span class="chev">▼</span>
+      </div>
+      <div id="sec-body-prayer" class="sec-body">
+        <div id="prayerHudPanel"></div>
+      </div>
+    </div>
+
+    <!-- Inventory -->
+    <div id="sec-inv" class="sec-anchor">
+      <div class="sec-hdr inv-hdr" style="cursor:default;">
+        🎒 Items
+        <button id="autoOpenBtn" onclick="toggleAutoOpen()" class="mini"
+          style="font-size:11px;padding:3px 8px;margin-left:auto;">Auto-open: OFF</button>
+      </div>
+      <div id="sec-body-inv" class="sec-body">
+        <div id="invPanel"></div>
+      </div>
+    </div>
+
+    <!-- Log -->
+    <div id="sec-log" class="sec-anchor">
+      <div class="sec-hdr" onclick="toggleSection('log')" style="margin-top:8px;">
+        📜 Log
+        <span class="chev">▼</span>
+      </div>
+      <div id="sec-body-log" class="sec-body">
+        <div id="log"></div>
+      </div>
+    </div>
+
+    <div class="footer-actions" style="margin-top:8px;">
+      <button class="mini" id="saveBtn">💾 Save</button>
       <button class="mini" id="resetBtn">🗑 Reset</button>
     </div>
   </div>
@@ -1345,9 +1437,11 @@ function freshState(){
     stats:     { attack:1, range:1, mage:1, defence:1, necromancy:1, prayer:1, summoning:1, dropRate:0 },
     farming:   { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false },
     combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, attackTimer:0 },
-    upgrades:     {},
-    quests:       {},  // { questId: true } — completed quests
-    prayer:       { points:0, maxPoints:1, active:{}, drainCounter:0, lastRegen:0 },
+    upgrades:       {},
+    quests:         {},  // { questId: true } — completed quests
+    autoOpenItems:  false,
+    uiCollapsed:    {},  // { sectionId: true } — collapsed UI sections
+    prayer:         { points:0, maxPoints:1, active:{}, drainCounter:0, lastRegen:0 },
     saveVersion:  1,
     lastSaved:    Date.now(),
   };
@@ -1886,7 +1980,7 @@ function renderCombatPanel(){
 }
 
 function renderFarmTab(){
-  const el = $('inventory');
+  const el = $('invPanel') || { innerHTML:'' };
   el.innerHTML = '';
   const f = state.farming;
 
@@ -2102,6 +2196,7 @@ function tick(){
       log(`Your ${state.farming.seedName} are ready to harvest!`);
     }
   }
+  if (state.autoOpenItems) processAutoOpen();
   render();
 }
 
@@ -2462,10 +2557,14 @@ function log(msg){
 function render(){
   renderSkillList();
   renderActiveSkill();
-  renderInventory();
+  renderEquipSection();
+  renderPrayerHud();
+  renderItemsPanel();
   renderUpgradeShop();
   renderTokenShop();
   renderTotalLevel();
+  renderLog();
+  _applyAllCollapsed();
 }
 
 function renderTokenShop(){
@@ -2592,7 +2691,7 @@ function renderSkillList(){
         if (s.id === 'farming' && state.farming?.seed)
           badge = state.farming.ready ? ' 🌿' : ' 🌱';
         row.innerHTML = `<span>${s.name}</span><span class="lvl">${lvl}/${s.maxLevel}${badge}</span>`;
-        row.onclick = () => setInvTab('farm');
+        row.onclick = () => { selectSkill('farming'); document.getElementById('sec-inv')?.scrollIntoView({behavior:'smooth',block:'start'}); };
       } else if (s.type === 'combat' && s.implemented) {
         row.innerHTML = `<span>${s.name}</span><span class="lvl">${lvl}/${s.maxLevel}</span>`;
         const styleMap = {melee:'melee', ranged:'ranged', magic:'magic', necromancy:'necromancy'};
@@ -2613,8 +2712,9 @@ function renderSkillList(){
 let viewedSkill = 'woodcutting';
 function selectSkill(id){ viewedSkill = id; render(); }
 
+/* inventoryTab kept for backward-compat but no longer drives rendering */
 let inventoryTab = 'all';
-function setInvTab(tab){ inventoryTab = tab; renderInventory(); }
+function setInvTab(tab){ inventoryTab = tab; }
 
 function renderActiveSkill(){
   const s = SKILL_BY_ID[viewedSkill];
@@ -2936,94 +3036,202 @@ function renderActiveSkill(){
   }
 }
 
-function renderInventory(){
-  const el = $('inventory');
-  const items = Object.keys(state.inventory).filter(k => state.inventory[k] > 0);
-
-  $('tabAll').classList.toggle('active', inventoryTab === 'all');
-  $('tabOpen').classList.toggle('active', inventoryTab === 'open');
-  $('tabEquip').classList.toggle('active', inventoryTab === 'equip');
-  $('tabFarm').classList.toggle('active', inventoryTab === 'farm');
-  if (inventoryTab === 'farm'){ renderFarmTab(); return; }
-
-  if (inventoryTab === 'equip'){
-    const stats = calcStats();
-    el.innerHTML = '';
-
-    const grid = document.createElement('div');
-    grid.className = 'equip-grid';
-    EQUIPMENT_SLOTS.forEach(slot => {
-      const div = document.createElement('div');
-      div.className = 'equip-slot' + (slot.wide ? ' wide' : '');
-      const equipped = state.equipment[slot.id];
-      div.innerHTML = `<span class="slot-label">${slot.label}</span>
-                       <span class="slot-item${equipped ? '' : ' empty'}">${
-                         equipped ? (state.itemNames[equipped] || equipped) : 'Empty'
-                       }</span>`;
-      if (equipped){
-        const uBtn = document.createElement('button');
-        uBtn.className = 'mini';
-        uBtn.style.cssText = 'display:block;margin-top:4px;';
-        uBtn.textContent = 'Unequip';
-        uBtn.onclick = () => unequipItem(slot.id);
-        div.appendChild(uBtn);
-      }
-      grid.appendChild(div);
-    });
-    el.appendChild(grid);
-
-    const heading = document.createElement('div');
-    heading.className = 'equip-stats-heading';
-    heading.textContent = 'Stats';
-    el.appendChild(heading);
-
-    const sgrid = document.createElement('div');
-    sgrid.className = 'stats-grid';
-    STAT_DEFS.forEach(({key, label, pct}) => {
-      const entry = document.createElement('div');
-      entry.className = 'stat-entry';
-      entry.innerHTML = `<span>${label}</span><span class="stat-val">${pct ? '+' + stats[key] + '%' : stats[key]}</span>`;
-      sgrid.appendChild(entry);
-    });
-    el.appendChild(sgrid);
-    return;
-  }
-
-  if (inventoryTab === 'open'){
-    const openable = items.filter(k => OPENABLE_ITEMS[k]);
-    if (openable.length === 0){ el.innerHTML = '<div class="inv-empty">No openable items.</div>'; return; }
-    el.innerHTML = '';
-    openable.forEach(k => {
-      const row = document.createElement('div');
-      row.className = 'inv-row';
-      row.innerHTML = `<span>${state.itemNames[k] || k}</span>
-                       <span style="display:flex;align-items:center;gap:8px;">
-                         <span>${state.inventory[k].toLocaleString()}</span>
-                         <button class="mini" onclick="openItem('${k}')">Open</button>
-                       </span>`;
-      el.appendChild(row);
-    });
-    return;
-  }
-
-  if (items.length === 0){ el.innerHTML = '<div class="inv-empty">Empty.</div>'; return; }
-  el.innerHTML = '';
-  items.forEach(k => {
-    const row = document.createElement('div');
-    row.className = 'inv-row';
-    const nameSpan = `<span>${state.itemNames[k] || k}</span>`;
-    const qtySpan  = `<span style="display:flex;align-items:center;gap:6px;">${state.inventory[k].toLocaleString()}`;
-    row.innerHTML = nameSpan + qtySpan + '</span>';
-    if (EQUIP_SLOTS[k]){
-      const eqBtn = document.createElement('button');
-      eqBtn.className = 'mini';
-      eqBtn.textContent = 'Equip';
-      eqBtn.onclick = () => equipItem(k);
-      row.querySelector('span:last-child').prepend(eqBtn);
-    }
-    el.appendChild(row);
-  });
+/* ---- Section collapse ---- */
+function _applyCollapsed(id){
+  const hdr  = document.querySelector(`#sec-${id} .sec-hdr`);
+  const body = document.getElementById(`sec-body-${id}`);
+  if (!hdr || !body) return;
+  const c = !!(state.uiCollapsed?.[id]);
+  hdr.classList.toggle('collapsed', c);
+  body.classList.toggle('collapsed', c);
 }
+function toggleSection(id){
+  if (!state.uiCollapsed) state.uiCollapsed = {};
+  state.uiCollapsed[id] = !state.uiCollapsed[id];
+  _applyCollapsed(id);
+}
+function _applyAllCollapsed(){
+  ['equip','prayer','log'].forEach(id => _applyCollapsed(id));
+}
+
+/* ---- Auto-open ---- */
+function processAutoOpen(){
+  let opened = false;
+  for (const itemId of Object.keys(OPENABLE_ITEMS)){
+    while ((state.inventory[itemId] || 0) > 0){ openItem(itemId); opened = true; }
+  }
+  return opened;
+}
+function toggleAutoOpen(){
+  state.autoOpenItems = !state.autoOpenItems;
+  const btn = $('autoOpenBtn');
+  if (btn){
+    btn.textContent = `Auto-open: ${state.autoOpenItems ? 'ON' : 'OFF'}`;
+    btn.style.color = state.autoOpenItems ? 'var(--accent)' : '';
+    btn.style.borderColor = state.autoOpenItems ? 'var(--accent)' : '';
+  }
+  if (state.autoOpenItems) processAutoOpen();
+  render();
+}
+
+/* ---- Equipment section ---- */
+function renderEquipSection(){
+  const el = $('equipPanel');
+  if (!el) return;
+  const stats = calcStats();
+  el.innerHTML = '';
+
+  const grid = document.createElement('div');
+  grid.className = 'equip-grid';
+  EQUIPMENT_SLOTS.forEach(slot => {
+    const div = document.createElement('div');
+    div.className = 'equip-slot' + (slot.wide ? ' wide' : '');
+    const equipped = state.equipment[slot.id];
+    div.innerHTML = `<span class="slot-label">${slot.label}</span>
+                     <span class="slot-item${equipped ? '' : ' empty'}">${
+                       equipped ? (state.itemNames[equipped] || equipped) : 'Empty'
+                     }</span>`;
+    if (equipped){
+      const uBtn = document.createElement('button');
+      uBtn.className = 'mini';
+      uBtn.style.cssText = 'display:block;margin-top:4px;';
+      uBtn.textContent = 'Unequip';
+      uBtn.onclick = () => unequipItem(slot.id);
+      div.appendChild(uBtn);
+    }
+    grid.appendChild(div);
+  });
+  el.appendChild(grid);
+
+  const heading = document.createElement('div');
+  heading.className = 'equip-stats-heading';
+  heading.textContent = 'Bonuses';
+  el.appendChild(heading);
+
+  const sgrid = document.createElement('div');
+  sgrid.className = 'stats-grid';
+  STAT_DEFS.forEach(({key, label, pct}) => {
+    const val = stats[key] || 0;
+    if (!val && !pct) return; // skip zero bonuses
+    const entry = document.createElement('div');
+    entry.className = 'stat-entry';
+    const colour = val < 0 ? '#f87171' : val > 0 ? 'var(--accent)' : 'var(--dim)';
+    entry.innerHTML = `<span>${label}</span><span class="stat-val" style="color:${colour}">${
+      pct ? (val >= 0 ? '+' : '') + val + '%' : (val >= 0 ? '+' : '') + val
+    }</span>`;
+    sgrid.appendChild(entry);
+  });
+  el.appendChild(sgrid);
+}
+
+/* ---- Prayer HUD ---- */
+function renderPrayerHud(){
+  const el = $('prayerHudPanel');
+  if (!el || !state.prayer) return;
+  const pLvl = levelForXp(state.skills.prayer.xp);
+  const pp = state.prayer.points, pm = Math.max(1, state.prayer.maxPoints);
+  const ppPct = Math.round(pp / pm * 100);
+
+  let html = `<div style="margin-bottom:8px;">
+    <div style="height:7px;background:var(--panel2);border-radius:4px;overflow:hidden;margin-bottom:3px;">
+      <div style="height:100%;width:${ppPct}%;background:#a78bfa;border-radius:4px;transition:width .3s;"></div>
+    </div>
+    <div style="font-size:11px;color:var(--dim);text-align:right;">${pp} / ${pm} pts</div>
+  </div>`;
+
+  const unlocked = PRAYERS.filter(p => pLvl >= p.levelReq);
+  if (unlocked.length === 0){
+    html += `<div style="font-size:12px;color:var(--dim);">Train Prayer to unlock prayers.</div>`;
+  } else {
+    html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">`;
+    for (const p of unlocked){
+      const active = !!(state.prayer.active?.[p.id]);
+      const noPts  = pp <= 0 && !active;
+      html += `<button class="mini${active ? ' selected' : ''}"
+        style="font-size:11px;padding:4px 6px;text-align:left;${noPts ? 'opacity:.4;' : ''}"
+        onclick="togglePrayer('${p.id}')" ${noPts ? 'disabled' : ''}>
+        ${p.name}
+      </button>`;
+    }
+    html += `</div>`;
+  }
+  el.innerHTML = html;
+
+  const badge = $('prayerHudPoints');
+  if (badge) badge.textContent = `${pp}/${pm}`;
+}
+
+/* ---- Items panel ---- */
+function renderItemsPanel(){
+  const el = $('invPanel');
+  if (!el) return;
+
+  // Update auto-open button state
+  const aoBtn = $('autoOpenBtn');
+  if (aoBtn){
+    aoBtn.textContent = `Auto-open: ${state.autoOpenItems ? 'ON' : 'OFF'}`;
+    aoBtn.style.color = state.autoOpenItems ? 'var(--accent)' : '';
+    aoBtn.style.borderColor = state.autoOpenItems ? 'var(--accent)' : '';
+  }
+
+  const keys = Object.keys(state.inventory).filter(k => (state.inventory[k] || 0) > 0);
+  if (keys.length === 0 && !state.farming?.seed){
+    el.innerHTML = '<div class="inv-empty">Nothing yet.</div>';
+    return;
+  }
+
+  // Sort: openable first, then equippable, then alphabetical
+  keys.sort((a, b) => {
+    const ao = !!OPENABLE_ITEMS[a], bo = !!OPENABLE_ITEMS[b];
+    const ae = !!EQUIP_SLOTS[a],    be = !!EQUIP_SLOTS[b];
+    if (ao !== bo) return ao ? -1 : 1;
+    if (ae !== be) return ae ? -1 : 1;
+    return (state.itemNames[a]||a).localeCompare(state.itemNames[b]||b);
+  });
+
+  let html = '';
+  for (const k of keys){
+    const qty     = state.inventory[k];
+    const name    = state.itemNames[k] || k;
+    const isEquip = !!EQUIP_SLOTS[k];
+    const isOpen  = !!OPENABLE_ITEMS[k];
+    let btns = '';
+    if (isEquip) btns += `<button class="mini" onclick="equipItem('${k}')">Equip</button>`;
+    if (isOpen){
+      if (state.autoOpenItems){
+        btns += `<span style="font-size:11px;color:var(--accent);">↻ auto</span>`;
+      } else {
+        btns += `<button class="mini" onclick="openItem('${k}')">Open</button>`;
+      }
+    }
+    html += `<div class="inv-row">
+      <span>${name}</span>
+      <span style="display:flex;align-items:center;gap:5px;">
+        <b>${qty.toLocaleString()}</b>${btns}
+      </span>
+    </div>`;
+  }
+
+  // Inline farm status
+  if (state.farming?.seed){
+    const growMs  = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1);
+    const elapsed = Date.now() - state.farming.plantedAt;
+    const pct     = Math.min(100, Math.round(elapsed / growMs * 100));
+    html += `<div style="margin-top:10px;border-top:1px solid var(--line);padding-top:8px;">
+      <div style="font-size:12px;color:var(--dim);margin-bottom:4px;">🌿 ${state.farming.seedName} — ${pct}%</div>
+      <div style="height:5px;background:var(--panel2);border-radius:3px;overflow:hidden;">
+        <div style="height:100%;width:${pct}%;background:var(--accent);border-radius:3px;"></div>
+      </div>
+      ${state.farming.ready
+        ? `<button class="mini" style="margin-top:5px;color:var(--accent);border-color:var(--accent);" onclick="harvestCrop()">✓ Harvest</button>`
+        : ''}
+    </div>`;
+  }
+
+  el.innerHTML = html;
+}
+
+function renderInventory(){ /* replaced by renderEquipSection + renderPrayerHud + renderItemsPanel */ }
 
 function renderLog(){
   const el = $('log');
@@ -3075,6 +3283,8 @@ function init(){
   if (!('weapon' in state.equipment))  state.equipment.weapon  = null;
   if (!('offhand' in state.equipment)) state.equipment.offhand = null;
   if (state.combat.attackTimer == null) state.combat.attackTimer = 0;
+  if (state.autoOpenItems == null) state.autoOpenItems = false;
+  if (!state.uiCollapsed) state.uiCollapsed = {};
   if (!Array.isArray(state.combat.foodQueue)) state.combat.foodQueue = [];
   if (!state.upgrades) state.upgrades = {};
   if (state.combat.autoEatThreshold == null) state.combat.autoEatThreshold = 50;
