@@ -477,7 +477,7 @@ const SKILL_ROADMAP = [
   {id:'thieving',     name:'Thieving',     type:'support', maxLevel:99,  implemented:true},
   {id:'slayer',       name:'Slayer',       type:'support', maxLevel:120, implemented:false},
   {id:'dungeoneering',name:'Dungeoneering',type:'support', maxLevel:120, implemented:true},
-  {id:'archaeology',  name:'Archaeology',  type:'support', maxLevel:120, implemented:false},
+  {id:'archaeology',  name:'Archaeology',  type:'support', maxLevel:120, implemented:true},
   // Elite (1)
   {id:'invention',    name:'Invention',    type:'elite', maxLevel:120, implemented:false},
 ];
@@ -509,6 +509,44 @@ const WEAPON_PIECES = [
   {suffix:'_broadsword', name:'broadsword', slot:'weapon',  bars:2, ticks:3, atkMod:0,   attackInterval:4, damageMult:1.00, twoHanded:false, isShield:false},
   {suffix:'_2h_sword',   name:'2h sword',   slot:'weapon',  bars:3, ticks:4, atkMod:12,  attackInterval:5, damageMult:1.40, twoHanded:true,  isShield:false},
   {suffix:'_shield',     name:'shield',     slot:'offhand', bars:4, ticks:5, atkMod:0,   attackInterval:0, damageMult:0,    twoHanded:false, isShield:true},
+];
+
+const ARCH_MAX_PERKS = 3;
+
+const ARCH_SITES = [
+  { id:'varrock',   name:'Varrock Dig Site',    levelReq:1,  earlyChance:0.0030, category:'Misthalin' },
+  { id:'kharid',    name:'Al-Kharid Site',       levelReq:20, earlyChance:0.0025, category:'Kharidian Desert' },
+  { id:'goblin',    name:'Goblin Village Ruins', levelReq:35, earlyChance:0.0020, category:'Asgarnia' },
+  { id:'morytania', name:'Morytania Swamp Site', levelReq:55, earlyChance:0.0018, category:'Morytania' },
+  { id:'glacor',    name:'Glacor Cave',          levelReq:75, earlyChance:0.0015, category:'Gielinor' },
+  { id:'kethsi',    name:'Kethsi Ruins',         levelReq:95, earlyChance:0.0010, category:'Kethsi' },
+];
+
+const ARCH_ARTIFACTS = [
+  // Varrock
+  { id:'xeric_frag',     name:"Xeric's Talisman Fragment", siteId:'varrock',   xp:150,  needed:3, bonusType:'xp_woodcutting',     bonusVal:0.05, perkName:"Xeric's Gift",    perkDesc:'Woodcutting XP +5%' },
+  { id:'varrock_coin',   name:'Ancient Varrock Coin',       siteId:'varrock',   xp:120,  needed:3, bonusType:'all_xp',             bonusVal:0.02, perkName:'City Coffers',    perkDesc:'All XP +2%' },
+  { id:'guard_badge',    name:'City Guard Badge',           siteId:'varrock',   xp:180,  needed:4, bonusType:'hp_regen',           bonusVal:0.25, perkName:"Guard's Rest",    perkDesc:'HP regen 25% faster' },
+  // Al-Kharid
+  { id:'khmer_teapot',   name:'Kharidian Teapot',           siteId:'kharid',    xp:280,  needed:3, bonusType:'speed_herblore',     bonusVal:0.05, perkName:'Desert Brew',     perkDesc:'Herblore 5% faster' },
+  { id:'scarab_frag',    name:'Scarab Amulet Fragment',     siteId:'kharid',    xp:320,  needed:4, bonusType:'xp_agility',         bonusVal:0.05, perkName:"Scarab's Grace",  perkDesc:'Agility XP +5%' },
+  { id:'menaphite_map',  name:'Menaphite Map Fragment',     siteId:'kharid',    xp:350,  needed:5, bonusType:'speed_fishing',      bonusVal:0.05, perkName:'Desert Seas',     perkDesc:'Fishing 5% faster' },
+  // Goblin Village
+  { id:'warforge_token', name:'Warforge Token',             siteId:'goblin',    xp:450,  needed:3, bonusType:'melee_dmg',          bonusVal:0.05, perkName:"Goblin's Fury",   perkDesc:'Melee damage +5%' },
+  { id:'siege_frag',     name:'Siege Engine Fragment',      siteId:'goblin',    xp:500,  needed:4, bonusType:'mob_reduction',      bonusVal:0.05, perkName:'Battle Hardened', perkDesc:'Mob damage -5%' },
+  { id:'war_standard',   name:'War Standard',               siteId:'goblin',    xp:520,  needed:5, bonusType:'xp_combat',          bonusVal:0.04, perkName:'Rally Cry',       perkDesc:'Combat XP +4%' },
+  // Morytania
+  { id:'ivandis_shard',  name:'Ivandis Flail Shard',        siteId:'morytania', xp:700,  needed:3, bonusType:'prayer_regen',       bonusVal:0.25, perkName:'Soul Anchor',     perkDesc:'Prayer regen 25% faster' },
+  { id:'meiy_map',       name:'Meiyerditch Map',            siteId:'morytania', xp:750,  needed:4, bonusType:'speed_runecrafting', bonusVal:0.05, perkName:'Vampyre Lore',    perkDesc:'Runecrafting 5% faster' },
+  { id:'soul_frag',      name:'Soul Fragment',              siteId:'morytania', xp:800,  needed:5, bonusType:'speed_mining',       bonusVal:0.05, perkName:'Stone Sense',     perkDesc:'Mining 5% faster' },
+  // Glacor
+  { id:'glacor_ess',     name:'Glacor Essence',             siteId:'glacor',    xp:1100, needed:3, bonusType:'speed_smithing',     bonusVal:0.05, perkName:'Glacial Forge',   perkDesc:'Smithing 5% faster' },
+  { id:'ancient_ward',   name:'Ancient Ward',               siteId:'glacor',    xp:1200, needed:4, bonusType:'defence_bonus',      bonusVal:0.05, perkName:'Ancient Guard',   perkDesc:'Equipment defence +5%' },
+  { id:'glacor_core',    name:'Glacor Core',                siteId:'glacor',    xp:1300, needed:5, bonusType:'speed_fletching',    bonusVal:0.05, perkName:'Frost Focus',     perkDesc:'Fletching 5% faster' },
+  // Kethsi
+  { id:'dragonkin_rune', name:'Dragonkin Rune',             siteId:'kethsi',    xp:1800, needed:3, bonusType:'all_xp',             bonusVal:0.03, perkName:'Dragonkin Power', perkDesc:'All XP +3%' },
+  { id:'kethsi_stone',   name:'Kethsi Stone',               siteId:'kethsi',    xp:2000, needed:4, bonusType:'speed_thieving',     bonusVal:0.05, perkName:'Lost Technology', perkDesc:'Thieving 5% faster' },
+  { id:'dim_seal',       name:'Dimensional Seal',           siteId:'kethsi',    xp:2200, needed:5, bonusType:'xp_dungeoneering',   bonusVal:0.08, perkName:'Reality Anchor',  perkDesc:'Dungeoneering XP +8%' },
 ];
 
 /* ACTIONS: what you can DO in each skill.
@@ -1084,6 +1122,16 @@ const ACTIONS = {
       levelReq:1, xp:0, ticks:2, autoBone:true, altarMult:3.5,
       wilderness:true, pkCoinBase:80, pkCoinPerLevel:12 },
   ],
+  archaeology: ARCH_SITES.map(s => ({
+    id:          s.id,
+    name:        s.name,
+    label:       'Artefacts found',
+    category:    s.category,
+    levelReq:    s.levelReq,
+    xp:          0,
+    ticks:       1000,
+    earlyChance: s.earlyChance,
+  })),
   // future skills go here
 };
 
@@ -1430,6 +1478,7 @@ function freshState(){
     quests:         {},  // { questId: true } — completed quests
     autoOpenItems:  false,
     uiCollapsed:    {},  // { sectionId: true } — collapsed UI sections
+    archaeology:    { artifacts:{}, activePerks:{} },
     prayer:         { points:0, maxPoints:1, active:{}, drainCounter:0, lastRegen:0 },
     saveVersion:  1,
     lastSaved:    Date.now(),
@@ -1466,6 +1515,13 @@ function grantXp(skillId, xp, silent=false){
   const sk = state.skills[skillId];
   if (!sk) return;
   if (state.upgrades?.manor) xp *= 1.05;
+  const archAll   = getArchBonus('all_xp');
+  const archSkill = getArchBonus(`xp_${skillId}`);
+  if (archAll || archSkill) xp *= (1 + archAll + archSkill);
+  if (COMBAT_SKILL_IDS.has(skillId)){
+    const archCombat = getArchBonus('xp_combat');
+    if (archCombat) xp *= (1 + archCombat);
+  }
   const before = levelForXp(sk.xp);
   sk.xp += xp;
   const after = levelForXp(sk.xp);
@@ -1514,6 +1570,33 @@ function togglePrayer(id){
   render();
 }
 
+function toggleArchPerk(artifactId){
+  const a = ARCH_ARTIFACTS.find(x => x.id === artifactId);
+  if (!a) return;
+  const count = state.archaeology.artifacts[artifactId] || 0;
+  if (count < a.needed){ log(`Need ${a.needed - count} more ${a.name} to unlock this perk.`); return; }
+  if (state.archaeology.activePerks[artifactId]){
+    delete state.archaeology.activePerks[artifactId];
+  } else {
+    if (Object.keys(state.archaeology.activePerks).length >= ARCH_MAX_PERKS){
+      log(`Max ${ARCH_MAX_PERKS} perks active — deactivate one first.`);
+      return;
+    }
+    state.archaeology.activePerks[artifactId] = true;
+  }
+  render();
+}
+
+function getArchBonus(type){
+  if (!state.archaeology?.activePerks) return 0;
+  let total = 0;
+  for (const id of Object.keys(state.archaeology.activePerks)){
+    const a = ARCH_ARTIFACTS.find(x => x.id === id);
+    if (a?.bonusType === type) total += a.bonusVal;
+  }
+  return total;
+}
+
 function canAfford(action){
   if (!action.ingredients) return null;
   return action.ingredients.find(ing => (state.inventory[ing.item] || 0) < ing.count) || null;
@@ -1543,7 +1626,9 @@ function calcPlayerDamage(styleId, mob){
 function calcMobDamage(mob){
   const mobAtk    = (mob.stats.style === 'mage' ? mob.stats.mage : mob.stats.attack) || mob.stats.attack || 1;
   const defBoost  = getPrayerBoost('defence');
-  const playerDef = Math.floor(levelForXp(state.skills.defence.xp) * (1 + defBoost)) + calcStats().defence;
+  const baseDef   = Math.floor(levelForXp(state.skills.defence.xp) * (1 + defBoost)) + calcStats().defence;
+  const archDef   = getArchBonus('defence_bonus');
+  const playerDef = archDef ? Math.floor(baseDef * (1 + archDef)) : baseDef;
   const maxHit    = Math.max(1, Math.floor(mobAtk * 0.4) + 1);
   const hit       = Math.min(0.85, Math.max(0.1, 1 - playerDef / (playerDef + mobAtk + 1)));
   if (Math.random() > hit) return 0;
@@ -1555,6 +1640,8 @@ function calcMobDamage(mob){
     });
     if (hasProtect) dmg = Math.max(0, Math.floor(dmg * 0.5));
   }
+  const archReduce = getArchBonus('mob_reduction');
+  if (archReduce) dmg = Math.max(0, Math.round(dmg * (1 - archReduce)));
   return dmg;
 }
 
@@ -1670,6 +1757,8 @@ function combatTick(){
     state.combat.attackTimer = 0;
     let playerDmg = calcPlayerDamage(state.current.skillId, action);
     if (playerDmg > 0) playerDmg = Math.max(1, Math.round(playerDmg * wStats.damageMult));
+    const archMelee = getArchBonus('melee_dmg');
+    if (archMelee && playerDmg > 0) playerDmg = Math.max(1, Math.round(playerDmg * (1 + archMelee)));
     state.combat.mobHp = Math.max(0, state.combat.mobHp - playerDmg);
   }
   const mobDmg = calcMobDamage(action);
@@ -2072,9 +2161,10 @@ function getCurrentEffTicks(action){
   }
   if (state.current?.skillId === 'runecrafting'){
     const agilLevel = levelForXp(state.skills.agility.xp);
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting')));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting'))));
   }
-  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId) * getConstructionMult(state.current.skillId)));
+  const archSpeed = getArchBonus(`speed_${state.current.skillId}`);
+  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId) * getConstructionMult(state.current.skillId) * (1 - archSpeed)));
 }
 
 function getConstructionMult(skillId){
@@ -2127,11 +2217,16 @@ function tick(){
     } else {
       const action = getAction(state.current.skillId, state.current.actionId);
       if (action){
-        state.progress++;
-        const effTicks = getCurrentEffTicks(action);
-        if (state.progress >= effTicks){
+        if (state.current.skillId === 'archaeology' && action.earlyChance && Math.random() < action.earlyChance){
           state.progress = 0;
           completeAction(action);
+        } else {
+          state.progress++;
+          const effTicks = getCurrentEffTicks(action);
+          if (state.progress >= effTicks){
+            state.progress = 0;
+            completeAction(action);
+          }
         }
       }
     }
@@ -2139,7 +2234,7 @@ function tick(){
   // Passive HP regen — 1% maxHp every 10s
   if (state.combat.maxHp && state.combat.hp < state.combat.maxHp){
     const now = Date.now();
-    if (now - (state.combat.lastRegen || 0) >= 30000){
+    if (now - (state.combat.lastRegen || 0) >= 30000 / (1 + getArchBonus('hp_regen'))){
       state.combat.hp = Math.min(state.combat.maxHp, state.combat.hp + 1);
       state.combat.lastRegen = now;
     }
@@ -2169,7 +2264,7 @@ function tick(){
   if (state.prayer && state.prayer.points < state.prayer.maxPoints &&
       (!state.current || !COMBAT_SKILL_IDS.has(state.current.skillId))){
     const pBonus = Math.max(1, state.stats.prayer || 1);
-    const regenMs = Math.max(6000, 60000 / (1 + pBonus / 10));
+    const regenMs = Math.max(6000, 60000 / (1 + pBonus / 10)) / (1 + getArchBonus('prayer_regen'));
     const now = Date.now();
     if (now - (state.prayer.lastRegen || 0) >= regenMs){
       state.prayer.points = Math.min(state.prayer.maxPoints, state.prayer.points + 1);
@@ -2285,6 +2380,29 @@ function completeAction(action, silent){
       $('pkTimer').textContent = '15';
       log(`⚔️ A PKer spotted you at the altar! You have 15s to roll.`);
     }
+    return;
+  }
+  // Archaeology: pick random artifact from site, track collection, grant XP
+  if (state.current?.skillId === 'archaeology'){
+    const siteArtifacts = ARCH_ARTIFACTS.filter(a => a.siteId === action.id);
+    if (!siteArtifacts.length){ state.current = null; state.progress = 0; return; }
+    const artifact = siteArtifacts[Math.floor(Math.random() * siteArtifacts.length)];
+    const prev  = state.archaeology.artifacts[artifact.id] || 0;
+    const count = prev + 1;
+    state.archaeology.artifacts[artifact.id] = count;
+    if (!silent){
+      if (count <= artifact.needed)
+        log(`🏺 Found: ${artifact.name} (${count}/${artifact.needed})`);
+      if (count === artifact.needed){
+        log(`✨ Collection complete — perk unlocked: ${artifact.perkName}!`);
+        const activeCount = Object.keys(state.archaeology.activePerks).length;
+        if (activeCount < ARCH_MAX_PERKS){
+          state.archaeology.activePerks[artifact.id] = true;
+          log(`   "${artifact.perkDesc}" auto-activated`);
+        }
+      }
+    }
+    grantXp('archaeology', artifact.xp, silent);
     return;
   }
   // Failure mechanics (cooking burn, fletching splinter, divination transmute fail)
@@ -2992,6 +3110,98 @@ function renderActiveSkill(){
     return;
   }
 
+  if (s.id === 'archaeology'){
+    list.innerHTML = '';
+    const archLvl    = levelForXp(state.skills.archaeology.xp);
+    const activePerks = Object.keys(state.archaeology?.activePerks || {});
+
+    // Info bar
+    const infoDiv = document.createElement('div');
+    infoDiv.className = 'dg-bonus';
+    infoDiv.innerHTML = `Archaeology level: <b>${archLvl}</b> &nbsp;·&nbsp; Perks active: <b>${activePerks.length} / ${ARCH_MAX_PERKS}</b>`;
+    list.appendChild(infoDiv);
+
+    // Excavation Sites
+    const siteHdr = document.createElement('div');
+    siteHdr.className = 'action-category-header';
+    siteHdr.textContent = 'Excavation Sites';
+    list.appendChild(siteHdr);
+
+    const isMiningNow = state.current?.skillId === 'archaeology';
+    ARCH_SITES.forEach(site => {
+      const unlocked   = archLvl >= site.levelReq;
+      const isActive   = isMiningNow && state.current.actionId === site.id;
+      const avgTicks   = Math.round(Math.min(1000, 1 / site.earlyChance * 0.63 + 1000 * (1 - (1 - site.earlyChance) ** 1000) * 0));
+      const avgMin     = Math.floor(site.earlyChance > 0 ? Math.min(1000, 1/site.earlyChance) / 100 : 10);
+      const pctChance  = (site.earlyChance * 100).toFixed(2);
+
+      const btn = document.createElement('button');
+      btn.className = 'action-btn' + (isActive ? ' selected' : '') + (unlocked ? '' : ' disabled');
+      btn.disabled = !unlocked;
+      btn.innerHTML = `<span>${site.name}${unlocked ? '' : ` 🔒 Lv ${site.levelReq}`}</span>
+        <span class="meta">${unlocked ? `${pctChance}% early/tick · ~${avgMin}m avg · 10m max` : ''}</span>`;
+      if (isActive){
+        const secsLeft = Math.round((1000 - state.progress) * TICK_MS / 1000);
+        const mL = Math.floor(secsLeft / 60), sL = secsLeft % 60;
+        const timeStr = mL > 0 ? `${mL}m ${sL}s` : `${sL}s`;
+        const pct = Math.round(state.progress / 10);
+        btn.innerHTML += `
+          <div style="margin-top:5px;height:5px;background:var(--panel);border-radius:3px;overflow:hidden;width:100%;">
+            <div style="height:100%;width:${pct}%;background:#f59e0b;border-radius:3px;transition:width .3s;"></div>
+          </div>
+          <div style="font-size:11px;color:#f59e0b;margin-top:2px;">Excavating… ${timeStr} remaining</div>`;
+      }
+      if (unlocked) btn.onclick = () => startAction('archaeology', site.id);
+      list.appendChild(btn);
+    });
+
+    // Artefacts & Perks
+    const perkHdr = document.createElement('div');
+    perkHdr.className = 'action-category-header';
+    perkHdr.textContent = `Artefacts & Perks  (${activePerks.length}/${ARCH_MAX_PERKS} active)`;
+    list.appendChild(perkHdr);
+
+    ARCH_SITES.forEach(site => {
+      const siteArts = ARCH_ARTIFACTS.filter(a => a.siteId === site.id);
+      if (!siteArts.length) return;
+
+      const grpHdr = document.createElement('div');
+      grpHdr.style.cssText = 'font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;padding:8px 4px 2px;';
+      grpHdr.textContent = site.name;
+      list.appendChild(grpHdr);
+
+      siteArts.forEach(a => {
+        const found    = state.archaeology?.artifacts[a.id] || 0;
+        const complete = found >= a.needed;
+        const isOn     = !!(state.archaeology?.activePerks?.[a.id]);
+        const locked   = !complete;
+
+        const card = document.createElement('div');
+        card.className = 'upgrade-tier' + (isOn ? ' equipped' : '') + (locked ? ' locked' : '');
+        const progFill = Math.min(100, Math.round(found / a.needed * 100));
+        card.innerHTML = `<div class="tier-left">
+          <span>${a.name}</span>
+          <span class="tier-speed">${a.perkName}: ${a.perkDesc}</span>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:3px;">
+            <div style="flex:1;height:4px;background:var(--panel);border-radius:2px;overflow:hidden;">
+              <div style="height:100%;width:${progFill}%;background:${complete?'#f59e0b':'var(--dim)'};border-radius:2px;"></div>
+            </div>
+            <span style="font-size:11px;color:${complete?'#f59e0b':'var(--dim)'};">${found}/${a.needed}</span>
+          </div>
+        </div>`;
+        const btn = document.createElement('button');
+        btn.className = 'mini';
+        btn.disabled = locked;
+        btn.textContent = isOn ? '✓ Active' : (complete ? 'Activate' : 'Locked');
+        btn.onclick = () => toggleArchPerk(a.id);
+        card.appendChild(btn);
+        list.appendChild(card);
+      });
+    });
+
+    return;
+  }
+
   if (s.id === 'construction'){
     const shopHdr = document.createElement('div');
     shopHdr.className = 'action-category-header';
@@ -3272,6 +3482,9 @@ function init(){
   if (!('offhand' in state.equipment)) state.equipment.offhand = null;
   if (state.combat.attackTimer == null) state.combat.attackTimer = 0;
   if (state.autoOpenItems == null) state.autoOpenItems = false;
+  if (!state.archaeology) state.archaeology = { artifacts:{}, activePerks:{} };
+  if (!state.archaeology.artifacts)   state.archaeology.artifacts   = {};
+  if (!state.archaeology.activePerks) state.archaeology.activePerks = {};
   if (!state.uiCollapsed) state.uiCollapsed = {};
   if (state.combat?.style === 'necromancy') state.combat.style = 'melee';
   if (state.current?.skillId === 'necromancy'){ state.current = null; state.progress = 0; }
