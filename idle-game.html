@@ -243,6 +243,8 @@
   <a href="#sec-active">▶ Play</a>
   <a href="#sec-equip">⚔️ Equip</a>
   <a href="#sec-prayer">🙏 Prayer</a>
+  <a href="#sec-farm">🌿 Farm</a>
+  <a href="#sec-slayer">🗡️ Slayer</a>
   <a href="#sec-inv">🎒 Items</a>
   <a href="#sec-log">📜 Log</a>
   <a href="#sec-skills">🏆 Skills</a>
@@ -298,6 +300,30 @@
       </div>
       <div id="sec-body-prayer" class="sec-body">
         <div id="prayerHudPanel"></div>
+      </div>
+    </div>
+
+    <!-- Farming -->
+    <div id="sec-farm" class="sec-anchor">
+      <div class="sec-hdr" onclick="toggleSection('farm')">
+        🌿 Farming
+        <span id="farmSectionBadge" class="sec-badge"></span>
+        <span class="chev">▼</span>
+      </div>
+      <div id="sec-body-farm" class="sec-body">
+        <div id="farmPanel"></div>
+      </div>
+    </div>
+
+    <!-- Slayer -->
+    <div id="sec-slayer" class="sec-anchor">
+      <div class="sec-hdr" onclick="toggleSection('slayer')">
+        🗡️ Slayer
+        <span id="slayerSectionBadge" class="sec-badge"></span>
+        <span class="chev">▼</span>
+      </div>
+      <div id="sec-body-slayer" class="sec-body">
+        <div id="slayerPanel"></div>
       </div>
     </div>
 
@@ -2213,6 +2239,209 @@ function renderFarmTab(){
   el.appendChild(tog);
 }
 
+function renderFarmSection(){
+  const el = $('farmPanel');
+  if (!el) return;
+  const badge = $('farmSectionBadge');
+  const f = state.farming;
+  const farmLvl = levelForXp(state.skills.farming?.xp || 0);
+
+  if (badge){
+    badge.textContent = f.seed ? (f.ready ? '🌿 READY' : '🌱') : '';
+  }
+
+  el.innerHTML = '';
+
+  const lvlDiv = document.createElement('div');
+  lvlDiv.className = 'dg-bonus';
+  lvlDiv.style.marginBottom = '8px';
+  lvlDiv.innerHTML = `Farming level: <b>${farmLvl}</b>`;
+  el.appendChild(lvlDiv);
+
+  if (!f.seed){
+    const msg = document.createElement('div');
+    msg.style.cssText = 'color:#aaa;margin-bottom:10px;font-size:13px;';
+    msg.textContent = 'No crop planted.';
+    el.appendChild(msg);
+
+    const available = SEEDS.filter(s => (state.inventory[s.id] || 0) > 0);
+    const plantRow = document.createElement('div');
+    plantRow.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:10px;';
+
+    const sel = document.createElement('select');
+    sel.id = 'farmSeedDropdown';
+    sel.style.cssText = 'flex:1;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font-size:13px;';
+    if (available.length === 0){
+      const opt = document.createElement('option');
+      opt.textContent = 'No seeds in inventory';
+      opt.disabled = true;
+      sel.appendChild(opt);
+    } else {
+      available.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = `${s.name} ×${state.inventory[s.id]}`;
+        sel.appendChild(opt);
+      });
+    }
+
+    const plantBtn = document.createElement('button');
+    plantBtn.className = 'mini';
+    plantBtn.textContent = 'Plant';
+    plantBtn.disabled = available.length === 0;
+    plantBtn.onclick = () => { const d = $('farmSeedDropdown'); if (d) plantSeed(d.value); };
+
+    plantRow.appendChild(sel);
+    plantRow.appendChild(plantBtn);
+    el.appendChild(plantRow);
+  } else {
+    const elapsed = Date.now() - f.plantedAt;
+    const growMs  = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1);
+    const pct     = Math.min(100, Math.floor(elapsed / growMs * 100));
+    const remaining = Math.max(0, Math.ceil((f.plantedAt + growMs - Date.now()) / 1000));
+    const mins = Math.floor(remaining / 60);
+    const secs = remaining % 60;
+
+    const nameDiv = document.createElement('div');
+    nameDiv.style.cssText = 'font-weight:bold;margin-bottom:8px;';
+    nameDiv.textContent = f.ready ? `${f.seedName} — READY!` : `${f.seedName} growing...`;
+    el.appendChild(nameDiv);
+
+    if (!f.ready){
+      const barWrap = document.createElement('div');
+      barWrap.style.cssText = 'background:#333;border-radius:4px;height:10px;margin-bottom:6px;overflow:hidden;';
+      const bar = document.createElement('div');
+      bar.style.cssText = `background:#4ade80;height:100%;width:${pct}%;`;
+      barWrap.appendChild(bar);
+      el.appendChild(barWrap);
+      const timeDiv = document.createElement('div');
+      timeDiv.style.cssText = 'color:#aaa;font-size:12px;margin-bottom:10px;';
+      timeDiv.textContent = `${mins}m ${secs < 10 ? '0' : ''}${secs}s remaining`;
+      el.appendChild(timeDiv);
+    } else {
+      const btn = document.createElement('button');
+      btn.className = 'mini';
+      btn.style.cssText = 'background:#4ade80;color:#000;margin-bottom:10px;';
+      btn.textContent = 'Harvest';
+      btn.onclick = harvestCrop;
+      el.appendChild(btn);
+    }
+  }
+
+  const tog = document.createElement('div');
+  tog.style.cssText = 'display:flex;align-items:center;gap:8px;margin-top:4px;';
+  tog.innerHTML = `<span style="color:var(--dim);font-size:13px;">Auto-replant:</span>
+    <button class="mini" onclick="state.farming.autoReplant=!state.farming.autoReplant;render()">
+      ${f.autoReplant ? 'ON' : 'OFF'}
+    </button>`;
+  el.appendChild(tog);
+}
+
+function renderSlayerSection(){
+  const el = $('slayerPanel');
+  if (!el) return;
+  const badge = $('slayerSectionBadge');
+  const slayerLv = levelForXp(state.skills.slayer?.xp || 0);
+  const task     = state.slayer?.task;
+
+  if (badge){
+    badge.textContent = task ? `${task.count}/${task.target}` : `${state.slayer?.points || 0} pts`;
+  }
+
+  el.innerHTML = '';
+
+  // Info bar
+  const infoDiv = document.createElement('div');
+  infoDiv.className = 'dg-bonus';
+  infoDiv.style.marginBottom = '8px';
+  infoDiv.innerHTML = `Slayer lv: <b>${slayerLv}</b> &nbsp;·&nbsp; Points: <b>${state.slayer?.points || 0}</b> &nbsp;·&nbsp; Tasks: <b>${state.slayer?.totalTasksDone || 0}</b>`;
+  el.appendChild(infoDiv);
+
+  // Current Task
+  const taskHdr = document.createElement('div');
+  taskHdr.className = 'action-category-header';
+  taskHdr.textContent = 'Current Task';
+  el.appendChild(taskHdr);
+
+  if (!task){
+    const noTask = document.createElement('div');
+    noTask.className = 'inv-empty';
+    noTask.textContent = 'No active task — select a master below.';
+    el.appendChild(noTask);
+  } else {
+    const pct = Math.floor(task.count / task.target * 100);
+    const taskCard = document.createElement('div');
+    taskCard.style.cssText = 'background:var(--panel2);border-radius:8px;padding:10px;margin-bottom:4px;';
+    taskCard.innerHTML = `
+      <div style="font-weight:bold;margin-bottom:6px;">Kill ${task.mobName}s</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+        <div style="flex:1;background:#333;border-radius:4px;height:10px;overflow:hidden;">
+          <div style="background:#f59e0b;height:100%;width:${pct}%;transition:width 0.3s;"></div>
+        </div>
+        <span style="color:var(--dim);font-size:12px;">${task.count}/${task.target}</span>
+      </div>
+      <div style="color:var(--dim);font-size:12px;">+${task.pointsReward + (state.slayer.unlocks?.point_bonus ? 5 : 0)} pts on completion</div>
+    `;
+    el.appendChild(taskCard);
+  }
+
+  // Slayer Masters
+  const masterHdr = document.createElement('div');
+  masterHdr.className = 'action-category-header';
+  masterHdr.textContent = 'Slayer Masters';
+  el.appendChild(masterHdr);
+
+  SLAYER_MASTERS.forEach(master => {
+    const locked  = slayerLv < master.levelReq;
+    const hasTask = !!task;
+    const card    = document.createElement('div');
+    card.className = 'upgrade-tier' + (locked ? ' locked' : '');
+    card.innerHTML = `<div class="tier-left">
+      <span>${master.name}${locked ? ` 🔒 Lv ${master.levelReq}` : ''}</span>
+      <span class="tier-speed">${master.pointsPerTask} pts/task &nbsp;·&nbsp; ${master.taskMin}–${master.taskMax} kills${state.slayer.unlocks?.task_extend ? ' (×1.5)' : ''}</span>
+    </div>`;
+    const btn = document.createElement('button');
+    btn.className = 'mini';
+    btn.disabled  = locked || hasTask;
+    btn.textContent = hasTask ? 'Task active' : (locked ? `Lv ${master.levelReq}` : 'Assign Task');
+    btn.onclick = () => assignSlayerTask(master.id);
+    card.appendChild(btn);
+    el.appendChild(card);
+  });
+
+  // Slayer Shop
+  const shopHdr = document.createElement('div');
+  shopHdr.className = 'action-category-header';
+  shopHdr.textContent = `Slayer Shop — ${state.slayer?.points || 0} pts`;
+  el.appendChild(shopHdr);
+
+  SLAYER_SHOP.forEach(item => {
+    const owned       = item.type === 'permanent' && !!(state.slayer.unlocks?.[item.id]);
+    const canAffordIt = (state.slayer?.points || 0) >= item.cost;
+    const isSkip      = item.id === 'skip_task';
+    if (isSkip && !task) return;
+    const card = document.createElement('div');
+    card.className = 'upgrade-tier' + (owned ? ' equipped' : '');
+    card.innerHTML = `<div class="tier-left">
+      <span>${item.name}</span>
+      <span class="tier-speed">${item.desc}</span>
+      <span class="tier-cost">${item.cost} pts</span>
+    </div>`;
+    const btn = document.createElement('button');
+    btn.className = 'mini';
+    if (owned){
+      btn.textContent = '✓ Owned';
+      btn.disabled = true;
+    } else {
+      btn.textContent = canAffordIt ? (isSkip ? 'Skip task' : 'Buy') : `Need ${item.cost} pts`;
+      btn.disabled = !canAffordIt;
+      btn.onclick = () => buySlayerUpgrade(item.id);
+    }
+    card.appendChild(btn);
+    el.appendChild(card);
+  });
+}
+
 function calcFloorSecs(action){
   const secs = action.baseMaxSecs * (1 - 0.9 * calcSkillBonus());
   return Math.max(action.baseMinSecs, secs);
@@ -2755,6 +2984,8 @@ function render(){
   renderActiveSkill();
   renderEquipSection();
   renderPrayerHud();
+  renderFarmSection();
+  renderSlayerSection();
   renderItemsPanel();
   renderUpgradeShop();
   renderTokenShop();
@@ -2887,7 +3118,10 @@ function renderSkillList(){
         if (s.id === 'farming' && state.farming?.seed)
           badge = state.farming.ready ? ' 🌿' : ' 🌱';
         row.innerHTML = `<span>${s.name}</span><span class="lvl">${lvl}/${s.maxLevel}${badge}</span>`;
-        row.onclick = () => { selectSkill('farming'); document.getElementById('sec-inv')?.scrollIntoView({behavior:'smooth',block:'start'}); };
+        row.onclick = () => document.getElementById('sec-farm')?.scrollIntoView({behavior:'smooth',block:'start'});
+      } else if (s.id === 'slayer' && s.implemented) {
+        row.innerHTML = `<span>${s.name}</span><span class="lvl">${lvl}/${s.maxLevel}</span>`;
+        row.onclick = () => document.getElementById('sec-slayer')?.scrollIntoView({behavior:'smooth',block:'start'});
       } else if (s.type === 'combat' && s.implemented) {
         row.innerHTML = `<span>${s.name}</span><span class="lvl">${lvl}/${s.maxLevel}</span>`;
         const styleMap = {melee:'melee', ranged:'ranged', magic:'magic'};
@@ -2958,6 +3192,11 @@ function renderActiveSkill(){
   // action buttons
   const list = $('treeList');
   list.innerHTML = '';
+  // Farming and Slayer are always-visible sidebar panels — redirect
+  if (s.id === 'farming' || s.id === 'slayer'){
+    list.innerHTML = `<div class="dg-bonus">${s.name} is managed in the always-visible panel on the right →</div>`;
+    return;
+  }
   const actions = ACTIONS[s.id] || [];
   if (actions.length === 0){
     list.innerHTML = `<div class="inv-empty">No actions built for ${s.name} yet.</div>`;
@@ -3195,104 +3434,6 @@ function renderActiveSkill(){
         card.appendChild(btn);
         list.appendChild(card);
       });
-    });
-
-    return;
-  }
-
-  if (s.id === 'slayer'){
-    list.innerHTML = '';
-    const slayerLv  = levelForXp(state.skills.slayer.xp);
-    const task      = state.slayer?.task;
-
-    // Info bar
-    const infoDiv = document.createElement('div');
-    infoDiv.className = 'dg-bonus';
-    infoDiv.innerHTML = `Slayer level: <b>${slayerLv}</b> &nbsp;·&nbsp; Points: <b>${state.slayer?.points || 0}</b> &nbsp;·&nbsp; Tasks done: <b>${state.slayer?.totalTasksDone || 0}</b>`;
-    list.appendChild(infoDiv);
-
-    // Current Task
-    const taskHdr = document.createElement('div');
-    taskHdr.className = 'action-category-header';
-    taskHdr.textContent = 'Current Task';
-    list.appendChild(taskHdr);
-
-    if (!task){
-      const noTask = document.createElement('div');
-      noTask.className = 'inv-empty';
-      noTask.textContent = 'No active task — select a Slayer Master below.';
-      list.appendChild(noTask);
-    } else {
-      const pct = Math.floor(task.count / task.target * 100);
-      const taskCard = document.createElement('div');
-      taskCard.style.cssText = 'background:var(--panel2);border-radius:8px;padding:12px;margin-bottom:4px;';
-      taskCard.innerHTML = `
-        <div style="font-weight:bold;margin-bottom:6px;">Kill ${task.mobName}s</div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-          <div style="flex:1;background:#333;border-radius:4px;height:10px;overflow:hidden;">
-            <div style="background:#f59e0b;height:100%;width:${pct}%;transition:width 0.3s;"></div>
-          </div>
-          <span style="color:var(--dim);font-size:12px;">${task.count} / ${task.target}</span>
-        </div>
-        <div style="color:var(--dim);font-size:12px;">+${task.pointsReward + (state.slayer.unlocks?.point_bonus ? 5 : 0)} pts on completion</div>
-      `;
-      list.appendChild(taskCard);
-    }
-
-    // Slayer Masters
-    const masterHdr = document.createElement('div');
-    masterHdr.className = 'action-category-header';
-    masterHdr.textContent = 'Slayer Masters';
-    list.appendChild(masterHdr);
-
-    SLAYER_MASTERS.forEach(master => {
-      const locked    = slayerLv < master.levelReq;
-      const hasTask   = !!task;
-      const card      = document.createElement('div');
-      card.className  = 'upgrade-tier' + (locked ? ' locked' : '');
-      card.innerHTML  = `<div class="tier-left">
-        <span>${master.name}${locked ? ` 🔒 Lv ${master.levelReq}` : ''}</span>
-        <span class="tier-speed">${master.pointsPerTask} pts/task &nbsp;·&nbsp; Kills: ${master.taskMin}–${master.taskMax}${state.slayer.unlocks?.task_extend ? ' (×1.5)' : ''}</span>
-      </div>`;
-      const btn = document.createElement('button');
-      btn.className = 'mini';
-      btn.disabled  = locked || hasTask;
-      btn.textContent = hasTask ? 'Task active' : (locked ? `Lv ${master.levelReq}` : 'Assign Task');
-      btn.onclick = () => assignSlayerTask(master.id);
-      card.appendChild(btn);
-      list.appendChild(card);
-    });
-
-    // Slayer Shop
-    const shopHdr = document.createElement('div');
-    shopHdr.className = 'action-category-header';
-    shopHdr.textContent = `Slayer Shop — ${state.slayer?.points || 0} pts`;
-    list.appendChild(shopHdr);
-
-    SLAYER_SHOP.forEach(item => {
-      const owned    = item.type === 'permanent' && !!(state.slayer.unlocks?.[item.id]);
-      const canAffordIt = (state.slayer?.points || 0) >= item.cost;
-      const isSkip   = item.id === 'skip_task';
-      if (isSkip && !task) return; // only show skip when task active
-      const card = document.createElement('div');
-      card.className = 'upgrade-tier' + (owned ? ' equipped' : '');
-      card.innerHTML = `<div class="tier-left">
-        <span>${item.name}</span>
-        <span class="tier-speed">${item.desc}</span>
-        <span class="tier-cost">${item.cost} pts</span>
-      </div>`;
-      const btn = document.createElement('button');
-      btn.className = 'mini';
-      if (owned){
-        btn.textContent = '✓ Owned';
-        btn.disabled = true;
-      } else {
-        btn.textContent = canAffordIt ? (isSkip ? 'Skip task' : 'Buy') : `Need ${item.cost} pts`;
-        btn.disabled = !canAffordIt;
-        btn.onclick = () => buySlayerUpgrade(item.id);
-      }
-      card.appendChild(btn);
-      list.appendChild(card);
     });
 
     return;
