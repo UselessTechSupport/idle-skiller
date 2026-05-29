@@ -475,7 +475,7 @@ const SKILL_ROADMAP = [
   // Support (5)
   {id:'agility',      name:'Agility',      type:'support', maxLevel:99,  implemented:true},
   {id:'thieving',     name:'Thieving',     type:'support', maxLevel:99,  implemented:true},
-  {id:'slayer',       name:'Slayer',       type:'support', maxLevel:120, implemented:false},
+  {id:'slayer',       name:'Slayer',       type:'support', maxLevel:120, implemented:true},
   {id:'dungeoneering',name:'Dungeoneering',type:'support', maxLevel:120, implemented:true},
   {id:'archaeology',  name:'Archaeology',  type:'support', maxLevel:120, implemented:true},
   // Elite (1)
@@ -547,6 +547,30 @@ const ARCH_ARTIFACTS = [
   { id:'dragonkin_rune', name:'Dragonkin Rune',             siteId:'kethsi',    xp:1800, needed:3, bonusType:'all_xp',             bonusVal:0.03, perkName:'Dragonkin Power', perkDesc:'All XP +3%' },
   { id:'kethsi_stone',   name:'Kethsi Stone',               siteId:'kethsi',    xp:2000, needed:4, bonusType:'speed_thieving',     bonusVal:0.05, perkName:'Lost Technology', perkDesc:'Thieving 5% faster' },
   { id:'dim_seal',       name:'Dimensional Seal',           siteId:'kethsi',    xp:2200, needed:5, bonusType:'xp_dungeoneering',   bonusVal:0.08, perkName:'Reality Anchor',  perkDesc:'Dungeoneering XP +8%' },
+];
+
+const SLAYER_MASTERS = [
+  { id:'turael',   name:'Turael',   levelReq:1,  pointsPerTask:2,  taskMin:10, taskMax:20,
+    pool:['goblin','cow','guard','barbarian'], bossPool:[] },
+  { id:'mazchna',  name:'Mazchna',  levelReq:20, pointsPerTask:5,  taskMin:20, taskMax:40,
+    pool:['guard','barbarian','hill_giant','crawling_hand','cave_crawler','banshee'], bossPool:[] },
+  { id:'vannaka',  name:'Vannaka',  levelReq:40, pointsPerTask:10, taskMin:30, taskMax:60,
+    pool:['hill_giant','moss_giant','banshee','rock_slug','cockatrice'], bossPool:[] },
+  { id:'chaeldar', name:'Chaeldar', levelReq:60, pointsPerTask:15, taskMin:40, taskMax:80,
+    pool:['fire_giant','green_dragon','infernal_mage','bloodveld','aberrant_spectre'], bossPool:[] },
+  { id:'sumona',   name:'Sumona',   levelReq:75, pointsPerTask:20, taskMin:50, taskMax:100,
+    pool:['blue_dragon','aberrant_spectre','dust_devil','dark_beast','black_dragon'], bossPool:[] },
+  { id:'duradel',  name:'Duradel',  levelReq:90, pointsPerTask:30, taskMin:60, taskMax:120,
+    pool:['dark_beast','abyssal_demon','black_dragon'],
+    bossPool:['giant_mole','kbd','dag_kings','zilyana','graardor','nex'] },
+];
+
+const SLAYER_SHOP = [
+  { id:'skip_task',    name:'Skip Task',        cost:30,  type:'consumable', desc:'Cancel your current task, no penalty' },
+  { id:'boss_tasks',   name:'Boss Task Unlock', cost:200, type:'permanent',  desc:'Duradel can assign boss monsters' },
+  { id:'slayer_boost', name:'Slayer Boost',     cost:300, type:'permanent',  desc:'+10% Slayer XP from task kills' },
+  { id:'task_extend',  name:'Extended Tasks',   cost:400, type:'permanent',  desc:'Tasks have 50% more kills (more points)' },
+  { id:'point_bonus',  name:'Point Mastery',    cost:600, type:'permanent',  desc:'+5 bonus points per task completion' },
 ];
 
 /* ACTIONS: what you can DO in each skill.
@@ -1072,25 +1096,25 @@ const ACTIONS = {
     {id:'dark_beast',   name:'Dark Beast',    category:'Mobs', levelReq:90, xp:1100, ticks:21, stats:{hp:430, attack:80, defence:60},
       drops:[{item:'big_bones',   itemName:'Big bones',   chance:1.0, min:1, max:1,  notable:false}]},
     // ── Slayer Monsters ───────────────────────────────────────────────────────
-    {id:'crawling_hand',     name:'Crawling Hand',     category:'Slayer Monsters', levelReq:5,  xp:45,  ticks:5,  stats:{hp:12,  attack:5,  defence:2},
+    {id:'crawling_hand',     name:'Crawling Hand',     category:'Slayer Monsters', levelReq:5,  xp:45,  ticks:5,  slayerReq:5,  stats:{hp:12,  attack:5,  defence:2},
       drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
-    {id:'cave_crawler',      name:'Cave Crawler',      category:'Slayer Monsters', levelReq:10, xp:70,  ticks:6,  stats:{hp:18,  attack:9,  defence:5},
+    {id:'cave_crawler',      name:'Cave Crawler',      category:'Slayer Monsters', levelReq:10, xp:70,  ticks:6,  slayerReq:10, stats:{hp:18,  attack:9,  defence:5},
       drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
-    {id:'banshee',           name:'Banshee',           category:'Slayer Monsters', levelReq:15, xp:95,  ticks:7,  stats:{hp:28,  attack:13, defence:7},
+    {id:'banshee',           name:'Banshee',           category:'Slayer Monsters', levelReq:15, xp:95,  ticks:7,  slayerReq:15, stats:{hp:28,  attack:13, defence:7},
       drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
-    {id:'rock_slug',         name:'Rock Slug',         category:'Slayer Monsters', levelReq:20, xp:130, ticks:8,  stats:{hp:38,  attack:16, defence:10},
+    {id:'rock_slug',         name:'Rock Slug',         category:'Slayer Monsters', levelReq:20, xp:130, ticks:8,  slayerReq:20, stats:{hp:38,  attack:16, defence:10},
       drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
-    {id:'cockatrice',        name:'Cockatrice',        category:'Slayer Monsters', levelReq:25, xp:175, ticks:8,  stats:{hp:50,  attack:20, defence:12},
+    {id:'cockatrice',        name:'Cockatrice',        category:'Slayer Monsters', levelReq:25, xp:175, ticks:8,  slayerReq:25, stats:{hp:50,  attack:20, defence:12},
       drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
-    {id:'infernal_mage',     name:'Infernal Mage',     category:'Slayer Monsters', levelReq:45, xp:300, ticks:10, stats:{hp:120, attack:32, defence:20, style:'mage'},
+    {id:'infernal_mage',     name:'Infernal Mage',     category:'Slayer Monsters', levelReq:45, xp:300, ticks:10, slayerReq:45, stats:{hp:120, attack:32, defence:20, style:'mage'},
       drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
-    {id:'bloodveld',         name:'Bloodveld',         category:'Slayer Monsters', levelReq:50, xp:370, ticks:11, stats:{hp:135, attack:33, defence:22},
+    {id:'bloodveld',         name:'Bloodveld',         category:'Slayer Monsters', levelReq:50, xp:370, ticks:11, slayerReq:50, stats:{hp:135, attack:33, defence:22},
       drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
-    {id:'aberrant_spectre',  name:'Aberrant Spectre',  category:'Slayer Monsters', levelReq:60, xp:510, ticks:13, stats:{hp:200, attack:45, defence:30},
+    {id:'aberrant_spectre',  name:'Aberrant Spectre',  category:'Slayer Monsters', levelReq:60, xp:510, ticks:13, slayerReq:60, stats:{hp:200, attack:45, defence:30},
       drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
-    {id:'dust_devil',        name:'Dust Devil',        category:'Slayer Monsters', levelReq:65, xp:600, ticks:14, stats:{hp:240, attack:52, defence:36},
+    {id:'dust_devil',        name:'Dust Devil',        category:'Slayer Monsters', levelReq:65, xp:600, ticks:14, slayerReq:65, stats:{hp:240, attack:52, defence:36},
       drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
-    {id:'abyssal_demon',     name:'Abyssal Demon',     category:'Slayer Monsters', levelReq:85, xp:900, ticks:19, stats:{hp:360, attack:70, defence:55},
+    {id:'abyssal_demon',     name:'Abyssal Demon',     category:'Slayer Monsters', levelReq:85, xp:900, ticks:19, slayerReq:85, stats:{hp:360, attack:70, defence:55},
       drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false},
              {item:'abyssal_whip', itemName:'Abyssal whip', chance:0.01, min:1, max:1, notable:true}]},
     // ── Bosses ────────────────────────────────────────────────────────────────
@@ -1479,6 +1503,7 @@ function freshState(){
     autoOpenItems:  false,
     uiCollapsed:    {},  // { sectionId: true } — collapsed UI sections
     archaeology:    { artifacts:{}, activePerks:{} },
+    slayer:         { points:0, task:null, unlocks:{}, totalTasksDone:0 },
     prayer:         { points:0, maxPoints:1, active:{}, drainCounter:0, lastRegen:0 },
     saveVersion:  1,
     lastSaved:    Date.now(),
@@ -1584,6 +1609,48 @@ function toggleArchPerk(artifactId){
     }
     state.archaeology.activePerks[artifactId] = true;
   }
+  render();
+}
+
+function assignSlayerTask(masterId){
+  const master = SLAYER_MASTERS.find(m => m.id === masterId);
+  if (!master) return;
+  const slayerLv = levelForXp(state.skills.slayer?.xp || 0);
+  if (slayerLv < master.levelReq){ log(`Need Slayer lv ${master.levelReq} for ${master.name}.`); return; }
+  if (state.slayer.task){ log('Finish or skip your current task first.'); return; }
+  let pool = [...master.pool];
+  if (state.slayer.unlocks?.boss_tasks && master.bossPool.length) pool = pool.concat(master.bossPool);
+  pool = pool.filter(mobId => {
+    const mob = ACTIONS.combat.find(m => m.id === mobId);
+    if (!mob) return false;
+    if (mob.slayerReq && slayerLv < mob.slayerReq) return false;
+    return true;
+  });
+  if (!pool.length){ log('No valid mobs available from this master yet — level up Slayer first.'); return; }
+  const mobId = pool[Math.floor(Math.random() * pool.length)];
+  const mob = ACTIONS.combat.find(m => m.id === mobId);
+  let target = master.taskMin + Math.floor(Math.random() * (master.taskMax - master.taskMin + 1));
+  if (state.slayer.unlocks?.task_extend) target = Math.ceil(target * 1.5);
+  state.slayer.task = { mobId, mobName:mob.name, mobXp:mob.xp, count:0, target, masterId, pointsReward:master.pointsPerTask };
+  log(`📋 New task: Kill ${target} ${mob.name}s (from ${master.name})`);
+  render();
+}
+
+function buySlayerUpgrade(itemId){
+  const item = SLAYER_SHOP.find(x => x.id === itemId);
+  if (!item) return;
+  if (state.slayer.points < item.cost){ log(`Need ${item.cost} Slayer points (have ${state.slayer.points}).`); return; }
+  if (itemId === 'skip_task'){
+    if (!state.slayer.task){ log('No active task to skip.'); return; }
+    state.slayer.points -= item.cost;
+    log(`⏭️ Skipped task: ${state.slayer.task.mobName}`);
+    state.slayer.task = null;
+    render(); return;
+  }
+  if (state.slayer.unlocks?.[itemId]){ log('Already purchased.'); return; }
+  state.slayer.points -= item.cost;
+  state.slayer.unlocks[itemId] = true;
+  log(`✅ Purchased: ${item.name} — ${item.desc}`);
   render();
 }
 
@@ -2033,18 +2100,23 @@ function renderCombatPanel(){
     empty.textContent = 'Quests coming soon.';
     list.appendChild(empty);
   } else {
+    const slayerLv = levelForXp(state.skills.slayer?.xp || 0);
     mobs.forEach(a => {
       const unlocked = combatLvl >= a.levelReq;
+      const slayerLocked = !!(a.slayerReq && slayerLv < a.slayerReq);
       const selected = state.current && COMBAT_SKILL_IDS.has(state.current.skillId) && state.current.actionId === a.id;
+      const onTask   = state.slayer?.task?.mobId === a.id;
       const btn = document.createElement('button');
       btn.className = 'action-btn' + (selected ? ' selected' : '');
-      btn.disabled = !unlocked;
+      btn.disabled = !unlocked || slayerLocked;
       const dropPreview = (a.drops || []).filter(d => d.notable).map(d => d.itemName).join(', ');
       const dropStr = dropPreview ? `<br><span style="color:var(--dim);font-size:11px;">Drops: ${dropPreview}</span>` : '';
       const mobInfo = a.stats ? `<br><span style="color:var(--dim);font-size:11px;">HP: ${a.stats.hp}  ATK: ${a.stats.attack}  DEF: ${a.stats.defence}</span>` : '';
-      btn.innerHTML = `<span>${a.name}${unlocked ? '' : ` 🔒 Lv ${a.levelReq}`}${mobInfo}${dropStr}</span>
+      const slayerLockStr = slayerLocked ? `<br><span style="color:#f87171;font-size:11px;">🔒 Requires Slayer lv ${a.slayerReq}</span>` : '';
+      const taskBadge = onTask ? ` <span style="background:#f59e0b;color:#000;font-size:10px;padding:1px 5px;border-radius:3px;font-weight:bold;">📋 ON TASK</span>` : '';
+      btn.innerHTML = `<span>${a.name}${unlocked ? '' : ` 🔒 Lv ${a.levelReq}`}${taskBadge}${mobInfo}${slayerLockStr}${dropStr}</span>
                        <span class="meta">${a.xp} xp</span>`;
-      if (unlocked) btn.onclick = () => startAction(styleId, a.id);
+      if (unlocked && !slayerLocked) btn.onclick = () => startAction(styleId, a.id);
       list.appendChild(btn);
     });
     if (mobs.length === 0){
@@ -2502,6 +2574,21 @@ function completeAction(action, silent){
       }
     }
     if (!silent) checkBonusDrop(state.current?.skillId, action);
+    // Slayer task kill tracking
+    if (state.slayer?.task?.mobId === action.id){
+      const boost = state.slayer.unlocks?.slayer_boost ? 1.1 : 1.0;
+      grantXp('slayer', action.xp * boost, silent);
+      state.slayer.task.count++;
+      if (state.slayer.task.count >= state.slayer.task.target){
+        const pts = state.slayer.task.pointsReward + (state.slayer.unlocks?.point_bonus ? 5 : 0);
+        state.slayer.points += pts;
+        state.slayer.totalTasksDone++;
+        const bonusXp = Math.floor(state.slayer.task.target * action.xp * 0.5);
+        grantXp('slayer', bonusXp, silent);
+        if (!silent) log(`✅ Slayer task complete! +${pts} points — visit a master for a new task.`);
+        state.slayer.task = null;
+      }
+    }
     return;
   }
   // give xp + check level up
@@ -2619,6 +2706,9 @@ function startAction(skillId, actionId){
   const action = getAction(skillId, actionId);
   if (!action) return;
   if (levelForXp(state.skills[skillId].xp) < action.levelReq) return; // locked
+  if (action.slayerReq && levelForXp(state.skills.slayer?.xp || 0) < action.slayerReq){
+    log(`You need Slayer lv ${action.slayerReq} to fight ${action.name}.`); return;
+  }
   // Warn if abandoning an in-progress floor
   if (state.current?.skillId === 'dungeoneering' && state.current.floorTicks &&
       (skillId !== 'dungeoneering' || actionId !== state.current.actionId)){
@@ -3110,6 +3200,104 @@ function renderActiveSkill(){
     return;
   }
 
+  if (s.id === 'slayer'){
+    list.innerHTML = '';
+    const slayerLv  = levelForXp(state.skills.slayer.xp);
+    const task      = state.slayer?.task;
+
+    // Info bar
+    const infoDiv = document.createElement('div');
+    infoDiv.className = 'dg-bonus';
+    infoDiv.innerHTML = `Slayer level: <b>${slayerLv}</b> &nbsp;·&nbsp; Points: <b>${state.slayer?.points || 0}</b> &nbsp;·&nbsp; Tasks done: <b>${state.slayer?.totalTasksDone || 0}</b>`;
+    list.appendChild(infoDiv);
+
+    // Current Task
+    const taskHdr = document.createElement('div');
+    taskHdr.className = 'action-category-header';
+    taskHdr.textContent = 'Current Task';
+    list.appendChild(taskHdr);
+
+    if (!task){
+      const noTask = document.createElement('div');
+      noTask.className = 'inv-empty';
+      noTask.textContent = 'No active task — select a Slayer Master below.';
+      list.appendChild(noTask);
+    } else {
+      const pct = Math.floor(task.count / task.target * 100);
+      const taskCard = document.createElement('div');
+      taskCard.style.cssText = 'background:var(--panel2);border-radius:8px;padding:12px;margin-bottom:4px;';
+      taskCard.innerHTML = `
+        <div style="font-weight:bold;margin-bottom:6px;">Kill ${task.mobName}s</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <div style="flex:1;background:#333;border-radius:4px;height:10px;overflow:hidden;">
+            <div style="background:#f59e0b;height:100%;width:${pct}%;transition:width 0.3s;"></div>
+          </div>
+          <span style="color:var(--dim);font-size:12px;">${task.count} / ${task.target}</span>
+        </div>
+        <div style="color:var(--dim);font-size:12px;">+${task.pointsReward + (state.slayer.unlocks?.point_bonus ? 5 : 0)} pts on completion</div>
+      `;
+      list.appendChild(taskCard);
+    }
+
+    // Slayer Masters
+    const masterHdr = document.createElement('div');
+    masterHdr.className = 'action-category-header';
+    masterHdr.textContent = 'Slayer Masters';
+    list.appendChild(masterHdr);
+
+    SLAYER_MASTERS.forEach(master => {
+      const locked    = slayerLv < master.levelReq;
+      const hasTask   = !!task;
+      const card      = document.createElement('div');
+      card.className  = 'upgrade-tier' + (locked ? ' locked' : '');
+      card.innerHTML  = `<div class="tier-left">
+        <span>${master.name}${locked ? ` 🔒 Lv ${master.levelReq}` : ''}</span>
+        <span class="tier-speed">${master.pointsPerTask} pts/task &nbsp;·&nbsp; Kills: ${master.taskMin}–${master.taskMax}${state.slayer.unlocks?.task_extend ? ' (×1.5)' : ''}</span>
+      </div>`;
+      const btn = document.createElement('button');
+      btn.className = 'mini';
+      btn.disabled  = locked || hasTask;
+      btn.textContent = hasTask ? 'Task active' : (locked ? `Lv ${master.levelReq}` : 'Assign Task');
+      btn.onclick = () => assignSlayerTask(master.id);
+      card.appendChild(btn);
+      list.appendChild(card);
+    });
+
+    // Slayer Shop
+    const shopHdr = document.createElement('div');
+    shopHdr.className = 'action-category-header';
+    shopHdr.textContent = `Slayer Shop — ${state.slayer?.points || 0} pts`;
+    list.appendChild(shopHdr);
+
+    SLAYER_SHOP.forEach(item => {
+      const owned    = item.type === 'permanent' && !!(state.slayer.unlocks?.[item.id]);
+      const canAffordIt = (state.slayer?.points || 0) >= item.cost;
+      const isSkip   = item.id === 'skip_task';
+      if (isSkip && !task) return; // only show skip when task active
+      const card = document.createElement('div');
+      card.className = 'upgrade-tier' + (owned ? ' equipped' : '');
+      card.innerHTML = `<div class="tier-left">
+        <span>${item.name}</span>
+        <span class="tier-speed">${item.desc}</span>
+        <span class="tier-cost">${item.cost} pts</span>
+      </div>`;
+      const btn = document.createElement('button');
+      btn.className = 'mini';
+      if (owned){
+        btn.textContent = '✓ Owned';
+        btn.disabled = true;
+      } else {
+        btn.textContent = canAffordIt ? (isSkip ? 'Skip task' : 'Buy') : `Need ${item.cost} pts`;
+        btn.disabled = !canAffordIt;
+        btn.onclick = () => buySlayerUpgrade(item.id);
+      }
+      card.appendChild(btn);
+      list.appendChild(card);
+    });
+
+    return;
+  }
+
   if (s.id === 'archaeology'){
     list.innerHTML = '';
     const archLvl    = levelForXp(state.skills.archaeology.xp);
@@ -3485,6 +3673,9 @@ function init(){
   if (!state.archaeology) state.archaeology = { artifacts:{}, activePerks:{} };
   if (!state.archaeology.artifacts)   state.archaeology.artifacts   = {};
   if (!state.archaeology.activePerks) state.archaeology.activePerks = {};
+  if (!state.slayer) state.slayer = { points:0, task:null, unlocks:{}, totalTasksDone:0 };
+  if (!state.slayer.unlocks) state.slayer.unlocks = {};
+  if (state.slayer.totalTasksDone === undefined) state.slayer.totalTasksDone = 0;
   if (!state.uiCollapsed) state.uiCollapsed = {};
   if (state.combat?.style === 'necromancy') state.combat.style = 'melee';
   if (state.current?.skillId === 'necromancy'){ state.current = null; state.progress = 0; }
