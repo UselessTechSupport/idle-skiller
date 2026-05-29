@@ -335,7 +335,7 @@ const COMBAT_STYLES = [
   {id:'necromancy', label:'Necromancy'},
 ];
 const COMBAT_SKILL_IDS = new Set(
-  ['melee','defence','constitution','ranged','magic','prayer','summoning','necromancy']
+  ['melee','defence','constitution','ranged','magic','summoning','necromancy']
 );
 
 const SEEDS = [
@@ -379,7 +379,7 @@ const SKILL_ROADMAP = [
   {id:'constitution', name:'Constitution', type:'combat', maxLevel:99,  implemented:true, startLevel:10},
   {id:'ranged',       name:'Ranged',       type:'combat', maxLevel:120, implemented:true},
   {id:'magic',        name:'Magic',        type:'combat', maxLevel:120, implemented:true},
-  {id:'prayer',       name:'Prayer',       type:'combat', maxLevel:99,  implemented:false},
+  {id:'prayer',       name:'Prayer',       type:'combat', maxLevel:99,  implemented:true},
   {id:'summoning',    name:'Summoning',    type:'combat', maxLevel:99,  implemented:false},
   {id:'necromancy',   name:'Necromancy',   type:'combat', maxLevel:120, implemented:true},
   // Support (5)
@@ -936,6 +936,15 @@ const ACTIONS = {
       drops:[{item:'dragon_bones',    itemName:'Dragon bones',      chance:1.0,  min:1, max:1,  notable:false},
              {item:'torva_platebody', itemName:'Torva platebody',   chance:0.01, min:1, max:1,  notable:true}]},
   ],
+  prayer:[
+    { id:'bury_auto',  name:'Bury bones',      label:'Bones buried',  category:'Burying',
+      levelReq:1, xp:0, ticks:2, autoBone:true },
+    { id:'altar_auto', name:'Personal altar',   label:'Bones offered', category:'Personal Altar',
+      levelReq:1, xp:0, ticks:2, autoBone:true, altarMult:2.5, altarReq:true },
+    { id:'wild_altar', name:'Wilderness altar', label:'Bones offered', category:'Wilderness Altar',
+      levelReq:1, xp:0, ticks:2, autoBone:true, altarMult:3.5,
+      wilderness:true, pkCoinBase:80, pkCoinPerLevel:12 },
+  ],
   // future skills go here
 };
 
@@ -998,6 +1007,39 @@ const HEADLESS_LOG_TIERS = [
   {item:'normal_logs',        name:'Logs',               levelReq:1,  xp:1,   count:15},
 ];
 
+const BONE_TIERS = [
+  { item:'dragon_bones', name:'Dragon bones', xpBase:72  },
+  { item:'big_bones',    name:'Big bones',    xpBase:15  },
+  { item:'bones',        name:'Bones',        xpBase:4.5 },
+];
+
+const PRAYERS = [
+  // Lesser boosts (5%, drain 1)
+  { id:'thick_skin',          name:'Thick Skin',              levelReq:1,  drain:1, type:'defence',           boost:0.05 },
+  { id:'burst_of_strength',   name:'Burst of Strength',       levelReq:4,  drain:1, type:'melee',             boost:0.05 },
+  { id:'clarity_of_thought',  name:'Clarity of Thought',      levelReq:7,  drain:1, type:'ranged',            boost:0.05 },
+  { id:'sharp_eye',           name:'Sharp Eye',               levelReq:8,  drain:1, type:'magic',             boost:0.05 },
+  { id:'mystic_will',         name:'Mystic Will',             levelReq:9,  drain:1, type:'necromancy',        boost:0.05 },
+  // Normal boosts (10%, drain 2)
+  { id:'rock_skin',           name:'Rock Skin',               levelReq:13, drain:2, type:'defence',           boost:0.10 },
+  { id:'superhuman_strength', name:'Superhuman Strength',     levelReq:19, drain:2, type:'melee',             boost:0.10 },
+  { id:'improved_reflexes',   name:'Improved Reflexes',       levelReq:22, drain:2, type:'ranged',            boost:0.10 },
+  { id:'hawk_eye',            name:'Hawk Eye',                levelReq:26, drain:2, type:'magic',             boost:0.10 },
+  { id:'mystic_lore',         name:'Mystic Lore',             levelReq:27, drain:2, type:'necromancy',        boost:0.10 },
+  // Supreme boosts (15%, drain 4)
+  { id:'steel_skin',          name:'Steel Skin',              levelReq:28, drain:4, type:'defence',           boost:0.15 },
+  { id:'ultimate_strength',   name:'Ultimate Strength',       levelReq:31, drain:4, type:'melee',             boost:0.15 },
+  { id:'incredible_reflexes', name:'Incredible Reflexes',     levelReq:34, drain:4, type:'ranged',            boost:0.15 },
+  { id:'eagle_eye',           name:'Eagle Eye',               levelReq:40, drain:4, type:'magic',             boost:0.15 },
+  { id:'mystic_might',        name:'Mystic Might',            levelReq:42, drain:4, type:'necromancy',        boost:0.15 },
+  // Protection (50% dmg reduction, drain 5)
+  { id:'protect_summoning',   name:'Protect from Summoning',  levelReq:35, drain:5, type:'protect_summoning', boost:0 },
+  { id:'protect_magic',       name:'Protect from Magic',      levelReq:37, drain:5, type:'protect_magic',     boost:0 },
+  { id:'protect_ranged',      name:'Protect from Ranged',     levelReq:40, drain:5, type:'protect_ranged',    boost:0 },
+  { id:'protect_melee',       name:'Protect from Melee',      levelReq:43, drain:5, type:'protect_melee',     boost:0 },
+  { id:'protect_necromancy',  name:'Protect from Necromancy', levelReq:50, drain:5, type:'protect_necromancy',boost:0 },
+];
+
 const CONSTRUCTION_SHOP = [
   { id:'sawmill',       name:'Sawmill',       desc:'Woodcutting is 10% faster.',  plankType:'oak_plank',      plankName:'Oak plank',      cost:50  },
   { id:'furnace',       name:'Furnace',       desc:'Smithing is 10% faster.',     plankType:'teak_plank',     plankName:'Teak plank',     cost:75  },
@@ -1006,6 +1048,7 @@ const CONSTRUCTION_SHOP = [
   { id:'study',         name:'Study',         desc:'Runecrafting is 15% faster.', plankType:'yew_plank',      plankName:'Yew plank',      cost:100 },
   { id:'workshop',      name:'Workshop',      desc:'Fletching is 10% faster.',    plankType:'yew_plank',      plankName:'Yew plank',      cost:100 },
   { id:'manor',         name:'Grand manor',   desc:'All XP gains are 5% higher.', plankType:'elder_plank',    plankName:'Elder plank',    cost:150 },
+  { id:'altar',         name:'Personal Altar', desc:'2.5× Prayer XP when burying bones — no PK risk.', plankType:'mahogany_plank', plankName:'Mahogany plank', cost:150 },
 ];
 
 /* Lookup helpers */
@@ -1209,6 +1252,7 @@ function freshState(){
     combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50 },
     upgrades:     {},
     quests:       {},  // { questId: true } — completed quests
+    prayer:       { points:0, maxPoints:1, active:{}, drainCounter:0, lastRegen:0 },
     saveVersion:  1,
     lastSaved:    Date.now(),
   };
@@ -1249,6 +1293,47 @@ function grantXp(skillId, xp, silent=false){
   const after = levelForXp(sk.xp);
   if (after > before && !silent) log(`🎉 ${SKILL_BY_ID[skillId].name} level ${after}!`);
   if (skillId === 'constitution' && after > before) state.combat.maxHp = after * 10;
+  if (skillId === 'prayer' && after > before){
+    state.prayer.maxPoints = after;
+    if (state.prayer.points === 0) state.prayer.points = 1;
+  }
+}
+
+function getPrayerBoost(type){
+  if (!state.prayer?.active || state.prayer.points <= 0) return 0;
+  let best = 0;
+  for (const id of Object.keys(state.prayer.active)){
+    const p = PRAYERS.find(pr => pr.id === id);
+    if (p && p.type === type && p.boost > best) best = p.boost;
+  }
+  return best;
+}
+
+function getPrayerDesc(p){
+  if (p.type.startsWith('protect_')) return '50% damage reduction · drain ' + p.drain + '/tick';
+  const label = {defence:'Defence',melee:'Melee',ranged:'Ranged',magic:'Magic',necromancy:'Necromancy'}[p.type] || p.type;
+  return `+${Math.round(p.boost*100)}% ${label} · drain ${p.drain}/tick`;
+}
+
+function togglePrayer(id){
+  if (!state.prayer) return;
+  const p = PRAYERS.find(pr => pr.id === id);
+  if (!p) return;
+  if (levelForXp(state.skills.prayer.xp) < p.levelReq){ log(`Need level ${p.levelReq} Prayer.`); return; }
+  if (state.prayer.active[id]){
+    delete state.prayer.active[id];
+  } else {
+    if (state.prayer.points <= 0){ log('No prayer points.'); return; }
+    const isProtect = p.type.startsWith('protect_');
+    for (const otherId of Object.keys(state.prayer.active)){
+      const other = PRAYERS.find(pr => pr.id === otherId);
+      if (!other) continue;
+      if (isProtect && other.type.startsWith('protect_')) delete state.prayer.active[otherId];
+      else if (!isProtect && other.type === p.type)       delete state.prayer.active[otherId];
+    }
+    state.prayer.active[id] = true;
+  }
+  render();
 }
 
 function canAfford(action){
@@ -1268,22 +1353,32 @@ function getAttackBonus(styleId, stats){
 }
 
 function calcPlayerDamage(styleId, mob){
-  const level  = levelForXp(state.skills[styleId].xp);
-  const bonus  = getAttackBonus(styleId, calcStats());
-  const maxHit = Math.max(1, Math.floor(level * 0.4) + 1 + Math.floor(bonus / 10));
-  const def    = mob.stats.defence || 0;
-  const hit    = Math.min(0.95, Math.max(0.1, 1 - def / (def + level + bonus + 1)));
+  const level    = levelForXp(state.skills[styleId].xp);
+  const bonus    = getAttackBonus(styleId, calcStats());
+  const effLevel = Math.floor(level * (1 + getPrayerBoost(styleId)));
+  const maxHit   = Math.max(1, Math.floor(effLevel * 0.4) + 1 + Math.floor(bonus / 10));
+  const def      = mob.stats.defence || 0;
+  const hit      = Math.min(0.95, Math.max(0.1, 1 - def / (def + effLevel + bonus + 1)));
   if (Math.random() > hit) return 0;
   return 1 + Math.floor(Math.random() * maxHit);
 }
 
 function calcMobDamage(mob){
   const mobAtk    = (mob.stats.style === 'mage' ? mob.stats.mage : mob.stats.attack) || mob.stats.attack || 1;
-  const playerDef = levelForXp(state.skills.defence.xp) + calcStats().defence;
+  const defBoost  = getPrayerBoost('defence');
+  const playerDef = Math.floor(levelForXp(state.skills.defence.xp) * (1 + defBoost)) + calcStats().defence;
   const maxHit    = Math.max(1, Math.floor(mobAtk * 0.4) + 1);
   const hit       = Math.min(0.85, Math.max(0.1, 1 - playerDef / (playerDef + mobAtk + 1)));
   if (Math.random() > hit) return 0;
-  return 1 + Math.floor(Math.random() * maxHit);
+  let dmg = 1 + Math.floor(Math.random() * maxHit);
+  if (state.prayer?.points > 0){
+    const hasProtect = Object.keys(state.prayer.active || {}).some(id => {
+      const pr = PRAYERS.find(p => p.id === id);
+      return pr?.type?.startsWith('protect_');
+    });
+    if (hasProtect) dmg = Math.max(0, Math.floor(dmg * 0.5));
+  }
+  return dmg;
 }
 
 function equipItem(itemId){
@@ -1467,6 +1562,21 @@ function renderCombatPanel(){
       <div style="height:100%;width:${hpPct}%;background:#22c55e;border-radius:4px;transition:width .3s;"></div>
     </div>`;
   list.appendChild(hpDiv);
+
+  if (state.prayer){
+    const pp = state.prayer.points, pm = Math.max(1, state.prayer.maxPoints);
+    const ppPct = Math.round(pp / pm * 100);
+    const ppDiv = document.createElement('div');
+    ppDiv.style.cssText = 'margin-bottom:10px;';
+    ppDiv.innerHTML = `
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:3px;">
+        <span>🙏 Prayer</span><span>${pp} / ${pm}</span>
+      </div>
+      <div style="height:8px;background:var(--panel2);border-radius:4px;overflow:hidden;">
+        <div style="height:100%;width:${ppPct}%;background:#a78bfa;border-radius:4px;transition:width .3s;"></div>
+      </div>`;
+    list.appendChild(ppDiv);
+  }
 
   // Food queue section
   const foodSection = document.createElement('div');
@@ -1820,6 +1930,38 @@ function tick(){
       state.combat.lastRegen = now;
     }
   }
+  // Prayer drain — only during active combat
+  if (state.prayer?.active && Object.keys(state.prayer.active).length > 0 &&
+      state.current && COMBAT_SKILL_IDS.has(state.current.skillId) && state.prayer.points > 0){
+    const totalDrain = Object.keys(state.prayer.active).reduce((sum, id) => {
+      const p = PRAYERS.find(pr => pr.id === id);
+      return sum + (p?.drain || 0);
+    }, 0);
+    if (totalDrain > 0){
+      const pBonus = Math.max(1, state.stats.prayer || 1);
+      const threshold = Math.max(1, Math.round(10 / totalDrain * (1 + pBonus / 30)));
+      state.prayer.drainCounter = (state.prayer.drainCounter || 0) + 1;
+      if (state.prayer.drainCounter >= threshold){
+        state.prayer.drainCounter = 0;
+        state.prayer.points = Math.max(0, state.prayer.points - 1);
+        if (state.prayer.points === 0){
+          state.prayer.active = {};
+          log('Your prayer ran out.');
+        }
+      }
+    }
+  }
+  // Prayer regen — only out of combat
+  if (state.prayer && state.prayer.points < state.prayer.maxPoints &&
+      (!state.current || !COMBAT_SKILL_IDS.has(state.current.skillId))){
+    const pBonus = Math.max(1, state.stats.prayer || 1);
+    const regenMs = Math.max(6000, 60000 / (1 + pBonus / 10));
+    const now = Date.now();
+    if (now - (state.prayer.lastRegen || 0) >= regenMs){
+      state.prayer.points = Math.min(state.prayer.maxPoints, state.prayer.points + 1);
+      state.prayer.lastRegen = now;
+    }
+  }
   // Farming: detect crop becoming ready and log once
   if (state.farming?.seed && !state.farming.ready) {
     const growMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1);
@@ -1907,6 +2049,27 @@ function completeAction(action, silent){
     }
     grantItem('headless_arrow', 'Headless arrow', tier.count);
     grantXp('fletching', tier.xp, silent);
+    return;
+  }
+  // Prayer: auto-select best bone from inventory
+  if (action.autoBone){
+    if (action.altarReq && !state.upgrades?.altar){
+      if (!silent) log('Need a Personal Altar — build one in Construction.');
+      state.current = null; state.progress = 0; return;
+    }
+    const bone = BONE_TIERS.find(t => (state.inventory[t.item] || 0) >= 1);
+    if (!bone){ if (!silent) log('Out of bones — stopped.'); state.current = null; state.progress = 0; return; }
+    state.inventory[bone.item]--;
+    if (state.inventory[bone.item] <= 0) delete state.inventory[bone.item];
+    grantXp('prayer', bone.xpBase * (action.altarMult || 1), silent);
+    if (action.wilderness && !silent && !wildernessEncounter && Math.random() < 0.12){
+      const prayLevel = levelForXp(state.skills.prayer.xp);
+      const coins = (action.pkCoinBase || 80) + prayLevel * (action.pkCoinPerLevel || 12);
+      wildernessEncounter = { expiresAt: Date.now() + 15000, coins };
+      $('wildernessPkToast').classList.add('show');
+      $('pkTimer').textContent = '15';
+      log(`⚔️ A PKer spotted you at the altar! You have 15s to roll.`);
+    }
     return;
   }
   // Failure mechanics (cooking burn, fletching splinter, divination transmute fail)
@@ -2323,7 +2486,7 @@ function setInvTab(tab){ inventoryTab = tab; renderInventory(); }
 
 function renderActiveSkill(){
   const s = SKILL_BY_ID[viewedSkill];
-  if (s.type === 'combat') { renderCombatPanel(); return; }
+  if (s.type === 'combat' && !ACTIONS[s.id]) { renderCombatPanel(); return; }
   const skill = state.skills[s.id];
   const lvl = levelForXp(skill.xp);
   $('activeSkillTitle').textContent = s.name;
@@ -2495,6 +2658,119 @@ function renderActiveSkill(){
     if (unlocked) btn.onclick = () => startAction(s.id, a.id);
     list.appendChild(btn);
   });
+
+  if (s.id === 'prayer'){
+    list.innerHTML = '';
+    const pLvl = levelForXp(state.skills.prayer.xp);
+    const pp   = state.prayer?.points ?? 0;
+    const pm   = Math.max(1, state.prayer?.maxPoints ?? pLvl);
+
+    const infoDiv = document.createElement('div');
+    infoDiv.className = 'dg-bonus';
+    infoDiv.innerHTML = `Prayer level: <b>${pLvl}</b> &nbsp;·&nbsp; Points: <b>${pp} / ${pm}</b>`;
+    list.appendChild(infoDiv);
+
+    const trainHdr = document.createElement('div');
+    trainHdr.className = 'action-category-header';
+    trainHdr.textContent = 'Training';
+    list.appendChild(trainHdr);
+
+    const boneStatus = document.createElement('div');
+    boneStatus.style.cssText = 'font-size:12px;color:var(--dim);margin-bottom:6px;';
+    boneStatus.innerHTML = BONE_TIERS.map(t =>
+      `${t.name}: <b>${(state.inventory[t.item]||0).toLocaleString()}</b>`).join(' · ');
+    list.appendChild(boneStatus);
+
+    const bestBone = BONE_TIERS.find(t => (state.inventory[t.item] || 0) >= 1);
+    (ACTIONS.prayer || []).forEach(a => {
+      if (a.altarReq && !state.upgrades?.altar){
+        const gated = document.createElement('div');
+        gated.className = 'upgrade-tier';
+        gated.style.opacity = '0.5';
+        gated.innerHTML = `<div class="tier-left">
+          <span>${a.name} 🔒</span>
+          <span class="tier-speed">Requires Personal Altar (Construction — 150 mahogany planks)</span>
+        </div>`;
+        list.appendChild(gated);
+        return;
+      }
+      const isSelected = state.current?.skillId === 'prayer' && state.current.actionId === a.id;
+      const btn = document.createElement('button');
+      btn.className = 'action-btn' + (isSelected ? ' selected' : '');
+      const xpStr   = bestBone ? `${bestBone.name} → ${(bestBone.xpBase*(a.altarMult||1)).toFixed(1)} xp` : 'No bones';
+      const multStr = a.altarMult ? ` · <b>${a.altarMult}×</b> XP` : '';
+      const riskStr = a.wilderness ? ' · <span style="color:#f87171">⚔️ Risk</span>' : '';
+      btn.innerHTML = `<span>${a.name}</span><span class="meta">${xpStr}${multStr}${riskStr} · ${(a.ticks*TICK_MS/1000).toFixed(1)}s</span>`;
+      btn.disabled  = !bestBone;
+      btn.onclick   = () => startAction('prayer', a.id);
+      list.appendChild(btn);
+    });
+
+    const altarBuildHdr = document.createElement('div');
+    altarBuildHdr.className = 'action-category-header';
+    altarBuildHdr.textContent = 'Construction Altar';
+    list.appendChild(altarBuildHdr);
+    const altarItem = CONSTRUCTION_SHOP.find(i => i.id === 'altar');
+    if (altarItem){
+      const owned  = !!state.upgrades?.altar;
+      const have   = state.inventory[altarItem.plankType] || 0;
+      const canBuy = have >= altarItem.cost;
+      const card   = document.createElement('div');
+      card.className = 'upgrade-tier' + (owned ? ' equipped' : '');
+      card.innerHTML = `<div class="tier-left">
+        <span>${altarItem.name}</span>
+        <span class="tier-speed">${altarItem.desc}</span>
+        <span class="tier-cost">${altarItem.cost}× ${altarItem.plankName} (have: ${have.toLocaleString()})</span>
+      </div>`;
+      const altBtn = document.createElement('button');
+      altBtn.className = 'mini';
+      if (owned){ altBtn.textContent = '✓ Built'; altBtn.disabled = true; }
+      else {
+        altBtn.textContent = canBuy ? 'Build' : `Need ${(altarItem.cost - have).toLocaleString()} more`;
+        altBtn.disabled = !canBuy;
+        altBtn.onclick = () => buyConstructionUpgrade('altar');
+      }
+      card.appendChild(altBtn);
+      list.appendChild(card);
+    }
+
+    const prayHdr = document.createElement('div');
+    prayHdr.className = 'action-category-header';
+    prayHdr.textContent = 'Prayers';
+    list.appendChild(prayHdr);
+
+    const noPP = pp <= 0;
+    [
+      { label:'Lesser Boosts (+5%, lv 1–9)',    filter: p => p.boost === 0.05 },
+      { label:'Normal Boosts (+10%, lv 13–27)',  filter: p => p.boost === 0.10 },
+      { label:'Supreme Boosts (+15%, lv 28–42)', filter: p => p.boost === 0.15 },
+      { label:'Protection (50% dmg, lv 35–50)',  filter: p => p.type.startsWith('protect_') },
+    ].forEach(grp => {
+      const grpHdr = document.createElement('div');
+      grpHdr.style.cssText = 'font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;padding:8px 4px 2px;';
+      grpHdr.textContent = grp.label;
+      list.appendChild(grpHdr);
+      PRAYERS.filter(grp.filter).forEach(p => {
+        const unlocked = pLvl >= p.levelReq;
+        const isActive = !!(state.prayer?.active?.[p.id]);
+        const card = document.createElement('div');
+        card.className = 'upgrade-tier' + (isActive ? ' equipped' : '') + (unlocked ? '' : ' locked');
+        card.innerHTML = `<div class="tier-left">
+          <span>${p.name}${unlocked ? '' : ` 🔒 Lv ${p.levelReq}`}</span>
+          <span class="tier-speed">${getPrayerDesc(p)}</span>
+        </div>`;
+        const btn = document.createElement('button');
+        btn.className = 'mini';
+        btn.disabled = !unlocked || (noPP && !isActive);
+        btn.textContent = isActive ? '✓ Active' : 'Activate';
+        btn.onclick = () => togglePrayer(p.id);
+        card.appendChild(btn);
+        list.appendChild(card);
+      });
+    });
+
+    return;
+  }
 
   if (s.id === 'construction'){
     const shopHdr = document.createElement('div');
@@ -2673,6 +2949,12 @@ function init(){
   if (state.current?.skillId === 'thieving' && state.current.stunTicks)
     state.current.stunTicks = 0; // don't resume mid-stun after reload
   if (state.current?.actionId?.startsWith('headless_from_')) state.current.actionId = 'headless_auto';
+  if (!state.prayer){
+    const pLvl = levelForXp(state.skills.prayer?.xp || 0);
+    state.prayer = { points:pLvl, maxPoints:pLvl, active:{}, drainCounter:0, lastRegen:0 };
+  }
+  if (!state.prayer.active)                     state.prayer.active      = {};
+  if (state.prayer.drainCounter == null)         state.prayer.drainCounter = 0;
 
   // Farming: mark ready if crop matured while offline (timestamps survive saves)
   const _offlineGrowMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1);
