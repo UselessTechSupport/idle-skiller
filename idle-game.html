@@ -392,6 +392,28 @@ const SKILL_ROADMAP = [
   {id:'invention',    name:'Invention',    type:'elite', maxLevel:120, implemented:false},
 ];
 
+const METAL_TIERS = [
+  {id:'bronze',    name:'Bronze',    barItem:'bronze_bar',    barName:'Bronze bar',    levelReq:1,   xpPerBar:12,  defBase:15, atkBase:1, rngPen:-1, magPen:-1},
+  {id:'iron',      name:'Iron',      barItem:'iron_bar',      barName:'Iron bar',      levelReq:10,  xpPerBar:25,  defBase:22, atkBase:1, rngPen:-1, magPen:-2},
+  {id:'steel',     name:'Steel',     barItem:'steel_bar',     barName:'Steel bar',     levelReq:20,  xpPerBar:35,  defBase:29, atkBase:2, rngPen:-2, magPen:-3},
+  {id:'mithril',   name:'Mithril',   barItem:'mithril_bar',   barName:'Mithril bar',   levelReq:30,  xpPerBar:60,  defBase:36, atkBase:2, rngPen:-2, magPen:-4},
+  {id:'adamant',   name:'Adamant',   barItem:'adamant_bar',   barName:'Adamant bar',   levelReq:40,  xpPerBar:75,  defBase:43, atkBase:3, rngPen:-3, magPen:-5},
+  {id:'rune',      name:'Rune',      barItem:'rune_bar',      barName:'Rune bar',      levelReq:50,  xpPerBar:100, defBase:50, atkBase:3, rngPen:-3, magPen:-5},
+  {id:'orikalkum', name:'Orikalkum', barItem:'orikalkum_bar', barName:'Orikalkum bar', levelReq:60,  xpPerBar:130, defBase:57, atkBase:4, rngPen:-4, magPen:-6},
+  {id:'necronium', name:'Necronium', barItem:'necronium_bar', barName:'Necronium bar', levelReq:70,  xpPerBar:160, defBase:64, atkBase:5, rngPen:-4, magPen:-7},
+  {id:'bane',      name:'Bane',      barItem:'bane_bar',      barName:'Bane bar',      levelReq:80,  xpPerBar:200, defBase:71, atkBase:5, rngPen:-5, magPen:-7},
+  {id:'elder_rune',name:'Elder rune',barItem:'elder_rune_bar',barName:'Elder rune bar',levelReq:90,  xpPerBar:260, defBase:78, atkBase:6, rngPen:-5, magPen:-8},
+  {id:'primal',    name:'Primal',    barItem:'primal_bar',    barName:'Primal bar',    levelReq:100, xpPerBar:360, defBase:85, atkBase:7, rngPen:-6, magPen:-8},
+];
+
+const ARMOUR_PIECES = [
+  {slot:'gloves', suffix:'_gloves',    name:'gloves',    bars:1, ticks:2, statMult:0.20},
+  {slot:'feet',   suffix:'_boots',     name:'boots',     bars:1, ticks:2, statMult:0.20},
+  {slot:'head',   suffix:'_helm',      name:'helm',      bars:2, ticks:3, statMult:0.40},
+  {slot:'legs',   suffix:'_platelegs', name:'platelegs', bars:3, ticks:4, statMult:0.60},
+  {slot:'body',   suffix:'_platebody', name:'platebody', bars:5, ticks:6, statMult:1.00},
+];
+
 /* ACTIONS: what you can DO in each skill.
    Woodcutting = trees. Each: level needed, xp per log, how many ticks it takes,
    and which item it gives. ADD A NEW TREE by copying a line. */
@@ -442,7 +464,7 @@ const ACTIONS = {
   // XP: classic RS values for Bronze–Rune; scaled estimates for RS3-specific tiers.
   // Level requirements match RS3's post-2019 Mining & Smithing rework.
   smithing: [
-    {id:'bronze_bar',     name:'Bronze bar',     levelReq:1,   xp:6.2,  ticks:3,
+    {id:'bronze_bar',     name:'Bronze bar',     category:'Metal Bars', levelReq:1,   xp:6.2,  ticks:3,
      item:'bronze_bar',     itemName:'Bronze bar',
      ingredients:[{item:'copper_ore',      count:1, name:'Copper ore'},
                   {item:'tin_ore',         count:1, name:'Tin ore'}]},
@@ -488,6 +510,18 @@ const ACTIONS = {
     {id:'primal_bar',     name:'Primal bar',     levelReq:100, xp:180,  ticks:10,
      item:'primal_bar',     itemName:'Primal bar',
      ingredients:[{item:'primal_ore',      count:1, name:'Primal ore'}]},
+    ...METAL_TIERS.flatMap(tier => ARMOUR_PIECES.map(piece => ({
+      id:          `smith_${tier.id}${piece.suffix}`,
+      name:        `Smith ${tier.name} ${piece.name}`,
+      label:       'Armour smithed',
+      category:    `${tier.name} armour`,
+      levelReq:    tier.levelReq,
+      xp:          piece.bars * tier.xpPerBar,
+      ticks:       piece.ticks,
+      item:        `${tier.id}${piece.suffix}`,
+      itemName:    `${tier.name} ${piece.name}`,
+      ingredients: [{item: tier.barItem, count: piece.bars, name: tier.barName}],
+    }))),
   ],
   // Firemaking: burns logs for XP only — no output item (item:null).
   // Levels and XP match RS3 wiki. Ticks tuned so XP/hr rises each tier.
@@ -1132,6 +1166,19 @@ const ITEM_STATS = {
   onyx_ring:{ attack:20, defence:20 }, onyx_amulet:{ attack:30, defence:20 },
   hydrix_ring:{ dropRate:5 }, hydrix_amulet:{ attack:40, defence:25 },
   emerald_amulet:{ defence:5 }, sapphire_amulet:{ mage:7 },
+  ...Object.fromEntries(
+    METAL_TIERS.flatMap(t => ARMOUR_PIECES.map(p => {
+      const def = Math.max(1, Math.round(t.defBase * p.statMult));
+      const atk = Math.max(0, Math.round(t.atkBase * p.statMult));
+      const rng = Math.min(0, Math.round(t.rngPen * p.statMult));
+      const mag = Math.min(0, Math.round(t.magPen * p.statMult));
+      const stats = {defence: def};
+      if (atk > 0) stats.attack = atk;
+      if (rng < 0) stats.range  = rng;
+      if (mag < 0) stats.mage   = mag;
+      return [`${t.id}${p.suffix}`, stats];
+    }))
+  ),
 };
 
 const EQUIP_SLOTS = {
@@ -1148,6 +1195,9 @@ const EQUIP_SLOTS = {
   green_dhide_vambs:'gloves', blue_dhide_vambs:'gloves',
   black_dhide_vambs:'gloves', red_dhide_vambs:'gloves', royal_dhide_vambs:'gloves',
   leather_boots:'feet',
+  ...Object.fromEntries(
+    METAL_TIERS.flatMap(t => ARMOUR_PIECES.map(p => [`${t.id}${p.suffix}`, p.slot]))
+  ),
   berserker_ring:'ring', sapphire_ring:'ring', emerald_ring:'ring', ruby_ring:'ring',
   diamond_ring:'ring', dragonstone_ring:'ring', onyx_ring:'ring', hydrix_ring:'ring', gold_ring:'ring',
   sapphire_amulet:'neck', emerald_amulet:'neck', ruby_amulet:'neck', diamond_amulet:'neck',
