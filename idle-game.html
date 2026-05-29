@@ -14,6 +14,41 @@
     --accent:#4caf50; --accent2:#2d7d33; --locked:#3a3f4a;
     --bar:#3a4250;
   }
+  body.light-mode{
+    --bg:#f0f2f5; --panel:#ffffff; --panel2:#e8eaed;
+    --line:#d0d5dd; --text:#1a202c; --dim:#5a6577;
+    --accent:#2d7d33; --accent2:#1a5221;
+    --locked:#d5d9e0; --bar:#c5cad5;
+  }
+  body.compact-mode .action-btn{ padding:5px 8px; }
+  body.compact-mode .upgrade-tier{ padding:6px 10px; }
+  body.compact-mode .card{ padding:10px 12px; }
+  body.compact-mode .sec-body{ padding:8px 10px; }
+  .settings-overlay{
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55);
+    z-index:1000; align-items:center; justify-content:center;
+  }
+  .settings-overlay.open{ display:flex; }
+  .settings-modal{
+    background:var(--panel); border-radius:12px; padding:20px 24px;
+    width:360px; max-width:95vw; max-height:85vh; overflow-y:auto;
+    border:1px solid var(--line); box-shadow:0 8px 32px rgba(0,0,0,0.4);
+  }
+  .settings-group{ margin-bottom:16px; }
+  .settings-group-title{
+    font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+    color:var(--dim); margin-bottom:8px; font-weight:600;
+  }
+  .settings-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 0; border-bottom:1px solid var(--line); gap:12px;
+  }
+  .settings-row:last-child{ border-bottom:none; }
+  .settings-row-left{ flex:1; }
+  .settings-row-left label{ font-size:14px; display:block; }
+  .settings-row-left .sdesc{ font-size:12px; color:var(--dim); margin-top:2px; }
+  .theme-btns{ display:flex; gap:6px; }
+  .theme-btns button{ padding:4px 10px; font-size:12px; }
   *{box-sizing:border-box;}
   body{
     margin:0; background:var(--bg); color:var(--text);
@@ -236,6 +271,7 @@
 <header>
   <h1>⛏️ Idle Skiller <span style="color:var(--dim);font-weight:400;font-size:13px;">starter</span></h1>
   <span class="total">Total level: <b id="totalLevel">1</b></span>
+  <button class="mini" onclick="openSettings()">⚙️ Settings</button>
   <button class="mini" id="debugToggle" style="color:#f97316;border-color:#c2410c;">🐛 Debug</button>
 </header>
 
@@ -267,9 +303,6 @@
     <div class="now-doing" id="nowDoing">Not chopping anything. Pick a tree below.</div>
     <div class="bar"><div id="actionBar"></div></div>
 
-    <div id="actionFilterBar" style="margin-bottom:6px;display:none;">
-      <button class="mini" id="hideLockBtn">🔒 Hide locked</button>
-    </div>
     <div id="treeList" style="margin-top:4px;"></div>
 
     <div class="footer-actions">
@@ -331,8 +364,6 @@
     <div id="sec-inv" class="sec-anchor">
       <div class="sec-hdr inv-hdr" style="cursor:default;">
         🎒 Items
-        <button id="autoOpenBtn" onclick="toggleAutoOpen()" class="mini"
-          style="font-size:11px;padding:3px 8px;margin-left:auto;">Auto-open: OFF</button>
       </div>
       <div id="sec-body-inv" class="sec-body">
         <div id="invPanel"></div>
@@ -420,6 +451,17 @@
     <h3>Welcome back!</h3>
     <div id="offlineBody"></div>
     <button id="offlineClose">Collect</button>
+  </div>
+</div>
+
+<!-- Settings modal -->
+<div id="settingsOverlay" class="settings-overlay" onclick="if(event.target===this)closeSettings()">
+  <div class="settings-modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 style="margin:0;font-size:16px;">⚙️ Settings</h2>
+      <button class="mini" onclick="closeSettings()">✕ Close</button>
+    </div>
+    <div id="settingsContent"></div>
   </div>
 </div>
 
@@ -1506,7 +1548,7 @@ function rawLoad(k){ try{ return storageOK ? localStorage.getItem(k) : (memStore
 let state;
 let fireSpirit = null; // { expiresAt: timestamp } — transient, not persisted
 let wildernessEncounter = null; // { expiresAt, coins } — transient, not persisted
-let hideLockedActions = false;
+// hideLockedActions moved to state.settings.hideLocked
 function freshState(){
   const skills = {};
   SKILL_ROADMAP.forEach(s => {
@@ -1528,6 +1570,7 @@ function freshState(){
     quests:         {},  // { questId: true } — completed quests
     autoOpenItems:  false,
     uiCollapsed:    {},  // { sectionId: true } — collapsed UI sections
+    settings:       { theme:'dark', compactMode:false, hideLocked:false, logLimit:60 },
     archaeology:    { artifacts:{}, activePerks:{} },
     slayer:         { points:0, task:null, unlocks:{}, totalTasksDone:0 },
     prayer:         { points:0, maxPoints:1, active:{}, drainCounter:0, lastRegen:0 },
@@ -2975,8 +3018,86 @@ const $ = id => document.getElementById(id);
 let logLines = [];
 function log(msg){
   logLines.unshift(msg);
-  if (logLines.length > 60) logLines.pop();
+  const lim = state?.settings?.logLimit || 60;
+  while (logLines.length > lim) logLines.pop();
   renderLog();
+}
+
+/* ---- Settings ---- */
+function applySettings(){
+  const s = state.settings || {};
+  document.body.classList.toggle('light-mode',   s.theme === 'light');
+  document.body.classList.toggle('compact-mode', !!s.compactMode);
+}
+
+function openSettings(){
+  renderSettings();
+  $('settingsOverlay').classList.add('open');
+}
+
+function closeSettings(){
+  $('settingsOverlay').classList.remove('open');
+}
+
+function renderSettings(){
+  const el = $('settingsContent');
+  if (!el) return;
+  const s = state.settings;
+  el.innerHTML = '';
+
+  function group(title){ const d=document.createElement('div'); d.className='settings-group'; const t=document.createElement('div'); t.className='settings-group-title'; t.textContent=title; d.appendChild(t); el.appendChild(d); return d; }
+  function row(grp, labelText, descText, control){ const r=document.createElement('div'); r.className='settings-row'; const l=document.createElement('div'); l.className='settings-row-left'; l.innerHTML=`<label>${labelText}</label>${descText?`<div class="sdesc">${descText}</div>`:''}`;  r.appendChild(l); r.appendChild(control); grp.appendChild(r); }
+  function toggleBtn(val, onclick){ const b=document.createElement('button'); b.className='mini'+(val?' active':''); b.textContent=val?'ON':'OFF'; b.onclick=onclick; return b; }
+
+  // Display
+  const dispGrp = group('Display');
+
+  // Theme
+  const themeDiv = document.createElement('div');
+  themeDiv.className = 'theme-btns';
+  const darkBtn = document.createElement('button');
+  darkBtn.className = 'mini' + (s.theme === 'dark' ? ' active' : '');
+  darkBtn.textContent = '🌙 Dark';
+  darkBtn.onclick = () => { s.theme = 'dark'; applySettings(); renderSettings(); };
+  const lightBtn = document.createElement('button');
+  lightBtn.className = 'mini' + (s.theme === 'light' ? ' active' : '');
+  lightBtn.textContent = '☀️ Light';
+  lightBtn.onclick = () => { s.theme = 'light'; applySettings(); renderSettings(); };
+  themeDiv.appendChild(darkBtn);
+  themeDiv.appendChild(lightBtn);
+  row(dispGrp, 'Theme', 'Switch between dark and light colour scheme', themeDiv);
+
+  row(dispGrp, 'Compact mode', 'Tighter card/button padding — more content per screen',
+    toggleBtn(s.compactMode, () => { s.compactMode = !s.compactMode; applySettings(); renderSettings(); }));
+
+  // Gameplay
+  const playGrp = group('Gameplay');
+
+  row(playGrp, 'Hide locked actions', 'Globally hide actions you can\'t use yet',
+    toggleBtn(s.hideLocked, () => { s.hideLocked = !s.hideLocked; renderSettings(); renderActiveSkill(); }));
+
+  row(playGrp, 'Auto-open items', 'Automatically open clue scrolls and loot bags',
+    toggleBtn(state.autoOpenItems, () => { toggleAutoOpen(); renderSettings(); }));
+
+  // Log
+  const logGrp = group('Log');
+
+  const logSel = document.createElement('select');
+  logSel.style.cssText = 'background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:13px;';
+  [20, 40, 60, 100, 200].forEach(n => {
+    const opt = document.createElement('option');
+    opt.value = n;
+    opt.textContent = `${n} lines`;
+    opt.selected = s.logLimit === n;
+    logSel.appendChild(opt);
+  });
+  logSel.onchange = () => {
+    s.logLimit = +logSel.value;
+    const lim = s.logLimit;
+    while (logLines.length > lim) logLines.pop();
+    renderLog();
+  };
+  row(logGrp, 'Log size', 'Maximum number of log entries to keep', logSel);
 }
 
 function render(){
@@ -3241,11 +3362,8 @@ function renderActiveSkill(){
     rcDiv.innerHTML = `Agility bonus: <b>+${rcBonus}%</b> speed · Mine rune essence in Mining · Runes used for spells (coming soon)`;
     list.appendChild(rcDiv);
   }
-  const hasLocked = actions.some(a => lvl < a.levelReq);
-  $('actionFilterBar').style.display = hasLocked ? 'block' : 'none';
-  $('hideLockBtn').classList.toggle('active', hideLockedActions);
-  $('hideLockBtn').textContent = hideLockedActions ? '🔓 Show all' : '🔒 Hide locked';
-  const visibleActions = hideLockedActions ? actions.filter(a => lvl >= a.levelReq) : actions;
+  const hideLocked = !!(state.settings?.hideLocked);
+  const visibleActions = hideLocked ? actions.filter(a => lvl >= a.levelReq) : actions;
   let lastCat = null;
   visibleActions.forEach(a => {
     if (a.category && a.category !== lastCat){
@@ -3591,12 +3709,6 @@ function processAutoOpen(){
 }
 function toggleAutoOpen(){
   state.autoOpenItems = !state.autoOpenItems;
-  const btn = $('autoOpenBtn');
-  if (btn){
-    btn.textContent = `Auto-open: ${state.autoOpenItems ? 'ON' : 'OFF'}`;
-    btn.style.color = state.autoOpenItems ? 'var(--accent)' : '';
-    btn.style.borderColor = state.autoOpenItems ? 'var(--accent)' : '';
-  }
   if (state.autoOpenItems) processAutoOpen();
   render();
 }
@@ -3692,14 +3804,6 @@ function renderPrayerHud(){
 function renderItemsPanel(){
   const el = $('invPanel');
   if (!el) return;
-
-  // Update auto-open button state
-  const aoBtn = $('autoOpenBtn');
-  if (aoBtn){
-    aoBtn.textContent = `Auto-open: ${state.autoOpenItems ? 'ON' : 'OFF'}`;
-    aoBtn.style.color = state.autoOpenItems ? 'var(--accent)' : '';
-    aoBtn.style.borderColor = state.autoOpenItems ? 'var(--accent)' : '';
-  }
 
   const keys = Object.keys(state.inventory).filter(k => (state.inventory[k] || 0) > 0);
   if (keys.length === 0 && !state.farming?.seed){
@@ -3817,6 +3921,12 @@ function init(){
   if (!state.slayer) state.slayer = { points:0, task:null, unlocks:{}, totalTasksDone:0 };
   if (!state.slayer.unlocks) state.slayer.unlocks = {};
   if (state.slayer.totalTasksDone === undefined) state.slayer.totalTasksDone = 0;
+  if (!state.settings) state.settings = { theme:'dark', compactMode:false, hideLocked:false, logLimit:60 };
+  if (state.settings.theme       == null) state.settings.theme       = 'dark';
+  if (state.settings.compactMode == null) state.settings.compactMode = false;
+  if (state.settings.hideLocked  == null) state.settings.hideLocked  = false;
+  if (state.settings.logLimit    == null) state.settings.logLimit    = 60;
+  applySettings();
   if (!state.uiCollapsed) state.uiCollapsed = {};
   if (state.combat?.style === 'necromancy') state.combat.style = 'melee';
   if (state.current?.skillId === 'necromancy'){ state.current = null; state.progress = 0; }
@@ -3869,7 +3979,6 @@ $('catchSpiritBtn').onclick = () => {
   log('🔥 You caught the fire spirit!');
   render();
 };
-$('hideLockBtn').onclick = () => { hideLockedActions = !hideLockedActions; renderActiveSkill(); };
 $('rollPkBtn').onclick = () => {
   if (!wildernessEncounter) return;
   const agilLevel = levelForXp(state.skills.agility.xp);
