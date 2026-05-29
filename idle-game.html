@@ -393,17 +393,17 @@ const SKILL_ROADMAP = [
 ];
 
 const METAL_TIERS = [
-  {id:'bronze',    name:'Bronze',    barItem:'bronze_bar',    barName:'Bronze bar',    levelReq:1,   xpPerBar:12,  defBase:15, atkBase:1, rngPen:-1, magPen:-1},
-  {id:'iron',      name:'Iron',      barItem:'iron_bar',      barName:'Iron bar',      levelReq:10,  xpPerBar:25,  defBase:22, atkBase:1, rngPen:-1, magPen:-2},
-  {id:'steel',     name:'Steel',     barItem:'steel_bar',     barName:'Steel bar',     levelReq:20,  xpPerBar:35,  defBase:29, atkBase:2, rngPen:-2, magPen:-3},
-  {id:'mithril',   name:'Mithril',   barItem:'mithril_bar',   barName:'Mithril bar',   levelReq:30,  xpPerBar:60,  defBase:36, atkBase:2, rngPen:-2, magPen:-4},
-  {id:'adamant',   name:'Adamant',   barItem:'adamant_bar',   barName:'Adamant bar',   levelReq:40,  xpPerBar:75,  defBase:43, atkBase:3, rngPen:-3, magPen:-5},
-  {id:'rune',      name:'Rune',      barItem:'rune_bar',      barName:'Rune bar',      levelReq:50,  xpPerBar:100, defBase:50, atkBase:3, rngPen:-3, magPen:-5},
-  {id:'orikalkum', name:'Orikalkum', barItem:'orikalkum_bar', barName:'Orikalkum bar', levelReq:60,  xpPerBar:130, defBase:57, atkBase:4, rngPen:-4, magPen:-6},
-  {id:'necronium', name:'Necronium', barItem:'necronium_bar', barName:'Necronium bar', levelReq:70,  xpPerBar:160, defBase:64, atkBase:5, rngPen:-4, magPen:-7},
-  {id:'bane',      name:'Bane',      barItem:'bane_bar',      barName:'Bane bar',      levelReq:80,  xpPerBar:200, defBase:71, atkBase:5, rngPen:-5, magPen:-7},
-  {id:'elder_rune',name:'Elder rune',barItem:'elder_rune_bar',barName:'Elder rune bar',levelReq:90,  xpPerBar:260, defBase:78, atkBase:6, rngPen:-5, magPen:-8},
-  {id:'primal',    name:'Primal',    barItem:'primal_bar',    barName:'Primal bar',    levelReq:100, xpPerBar:360, defBase:85, atkBase:7, rngPen:-6, magPen:-8},
+  {id:'bronze',    name:'Bronze',    barItem:'bronze_bar',    barName:'Bronze bar',    levelReq:1,   xpPerBar:12,  defBase:15, atkBase:1, rngPen:-1, magPen:-1, weaponAtk:12},
+  {id:'iron',      name:'Iron',      barItem:'iron_bar',      barName:'Iron bar',      levelReq:10,  xpPerBar:25,  defBase:22, atkBase:1, rngPen:-1, magPen:-2, weaponAtk:18},
+  {id:'steel',     name:'Steel',     barItem:'steel_bar',     barName:'Steel bar',     levelReq:20,  xpPerBar:35,  defBase:29, atkBase:2, rngPen:-2, magPen:-3, weaponAtk:25},
+  {id:'mithril',   name:'Mithril',   barItem:'mithril_bar',   barName:'Mithril bar',   levelReq:30,  xpPerBar:60,  defBase:36, atkBase:2, rngPen:-2, magPen:-4, weaponAtk:33},
+  {id:'adamant',   name:'Adamant',   barItem:'adamant_bar',   barName:'Adamant bar',   levelReq:40,  xpPerBar:75,  defBase:43, atkBase:3, rngPen:-3, magPen:-5, weaponAtk:42},
+  {id:'rune',      name:'Rune',      barItem:'rune_bar',      barName:'Rune bar',      levelReq:50,  xpPerBar:100, defBase:50, atkBase:3, rngPen:-3, magPen:-5, weaponAtk:50},
+  {id:'orikalkum', name:'Orikalkum', barItem:'orikalkum_bar', barName:'Orikalkum bar', levelReq:60,  xpPerBar:130, defBase:57, atkBase:4, rngPen:-4, magPen:-6, weaponAtk:57},
+  {id:'necronium', name:'Necronium', barItem:'necronium_bar', barName:'Necronium bar', levelReq:70,  xpPerBar:160, defBase:64, atkBase:5, rngPen:-4, magPen:-7, weaponAtk:63},
+  {id:'bane',      name:'Bane',      barItem:'bane_bar',      barName:'Bane bar',      levelReq:80,  xpPerBar:200, defBase:71, atkBase:5, rngPen:-5, magPen:-7, weaponAtk:69},
+  {id:'elder_rune',name:'Elder rune',barItem:'elder_rune_bar',barName:'Elder rune bar',levelReq:90,  xpPerBar:260, defBase:78, atkBase:6, rngPen:-5, magPen:-8, weaponAtk:75},
+  {id:'primal',    name:'Primal',    barItem:'primal_bar',    barName:'Primal bar',    levelReq:100, xpPerBar:360, defBase:85, atkBase:7, rngPen:-6, magPen:-8, weaponAtk:80},
 ];
 
 const ARMOUR_PIECES = [
@@ -412,6 +412,13 @@ const ARMOUR_PIECES = [
   {slot:'head',   suffix:'_helm',      name:'helm',      bars:2, ticks:3, statMult:0.40},
   {slot:'legs',   suffix:'_platelegs', name:'platelegs', bars:3, ticks:4, statMult:0.60},
   {slot:'body',   suffix:'_platebody', name:'platebody', bars:5, ticks:6, statMult:1.00},
+];
+
+const WEAPON_PIECES = [
+  {suffix:'_lightsword', name:'lightsword', slot:'weapon',  bars:2, ticks:3, atkMod:-8,  attackInterval:3, damageMult:0.70, twoHanded:false, isShield:false},
+  {suffix:'_broadsword', name:'broadsword', slot:'weapon',  bars:2, ticks:3, atkMod:0,   attackInterval:4, damageMult:1.00, twoHanded:false, isShield:false},
+  {suffix:'_2h_sword',   name:'2h sword',   slot:'weapon',  bars:3, ticks:4, atkMod:12,  attackInterval:5, damageMult:1.40, twoHanded:true,  isShield:false},
+  {suffix:'_shield',     name:'shield',     slot:'offhand', bars:4, ticks:5, atkMod:0,   attackInterval:0, damageMult:0,    twoHanded:false, isShield:true},
 ];
 
 /* ACTIONS: what you can DO in each skill.
@@ -521,6 +528,18 @@ const ACTIONS = {
       item:        `${tier.id}${piece.suffix}`,
       itemName:    `${tier.name} ${piece.name}`,
       ingredients: [{item: tier.barItem, count: piece.bars, name: tier.barName}],
+    }))),
+    ...METAL_TIERS.flatMap(tier => WEAPON_PIECES.map(w => ({
+      id:          `smith_${tier.id}${w.suffix}`,
+      name:        `Smith ${tier.name} ${w.name}`,
+      label:       'Weapons smithed',
+      category:    `${tier.name} weapons`,
+      levelReq:    tier.levelReq,
+      xp:          w.bars * tier.xpPerBar,
+      ticks:       w.ticks,
+      item:        `${tier.id}${w.suffix}`,
+      itemName:    `${tier.name} ${w.name}`,
+      ingredients: [{item: tier.barItem, count: w.bars, name: tier.barName}],
     }))),
   ],
   // Firemaking: burns logs for XP only — no output item (item:null).
@@ -1074,6 +1093,15 @@ const PRAYERS = [
   { id:'protect_necromancy',  name:'Protect from Necromancy', levelReq:50, drain:5, type:'protect_necromancy',boost:0 },
 ];
 
+const EQUIP_REQS = {
+  ...Object.fromEntries(METAL_TIERS.flatMap(t => [
+    ...ARMOUR_PIECES.map(p => [`${t.id}${p.suffix}`, {skill:'defence', level:t.levelReq}]),
+    ...WEAPON_PIECES.map(w => [`${t.id}${w.suffix}`, {skill: w.slot === 'weapon' ? 'melee' : 'defence', level:t.levelReq}]),
+  ])),
+  abyssal_whip:    {skill:'melee', level:70},
+  saradomin_sword: {skill:'melee', level:65},
+};
+
 const CONSTRUCTION_SHOP = [
   { id:'sawmill',       name:'Sawmill',       desc:'Woodcutting is 10% faster.',  plankType:'oak_plank',      plankName:'Oak plank',      cost:50  },
   { id:'furnace',       name:'Furnace',       desc:'Smithing is 10% faster.',     plankType:'teak_plank',     plankName:'Teak plank',     cost:75  },
@@ -1134,9 +1162,10 @@ const OPENABLE_ITEMS = {
 };
 
 const EQUIPMENT_SLOTS = [
-  {id:'head',   label:'Head'},
-  {id:'weapon', label:'Weapon'},
-  {id:'neck',   label:'Neck'},
+  {id:'head',    label:'Head'},
+  {id:'weapon',  label:'Weapon'},
+  {id:'offhand', label:'Offhand'},
+  {id:'neck',    label:'Neck'},
   {id:'cape',   label:'Cape'},
   {id:'ring',   label:'Ring'},
   {id:'body',   label:'Body'},
@@ -1179,6 +1208,19 @@ const ITEM_STATS = {
       return [`${t.id}${p.suffix}`, stats];
     }))
   ),
+  ...Object.fromEntries(
+    METAL_TIERS.flatMap(t => WEAPON_PIECES.map(w => {
+      const id = `${t.id}${w.suffix}`;
+      if (w.isShield){
+        return [id, {defence: Math.max(1, Math.round(t.defBase * 0.45))}];
+      }
+      const stats = {attack: Math.max(1, t.weaponAtk + w.atkMod)};
+      if (w.attackInterval !== 4) stats.attackInterval = w.attackInterval;
+      if (w.damageMult !== 1.0)   stats.damageMult     = w.damageMult;
+      if (w.twoHanded)            stats.twoHanded      = true;
+      return [id, stats];
+    }))
+  ),
 };
 
 const EQUIP_SLOTS = {
@@ -1197,6 +1239,9 @@ const EQUIP_SLOTS = {
   leather_boots:'feet',
   ...Object.fromEntries(
     METAL_TIERS.flatMap(t => ARMOUR_PIECES.map(p => [`${t.id}${p.suffix}`, p.slot]))
+  ),
+  ...Object.fromEntries(
+    METAL_TIERS.flatMap(t => WEAPON_PIECES.map(w => [`${t.id}${w.suffix}`, w.slot]))
   ),
   berserker_ring:'ring', sapphire_ring:'ring', emerald_ring:'ring', ruby_ring:'ring',
   diamond_ring:'ring', dragonstone_ring:'ring', onyx_ring:'ring', hydrix_ring:'ring', gold_ring:'ring',
@@ -1296,10 +1341,10 @@ function freshState(){
     current: null,          // { skillId, actionId }
     progress: 0,            // ticks done toward current action
     tools: {},              // { skillId: tierId }
-    equipment: { head:null, weapon:null, neck:null, cape:null, ring:null, body:null, gloves:null, legs:null, feet:null, pet:null },
+    equipment: { head:null, weapon:null, offhand:null, neck:null, cape:null, ring:null, body:null, gloves:null, legs:null, feet:null, pet:null },
     stats:     { attack:1, range:1, mage:1, defence:1, necromancy:1, prayer:1, summoning:1, dropRate:0 },
     farming:   { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false },
-    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50 },
+    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, attackTimer:0 },
     upgrades:     {},
     quests:       {},  // { questId: true } — completed quests
     prayer:       { points:0, maxPoints:1, active:{}, drainCounter:0, lastRegen:0 },
@@ -1431,13 +1476,43 @@ function calcMobDamage(mob){
   return dmg;
 }
 
+function getWeaponStats(){
+  const weaponId = state.equipment?.weapon;
+  const s = (weaponId && ITEM_STATS[weaponId]) || {};
+  return {
+    attackInterval: s.attackInterval || 4,
+    damageMult:     s.damageMult     || 1.0,
+  };
+}
+
 function equipItem(itemId){
   const slot = EQUIP_SLOTS[itemId];
   if (!slot || (state.inventory[itemId] || 0) < 1) return;
-  const current = state.equipment[slot];
-  if (current){
-    grantItem(current);
+
+  const req = EQUIP_REQS[itemId];
+  if (req){
+    const playerLevel = levelForXp(state.skills[req.skill].xp);
+    if (playerLevel < req.level){
+      log(`Need level ${req.level} ${SKILL_BY_ID[req.skill].name} to equip this.`);
+      return;
+    }
   }
+
+  const iStats = ITEM_STATS[itemId] || {};
+  if (iStats.twoHanded && state.equipment.offhand){
+    grantItem(state.equipment.offhand);
+    state.equipment.offhand = null;
+  }
+  if (slot === 'offhand'){
+    const wStats = ITEM_STATS[state.equipment.weapon] || {};
+    if (wStats.twoHanded){
+      grantItem(state.equipment.weapon);
+      state.equipment.weapon = null;
+    }
+  }
+
+  const current = state.equipment[slot];
+  if (current) grantItem(current);
   state.inventory[itemId]--;
   if (state.inventory[itemId] <= 0) delete state.inventory[itemId];
   state.equipment[slot] = itemId;
@@ -1505,9 +1580,16 @@ function combatTick(){
   if (!state.combat.mobHp || state.combat.mobMaxHp !== action.stats.hp){
     state.combat.mobHp    = action.stats.hp;
     state.combat.mobMaxHp = action.stats.hp;
+    state.combat.attackTimer = 0;
   }
-  const playerDmg = calcPlayerDamage(state.current.skillId, action);
-  state.combat.mobHp = Math.max(0, state.combat.mobHp - playerDmg);
+  const wStats = getWeaponStats();
+  state.combat.attackTimer = (state.combat.attackTimer || 0) + 1;
+  if (state.combat.attackTimer >= wStats.attackInterval){
+    state.combat.attackTimer = 0;
+    let playerDmg = calcPlayerDamage(state.current.skillId, action);
+    if (playerDmg > 0) playerDmg = Math.max(1, Math.round(playerDmg * wStats.damageMult));
+    state.combat.mobHp = Math.max(0, state.combat.mobHp - playerDmg);
+  }
   const mobDmg = calcMobDamage(action);
   state.combat.hp = Math.max(0, state.combat.hp - mobDmg);
   // Auto-eat: fire before death check so food can save the player
@@ -2990,7 +3072,9 @@ function init(){
   state.combat.maxHp = constLvl * 10;
   if (!state.combat.hp || state.combat.hp <= 0) state.combat.hp = state.combat.maxHp;
   state.combat.hp = Math.min(state.combat.hp, state.combat.maxHp);
-  if (!('weapon' in state.equipment)) state.equipment.weapon = null;
+  if (!('weapon' in state.equipment))  state.equipment.weapon  = null;
+  if (!('offhand' in state.equipment)) state.equipment.offhand = null;
+  if (state.combat.attackTimer == null) state.combat.attackTimer = 0;
   if (!Array.isArray(state.combat.foodQueue)) state.combat.foodQueue = [];
   if (!state.upgrades) state.upgrades = {};
   if (state.combat.autoEatThreshold == null) state.combat.autoEatThreshold = 50;
