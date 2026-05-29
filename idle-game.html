@@ -421,13 +421,12 @@ const MAX_OFFLINE_HOURS = 12;         // cap on offline catch-up
 const FARM_GROW_MS = 5 * 60 * 1000;  // herb growth time: 5 minutes
 
 const COMBAT_STYLES = [
-  {id:'melee',      label:'Melee'},
-  {id:'ranged',     label:'Range'},
-  {id:'magic',      label:'Mage'},
-  {id:'necromancy', label:'Necromancy'},
+  {id:'melee',  label:'Melee'},
+  {id:'ranged', label:'Range'},
+  {id:'magic',  label:'Mage'},
 ];
 const COMBAT_SKILL_IDS = new Set(
-  ['melee','defence','constitution','ranged','magic','summoning','necromancy']
+  ['melee','defence','constitution','ranged','magic','summoning']
 );
 
 const SEEDS = [
@@ -473,7 +472,6 @@ const SKILL_ROADMAP = [
   {id:'magic',        name:'Magic',        type:'combat', maxLevel:120, implemented:true},
   {id:'prayer',       name:'Prayer',       type:'combat', maxLevel:99,  implemented:true},
   {id:'summoning',    name:'Summoning',    type:'combat', maxLevel:99,  implemented:false},
-  {id:'necromancy',   name:'Necromancy',   type:'combat', maxLevel:120, implemented:true},
   // Support (5)
   {id:'agility',      name:'Agility',      type:'support', maxLevel:99,  implemented:true},
   {id:'thieving',     name:'Thieving',     type:'support', maxLevel:99,  implemented:true},
@@ -942,10 +940,6 @@ const ACTIONS = {
     {id:'brew_lesser_magic',      name:'Lesser magic potion',      label:'Potions brewed', category:'Magic Potions',      levelReq:1,  xp:25,  ticks:3, item:'lesser_magic_potion',      itemName:'Lesser magic potion',      ingredients:[{item:'lantadyme',                 count:1, name:'Lantadyme'}]},
     {id:'brew_magic',             name:'Magic potion',             label:'Potions brewed', category:'Magic Potions',      levelReq:50, xp:75,  ticks:3, item:'magic_potion',             itemName:'Magic potion',             ingredients:[{item:'lesser_magic_potion',      count:1, name:'Lesser magic potion'},   {item:'lantadyme',   count:1, name:'Lantadyme'}]},
     {id:'brew_supreme_magic',     name:'Supreme magic potion',     label:'Potions brewed', category:'Magic Potions',      levelReq:90, xp:150, ticks:3, item:'supreme_magic_potion',     itemName:'Supreme magic potion',     ingredients:[{item:'magic_potion',             count:1, name:'Magic potion'},           {item:'lantadyme',   count:1, name:'Lantadyme'}]},
-    // Necromancy Potions
-    {id:'brew_lesser_necromancy', name:'Lesser necromancy potion', label:'Potions brewed', category:'Necromancy Potions', levelReq:1,  xp:25,  ticks:3, item:'lesser_necromancy_potion', itemName:'Lesser necromancy potion', ingredients:[{item:'fellstalk',                 count:1, name:'Fellstalk'}]},
-    {id:'brew_necromancy',        name:'Necromancy potion',        label:'Potions brewed', category:'Necromancy Potions', levelReq:50, xp:75,  ticks:3, item:'necromancy_potion',        itemName:'Necromancy potion',        ingredients:[{item:'lesser_necromancy_potion', count:1, name:'Lesser necromancy potion'},{item:'fellstalk',   count:1, name:'Fellstalk'}]},
-    {id:'brew_supreme_necromancy',name:'Supreme necromancy potion',label:'Potions brewed', category:'Necromancy Potions', levelReq:90, xp:150, ticks:3, item:'supreme_necromancy_potion',itemName:'Supreme necromancy potion',ingredients:[{item:'necromancy_potion',         count:1, name:'Necromancy potion'},       {item:'fellstalk',   count:1, name:'Fellstalk'}]},
     // Summoning Potions
     {id:'brew_lesser_summoning',  name:'Lesser summoning potion',  label:'Potions brewed', category:'Summoning Potions',  levelReq:1,  xp:25,  ticks:3, item:'lesser_summoning_potion',  itemName:'Lesser summoning potion',  ingredients:[{item:'spirit_weed',               count:1, name:'Spirit weed'}]},
     {id:'brew_summoning',         name:'Summoning potion',         label:'Potions brewed', category:'Summoning Potions',  levelReq:50, xp:75,  ticks:3, item:'summoning_potion',         itemName:'Summoning potion',         ingredients:[{item:'lesser_summoning_potion',  count:1, name:'Lesser summoning potion'},{item:'spirit_weed', count:1, name:'Spirit weed'}]},
@@ -1164,25 +1158,21 @@ const PRAYERS = [
   { id:'burst_of_strength',   name:'Burst of Strength',       levelReq:4,  drain:1, type:'melee',             boost:0.05 },
   { id:'clarity_of_thought',  name:'Clarity of Thought',      levelReq:7,  drain:1, type:'ranged',            boost:0.05 },
   { id:'sharp_eye',           name:'Sharp Eye',               levelReq:8,  drain:1, type:'magic',             boost:0.05 },
-  { id:'mystic_will',         name:'Mystic Will',             levelReq:9,  drain:1, type:'necromancy',        boost:0.05 },
   // Normal boosts (10%, drain 2)
   { id:'rock_skin',           name:'Rock Skin',               levelReq:13, drain:2, type:'defence',           boost:0.10 },
   { id:'superhuman_strength', name:'Superhuman Strength',     levelReq:19, drain:2, type:'melee',             boost:0.10 },
   { id:'improved_reflexes',   name:'Improved Reflexes',       levelReq:22, drain:2, type:'ranged',            boost:0.10 },
   { id:'hawk_eye',            name:'Hawk Eye',                levelReq:26, drain:2, type:'magic',             boost:0.10 },
-  { id:'mystic_lore',         name:'Mystic Lore',             levelReq:27, drain:2, type:'necromancy',        boost:0.10 },
   // Supreme boosts (15%, drain 4)
   { id:'steel_skin',          name:'Steel Skin',              levelReq:28, drain:4, type:'defence',           boost:0.15 },
   { id:'ultimate_strength',   name:'Ultimate Strength',       levelReq:31, drain:4, type:'melee',             boost:0.15 },
   { id:'incredible_reflexes', name:'Incredible Reflexes',     levelReq:34, drain:4, type:'ranged',            boost:0.15 },
   { id:'eagle_eye',           name:'Eagle Eye',               levelReq:40, drain:4, type:'magic',             boost:0.15 },
-  { id:'mystic_might',        name:'Mystic Might',            levelReq:42, drain:4, type:'necromancy',        boost:0.15 },
   // Protection (50% dmg reduction, drain 5)
   { id:'protect_summoning',   name:'Protect from Summoning',  levelReq:35, drain:5, type:'protect_summoning', boost:0 },
   { id:'protect_magic',       name:'Protect from Magic',      levelReq:37, drain:5, type:'protect_magic',     boost:0 },
   { id:'protect_ranged',      name:'Protect from Ranged',     levelReq:40, drain:5, type:'protect_ranged',    boost:0 },
   { id:'protect_melee',       name:'Protect from Melee',      levelReq:43, drain:5, type:'protect_melee',     boost:0 },
-  { id:'protect_necromancy',  name:'Protect from Necromancy', levelReq:50, drain:5, type:'protect_necromancy',boost:0 },
 ];
 
 const EQUIP_REQS = {
@@ -1382,7 +1372,6 @@ const STAT_DEFS = [
   {key:'range',      label:'Range'},
   {key:'mage',       label:'Mage'},
   {key:'defence',    label:'Defence'},
-  {key:'necromancy', label:'Necromancy'},
   {key:'prayer',     label:'Prayer'},
   {key:'summoning',  label:'Summoning'},
   {key:'dropRate',   label:'Drop Rate', pct:true},
@@ -1434,7 +1423,7 @@ function freshState(){
     progress: 0,            // ticks done toward current action
     tools: {},              // { skillId: tierId }
     equipment: { head:null, weapon:null, offhand:null, neck:null, cape:null, ring:null, body:null, gloves:null, legs:null, feet:null, pet:null },
-    stats:     { attack:1, range:1, mage:1, defence:1, necromancy:1, prayer:1, summoning:1, dropRate:0 },
+    stats:     { attack:1, range:1, mage:1, defence:1, prayer:1, summoning:1, dropRate:0 },
     farming:   { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false },
     combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, attackTimer:0 },
     upgrades:       {},
@@ -1457,7 +1446,7 @@ function calcSkillBonus(){
 }
 
 function calcStats(){
-  const s = { attack:0, range:0, mage:0, defence:0, necromancy:0, dropRate:0 };
+  const s = { attack:0, range:0, mage:0, defence:0, dropRate:0 };
   for (const itemId of Object.values(state.equipment)){
     if (!itemId) continue;
     const bonus = ITEM_STATS[itemId];
@@ -1500,7 +1489,7 @@ function getPrayerBoost(type){
 
 function getPrayerDesc(p){
   if (p.type.startsWith('protect_')) return '50% damage reduction · drain ' + p.drain + '/tick';
-  const label = {defence:'Defence',melee:'Melee',ranged:'Ranged',magic:'Magic',necromancy:'Necromancy'}[p.type] || p.type;
+  const label = {defence:'Defence',melee:'Melee',ranged:'Ranged',magic:'Magic'}[p.type] || p.type;
   return `+${Math.round(p.boost*100)}% ${label} · drain ${p.drain}/tick`;
 }
 
@@ -1537,7 +1526,6 @@ function consumeIngredients(action){
 function getAttackBonus(styleId, stats){
   if (styleId === 'ranged')     return stats.range      || 0;
   if (styleId === 'magic')      return stats.mage       || 0;
-  if (styleId === 'necromancy') return stats.necromancy || 0;
   return stats.attack || 0;
 }
 
@@ -2694,7 +2682,7 @@ function renderSkillList(){
         row.onclick = () => { selectSkill('farming'); document.getElementById('sec-inv')?.scrollIntoView({behavior:'smooth',block:'start'}); };
       } else if (s.type === 'combat' && s.implemented) {
         row.innerHTML = `<span>${s.name}</span><span class="lvl">${lvl}/${s.maxLevel}</span>`;
-        const styleMap = {melee:'melee', ranged:'ranged', magic:'magic', necromancy:'necromancy'};
+        const styleMap = {melee:'melee', ranged:'ranged', magic:'magic'};
         row.onclick = () => {
           if (styleMap[s.id]) state.combat.style = styleMap[s.id];
           selectSkill(s.id);
@@ -3285,6 +3273,8 @@ function init(){
   if (state.combat.attackTimer == null) state.combat.attackTimer = 0;
   if (state.autoOpenItems == null) state.autoOpenItems = false;
   if (!state.uiCollapsed) state.uiCollapsed = {};
+  if (state.combat?.style === 'necromancy') state.combat.style = 'melee';
+  if (state.current?.skillId === 'necromancy'){ state.current = null; state.progress = 0; }
   if (!Array.isArray(state.combat.foodQueue)) state.combat.foodQueue = [];
   if (!state.upgrades) state.upgrades = {};
   if (state.combat.autoEatThreshold == null) state.combat.autoEatThreshold = 50;
@@ -3338,7 +3328,7 @@ $('hideLockBtn').onclick = () => { hideLockedActions = !hideLockedActions; rende
 $('rollPkBtn').onclick = () => {
   if (!wildernessEncounter) return;
   const agilLevel = levelForXp(state.skills.agility.xp);
-  const combatSkills = ['melee','defence','constitution','ranged','magic','necromancy'];
+  const combatSkills = ['melee','defence','constitution','ranged','magic'];
   const maxCombat = Math.max(...combatSkills.map(id => levelForXp(state.skills[id].xp)));
   const playerScore   = maxCombat + agilLevel * 0.5;
   const opponentScore = 30 + Math.random() * 70;
