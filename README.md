@@ -1,6 +1,10 @@
 # Idle Skiller
 
-A 2D single-player idle/incremental game inspired by RuneScape 3. Built as a single self-contained HTML file — open it in a browser and play, no build step required.
+A 2D single-player idle/incremental game inspired by classic idle RPG gameplay.
+
+**Legal notice:** Idle Skiller is an independent, non-commercial fan project. It is not affiliated with, endorsed by, or connected to Jagex Ltd. in any way. All character, location, and item names are original; any similarity to existing game content is coincidental.
+
+Built as a single self-contained HTML file — open it in a browser and play, no build step required.
 
 ## How to play
 
@@ -14,7 +18,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 
 ## Current state
 
-**25 of 29 skills implemented.** The game is actively in development.
+**26 of 27 skills implemented.** The game is actively in development.
 
 ### Implemented skills
 
@@ -24,7 +28,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 |---|---|---|---|
 | Woodcutting | 110 | 13 trees (Tree → Eternal magic) | Tool upgrades (bronze axe → T100); bird's nest bonus drops |
 | Mining | 110 | 13 rocks (Copper → Primal + Rune essence) | Tool upgrades (bronze pickaxe → T100); geode bonus drops |
-| Fishing | 99 | 16 fish (Shrimps → Sailfish) | Tool upgrades (rod → Tavia's rod); Kraken's Beak + Map to Tavia rare drops |
+| Fishing | 99 | 16 fish (Shrimps → Sailfish) | Tool upgrades (rod → Abyssal Rod); Kraken's Beak + Map to the Deep rare drops |
 | Farming | 120 | 7 herb seeds | Background skill — grows in 5 min while you train anything else; harvest 3–15 herbs; auto-replant toggle; speed up with Herb Patch upgrade |
 | Hunter | 99 | 18 actions | Bird Snare (raw bird meat), Deadfall (kebbit fur → Hunter Leather via Crafting), Box Trap (chinchompas), Net Trap (salamander weapons), Pitfall (kyatt fur); Impling Jars openable for loot |
 | Divination | 99 | 10 wisps + 54 transmutations | Gathers energy; transmutes logs/ores/fish/gems up one tier; 10% breakdown chance → divine dust |
@@ -53,15 +57,15 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Constitution | 99 | Starts at lv 10; gains XP on every kill (50% of action XP) |
 | Prayer | 99 | Bury bones / use altar (×2.5 or ×3.5 XP); 16 active prayers across 4 tiers; drain system; protect prayers reduce damage 50% |
 
-**Mobs:** 11 standard + 10 slayer-locked (Crawling Hand → Abyssal Demon) + 6 bosses (Giant Mole, KBD, Dagannoth Kings, Commander Zilyana, General Graardor, Nex)
+**Mobs:** 11 standard + 10 slayer-locked (Crawling Hand → Abyssal Demon) + 6 bosses (Giant Mole, Void Dragon, Leviathan Kings, Commander Solara, General Karg, The Harbinger)
 
 #### Support
 
 | Skill | Max Lv | Actions | Notes |
 |---|---|---|---|
-| Agility | 99 | 7 courses (Gnome → Hefin) | Scaled XP; Wilderness course drops PK coins; Hefin requires quest + 70 Thieving; bonuses to Thieving pick/lock and Runecrafting speed |
+| Agility | 99 | 7 courses (Gnome → Crystal) | Scaled XP; Wilderness course drops PK coins; Crystal course requires quest + 70 Thieving; bonuses to Thieving pick/lock and Runecrafting speed |
 | Thieving | 99 | 19 actions | Pickpocket (9 NPCs, catch/stun mechanic) + Locks (10 chests); seeds, gems, and coins from drops; agility gives extra loot chance |
-| Slayer | 120 | 6 masters (Turael → Duradel) | Task assignment system; 2–30 pts/task; kill-tracking per mob; task completion bonus XP; Points Shop (5 unlocks incl. boss tasks, XP boost, extended tasks) |
+| Slayer | 120 | 6 masters (Aldric → Duroc) | Task assignment system; 2–30 pts/task; kill-tracking per mob; task completion bonus XP; Points Shop (5 unlocks incl. boss tasks, XP boost, extended tasks) |
 | Dungeoneering | 120 | 3 floor types | Time-based floors; earns tokens; token shop: Auto-Eat (500 tokens) |
 | Archaeology | 120 | 6 dig sites, 18 artefacts | Artefact restoration grants permanent perks (up to 3 active); perks include XP%, speed%, stat boosts, HP regen |
 
@@ -113,7 +117,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 **Bonus drops**
 - Woodcutting: bird's nests (1%, 4 variants)
 - Mining: geodes (5%, 3 tiers up to metamorphic with 1-in-99k hydrix)
-- Fishing: Kraken's Beak (1% lv60+), Map to Tavia (1-in-100k lv85+)
+- Fishing: Kraken's Beak (1% lv60+), Map to the Deep (1-in-100k lv85+)
 - Firemaking: fire spirit QTE event (15% per burn)
 - Hunter: dragon impling jar (0.5–1% per trap action)
 

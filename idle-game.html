@@ -708,60 +708,60 @@ const WEAPON_PIECES = [
 const ARCH_MAX_PERKS = 3;
 
 const ARCH_SITES = [
-  { id:'varrock',   name:'Varrock Dig Site',    levelReq:1,  earlyChance:0.0030, category:'Misthalin' },
-  { id:'kharid',    name:'Al-Kharid Site',       levelReq:20, earlyChance:0.0025, category:'Kharidian Desert' },
-  { id:'goblin',    name:'Goblin Village Ruins', levelReq:35, earlyChance:0.0020, category:'Asgarnia' },
-  { id:'morytania', name:'Morytania Swamp Site', levelReq:55, earlyChance:0.0018, category:'Morytania' },
-  { id:'glacor',    name:'Glacor Cave',          levelReq:75, earlyChance:0.0015, category:'Gielinor' },
-  { id:'kethsi',    name:'Kethsi Ruins',         levelReq:95, earlyChance:0.0010, category:'Kethsi' },
+  { id:'mistgate',   name:'Mistgate Ruins',    levelReq:1,  earlyChance:0.0030, category:'Northern Reaches' },
+  { id:'sandspire',    name:'Sandspire Site',       levelReq:20, earlyChance:0.0025, category:'Sunken Desert' },
+  { id:'warforge_site',    name:'Warforge Ruins', levelReq:35, earlyChance:0.0020, category:'Highland Plains' },
+  { id:'shadowfen', name:'Shadowfen Site', levelReq:55, earlyChance:0.0018, category:'Shadowfen' },
+  { id:'frostspire',    name:'Frostspire Cavern',          levelReq:75, earlyChance:0.0015, category:'Frozen Wastes' },
+  { id:'highstone',    name:'Highstone Ruins',         levelReq:95, earlyChance:0.0010, category:'Upper Reaches' },
 ];
 
 const ARCH_ARTIFACTS = [
-  // Varrock
-  { id:'xeric_frag',     name:"Xeric's Talisman Fragment", siteId:'varrock',   xp:150,  needed:3, bonusType:'xp_woodcutting',     bonusVal:0.05, perkName:"Xeric's Gift",    perkDesc:'Woodcutting XP +5%' },
-  { id:'varrock_coin',   name:'Ancient Varrock Coin',       siteId:'varrock',   xp:120,  needed:3, bonusType:'all_xp',             bonusVal:0.02, perkName:'City Coffers',    perkDesc:'All XP +2%' },
-  { id:'guard_badge',    name:'City Guard Badge',           siteId:'varrock',   xp:180,  needed:4, bonusType:'hp_regen',           bonusVal:0.25, perkName:"Guard's Rest",    perkDesc:'HP regen 25% faster' },
-  // Al-Kharid
-  { id:'khmer_teapot',   name:'Kharidian Teapot',           siteId:'kharid',    xp:280,  needed:3, bonusType:'speed_herblore',     bonusVal:0.05, perkName:'Desert Brew',     perkDesc:'Herblore 5% faster' },
-  { id:'scarab_frag',    name:'Scarab Amulet Fragment',     siteId:'kharid',    xp:320,  needed:4, bonusType:'xp_agility',         bonusVal:0.05, perkName:"Scarab's Grace",  perkDesc:'Agility XP +5%' },
-  { id:'menaphite_map',  name:'Menaphite Map Fragment',     siteId:'kharid',    xp:350,  needed:5, bonusType:'speed_fishing',      bonusVal:0.05, perkName:'Desert Seas',     perkDesc:'Fishing 5% faster' },
+  // Mistgate
+  { id:'xeric_frag',     name:"Mystic's Talisman Fragment", siteId:'mistgate',   xp:150,  needed:3, bonusType:'xp_woodcutting',     bonusVal:0.05, perkName:"Mystic's Gift",    perkDesc:'Woodcutting XP +5%' },
+  { id:'varrock_coin',   name:'Ancient City Coin',       siteId:'mistgate',   xp:120,  needed:3, bonusType:'all_xp',             bonusVal:0.02, perkName:'City Coffers',    perkDesc:'All XP +2%' },
+  { id:'guard_badge',    name:'City Guard Badge',           siteId:'mistgate',   xp:180,  needed:4, bonusType:'hp_regen',           bonusVal:0.25, perkName:"Guard's Rest",    perkDesc:'HP regen 25% faster' },
+  // Sandspire
+  { id:'khmer_teapot',   name:'Desert Teapot',           siteId:'sandspire',    xp:280,  needed:3, bonusType:'speed_herblore',     bonusVal:0.05, perkName:'Desert Brew',     perkDesc:'Herblore 5% faster' },
+  { id:'scarab_frag',    name:'Scarab Amulet Fragment',     siteId:'sandspire',    xp:320,  needed:4, bonusType:'xp_agility',         bonusVal:0.05, perkName:"Scarab's Grace",  perkDesc:'Agility XP +5%' },
+  { id:'menaphite_map',  name:'Desert Cartography Fragment',     siteId:'sandspire',    xp:350,  needed:5, bonusType:'speed_fishing',      bonusVal:0.05, perkName:'Desert Seas',     perkDesc:'Fishing 5% faster' },
   // Goblin Village
-  { id:'warforge_token', name:'Warforge Token',             siteId:'goblin',    xp:450,  needed:3, bonusType:'melee_dmg',          bonusVal:0.05, perkName:"Goblin's Fury",   perkDesc:'Melee damage +5%' },
-  { id:'siege_frag',     name:'Siege Engine Fragment',      siteId:'goblin',    xp:500,  needed:4, bonusType:'mob_reduction',      bonusVal:0.05, perkName:'Battle Hardened', perkDesc:'Mob damage -5%' },
-  { id:'war_standard',   name:'War Standard',               siteId:'goblin',    xp:520,  needed:5, bonusType:'xp_combat',          bonusVal:0.04, perkName:'Rally Cry',       perkDesc:'Combat XP +4%' },
-  // Morytania
-  { id:'ivandis_shard',  name:'Ivandis Flail Shard',        siteId:'morytania', xp:700,  needed:3, bonusType:'prayer_regen',       bonusVal:0.25, perkName:'Soul Anchor',     perkDesc:'Prayer regen 25% faster' },
-  { id:'meiy_map',       name:'Meiyerditch Map',            siteId:'morytania', xp:750,  needed:4, bonusType:'speed_runecrafting', bonusVal:0.05, perkName:'Vampyre Lore',    perkDesc:'Runecrafting 5% faster' },
-  { id:'soul_frag',      name:'Soul Fragment',              siteId:'morytania', xp:800,  needed:5, bonusType:'speed_mining',       bonusVal:0.05, perkName:'Stone Sense',     perkDesc:'Mining 5% faster' },
-  // Glacor
-  { id:'glacor_ess',     name:'Glacor Essence',             siteId:'glacor',    xp:1100, needed:3, bonusType:'speed_smithing',     bonusVal:0.05, perkName:'Glacial Forge',   perkDesc:'Smithing 5% faster' },
-  { id:'ancient_ward',   name:'Ancient Ward',               siteId:'glacor',    xp:1200, needed:4, bonusType:'defence_bonus',      bonusVal:0.05, perkName:'Ancient Guard',   perkDesc:'Equipment defence +5%' },
-  { id:'glacor_core',    name:'Glacor Core',                siteId:'glacor',    xp:1300, needed:5, bonusType:'speed_fletching',    bonusVal:0.05, perkName:'Frost Focus',     perkDesc:'Fletching 5% faster' },
-  // Kethsi
-  { id:'dragonkin_rune', name:'Dragonkin Rune',             siteId:'kethsi',    xp:1800, needed:3, bonusType:'all_xp',             bonusVal:0.03, perkName:'Dragonkin Power', perkDesc:'All XP +3%' },
-  { id:'kethsi_stone',   name:'Kethsi Stone',               siteId:'kethsi',    xp:2000, needed:4, bonusType:'speed_thieving',     bonusVal:0.05, perkName:'Lost Technology', perkDesc:'Thieving 5% faster' },
-  { id:'dim_seal',       name:'Dimensional Seal',           siteId:'kethsi',    xp:2200, needed:5, bonusType:'xp_dungeoneering',   bonusVal:0.08, perkName:'Reality Anchor',  perkDesc:'Dungeoneering XP +8%' },
+  { id:'warforge_token', name:'Warforge Token',             siteId:'warforge_site',    xp:450,  needed:3, bonusType:'melee_dmg',          bonusVal:0.05, perkName:"Warbringer's Fury",   perkDesc:'Melee damage +5%' },
+  { id:'siege_frag',     name:'Siege Engine Fragment',      siteId:'warforge_site',    xp:500,  needed:4, bonusType:'mob_reduction',      bonusVal:0.05, perkName:'Battle Hardened', perkDesc:'Mob damage -5%' },
+  { id:'war_standard',   name:'War Standard',               siteId:'warforge_site',    xp:520,  needed:5, bonusType:'xp_combat',          bonusVal:0.04, perkName:'Rally Cry',       perkDesc:'Combat XP +4%' },
+  // Shadowfen
+  { id:'ivandis_shard',  name:'Phantom Flail Shard',        siteId:'shadowfen', xp:700,  needed:3, bonusType:'prayer_regen',       bonusVal:0.25, perkName:'Soul Anchor',     perkDesc:'Prayer regen 25% faster' },
+  { id:'meiy_map',       name:'Shadowfen Map',            siteId:'shadowfen', xp:750,  needed:4, bonusType:'speed_runecrafting', bonusVal:0.05, perkName:'Vampyre Lore',    perkDesc:'Runecrafting 5% faster' },
+  { id:'soul_frag',      name:'Soul Fragment',              siteId:'shadowfen', xp:800,  needed:5, bonusType:'speed_mining',       bonusVal:0.05, perkName:'Stone Sense',     perkDesc:'Mining 5% faster' },
+  // Frostspire
+  { id:'glacor_ess',     name:'Frostspire Essence',             siteId:'frostspire',    xp:1100, needed:3, bonusType:'speed_smithing',     bonusVal:0.05, perkName:'Frost Forge',   perkDesc:'Smithing 5% faster' },
+  { id:'ancient_ward',   name:'Ancient Ward',               siteId:'frostspire',    xp:1200, needed:4, bonusType:'defence_bonus',      bonusVal:0.05, perkName:'Ancient Guard',   perkDesc:'Equipment defence +5%' },
+  { id:'glacor_core',    name:'Frostspire Core',                siteId:'frostspire',    xp:1300, needed:5, bonusType:'speed_fletching',    bonusVal:0.05, perkName:'Frost Focus',     perkDesc:'Fletching 5% faster' },
+  // Highstone
+  { id:'dragonkin_rune', name:'Dragonkin Rune',             siteId:'highstone',    xp:1800, needed:3, bonusType:'all_xp',             bonusVal:0.03, perkName:'Dragonkin Power', perkDesc:'All XP +3%' },
+  { id:'kethsi_stone',   name:'Highstone Relic',               siteId:'highstone',    xp:2000, needed:4, bonusType:'speed_thieving',     bonusVal:0.05, perkName:'Lost Technology', perkDesc:'Thieving 5% faster' },
+  { id:'dim_seal',       name:'Dimensional Seal',           siteId:'highstone',    xp:2200, needed:5, bonusType:'xp_dungeoneering',   bonusVal:0.08, perkName:'Reality Anchor',  perkDesc:'Dungeoneering XP +8%' },
 ];
 
 const SLAYER_MASTERS = [
-  { id:'turael',   name:'Turael',   levelReq:1,  pointsPerTask:2,  taskMin:10, taskMax:20,
+  { id:'turael',   name:'Aldric',   levelReq:1,  pointsPerTask:2,  taskMin:10, taskMax:20,
     pool:['goblin','cow','guard','barbarian'], bossPool:[] },
-  { id:'mazchna',  name:'Mazchna',  levelReq:20, pointsPerTask:5,  taskMin:20, taskMax:40,
+  { id:'mazchna',  name:'Mira',  levelReq:20, pointsPerTask:5,  taskMin:20, taskMax:40,
     pool:['guard','barbarian','hill_giant','crawling_hand','cave_crawler','banshee'], bossPool:[] },
-  { id:'vannaka',  name:'Vannaka',  levelReq:40, pointsPerTask:10, taskMin:30, taskMax:60,
+  { id:'vannaka',  name:'Karok',  levelReq:40, pointsPerTask:10, taskMin:30, taskMax:60,
     pool:['hill_giant','moss_giant','banshee','rock_slug','cockatrice'], bossPool:[] },
-  { id:'chaeldar', name:'Chaeldar', levelReq:60, pointsPerTask:15, taskMin:40, taskMax:80,
+  { id:'chaeldar', name:'Sylva', levelReq:60, pointsPerTask:15, taskMin:40, taskMax:80,
     pool:['fire_giant','green_dragon','infernal_mage','bloodveld','aberrant_spectre'], bossPool:[] },
-  { id:'sumona',   name:'Sumona',   levelReq:75, pointsPerTask:20, taskMin:50, taskMax:100,
+  { id:'sumona',   name:'Ashara',   levelReq:75, pointsPerTask:20, taskMin:50, taskMax:100,
     pool:['blue_dragon','aberrant_spectre','dust_devil','dark_beast','black_dragon'], bossPool:[] },
-  { id:'duradel',  name:'Duradel',  levelReq:90, pointsPerTask:30, taskMin:60, taskMax:120,
+  { id:'duradel',  name:'Duroc',  levelReq:90, pointsPerTask:30, taskMin:60, taskMax:120,
     pool:['dark_beast','abyssal_demon','black_dragon'],
-    bossPool:['giant_mole','kbd','dag_kings','zilyana','graardor','nex'] },
+    bossPool:['giant_mole','void_dragon','deep_kings','solara','karg','harbinger'] },
 ];
 
 const SLAYER_SHOP = [
   { id:'skip_task',    name:'Skip Task',        cost:30,  type:'consumable', desc:'Cancel your current task, no penalty' },
-  { id:'boss_tasks',   name:'Boss Task Unlock', cost:200, type:'permanent',  desc:'Duradel can assign boss monsters' },
+  { id:'boss_tasks',   name:'Boss Task Unlock', cost:200, type:'permanent',  desc:'Duroc can assign boss monsters' },
   { id:'slayer_boost', name:'Slayer Boost',     cost:300, type:'permanent',  desc:'+10% Slayer XP from task kills' },
   { id:'task_extend',  name:'Extended Tasks',   cost:400, type:'permanent',  desc:'Tasks have 50% more kills (more points)' },
   { id:'point_bonus',  name:'Point Mastery',    cost:600, type:'permanent',  desc:'+5 bonus points per task completion' },
@@ -802,8 +802,8 @@ const SELL_PRICES = {
   radiant_energy:180, luminous_energy:240, incandescent_energy:320,
   birds_nest_seeds:600, birds_nest_ring:900,
   birds_nest_egg_red:250, birds_nest_egg_blue:250, birds_nest_egg_green:250,
-  mole_skin:6000, kbd_heads:30000, berserker_ring:60000,
-  saradomin_sword:100000, bandos_chestplate:150000, torva_platebody:600000,
+  mole_skin:6000, void_drake_head:30000, berserker_ring:60000,
+  celestial_sword:100000, warlord_chestplate:150000, ancient_platebody:600000,
   abyssal_whip:40000, crystal_tool_seed:80000,
   raw_bird_meat:20, raw_rabbit:30,
 };
@@ -1091,8 +1091,8 @@ const ACTIONS = {
     {id:'barbarian_outpost', name:'Barbarian Outpost',    levelReq:35, xp:152,  ticks:14, coinReward:40},
     {id:'ape_atoll',         name:'Ape Atoll Course',     levelReq:48, xp:420,  ticks:20, coinReward:80},
     {id:'serenity',          name:'Serenity Course',      levelReq:60, xp:380,  ticks:17, coinReward:110},
-    {id:'hefin_course',      name:'Hefin Agility Course', levelReq:70, xp:2000, ticks:25,
-     questReq:'elf_city', skillReqs:[{id:'agility',lvl:70},{id:'thieving',lvl:70}], coinReward:175},
+    {id:'crystal_course',      name:'Crystal Agility Course', levelReq:70, xp:2000, ticks:25,
+     questReq:'crystal_city', skillReqs:[{id:'agility',lvl:70},{id:'thieving',lvl:70}], coinReward:175},
   ],
   thieving:[
     // --- Pickpocket --- (catchZeroAt:10 = safe within 10 levels of req)
@@ -1452,36 +1452,36 @@ const ACTIONS = {
              {item:'mole_skin',       itemName:'Mole skin',          chance:1.00, min:1,max:1, notable:true},
              {item:'gold_charm',      itemName:'Gold charm',         chance:0.10, min:1,max:1, notable:false},
              {item:'green_charm',     itemName:'Green charm',        chance:0.03, min:1,max:1, notable:false}]},
-    {id:'kbd',        name:'King Black Dragon',   category:'Bosses', levelReq:60,  xp:2500,  ticks:130, stats:{hp:1500, attack:45, defence:35},
+    {id:'void_dragon',        name:'Void Dragon',   category:'Bosses', levelReq:60,  xp:2500,  ticks:130, stats:{hp:1500, attack:45, defence:35},
       drops:[{item:'dragon_bones',    itemName:'Dragon bones',       chance:1.00, min:1,max:1, notable:false},
-             {item:'kbd_heads',       itemName:'KBD heads',          chance:0.05, min:1,max:1, notable:true},
+             {item:'void_drake_head',       itemName:'Void drake head',          chance:0.05, min:1,max:1, notable:true},
              {item:'gold_charm',      itemName:'Gold charm',         chance:0.12, min:1,max:1, notable:false},
              {item:'green_charm',     itemName:'Green charm',        chance:0.04, min:1,max:1, notable:false},
              {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.03, min:1,max:1, notable:true}]},
-    {id:'dag_kings',  name:'Dagannoth Kings',     category:'Bosses', levelReq:75,  xp:4000,  ticks:180, stats:{hp:2500, attack:55, defence:45},
+    {id:'deep_kings',  name:'Leviathan Kings',     category:'Bosses', levelReq:75,  xp:4000,  ticks:180, stats:{hp:2500, attack:55, defence:45},
       drops:[{item:'big_bones',       itemName:'Big bones',          chance:1.00, min:1,max:1, notable:false},
              {item:'berserker_ring',  itemName:'Berserker ring',     chance:0.04, min:1,max:1, notable:true},
              {item:'gold_charm',      itemName:'Gold charm',         chance:0.14, min:1,max:1, notable:false},
              {item:'green_charm',     itemName:'Green charm',        chance:0.05, min:1,max:1, notable:false},
              {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.03, min:1,max:1, notable:true},
              {item:'blue_charm',      itemName:'Blue charm',         chance:0.02, min:1,max:1, notable:true}]},
-    {id:'zilyana',    name:'Commander Zilyana',   category:'Bosses', levelReq:85,  xp:6000,  ticks:220, stats:{hp:3000, attack:65, defence:55},
+    {id:'solara',    name:'Commander Solara',   category:'Bosses', levelReq:85,  xp:6000,  ticks:220, stats:{hp:3000, attack:65, defence:55},
       drops:[{item:'dragon_bones',    itemName:'Dragon bones',       chance:1.00, min:1,max:1, notable:false},
-             {item:'saradomin_sword', itemName:'Saradomin sword',    chance:0.02, min:1,max:1, notable:true},
+             {item:'celestial_sword', itemName:'Celestial sword',    chance:0.02, min:1,max:1, notable:true},
              {item:'gold_charm',      itemName:'Gold charm',         chance:0.14, min:1,max:1, notable:false},
              {item:'green_charm',     itemName:'Green charm',        chance:0.05, min:1,max:1, notable:false},
              {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.04, min:1,max:1, notable:true},
              {item:'blue_charm',      itemName:'Blue charm',         chance:0.02, min:1,max:1, notable:true}]},
-    {id:'graardor',   name:'General Graardor',    category:'Bosses', levelReq:85,  xp:6000,  ticks:220, stats:{hp:3000, attack:68, defence:52},
+    {id:'karg',   name:'General Karg',    category:'Bosses', levelReq:85,  xp:6000,  ticks:220, stats:{hp:3000, attack:68, defence:52},
       drops:[{item:'dragon_bones',      itemName:'Dragon bones',     chance:1.00, min:1,max:1, notable:false},
-             {item:'bandos_chestplate', itemName:'Bandos chestplate',chance:0.02, min:1,max:1, notable:true},
+             {item:'warlord_chestplate', itemName:'Warlord chestplate',chance:0.02, min:1,max:1, notable:true},
              {item:'gold_charm',        itemName:'Gold charm',       chance:0.14, min:1,max:1, notable:false},
              {item:'green_charm',       itemName:'Green charm',      chance:0.05, min:1,max:1, notable:false},
              {item:'crimson_charm',     itemName:'Crimson charm',    chance:0.04, min:1,max:1, notable:true},
              {item:'blue_charm',        itemName:'Blue charm',       chance:0.02, min:1,max:1, notable:true}]},
-    {id:'nex',        name:'Nex',                 category:'Bosses', levelReq:100, xp:10000, ticks:350, stats:{hp:6000, attack:85, defence:70},
+    {id:'harbinger',        name:'The Harbinger',                 category:'Bosses', levelReq:100, xp:10000, ticks:350, stats:{hp:6000, attack:85, defence:70},
       drops:[{item:'dragon_bones',    itemName:'Dragon bones',       chance:1.00, min:1,max:1, notable:false},
-             {item:'torva_platebody', itemName:'Torva platebody',    chance:0.01, min:1,max:1, notable:true},
+             {item:'ancient_platebody', itemName:'Ancient platebody',    chance:0.01, min:1,max:1, notable:true},
              {item:'gold_charm',      itemName:'Gold charm',         chance:0.15, min:1,max:1, notable:false},
              {item:'green_charm',     itemName:'Green charm',        chance:0.06, min:1,max:1, notable:false},
              {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.04, min:1,max:1, notable:true},
@@ -1545,7 +1545,7 @@ const TOOLS = {
     {id:'fishing_rod', name:'Fishing rod',         speedMult:1.00, reqLevel:1,  cost:[]},
     {id:'dragon_rod',  name:'Dragon fishing rod',  speedMult:0.75, reqLevel:60, cost:[{item:'krackens_beak',     name:"Kraken's Beak",     count:1}]},
     {id:'crystal_rod', name:'Crystal fishing rod', speedMult:0.60, reqLevel:1,  cost:[{item:'crystal_tool_seed', name:'Crystal tool seed', count:1}]},
-    {id:'tavias_rod',  name:"Tavia's rod",         speedMult:0.45, reqLevel:1,  cost:[{item:'map_to_tavia',      name:'Map to Tavia',      count:1}]},
+    {id:'abyssal_rod',  name:'Abyssal Rod',         speedMult:0.45, reqLevel:1,  cost:[{item:'map_to_the_deep',      name:'Map to the Deep',      count:1}]},
   ],
   thieving:[
     {id:'rusty_lockpick',  name:'Rusty lockpick',  speedMult:1.00, reqLevel:1,  cost:[], slipChance:0.30},
@@ -1655,10 +1655,10 @@ const COLLECTION_LOG_SOURCES = [
   // Fishing
   { id:'fishing_bonus', name:'Deep Sea Fishing', category:'Fishing', items:[
     {id:'krackens_beak', name:"Kraken's Beak",  icon:'🦑'},
-    {id:'map_to_tavia',  name:'Map to Tavia',   icon:'🗺️'},
+    {id:'map_to_the_deep',  name:'Map to the Deep',   icon:'🗺️'},
   ]},
   // Agility
-  { id:'agility_hefin', name:'Hefin Agility Course', category:'Agility', items:[
+  { id:'agility_crystal', name:'Crystal Agility Course', category:'Agility', items:[
     {id:'crystal_tool_seed', name:'Crystal tool seed', icon:'💠'},
   ]},
   // Hunter
@@ -1701,19 +1701,19 @@ const COLLECTION_LOG_SOURCES = [
   ]},
   // Bosses
   { id:'boss_giant_mole', name:'Giant Mole',          category:'Bosses', items:[{id:'mole_skin',         name:'Mole skin',          icon:'🦔'}]},
-  { id:'boss_kbd',        name:'King Black Dragon',    category:'Bosses', items:[{id:'kbd_heads',         name:'KBD heads',          icon:'🐉'}]},
-  { id:'boss_dag_kings',  name:'Dagannoth Kings',      category:'Bosses', items:[{id:'berserker_ring',    name:'Berserker ring',     icon:'💍'}]},
-  { id:'boss_zilyana',    name:'Commander Zilyana',    category:'Bosses', items:[{id:'saradomin_sword',   name:'Saradomin sword',    icon:'⚔️'}]},
-  { id:'boss_graardor',   name:'General Graardor',     category:'Bosses', items:[{id:'bandos_chestplate', name:'Bandos chestplate',  icon:'🛡️'}]},
-  { id:'boss_nex',        name:'Nex',                  category:'Bosses', items:[{id:'torva_platebody',   name:'Torva platebody',    icon:'🛡️'}]},
+  { id:'boss_void_dragon',        name:'Void Dragon',    category:'Bosses', items:[{id:'void_drake_head',         name:'Void drake head',          icon:'🐉'}]},
+  { id:'boss_deep_kings',  name:'Leviathan Kings',      category:'Bosses', items:[{id:'berserker_ring',    name:'Berserker ring',     icon:'💍'}]},
+  { id:'boss_solara',    name:'Commander Solara',    category:'Bosses', items:[{id:'celestial_sword',   name:'Celestial sword',    icon:'⚔️'}]},
+  { id:'boss_karg',   name:'General Karg',     category:'Bosses', items:[{id:'warlord_chestplate', name:'Warlord chestplate',  icon:'🛡️'}]},
+  { id:'boss_harbinger',        name:'The Harbinger',                  category:'Bosses', items:[{id:'ancient_platebody',   name:'Ancient platebody',    icon:'🛡️'}]},
 ];
 const CLOG_SOURCE_MAP = {};
 for (const src of COLLECTION_LOG_SOURCES)
   CLOG_SOURCE_MAP[src.id] = new Set(src.items.map(i => i.id));
 const MOB_CLOG_SOURCE = {
   abyssal_demon:'mob_abyssal_demon',
-  giant_mole:'boss_giant_mole', kbd:'boss_kbd', dag_kings:'boss_dag_kings',
-  zilyana:'boss_zilyana', graardor:'boss_graardor', nex:'boss_nex',
+  giant_mole:'boss_giant_mole', void_dragon:'boss_void_dragon', deep_kings:'boss_deep_kings',
+  solara:'boss_solara', karg:'boss_karg', harbinger:'boss_harbinger',
 };
 // Openable item → collection log source ID
 const OPENABLE_CLOG_SOURCE = {
@@ -1764,7 +1764,7 @@ const ACHIEVEMENTS = [
   {id:'arch_50', name:'Archaeologist',   desc:'Reach Archaeology 50',    icon:'🏺', category:'Skills', checkFn:()=>levelForXp(state.skills.archaeology.xp)>=50},
   {id:'arch_120',name:'Site Director',   desc:'Reach Archaeology 120',   icon:'🏺', category:'Skills', checkFn:()=>levelForXp(state.skills.archaeology.xp)>=120},
   {id:'pray_50', name:'Devout',          desc:'Reach Prayer 50',         icon:'🙏', category:'Skills', checkFn:()=>levelForXp(state.skills.prayer.xp)>=50},
-  {id:'pray_99', name:'Monk of Zamorak', desc:'Reach Prayer 99',         icon:'🙏', category:'Skills', checkFn:()=>levelForXp(state.skills.prayer.xp)>=99},
+  {id:'pray_99', name:'High Priest', desc:'Reach Prayer 99',         icon:'🙏', category:'Skills', checkFn:()=>levelForXp(state.skills.prayer.xp)>=99},
   {id:'sum_50',  name:'Summoner',        desc:'Reach Summoning 50',      icon:'🧿', category:'Skills', checkFn:()=>levelForXp(state.skills.summoning.xp)>=50},
   {id:'sum_99',  name:'Master Summoner', desc:'Reach Summoning 99',      icon:'🧿', category:'Skills', checkFn:()=>levelForXp(state.skills.summoning.xp)>=99},
   {id:'mel_50',  name:'Warrior',         desc:'Reach Melee 50',          icon:'⚔️', category:'Skills', checkFn:()=>levelForXp(state.skills.melee.xp)>=50},
@@ -1787,16 +1787,16 @@ const ACHIEVEMENTS = [
   // Combat — boss kills
   {id:'kill_mole_1',   name:'Mole Hunter',    desc:'Kill the Giant Mole',            icon:'🦔', category:'Combat', checkFn:()=>(state.combat.kills?.giant_mole||0)>=1},
   {id:'kill_mole_50',  name:'Mole Maniac',    desc:'Kill the Giant Mole 50 times',   icon:'🦔', category:'Combat', checkFn:()=>(state.combat.kills?.giant_mole||0)>=50},
-  {id:'kill_kbd_1',    name:'Dragonslayer',   desc:'Kill the King Black Dragon',      icon:'🐉', category:'Combat', checkFn:()=>(state.combat.kills?.kbd||0)>=1,    lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<60},
-  {id:'kill_kbd_50',   name:'Dragon Farmer',  desc:'Kill the KBD 50 times',          icon:'🐉', category:'Combat', checkFn:()=>(state.combat.kills?.kbd||0)>=50,   lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<60},
-  {id:'kill_dag_1',    name:'Dagannoth Slayer',desc:'Kill the Dagannoth Kings',       icon:'👑', category:'Combat', checkFn:()=>(state.combat.kills?.dag_kings||0)>=1,  lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<75},
-  {id:'kill_dag_50',   name:'Dag King Grind', desc:'Kill the Dagannoth Kings 50×',   icon:'👑', category:'Combat', checkFn:()=>(state.combat.kills?.dag_kings||0)>=50, lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<75},
-  {id:'kill_zilyana_1',name:'Holy Warrior',   desc:'Kill Commander Zilyana',         icon:'⚔️', category:'Combat', checkFn:()=>(state.combat.kills?.zilyana||0)>=1,    lockFn:()=>!state.slayer.unlocks?.boss_tasks},
-  {id:'kill_zil_50',   name:'Sara Devout',    desc:'Kill Commander Zilyana 50×',     icon:'⚔️', category:'Combat', checkFn:()=>(state.combat.kills?.zilyana||0)>=50,   lockFn:()=>!state.slayer.unlocks?.boss_tasks},
-  {id:'kill_graardor_1',name:'Band of Brothers',desc:'Kill General Graardor',        icon:'🪖', category:'Combat', checkFn:()=>(state.combat.kills?.graardor||0)>=1,   lockFn:()=>!state.slayer.unlocks?.boss_tasks},
-  {id:'kill_graard_50',name:'Bandos Bane',    desc:'Kill General Graardor 50×',      icon:'🪖', category:'Combat', checkFn:()=>(state.combat.kills?.graardor||0)>=50,  lockFn:()=>!state.slayer.unlocks?.boss_tasks},
-  {id:'kill_nex_1',    name:'Ancient Foe',    desc:'Kill Nex',                       icon:'💀', category:'Combat', checkFn:()=>(state.combat.kills?.nex||0)>=1,        lockFn:()=>!state.slayer.unlocks?.boss_tasks},
-  {id:'kill_nex_50',   name:'Nex Nemesis',    desc:'Kill Nex 50 times',              icon:'💀', category:'Combat', checkFn:()=>(state.combat.kills?.nex||0)>=50,       lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'kill_kbd_1',    name:'Dragonslayer',   desc:'Kill the Void Dragon',      icon:'🐉', category:'Combat', checkFn:()=>(state.combat.kills?.void_dragon||0)>=1,    lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<60},
+  {id:'kill_kbd_50',   name:'Dragon Farmer',  desc:'Kill the Void Dragon 50 times',          icon:'🐉', category:'Combat', checkFn:()=>(state.combat.kills?.void_dragon||0)>=50,   lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<60},
+  {id:'kill_dag_1',    name:'Depths Slayer',desc:'Kill the Leviathan Kings',       icon:'👑', category:'Combat', checkFn:()=>(state.combat.kills?.deep_kings||0)>=1,  lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<75},
+  {id:'kill_dag_50',   name:'Leviathan Grind', desc:'Kill the Leviathan Kings 50×',   icon:'👑', category:'Combat', checkFn:()=>(state.combat.kills?.deep_kings||0)>=50, lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<75},
+  {id:'kill_zilyana_1',name:'Holy Warrior',   desc:'Kill Commander Solara',         icon:'⚔️', category:'Combat', checkFn:()=>(state.combat.kills?.solara||0)>=1,    lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'kill_zil_50',   name:'Solar Devout',    desc:'Kill Commander Solara 50×',     icon:'⚔️', category:'Combat', checkFn:()=>(state.combat.kills?.solara||0)>=50,   lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'kill_graardor_1',name:'Band of Brothers',desc:'Kill General Karg',        icon:'🪖', category:'Combat', checkFn:()=>(state.combat.kills?.karg||0)>=1,   lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'kill_graard_50',name:"Warlord's Bane",    desc:'Kill General Karg 50×',      icon:'🪖', category:'Combat', checkFn:()=>(state.combat.kills?.karg||0)>=50,  lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'kill_nex_1',    name:'Ancient Foe',    desc:'Kill the Harbinger',                       icon:'💀', category:'Combat', checkFn:()=>(state.combat.kills?.harbinger||0)>=1,        lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'kill_nex_50',   name:"Harbinger's Nemesis",    desc:'Kill the Harbinger 50 times',              icon:'💀', category:'Combat', checkFn:()=>(state.combat.kills?.harbinger||0)>=50,       lockFn:()=>!state.slayer.unlocks?.boss_tasks},
 
   // Slayer tasks
   {id:'slay_10',  name:'On Task',     desc:'Complete 10 Slayer tasks',   icon:'📋', category:'Slayer', checkFn:()=>(state.slayer.totalTasksDone||0)>=10},
@@ -1805,13 +1805,13 @@ const ACHIEVEMENTS = [
 
   // Special / Collection
   {id:'got_hydrix',    name:'Hydrix Hunter',     desc:'Obtain an uncut hydrix',                   icon:'🟣', category:'Special', checkFn:()=>((state.collectionLog?.geode_metamorphic?.uncut_hydrix||0)+(state.collectionLog?.jar_dragon?.uncut_hydrix||0))>0},
-  {id:'got_tavia_map', name:'Treasure Hunter',   desc:'Find the Map to Tavia',                    icon:'🗺️', category:'Special', checkFn:()=>(state.collectionLog?.fishing_bonus?.map_to_tavia||0)>0},
+  {id:'got_tavia_map', name:'Treasure Hunter',   desc:'Find the Map to the Deep',                    icon:'🗺️', category:'Special', checkFn:()=>(state.collectionLog?.fishing_bonus?.map_to_the_deep||0)>0},
   {id:'got_whip',      name:'Demon Slayer',       desc:'Obtain an Abyssal whip',                  icon:'⚔️', category:'Special', checkFn:()=>(state.collectionLog?.mob_abyssal_demon?.abyssal_whip||0)>0},
-  {id:'got_torva',     name:'Nex Conquered',      desc:'Obtain a Torva platebody',                icon:'🛡️', category:'Special', checkFn:()=>(state.collectionLog?.boss_nex?.torva_platebody||0)>0, lockFn:()=>!state.slayer.unlocks?.boss_tasks},
-  {id:'all_boss_log',  name:'Boss Logger',        desc:'Log an item from every boss',             icon:'📖', category:'Special', checkFn:()=>['boss_giant_mole','boss_kbd','boss_dag_kings','boss_zilyana','boss_graardor','boss_nex'].every(s=>Object.keys(state.collectionLog?.[s]||{}).length>0), lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'got_ancient',     name:'Darkness Conquered',      desc:'Obtain an Ancient platebody',                icon:'🛡️', category:'Special', checkFn:()=>(state.collectionLog?.boss_harbinger?.ancient_platebody||0)>0, lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'all_boss_log',  name:'Boss Logger',        desc:'Log an item from every boss',             icon:'📖', category:'Special', checkFn:()=>['boss_giant_mole','boss_void_dragon','boss_deep_kings','boss_solara','boss_karg','boss_harbinger'].every(s=>Object.keys(state.collectionLog?.[s]||{}).length>0), lockFn:()=>!state.slayer.unlocks?.boss_tasks},
   {id:'arch_3_perks',  name:'Perk Collector',     desc:'Have 3 archaeology perks active',         icon:'🏺', category:'Special', checkFn:()=>Object.keys(state.archaeology?.activePerks||{}).length>=3},
   {id:'slay_shop_all', name:'Points Well Spent',  desc:'Purchase all Slayer shop items',          icon:'🏪', category:'Special', checkFn:()=>['boss_tasks','slayer_boost','task_extend','point_bonus'].every(k=>!!state.slayer.unlocks?.[k])},
-  {id:'got_crystal',   name:'Crystal Gifts',      desc:'Find a crystal tool seed on Hefin course',icon:'💠', category:'Special', checkFn:()=>(state.collectionLog?.agility_hefin?.crystal_tool_seed||0)>0, lockFn:()=>!state.quests?.elf_city},
+  {id:'got_crystal',   name:'Crystal Gifts',      desc:'Find a crystal tool seed on Crystal course',icon:'💠', category:'Special', checkFn:()=>(state.collectionLog?.agility_crystal?.crystal_tool_seed||0)>0, lockFn:()=>!state.quests?.crystal_city},
 ];
 
 const EQUIP_REQS = {
@@ -1820,7 +1820,7 @@ const EQUIP_REQS = {
     ...WEAPON_PIECES.map(w => [`${t.id}${w.suffix}`, {skill: w.slot === 'weapon' ? 'melee' : 'defence', level:t.levelReq}]),
   ])),
   abyssal_whip:    {skill:'melee', level:70},
-  saradomin_sword: {skill:'melee', level:65},
+  celestial_sword: {skill:'melee', level:65},
 };
 
 const CONSTRUCTION_SHOP = [
@@ -1929,9 +1929,9 @@ const EQUIPMENT_SLOTS = [
 ];
 
 const ITEM_STATS = {
-  abyssal_whip:{ attack:82 }, saradomin_sword:{ attack:75 },
-  torva_platebody:{ attack:8, defence:95 }, bandos_chestplate:{ attack:6, defence:80 },
-  berserker_ring:{ attack:8, defence:4 }, kbd_heads:{ defence:5 },
+  abyssal_whip:{ attack:82 }, celestial_sword:{ attack:75 },
+  ancient_platebody:{ attack:8, defence:95 }, warlord_chestplate:{ attack:6, defence:80 },
+  berserker_ring:{ attack:8, defence:4 }, void_drake_head:{ defence:5 },
   leather_cowl:{ defence:3 }, leather_gloves:{ defence:2 }, leather_boots:{ defence:3 },
   leather_vambraces:{ defence:4 }, leather_body:{ defence:8 }, leather_chaps:{ defence:6 },
   swamp_lizard:{ attack:25, range:20 }, orange_salamander:{ attack:40, range:35 },
@@ -1982,10 +1982,10 @@ const ITEM_STATS = {
 };
 
 const EQUIP_SLOTS = {
-  abyssal_whip:'weapon', saradomin_sword:'weapon',
+  abyssal_whip:'weapon', celestial_sword:'weapon',
   swamp_lizard:'weapon', orange_salamander:'weapon', red_salamander:'weapon', black_salamander:'weapon',
-  kbd_heads:'head', leather_cowl:'head', kebbit_cowl:'head', cloth_hat:'head', splitbark_helm:'head', lunar_helm:'head',
-  torva_platebody:'body', bandos_chestplate:'body',
+  void_drake_head:'head', leather_cowl:'head', kebbit_cowl:'head', cloth_hat:'head', splitbark_helm:'head', lunar_helm:'head',
+  ancient_platebody:'body', warlord_chestplate:'body',
   kebbit_body:'body', kyatt_body:'body',
   leather_body:'body',       green_dhide_body:'body',  blue_dhide_body:'body',
   black_dhide_body:'body',   red_dhide_body:'body',    royal_dhide_body:'body',
@@ -3401,16 +3401,16 @@ function completeAction(action, silent){
       qty = Math.floor(Math.random() * 5) + 1;
     grantItem(action.item, action.itemName, qty);
   }
-  // Tavia's rod: 1% chance to upgrade the caught fish to the next tier
+  // Abyssal Rod: 1% chance to upgrade the caught fish to the next tier
   if (action.item && state.current?.skillId === 'fishing' &&
-      state.tools?.fishing === 'tavias_rod' && Math.random() < 0.01){
+      state.tools?.fishing === 'abyssal_rod' && Math.random() < 0.01){
     const fishActions = ACTIONS.fishing;
     const idx = fishActions.findIndex(a => a.id === state.current.actionId);
     if (idx >= 0 && idx < fishActions.length - 1){
       const upgrade = fishActions[idx + 1];
       state.inventory[action.item]--;
       grantItem(upgrade.item, upgrade.itemName);
-      if (!silent) log(`✨ Tavia's rod shimmers — you caught a ${upgrade.itemName}!`);
+      if (!silent) log(`✨ Abyssal Rod pulses — you caught a ${upgrade.itemName}!`);
     }
   }
   // Thieving: process drops table + agility extra-loot bonus
@@ -3435,7 +3435,7 @@ function completeAction(action, silent){
     grantXp('thieving', action.xp, silent);
     return;
   }
-  // Agility: scaled XP for wilderness, coin reward per lap, crystal seed for Hefin, PKer encounter trigger
+  // Agility: scaled XP for wilderness, coin reward per lap, crystal seed for Crystal course, PKer encounter trigger
   if (state.current?.skillId === 'agility'){
     const agilLevel = levelForXp(state.skills.agility.xp);
     const xp = action.xpBase != null
@@ -3451,10 +3451,10 @@ function completeAction(action, silent){
     if (action.coinReward){
       grantItem('coins', 'Coins', action.coinReward);
     }
-    if (action.questReq === 'elf_city' && Math.random() < 0.01){
+    if (action.questReq === 'crystal_city' && Math.random() < 0.01){
       grantItem('crystal_tool_seed', 'Crystal tool seed');
-      logCollectionDrop('agility_hefin', 'crystal_tool_seed');
-      if (!silent) log(`💎 Found a crystal tool seed on the Hefin course!`);
+      logCollectionDrop('agility_crystal', 'crystal_tool_seed');
+      if (!silent) log(`💎 Found a crystal tool seed on the Crystal course!`);
     }
     grantXp('agility', xp, silent);
     return;
@@ -3565,10 +3565,10 @@ function checkBonusDrop(skillId, action){
     logCollectionDrop('fishing_bonus', 'krackens_beak');
     log("🦑 You wrestle a Kraken's Beak from the catch!");
   }
-  // Fishing: Map to Tavia (1-in-100,000 from fish levelReq >= 85)
+  // Fishing: Map to the Deep (1-in-100,000 from fish levelReq >= 85)
   if (skillId === 'fishing' && action.levelReq >= 85 && Math.random() < 0.00001){
-    grantItem('map_to_tavia', 'Map to Tavia');
-    logCollectionDrop('fishing_bonus', 'map_to_tavia');
+    grantItem('map_to_the_deep', 'Map to the Deep');
+    logCollectionDrop('fishing_bonus', 'map_to_the_deep');
     log("🗺️ You find a mysterious map tucked inside the fish!");
   }
 
@@ -3592,8 +3592,8 @@ function checkBonusDrop(skillId, action){
 function completeQuest(questId){
   if (!state.quests) state.quests = {};
   state.quests[questId] = true;
-  const name = questId === 'elf_city' ? 'Accessing Elf City' : questId;
-  log(`✨ Quest complete: ${name}! The Hefin course is now accessible.`);
+  const name = questId === 'crystal_city' ? 'Discovering Crystal City' : questId;
+  log(`✨ Quest complete: ${name}! The Crystal course is now accessible.`);
   render();
 }
 
@@ -4474,12 +4474,12 @@ function renderActiveSkill(){
       list.appendChild(btn);
       return;
     }
-    // Quest-gated actions (e.g. Hefin course)
+    // Quest-gated actions (e.g. Crystal course)
     if (a.questReq && !state.quests?.[a.questReq]){
       const reqs = a.skillReqs || [];
       const skillReqsMet = reqs.every(r => levelForXp(state.skills[r.id].xp) >= r.lvl);
       const reqText = reqs.map(r => `Lv${r.lvl} ${SKILL_BY_ID[r.id].name}`).join(', ');
-      const questLabel = a.questReq === 'elf_city' ? 'Accessing Elf City' : a.questReq;
+      const questLabel = a.questReq === 'crystal_city' ? 'Discovering Crystal City' : a.questReq;
       if (skillReqsMet){
         btn.disabled = false;
         btn.innerHTML = `<span>${a.name}</span><span class="meta" style="color:#4ade80">All reqs met — Complete quest to unlock</span>`;
@@ -5164,6 +5164,26 @@ function init(){
       Date.now() >= state.farming.plantedAt + _offlineGrowMs) {
     state.farming.ready = true;
   }
+  // Copyright rename migration — old RS-specific IDs → new names
+  const _itemRenames = { bandos_chestplate:'warlord_chestplate', saradomin_sword:'celestial_sword',
+    torva_platebody:'ancient_platebody', kbd_heads:'void_drake_head',
+    map_to_tavia:'map_to_the_deep', tavias_rod:'abyssal_rod' };
+  for (const [old, nw] of Object.entries(_itemRenames)){
+    if (state.inventory[old]){ state.inventory[nw]=(state.inventory[nw]||0)+state.inventory[old]; delete state.inventory[old]; }
+    if (state.equipment) for (const slot of Object.keys(state.equipment)) if (state.equipment[slot]===old) state.equipment[slot]=nw;
+  }
+  const _clogRenames = { boss_kbd:'boss_void_dragon', boss_dag_kings:'boss_deep_kings',
+    boss_zilyana:'boss_solara', boss_graardor:'boss_karg', boss_nex:'boss_harbinger',
+    agility_hefin:'agility_crystal' };
+  if (state.collectionLog) for (const [old,nw] of Object.entries(_clogRenames)){
+    if (state.collectionLog[old]){ state.collectionLog[nw]=state.collectionLog[old]; delete state.collectionLog[old]; }
+  }
+  if (state.quests?.elf_city && !state.quests?.crystal_city){ state.quests.crystal_city=true; delete state.quests.elf_city; }
+  const _killRenames = { kbd:'void_dragon', dag_kings:'deep_kings', zilyana:'solara', graardor:'karg', nex:'harbinger' };
+  if (state.combat?.kills) for (const [old,nw] of Object.entries(_killRenames)){
+    if (state.combat.kills[old]){ state.combat.kills[nw]=(state.combat.kills[nw]||0)+state.combat.kills[old]; delete state.combat.kills[old]; }
+  }
+
   showOffline(offline);
 
   render();
