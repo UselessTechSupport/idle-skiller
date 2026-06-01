@@ -340,6 +340,16 @@
       </div>
     </div>
 
+    <!-- Summoning HUD -->
+    <div id="sec-summoning" class="sec-anchor">
+      <div class="sec-hdr" onclick="toggleSection('summoning')">
+        🧿 Summoning <span id="summonBadge" class="sec-badge"></span> <span class="chev">▼</span>
+      </div>
+      <div id="sec-body-summoning" class="sec-body">
+        <div id="summoningHudPanel"></div>
+      </div>
+    </div>
+
     <!-- Farming -->
     <div id="sec-farm" class="sec-anchor">
       <div class="sec-hdr" onclick="toggleSection('farm')">
@@ -544,7 +554,7 @@ const SKILL_ROADMAP = [
   {id:'ranged',       name:'Ranged',       type:'combat', maxLevel:120, implemented:true},
   {id:'magic',        name:'Magic',        type:'combat', maxLevel:120, implemented:true},
   {id:'prayer',       name:'Prayer',       type:'combat', maxLevel:99,  implemented:true},
-  {id:'summoning',    name:'Summoning',    type:'combat', maxLevel:99,  implemented:false},
+  {id:'summoning',    name:'Summoning',    type:'combat', maxLevel:99,  implemented:true},
   // Support (5)
   {id:'agility',      name:'Agility',      type:'support', maxLevel:99,  implemented:true},
   {id:'thieving',     name:'Thieving',     type:'support', maxLevel:99,  implemented:true},
@@ -1188,74 +1198,142 @@ const ACTIONS = {
   combat:[
     // ── Mobs ─────────────────────────────────────────────────────────────────
     {id:'goblin',       name:'Goblin',        category:'Mobs', levelReq:1,  xp:20,   ticks:4,  stats:{hp:5,   attack:3,  defence:1},
-      drops:[{item:'bones',       itemName:'Bones',       chance:1.0, min:1, max:1,  notable:false}]},
+      drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.08, min:1,max:1, notable:false}]},
     {id:'cow',          name:'Cow',           category:'Mobs', levelReq:1,  xp:30,   ticks:5,  stats:{hp:7,   attack:2,  defence:1},
-      drops:[{item:'bones',       itemName:'Bones',       chance:1.0, min:1, max:1,  notable:false},
-             {item:'cowhide',     itemName:'Cowhide',     chance:1.0, min:1, max:1,  notable:true}]},
+      drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
+             {item:'cowhide',      itemName:'Cowhide',      chance:1.00, min:1,max:1, notable:true},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.08, min:1,max:1, notable:false}]},
     {id:'guard',        name:'Guard',         category:'Mobs', levelReq:10, xp:55,   ticks:5,  stats:{hp:15,  attack:8,  defence:5},
-      drops:[{item:'bones',       itemName:'Bones',       chance:1.0, min:1, max:1,  notable:false}]},
+      drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.09, min:1,max:1, notable:false}]},
     {id:'barbarian',    name:'Barbarian',     category:'Mobs', levelReq:15, xp:80,   ticks:6,  stats:{hp:22,  attack:12, defence:6},
-      drops:[{item:'bones',       itemName:'Bones',       chance:1.0, min:1, max:1,  notable:false}]},
+      drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.09, min:1,max:1, notable:false}]},
     {id:'hill_giant',   name:'Hill Giant',    category:'Mobs', levelReq:20, xp:130,  ticks:7,  stats:{hp:36,  attack:15, defence:8},
-      drops:[{item:'big_bones',   itemName:'Big bones',   chance:1.0, min:1, max:1,  notable:true}]},
+      drops:[{item:'big_bones',    itemName:'Big bones',    chance:1.00, min:1,max:1, notable:true},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.09, min:1,max:1, notable:false},
+             {item:'green_charm',  itemName:'Green charm',  chance:0.03, min:1,max:1, notable:false}]},
     {id:'moss_giant',   name:'Moss Giant',    category:'Mobs', levelReq:30, xp:220,  ticks:9,  stats:{hp:70,  attack:22, defence:14},
-      drops:[{item:'big_bones',   itemName:'Big bones',   chance:1.0, min:1, max:1,  notable:false},
-             {item:'tarromin_seed', itemName:'Tarromin seed', chance:0.05, min:1, max:2, notable:true}]},
+      drops:[{item:'big_bones',    itemName:'Big bones',    chance:1.00, min:1,max:1, notable:false},
+             {item:'tarromin_seed',itemName:'Tarromin seed',chance:0.05, min:1,max:2, notable:true},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.10, min:1,max:1, notable:false},
+             {item:'green_charm',  itemName:'Green charm',  chance:0.03, min:1,max:1, notable:false}]},
     {id:'fire_giant',   name:'Fire Giant',    category:'Mobs', levelReq:50, xp:400,  ticks:12, stats:{hp:140, attack:35, defence:25},
-      drops:[{item:'big_bones',   itemName:'Big bones',   chance:1.0, min:1, max:1,  notable:false},
-             {item:'tarromin_seed', itemName:'Tarromin seed', chance:0.08, min:1, max:2, notable:true}]},
+      drops:[{item:'big_bones',    itemName:'Big bones',    chance:1.00, min:1,max:1, notable:false},
+             {item:'tarromin_seed',itemName:'Tarromin seed',chance:0.08, min:1,max:2, notable:true},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.12, min:1,max:1, notable:false},
+             {item:'green_charm',  itemName:'Green charm',  chance:0.04, min:1,max:1, notable:false},
+             {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,max:1, notable:true}]},
     {id:'green_dragon', name:'Green Dragon',  category:'Mobs', levelReq:55, xp:500,  ticks:13, stats:{hp:170, attack:40, defence:28},
-      drops:[{item:'dragon_bones', itemName:'Dragon bones', chance:1.0, min:1, max:1, notable:true},
-             {item:'green_dhide',  itemName:'Green dragonhide', chance:1.0, min:1, max:1, notable:true}]},
+      drops:[{item:'dragon_bones', itemName:'Dragon bones', chance:1.00, min:1,max:1, notable:true},
+             {item:'green_dhide',  itemName:'Green dragonhide',chance:1.00,min:1,max:1,notable:true},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.12, min:1,max:1, notable:false},
+             {item:'green_charm',  itemName:'Green charm',  chance:0.04, min:1,max:1, notable:false},
+             {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,max:1, notable:true}]},
     {id:'blue_dragon',  name:'Blue Dragon',   category:'Mobs', levelReq:65, xp:650,  ticks:15, stats:{hp:230, attack:50, defence:35},
-      drops:[{item:'dragon_bones', itemName:'Dragon bones', chance:1.0, min:1, max:1, notable:true},
-             {item:'blue_dhide',   itemName:'Blue dragonhide', chance:1.0, min:1, max:1, notable:true}]},
+      drops:[{item:'dragon_bones', itemName:'Dragon bones', chance:1.00, min:1,max:1, notable:true},
+             {item:'blue_dhide',   itemName:'Blue dragonhide',chance:1.00,min:1,max:1,notable:true},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.13, min:1,max:1, notable:false},
+             {item:'green_charm',  itemName:'Green charm',  chance:0.05, min:1,max:1, notable:false},
+             {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,max:1, notable:true}]},
     {id:'black_dragon', name:'Black Dragon',  category:'Mobs', levelReq:80, xp:900,  ticks:18, stats:{hp:320, attack:65, defence:48},
-      drops:[{item:'dragon_bones', itemName:'Dragon bones', chance:1.0, min:1, max:1, notable:true},
-             {item:'black_dhide',  itemName:'Black dragonhide', chance:1.0, min:1, max:1, notable:true}]},
+      drops:[{item:'dragon_bones', itemName:'Dragon bones', chance:1.00, min:1,max:1, notable:true},
+             {item:'black_dhide',  itemName:'Black dragonhide',chance:1.00,min:1,max:1,notable:true},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.14, min:1,max:1, notable:false},
+             {item:'green_charm',  itemName:'Green charm',  chance:0.05, min:1,max:1, notable:false},
+             {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,max:1, notable:true},
+             {item:'blue_charm',   itemName:'Blue charm',   chance:0.02, min:1,max:1, notable:true}]},
     {id:'dark_beast',   name:'Dark Beast',    category:'Mobs', levelReq:90, xp:1100, ticks:21, stats:{hp:430, attack:80, defence:60},
-      drops:[{item:'big_bones',   itemName:'Big bones',   chance:1.0, min:1, max:1,  notable:false}]},
+      drops:[{item:'big_bones',    itemName:'Big bones',    chance:1.00, min:1,max:1, notable:false},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.14, min:1,max:1, notable:false},
+             {item:'green_charm',  itemName:'Green charm',  chance:0.06, min:1,max:1, notable:false},
+             {item:'crimson_charm',itemName:'Crimson charm',chance:0.04, min:1,max:1, notable:true},
+             {item:'blue_charm',   itemName:'Blue charm',   chance:0.02, min:1,max:1, notable:true}]},
     // ── Slayer Monsters ───────────────────────────────────────────────────────
     {id:'crawling_hand',     name:'Crawling Hand',     category:'Slayer Monsters', levelReq:5,  xp:45,  ticks:5,  slayerReq:5,  stats:{hp:12,  attack:5,  defence:2},
-      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
+      drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.08, min:1,max:1, notable:false}]},
     {id:'cave_crawler',      name:'Cave Crawler',      category:'Slayer Monsters', levelReq:10, xp:70,  ticks:6,  slayerReq:10, stats:{hp:18,  attack:9,  defence:5},
-      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
+      drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.09, min:1,max:1, notable:false}]},
     {id:'banshee',           name:'Banshee',           category:'Slayer Monsters', levelReq:15, xp:95,  ticks:7,  slayerReq:15, stats:{hp:28,  attack:13, defence:7},
-      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
+      drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.09, min:1,max:1, notable:false}]},
     {id:'rock_slug',         name:'Rock Slug',         category:'Slayer Monsters', levelReq:20, xp:130, ticks:8,  slayerReq:20, stats:{hp:38,  attack:16, defence:10},
-      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
+      drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.09, min:1,max:1, notable:false},
+             {item:'green_charm',  itemName:'Green charm',  chance:0.03, min:1,max:1, notable:false}]},
     {id:'cockatrice',        name:'Cockatrice',        category:'Slayer Monsters', levelReq:25, xp:175, ticks:8,  slayerReq:25, stats:{hp:50,  attack:20, defence:12},
-      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
+      drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.10, min:1,max:1, notable:false},
+             {item:'green_charm',  itemName:'Green charm',  chance:0.03, min:1,max:1, notable:false}]},
     {id:'infernal_mage',     name:'Infernal Mage',     category:'Slayer Monsters', levelReq:45, xp:300, ticks:10, slayerReq:45, stats:{hp:120, attack:32, defence:20, style:'mage'},
-      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
+      drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.11, min:1,max:1, notable:false},
+             {item:'green_charm',  itemName:'Green charm',  chance:0.04, min:1,max:1, notable:false}]},
     {id:'bloodveld',         name:'Bloodveld',         category:'Slayer Monsters', levelReq:50, xp:370, ticks:11, slayerReq:50, stats:{hp:135, attack:33, defence:22},
-      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
+      drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.12, min:1,max:1, notable:false},
+             {item:'green_charm',  itemName:'Green charm',  chance:0.04, min:1,max:1, notable:false},
+             {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,max:1, notable:true}]},
     {id:'aberrant_spectre',  name:'Aberrant Spectre',  category:'Slayer Monsters', levelReq:60, xp:510, ticks:13, slayerReq:60, stats:{hp:200, attack:45, defence:30},
-      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
+      drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.12, min:1,max:1, notable:false},
+             {item:'green_charm',  itemName:'Green charm',  chance:0.04, min:1,max:1, notable:false},
+             {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,max:1, notable:true}]},
     {id:'dust_devil',        name:'Dust Devil',        category:'Slayer Monsters', levelReq:65, xp:600, ticks:14, slayerReq:65, stats:{hp:240, attack:52, defence:36},
-      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false}]},
+      drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.13, min:1,max:1, notable:false},
+             {item:'green_charm',  itemName:'Green charm',  chance:0.05, min:1,max:1, notable:false},
+             {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,max:1, notable:true}]},
     {id:'abyssal_demon',     name:'Abyssal Demon',     category:'Slayer Monsters', levelReq:85, xp:900, ticks:19, slayerReq:85, stats:{hp:360, attack:70, defence:55},
-      drops:[{item:'bones', itemName:'Bones', chance:1.0, min:1, max:1, notable:false},
-             {item:'abyssal_whip', itemName:'Abyssal whip', chance:0.01, min:1, max:1, notable:true}]},
+      drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
+             {item:'abyssal_whip', itemName:'Abyssal whip', chance:0.01, min:1,max:1, notable:true},
+             {item:'gold_charm',   itemName:'Gold charm',   chance:0.14, min:1,max:1, notable:false},
+             {item:'green_charm',  itemName:'Green charm',  chance:0.05, min:1,max:1, notable:false},
+             {item:'crimson_charm',itemName:'Crimson charm',chance:0.04, min:1,max:1, notable:true},
+             {item:'blue_charm',   itemName:'Blue charm',   chance:0.02, min:1,max:1, notable:true}]},
     // ── Bosses ────────────────────────────────────────────────────────────────
     {id:'giant_mole', name:'Giant Mole',          category:'Bosses', levelReq:30,  xp:800,   ticks:50,  stats:{hp:500,  attack:18, defence:12},
-      drops:[{item:'big_bones',       itemName:'Big bones',         chance:1.0,  min:1, max:1,  notable:false},
-             {item:'mole_skin',       itemName:'Mole skin',         chance:1.0,  min:1, max:1,  notable:true}]},
+      drops:[{item:'big_bones',       itemName:'Big bones',          chance:1.00, min:1,max:1, notable:false},
+             {item:'mole_skin',       itemName:'Mole skin',          chance:1.00, min:1,max:1, notable:true},
+             {item:'gold_charm',      itemName:'Gold charm',         chance:0.10, min:1,max:1, notable:false},
+             {item:'green_charm',     itemName:'Green charm',        chance:0.03, min:1,max:1, notable:false}]},
     {id:'kbd',        name:'King Black Dragon',   category:'Bosses', levelReq:60,  xp:2500,  ticks:130, stats:{hp:1500, attack:45, defence:35},
-      drops:[{item:'dragon_bones',    itemName:'Dragon bones',      chance:1.0,  min:1, max:1,  notable:false},
-             {item:'kbd_heads',       itemName:"KBD heads",         chance:0.05, min:1, max:1,  notable:true}]},
+      drops:[{item:'dragon_bones',    itemName:'Dragon bones',       chance:1.00, min:1,max:1, notable:false},
+             {item:'kbd_heads',       itemName:'KBD heads',          chance:0.05, min:1,max:1, notable:true},
+             {item:'gold_charm',      itemName:'Gold charm',         chance:0.12, min:1,max:1, notable:false},
+             {item:'green_charm',     itemName:'Green charm',        chance:0.04, min:1,max:1, notable:false},
+             {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.03, min:1,max:1, notable:true}]},
     {id:'dag_kings',  name:'Dagannoth Kings',     category:'Bosses', levelReq:75,  xp:4000,  ticks:180, stats:{hp:2500, attack:55, defence:45},
-      drops:[{item:'big_bones',       itemName:'Big bones',         chance:1.0,  min:1, max:1,  notable:false},
-             {item:'berserker_ring',  itemName:'Berserker ring',    chance:0.04, min:1, max:1,  notable:true}]},
+      drops:[{item:'big_bones',       itemName:'Big bones',          chance:1.00, min:1,max:1, notable:false},
+             {item:'berserker_ring',  itemName:'Berserker ring',     chance:0.04, min:1,max:1, notable:true},
+             {item:'gold_charm',      itemName:'Gold charm',         chance:0.14, min:1,max:1, notable:false},
+             {item:'green_charm',     itemName:'Green charm',        chance:0.05, min:1,max:1, notable:false},
+             {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.03, min:1,max:1, notable:true},
+             {item:'blue_charm',      itemName:'Blue charm',         chance:0.02, min:1,max:1, notable:true}]},
     {id:'zilyana',    name:'Commander Zilyana',   category:'Bosses', levelReq:85,  xp:6000,  ticks:220, stats:{hp:3000, attack:65, defence:55},
-      drops:[{item:'dragon_bones',    itemName:'Dragon bones',      chance:1.0,  min:1, max:1,  notable:false},
-             {item:'saradomin_sword', itemName:'Saradomin sword',   chance:0.02, min:1, max:1,  notable:true}]},
+      drops:[{item:'dragon_bones',    itemName:'Dragon bones',       chance:1.00, min:1,max:1, notable:false},
+             {item:'saradomin_sword', itemName:'Saradomin sword',    chance:0.02, min:1,max:1, notable:true},
+             {item:'gold_charm',      itemName:'Gold charm',         chance:0.14, min:1,max:1, notable:false},
+             {item:'green_charm',     itemName:'Green charm',        chance:0.05, min:1,max:1, notable:false},
+             {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.04, min:1,max:1, notable:true},
+             {item:'blue_charm',      itemName:'Blue charm',         chance:0.02, min:1,max:1, notable:true}]},
     {id:'graardor',   name:'General Graardor',    category:'Bosses', levelReq:85,  xp:6000,  ticks:220, stats:{hp:3000, attack:68, defence:52},
-      drops:[{item:'dragon_bones',      itemName:'Dragon bones',    chance:1.0,  min:1, max:1,  notable:false},
-             {item:'bandos_chestplate', itemName:'Bandos chestplate', chance:0.02, min:1, max:1, notable:true}]},
+      drops:[{item:'dragon_bones',      itemName:'Dragon bones',     chance:1.00, min:1,max:1, notable:false},
+             {item:'bandos_chestplate', itemName:'Bandos chestplate',chance:0.02, min:1,max:1, notable:true},
+             {item:'gold_charm',        itemName:'Gold charm',       chance:0.14, min:1,max:1, notable:false},
+             {item:'green_charm',       itemName:'Green charm',      chance:0.05, min:1,max:1, notable:false},
+             {item:'crimson_charm',     itemName:'Crimson charm',    chance:0.04, min:1,max:1, notable:true},
+             {item:'blue_charm',        itemName:'Blue charm',       chance:0.02, min:1,max:1, notable:true}]},
     {id:'nex',        name:'Nex',                 category:'Bosses', levelReq:100, xp:10000, ticks:350, stats:{hp:6000, attack:85, defence:70},
-      drops:[{item:'dragon_bones',    itemName:'Dragon bones',      chance:1.0,  min:1, max:1,  notable:false},
-             {item:'torva_platebody', itemName:'Torva platebody',   chance:0.01, min:1, max:1,  notable:true}]},
+      drops:[{item:'dragon_bones',    itemName:'Dragon bones',       chance:1.00, min:1,max:1, notable:false},
+             {item:'torva_platebody', itemName:'Torva platebody',    chance:0.01, min:1,max:1, notable:true},
+             {item:'gold_charm',      itemName:'Gold charm',         chance:0.15, min:1,max:1, notable:false},
+             {item:'green_charm',     itemName:'Green charm',        chance:0.06, min:1,max:1, notable:false},
+             {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.04, min:1,max:1, notable:true},
+             {item:'blue_charm',      itemName:'Blue charm',         chance:0.02, min:1,max:1, notable:true}]},
   ],
   prayer:[
     { id:'bury_auto',  name:'Bury bones',      label:'Bones buried',  category:'Burying',
@@ -1366,6 +1444,31 @@ const PRAYERS = [
   { id:'protect_ranged',      name:'Protect from Ranged',     levelReq:40, drain:5, type:'protect_ranged',    boost:0 },
   { id:'protect_melee',       name:'Protect from Melee',      levelReq:43, drain:5, type:'protect_melee',     boost:0 },
 ];
+
+const SUMMONING_POUCHES = [
+  // Familiars
+  {id:'howl_pouch',            name:'Howl pouch',            icon:'🐺', category:'Familiars',       levelReq:1,  xp:4.8,   consumeXp:0.2, ticks:4, item:'howl_pouch',            itemName:'Howl pouch',            effectType:'speed_pct',     effectValue:0.03, affectedSkills:['woodcutting'],           effectLabel:'+3% Woodcutting speed',    ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'normal_logs',  count:1,name:'Logs'}]},
+  {id:'dreadfowl_pouch',       name:'Dreadfowl pouch',       icon:'🐓', category:'Familiars',       levelReq:4,  xp:7.7,   consumeXp:0.4, ticks:4, item:'dreadfowl_pouch',       itemName:'Dreadfowl pouch',       effectType:'speed_pct',     effectValue:0.03, affectedSkills:['fishing'],               effectLabel:'+3% Fishing speed',        ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'raw_shrimps',  count:1,name:'Raw shrimps'}]},
+  {id:'bronze_minotaur_pouch', name:'Bronze minotaur pouch', icon:'🐂', category:'Familiars',       levelReq:8,  xp:14,    consumeXp:0.6, ticks:4, item:'bronze_minotaur_pouch', itemName:'Bronze minotaur pouch', effectType:'attack_pct',    effectValue:0.04, affectedSkills:['melee'],                 effectLabel:'+4% Melee accuracy',       ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'copper_ore',   count:1,name:'Copper ore'}]},
+  {id:'spirit_spider_pouch',   name:'Spirit spider pouch',   icon:'🕷', category:'Familiars',       levelReq:10, xp:14,    consumeXp:0.8, ticks:4, item:'spirit_spider_pouch',   itemName:'Spirit spider pouch',   effectType:'drop_rate_pct', effectValue:0.05, affectedSkills:[],                        effectLabel:'+5% Drop rate',            ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'bones',        count:1,name:'Bones'}]},
+  {id:'granite_crab_pouch',    name:'Granite crab pouch',    icon:'🦀', category:'Familiars',       levelReq:16, xp:16.8,  consumeXp:1.2, ticks:4, item:'granite_crab_pouch',    itemName:'Granite crab pouch',    effectType:'xp_pct',        effectValue:0.04, affectedSkills:['mining'],                effectLabel:'+4% Mining XP',            ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'coal',         count:1,name:'Coal'}]},
+  {id:'compost_mound_pouch',   name:'Compost mound pouch',   icon:'🪱', category:'Familiars',       levelReq:17, xp:19.6,  consumeXp:1.0, ticks:4, item:'compost_mound_pouch',   itemName:'Compost mound pouch',   effectType:'xp_pct',        effectValue:0.05, affectedSkills:['farming'],               effectLabel:'+5% Farming XP',           ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'tarromin',     count:1,name:'Tarromin'}]},
+  {id:'spirit_mosquito_pouch', name:'Spirit mosquito pouch', icon:'🦟', category:'Familiars',       levelReq:17, xp:19.6,  consumeXp:1.0, ticks:4, item:'spirit_mosquito_pouch', itemName:'Spirit mosquito pouch', effectType:'hp_regen_mult',  effectValue:0.25, affectedSkills:[],                        effectLabel:'+25% HP regen rate',       ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'raw_bird_meat',count:1,name:'Raw bird meat'}]},
+  {id:'spirit_scorpion_pouch', name:'Spirit scorpion pouch', icon:'🦂', category:'Familiars',       levelReq:26, xp:30,    consumeXp:1.5, ticks:4, item:'spirit_scorpion_pouch', itemName:'Spirit scorpion pouch', effectType:'attack_pct',    effectValue:0.06, affectedSkills:['melee'],                 effectLabel:'+6% Melee accuracy',       ingredients:[{item:'green_charm',  count:1,name:'Green charm'},  {item:'copper_ore',   count:1,name:'Copper ore'}]},
+  {id:'spirit_tz_kih_pouch',   name:'Spirit Tz-kih pouch',   icon:'🦇', category:'Familiars',       levelReq:22, xp:25.4,  consumeXp:1.4, ticks:4, item:'spirit_tz_kih_pouch',   itemName:'Spirit Tz-kih pouch',   effectType:'speed_pct',     effectValue:0.04, affectedSkills:null,                      effectLabel:'+4% all skilling speed',   ingredients:[{item:'green_charm',  count:1,name:'Green charm'},  {item:'raw_rabbit',   count:1,name:'Raw rabbit'}]},
+  {id:'bull_ant_pouch',        name:'Bull ant pouch',        icon:'🐜', category:'Familiars',       levelReq:40, xp:46.2,  consumeXp:2.5, ticks:4, item:'bull_ant_pouch',        itemName:'Bull ant pouch',        effectType:'xp_pct',        effectValue:0.06, affectedSkills:null,                      effectLabel:'+6% all XP',               ingredients:[{item:'green_charm',  count:1,name:'Green charm'},  {item:'tarromin',     count:1,name:'Tarromin'}]},
+  {id:'spirit_kyatt_pouch',    name:'Spirit kyatt pouch',    icon:'🐆', category:'Familiars',       levelReq:57, xp:65.4,  consumeXp:3.2, ticks:4, item:'spirit_kyatt_pouch',    itemName:'Spirit kyatt pouch',    effectType:'drop_rate_pct', effectValue:0.08, affectedSkills:[],                        effectLabel:'+8% Drop rate',            ingredients:[{item:'green_charm',  count:1,name:'Green charm'},  {item:'big_bones',    count:1,name:'Big bones'}]},
+  {id:'abyssal_lurker_pouch',  name:'Abyssal lurker pouch',  icon:'👁', category:'Familiars',       levelReq:62, xp:75,    consumeXp:3.8, ticks:4, item:'abyssal_lurker_pouch',  itemName:'Abyssal lurker pouch',  effectType:'speed_pct',     effectValue:0.08, affectedSkills:['runecrafting'],          effectLabel:'+8% Runecrafting speed',   ingredients:[{item:'crimson_charm',count:1,name:'Crimson charm'},{item:'coal',         count:1,name:'Coal'}]},
+  {id:'steel_titan_pouch',     name:'Steel titan pouch',     icon:'🤖', category:'Familiars',       levelReq:64, xp:83,    consumeXp:4.0, ticks:4, item:'steel_titan_pouch',     itemName:'Steel titan pouch',     effectType:'attack_pct',    effectValue:0.08, affectedSkills:['melee','ranged','magic'], effectLabel:'+8% combat accuracy',      ingredients:[{item:'crimson_charm',count:1,name:'Crimson charm'},{item:'steel_bar',    count:1,name:'Steel bar'}]},
+  {id:'spirit_dagannoth_pouch',name:'Spirit dagannoth pouch',icon:'🦈', category:'Familiars',       levelReq:74, xp:93.4,  consumeXp:4.5, ticks:4, item:'spirit_dagannoth_pouch',itemName:'Spirit dagannoth pouch',effectType:'xp_pct',        effectValue:0.08, affectedSkills:null,                      effectLabel:'+8% all XP',               ingredients:[{item:'crimson_charm',count:1,name:'Crimson charm'},{item:'big_bones',    count:1,name:'Big bones'}]},
+  // Undead Familiars (lv 80+)
+  {id:'revenant_goblin_pouch', name:'Revenant goblin pouch', icon:'💀', category:'Undead Familiars',levelReq:80, xp:102.4, consumeXp:5.0, ticks:4, item:'revenant_goblin_pouch', itemName:'Revenant goblin pouch', effectType:'drop_rate_pct', effectValue:0.12, affectedSkills:[],                        effectLabel:'+12% Drop rate',           ingredients:[{item:'blue_charm',   count:1,name:'Blue charm'},   {item:'bones',        count:1,name:'Bones'}]},
+  {id:'revenant_imp_pouch',    name:'Revenant imp pouch',    icon:'👿', category:'Undead Familiars',levelReq:84, xp:109.6, consumeXp:5.5, ticks:4, item:'revenant_imp_pouch',    itemName:'Revenant imp pouch',    effectType:'hp_regen_mult',  effectValue:0.50, affectedSkills:[],                        effectLabel:'+50% HP regen rate',       ingredients:[{item:'blue_charm',   count:1,name:'Blue charm'},   {item:'big_bones',    count:1,name:'Big bones'}]},
+  {id:'revenant_knight_pouch', name:'Revenant knight pouch', icon:'🛡', category:'Undead Familiars',levelReq:90, xp:120,   consumeXp:6.2, ticks:4, item:'revenant_knight_pouch', itemName:'Revenant knight pouch', effectType:'attack_pct',    effectValue:0.12, affectedSkills:['melee','ranged','magic'], effectLabel:'+12% combat accuracy',     ingredients:[{item:'blue_charm',   count:1,name:'Blue charm'},   {item:'dragon_bones', count:1,name:'Dragon bones'}]},
+  {id:'revenant_dragon_pouch', name:'Revenant dragon pouch', icon:'🐉', category:'Undead Familiars',levelReq:99, xp:139.2, consumeXp:7.0, ticks:4, item:'revenant_dragon_pouch', itemName:'Revenant dragon pouch', effectType:'xp_pct',        effectValue:0.12, affectedSkills:null,                      effectLabel:'+12% all XP',              ingredients:[{item:'blue_charm',   count:1,name:'Blue charm'},   {item:'dragon_bones', count:1,name:'Dragon bones'}]},
+];
+const SUMMON_POUCH_IDS = new Set(SUMMONING_POUCHES.map(p => p.id));
+ACTIONS.summoning = SUMMONING_POUCHES;
 
 const EQUIP_REQS = {
   ...Object.fromEntries(METAL_TIERS.flatMap(t => [
@@ -1667,6 +1770,7 @@ function freshState(){
     archaeology:    { artifacts:{}, activePerks:{} },
     slayer:         { points:0, task:null, unlocks:{}, totalTasksDone:0 },
     batch:          { limit:0, done:0 },
+    summoning:      { active:null, autoRenew:true },
     prayer:         { points:0, maxPoints:1, active:{}, drainCounter:0, lastRegen:0 },
     saveVersion:  1,
     lastSaved:    Date.now(),
@@ -1710,6 +1814,8 @@ function grantXp(skillId, xp, silent=false){
     const archCombat = getArchBonus('xp_combat');
     if (archCombat) xp *= (1 + archCombat);
   }
+  const sumXp = getSummonBonusForSkill('xp_pct', skillId);
+  if (sumXp) xp *= (1 + sumXp);
   const before = levelForXp(sk.xp);
   sk.xp += xp;
   const after = levelForXp(sk.xp);
@@ -1731,12 +1837,51 @@ function getPrayerBoost(type){
   return best;
 }
 
+function getSummonBonus(type){
+  const a = state.summoning?.active;
+  if (!a || Date.now() >= a.expiresAt) return 0;
+  return a.effectType === type ? a.effectValue : 0;
+}
+function getSummonBonusForSkill(type, skillId){
+  const a = state.summoning?.active;
+  if (!a || Date.now() >= a.expiresAt || a.effectType !== type) return 0;
+  if (a.affectedSkills === null) return a.effectValue;
+  if (skillId && a.affectedSkills.includes(skillId)) return a.effectValue;
+  return 0;
+}
+
 function getPrayerDesc(p){
   if (p.type.startsWith('protect_')) return '50% damage reduction · drain ' + p.drain + '/tick';
   const label = {defence:'Defence',melee:'Melee',ranged:'Ranged',magic:'Magic'}[p.type] || p.type;
   return `+${Math.round(p.boost*100)}% ${label} · drain ${p.drain}/tick`;
 }
 
+function activateSummon(pouchId){
+  const def = SUMMONING_POUCHES.find(p => p.id === pouchId);
+  if (!def) return;
+  if (levelForXp(state.skills.summoning.xp) < def.levelReq){
+    log(`Need Summoning level ${def.levelReq}.`); return;
+  }
+  if ((state.inventory[pouchId] || 0) < 1){ log(`No ${def.name} in inventory.`); return; }
+  state.inventory[pouchId]--;
+  if (state.inventory[pouchId] <= 0) delete state.inventory[pouchId];
+  grantXp('summoning', def.consumeXp);
+  state.summoning.active = {
+    pouchId, pouchName:def.name, icon:def.icon,
+    effectType:def.effectType, effectValue:def.effectValue,
+    affectedSkills:def.affectedSkills, effectLabel:def.effectLabel,
+    expiresAt: Date.now() + 10 * 60 * 1000,
+  };
+  log(`${def.icon} ${def.name} summoned! ${def.effectLabel} for 10 min.`);
+  render();
+}
+function dismissSummon(){
+  if (!state.summoning?.active) return;
+  const name = state.summoning.active.pouchName;
+  state.summoning.active = null;
+  log(`${name} dismissed.`);
+  render();
+}
 function togglePrayer(id){
   if (!state.prayer) return;
   const p = PRAYERS.find(pr => pr.id === id);
@@ -1845,7 +1990,7 @@ function getAttackBonus(styleId, stats){
 function calcPlayerDamage(styleId, mob){
   const level    = levelForXp(state.skills[styleId].xp);
   const bonus    = getAttackBonus(styleId, calcStats());
-  const effLevel = Math.floor(level * (1 + getPrayerBoost(styleId)));
+  const effLevel = Math.floor(level * (1 + getPrayerBoost(styleId) + getSummonBonusForSkill('attack_pct', styleId)));
   const maxHit   = Math.max(1, Math.floor(effLevel * 0.4) + 1 + Math.floor(bonus / 10));
   const def      = mob.stats.defence || 0;
   const hit      = Math.min(0.95, Math.max(0.1, 1 - def / (def + effLevel + bonus + 1)));
@@ -2588,21 +2733,22 @@ function getCurrentEffTicks(action){
   if (state.current?.floorTicks) return state.current.floorTicks;
   if (action.baseMaxSecs) return Math.round(calcFloorSecs(action) / (TICK_MS / 1000)); // DG fallback
   const base = action.ticks || 1;
+  const sumSpeed = getSummonBonusForSkill('speed_pct', state.current?.skillId);
   if (state.current?.skillId === 'thieving'){
     const agilLevel = levelForXp(state.skills.agility.xp);
     if (action.lock){
       const toolMult = getToolSpeedMult('thieving');
       const agilMult = 1 - (agilLevel / 99 * 0.30);
-      return Math.max(1, Math.ceil(base * toolMult * agilMult));
+      return Math.max(1, Math.ceil(base * toolMult * agilMult * (1 - sumSpeed)));
     }
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20))));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20)) * (1 - sumSpeed)));
   }
   if (state.current?.skillId === 'runecrafting'){
     const agilLevel = levelForXp(state.skills.agility.xp);
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting'))));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed)));
   }
   const archSpeed = getArchBonus(`speed_${state.current.skillId}`);
-  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId) * getConstructionMult(state.current.skillId) * (1 - archSpeed)));
+  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId) * getConstructionMult(state.current.skillId) * (1 - archSpeed) * (1 - sumSpeed)));
 }
 
 function getConstructionMult(skillId){
@@ -2672,7 +2818,7 @@ function tick(){
   // Passive HP regen — 1% maxHp every 10s
   if (state.combat.maxHp && state.combat.hp < state.combat.maxHp){
     const now = Date.now();
-    if (now - (state.combat.lastRegen || 0) >= 30000 / (1 + getArchBonus('hp_regen'))){
+    if (now - (state.combat.lastRegen || 0) >= 30000 / (1 + getArchBonus('hp_regen') + getSummonBonus('hp_regen_mult'))){
       state.combat.hp = Math.min(state.combat.maxHp, state.combat.hp + 1);
       state.combat.lastRegen = now;
     }
@@ -2707,6 +2853,17 @@ function tick(){
     if (now - (state.prayer.lastRegen || 0) >= regenMs){
       state.prayer.points = Math.min(state.prayer.maxPoints, state.prayer.points + 1);
       state.prayer.lastRegen = now;
+    }
+  }
+  // Summoning: familiar expiry + auto-renew
+  if (state.summoning?.active && Date.now() >= state.summoning.active.expiresAt){
+    const _pid   = state.summoning.active.pouchId;
+    const _pname = state.summoning.active.pouchName;
+    state.summoning.active = null;
+    if (state.summoning.autoRenew && (state.inventory[_pid] || 0) > 0){
+      activateSummon(_pid);
+    } else {
+      log(`Your ${_pname} familiar has left.`);
     }
   }
   // Farming: detect crop becoming ready and log once
@@ -2932,8 +3089,10 @@ function completeAction(action, silent){
       ...(state.combat.defensive ? [['defence', base * 0.5]] : []),
     ];
     for (const [sid, xp] of xpGrants) grantXp(sid, xp, silent);
+    const _dropBoost = getSummonBonus('drop_rate_pct');
     for (const drop of (action.drops || [])){
-      if (Math.random() < drop.chance){
+      const adjChance = Math.min(1.0, drop.chance * (1 + _dropBoost));
+      if (Math.random() < adjChance){
         const qty = (drop.min || 1) + Math.floor(Math.random() * ((drop.max || 1) - (drop.min || 1) + 1));
         grantItem(drop.item, drop.itemName, qty);
         if (!silent && drop.notable) log(`+${qty} ${drop.itemName}`);
@@ -3106,7 +3265,7 @@ function startAction(skillId, actionId, batchLimit = 0){
     const dgLevel      = levelForXp(state.skills['dungeoneering'].xp);
     const earnedTokens = Math.max(1, Math.floor(dgLevel * action.tokenMult));
     state.current = { skillId, actionId, floorTicks, earnedTokens };
-  } else if (COMBAT_SKILL_IDS.has(skillId)){
+  } else if (COMBAT_SKILL_IDS.has(skillId) && skillId !== 'summoning'){
     state.combat.mobHp    = action.stats.hp;
     state.combat.mobMaxHp = action.stats.hp;
     state.current = { skillId, actionId };
@@ -3224,6 +3383,7 @@ function render(){
   renderActiveSkill();
   renderEquipSection();
   renderPrayerHud();
+  renderSummoningHud();
   renderFarmSection();
   renderSlayerSection();
   renderItemsPanel();
@@ -3481,6 +3641,16 @@ function renderActiveSkill(){
     const rcBonus = Math.round(agilLevel / 99 * 25);
     rcDiv.innerHTML = `Agility bonus: <b>+${rcBonus}%</b> speed · Mine rune essence in Mining · Runes used for spells (coming soon)`;
     list.appendChild(rcDiv);
+  }
+  if (s.id === 'summoning'){
+    const sumDiv = document.createElement('div');
+    sumDiv.className = 'dg-bonus';
+    const act = state.summoning?.active;
+    const str = act && Date.now() < act.expiresAt
+      ? `${act.icon} <b>${act.pouchName.replace(' pouch','')}</b> active — ${act.effectLabel}`
+      : 'No familiar active';
+    sumDiv.innerHTML = `${str} &nbsp;·&nbsp; Charms drop from combat`;
+    list.appendChild(sumDiv);
   }
   const hideLocked = !!(state.settings?.hideLocked);
   const visibleActions = hideLocked ? actions.filter(a => lvl >= a.levelReq) : actions;
@@ -3938,14 +4108,47 @@ function renderPrayerHud(){
   if (badge) badge.textContent = `${pp}/${pm}`;
 }
 
+function renderSummoningHud(){
+  const el = $('summoningHudPanel');
+  if (!el) return;
+  const act   = state.summoning?.active;
+  const badge = $('summonBadge');
+  if (!act || Date.now() >= act.expiresAt){
+    if (badge) badge.textContent = '';
+    el.innerHTML = `<div style="font-size:12px;color:var(--dim);">No familiar active — activate a pouch from your Items panel.</div>`;
+    return;
+  }
+  const remaining = Math.max(0, act.expiresAt - Date.now());
+  const pct  = Math.round(remaining / (10*60*1000) * 100);
+  const mins = Math.floor(remaining / 60000);
+  const secs = Math.floor((remaining % 60000) / 1000);
+  if (badge) badge.textContent = act.icon;
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
+      <span style="font-size:18px;">${act.icon}</span>
+      <span style="font-weight:600;font-size:13px;">${act.pouchName.replace(' pouch','')}</span>
+    </div>
+    <div style="font-size:12px;color:var(--accent);margin-bottom:6px;">${act.effectLabel}</div>
+    <div style="height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;margin-bottom:3px;">
+      <div style="height:100%;width:${pct}%;background:#a78bfa;border-radius:3px;transition:width 1s;"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:11px;color:var(--dim);">${mins}:${String(secs).padStart(2,'0')} remaining</span>
+      <button class="mini" style="font-size:10px;padding:2px 6px;" onclick="dismissSummon()">Dismiss</button>
+    </div>`;
+}
+
 /* ---- Items panel ---- */
 const ITEM_CAT_ORDER = [
   'Openable','Equipment','Food & Potions','Seeds & Herbs',
+  'Summoning Pouches','Summoning',
   'Ores & Bars','Logs','Fish','Gems & Hides','Runes & Energy',
   'Ammo','Hunter','Currency','Other'
 ];
 function getItemCat(id){
   if (OPENABLE_ITEMS[id])                        return 'Openable';
+  if (SUMMON_POUCH_IDS.has(id))                  return 'Summoning Pouches';
+  if (id.endsWith('_charm'))                     return 'Summoning';
   if (EQUIP_SLOTS[id])                           return 'Equipment';
   if (FOOD_HEALS[id] || id.endsWith('_potion'))  return 'Food & Potions';
   if (id.endsWith('_seed') || HERB_IDS.has(id))  return 'Seeds & Herbs';
@@ -3990,6 +4193,7 @@ function renderItemsPanel(){
     const name    = state.itemNames[k] || k;
     const isEquip = !!EQUIP_SLOTS[k];
     const isOpen  = !!OPENABLE_ITEMS[k];
+    const isPouch = SUMMON_POUCH_IDS.has(k);
     let btns = '';
     if (isEquip) btns += `<button class="mini" onclick="equipItem('${k}')">Equip</button>`;
     if (isOpen){
@@ -3998,6 +4202,12 @@ function renderItemsPanel(){
       } else {
         btns += `<button class="mini" onclick="openItem('${k}')">Open</button>`;
       }
+    }
+    if (isPouch){
+      if (state.summoning?.active?.pouchId === k)
+        btns += `<span style="font-size:11px;color:var(--accent);">Active</span>`;
+      else
+        btns += `<button class="mini" onclick="activateSummon('${k}')">Summon</button>`;
     }
     html += `<div class="inv-row">
       <span>${name}</span>
@@ -4083,6 +4293,13 @@ function init(){
   if (!state.archaeology.artifacts)   state.archaeology.artifacts   = {};
   if (!state.archaeology.activePerks) state.archaeology.activePerks = {};
   if (!state.batch) state.batch = { limit:0, done:0 };
+  if (!state.summoning) state.summoning = { active:null, autoRenew:true };
+  if (state.summoning.autoRenew == null) state.summoning.autoRenew = true;
+  if (state.summoning.active && Date.now() >= state.summoning.active.expiresAt){
+    const _pid = state.summoning.active.pouchId;
+    state.summoning.active = null;
+    if ((state.inventory[_pid] || 0) > 0) activateSummon(_pid);
+  }
   if (!state.slayer) state.slayer = { points:0, task:null, unlocks:{}, totalTasksDone:0 };
   if (!state.slayer.unlocks) state.slayer.unlocks = {};
   if (state.slayer.totalTasksDone === undefined) state.slayer.totalTasksDone = 0;
