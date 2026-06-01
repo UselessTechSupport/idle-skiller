@@ -436,22 +436,6 @@
   </div>
 </div>
 
-<!-- Upgrade Shop -->
-<div id="upgradeShop" style="padding:0 14px 14px; max-width:1100px; margin:0 auto;">
-  <div class="card">
-    <h2>⚒️ Upgrade Shop</h2>
-    <div class="upgrade-shop-grid" id="upgradeShopContent"></div>
-  </div>
-</div>
-
-<!-- Dungeoneering Token Shop -->
-<div id="tokenShopSection" style="padding:0 14px 14px; max-width:1100px; margin:0 auto;">
-  <div class="card">
-    <h2>🗝️ Dungeoneering Token Shop</h2>
-    <div id="tokenShopContent"></div>
-  </div>
-</div>
-
 <!-- Debug panel (hidden by default) -->
 <div id="debugPanel" style="display:none; padding:0 14px 14px; max-width:1100px; margin:0 auto;">
   <div class="card debug-card">
@@ -2620,7 +2604,7 @@ function buyDgUpgrade(id){
   state.inventory['dg_tokens'] -= item.cost;
   state.upgrades[id] = true;
   log(`Purchased: ${item.name}!`);
-  render();
+  render(); renderShop();
 }
 
 function buyConstructionUpgrade(id){
@@ -2632,7 +2616,7 @@ function buyConstructionUpgrade(id){
   if (state.inventory[item.plankType] <= 0) delete state.inventory[item.plankType];
   state.upgrades[id] = true;
   log(`Built: ${item.name}! ${item.desc}`);
-  render();
+  render(); renderShop();
 }
 
 function combatTick(){
@@ -3839,7 +3823,7 @@ function renderShop(){
   el.appendChild(bal);
   const tabs = document.createElement('div');
   tabs.style.cssText = 'display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:10px;';
-  for (const [key, label] of [['buy','🛒 Buy'],['sell','💰 Sell']]){
+  for (const [key, label] of [['buy','🛒 Buy'],['sell','💰 Sell'],['upgrades','⚒️ Upgrades'],['delving','🗝️ Delving'],['construction','🏗️ Construction']]){
     const b = document.createElement('button');
     b.className = 'mini';
     if (shopTab === key) b.style.cssText = 'background:var(--accent2);color:var(--text);border-color:var(--accent);font-weight:600;';
@@ -3935,6 +3919,93 @@ function renderShop(){
         el.appendChild(row);
       }
     }
+  }
+
+  if (shopTab === 'upgrades'){
+    // Tool upgrades — mirrors renderUpgradeShop logic
+    const skillsWithTools = Object.keys(TOOLS).filter(id => SKILL_BY_ID[id]?.implemented);
+    skillsWithTools.forEach(skillId => {
+      const s = SKILL_BY_ID[skillId];
+      const lvl = levelForXp(state.skills[skillId].xp);
+      const tiers = TOOLS[skillId];
+      const equippedId = (state.tools && state.tools[skillId]) || tiers[0].id;
+      const equippedIdx = tiers.findIndex(t => t.id === equippedId);
+      const equipped = tiers[equippedIdx] || tiers[0];
+      const next = tiers[equippedIdx + 1];
+      const hdr = document.createElement('div');
+      hdr.className = 'ach-cat-hdr';
+      hdr.textContent = s.name;
+      el.appendChild(hdr);
+      const pctNow = Math.round((1 - equipped.speedMult) * 100);
+      const curRow = document.createElement('div');
+      curRow.className = 'upgrade-tier equipped';
+      curRow.innerHTML = `<div class="tier-left"><span>${equipped.name}</span><span class="tier-speed">${pctNow === 0 ? 'Base speed' : pctNow + '% faster'}</span></div><span style="font-size:12px;color:var(--accent);">✓ Equipped</span>`;
+      el.appendChild(curRow);
+      if (!next){
+        const maxRow = document.createElement('div');
+        maxRow.className = 'upgrade-tier';
+        maxRow.style.cssText = 'opacity:.4;justify-content:center;font-size:12px;color:var(--dim);';
+        maxRow.textContent = 'Maximum tier reached';
+        el.appendChild(maxRow);
+      } else {
+        const levelOk = lvl >= next.reqLevel;
+        const isFree = next.cost.length === 0;
+        const canAfford = isFree || next.cost.every(c => (state.inventory[c.item] || 0) >= c.count);
+        const costText = isFree ? 'No cost' : next.cost.map(c => `${c.count}× ${c.name}`).join(' + ');
+        const pctNext = Math.round((1 - next.speedMult) * 100);
+        const nextRow = document.createElement('div');
+        nextRow.className = 'upgrade-tier';
+        nextRow.innerHTML = `<div class="tier-left"><span>${next.name}</span><span class="tier-speed">${pctNext}% faster</span><span class="tier-cost">${costText}</span></div>`;
+        const btn = document.createElement('button');
+        btn.className = 'mini';
+        if (!levelOk)       { btn.textContent = `🔒 Lv ${next.reqLevel}`; btn.disabled = true; }
+        else if (isFree)    { btn.textContent = 'Equip'; btn.onclick = () => upgradeTool(skillId, next.id); }
+        else if (canAfford) { btn.textContent = 'Craft'; btn.onclick = () => upgradeTool(skillId, next.id); }
+        else                { btn.textContent = "Can't afford"; btn.disabled = true; }
+        nextRow.appendChild(btn);
+        el.appendChild(nextRow);
+      }
+    });
+  }
+
+  if (shopTab === 'delving'){
+    const tokens = state.inventory['dg_tokens'] || 0;
+    const balDiv = document.createElement('div');
+    balDiv.className = 'token-balance';
+    balDiv.innerHTML = `${tokens.toLocaleString()} <span>Dungeoneering tokens</span>`;
+    el.appendChild(balDiv);
+    const grid = document.createElement('div');
+    grid.className = 'token-shop-grid';
+    DG_SHOP.forEach(item => {
+      const owned = !!state.upgrades[item.id];
+      const canAfford = tokens >= item.cost;
+      const card = document.createElement('div');
+      card.className = 'upgrade-tier' + (owned ? ' equipped' : '');
+      card.style.cssText = 'flex-direction:column;align-items:flex-start;gap:4px;';
+      card.innerHTML = `<div style="font-weight:600;">${item.name}</div><div style="font-size:12px;color:var(--dim);">${item.desc}</div><div style="font-size:12px;color:var(--dim);">Cost: ${item.cost.toLocaleString()} tokens</div>`;
+      const btn = document.createElement('button');
+      btn.className = 'mini'; btn.style.marginTop = '4px';
+      if (owned)         { btn.textContent = '✓ Owned'; btn.disabled = true; }
+      else               { btn.textContent = canAfford ? 'Buy' : `Need ${item.cost - tokens} more`; btn.disabled = !canAfford; btn.onclick = () => buyDgUpgrade(item.id); }
+      card.appendChild(btn); grid.appendChild(card);
+    });
+    el.appendChild(grid);
+  }
+
+  if (shopTab === 'construction'){
+    CONSTRUCTION_SHOP.forEach(item => {
+      const owned  = !!state.upgrades[item.id];
+      const have   = state.inventory[item.plankType] || 0;
+      const canBuy = have >= item.cost;
+      const card   = document.createElement('div');
+      card.className = 'upgrade-tier' + (owned ? ' equipped' : '');
+      card.innerHTML = `<div class="tier-left"><span>${item.name}</span><span class="tier-speed">${item.desc}</span><span class="tier-cost">${item.cost}× ${item.plankName} (have: ${have.toLocaleString()})</span></div>`;
+      const btn = document.createElement('button');
+      btn.className = 'mini';
+      if (owned)    { btn.textContent = '✓ Built'; btn.disabled = true; }
+      else          { btn.textContent = canBuy ? 'Build' : `Need ${(item.cost-have).toLocaleString()} more`; btn.disabled = !canBuy; btn.onclick = () => buyConstructionUpgrade(item.id); }
+      card.appendChild(btn); el.appendChild(card);
+    });
   }
 }
 
@@ -4062,7 +4133,7 @@ function upgradeTool(skillId, tierId){
   if (!state.tools) state.tools = {};
   state.tools[skillId] = tierId;
   log(`⚒️ Crafted and equipped a ${tier.name}!`);
-  render();
+  render(); renderShop();
 }
 
 function startAction(skillId, actionId, batchLimit = 0){
@@ -4367,8 +4438,6 @@ function render(){
   renderFarmSection();
   renderSlayerSection();
   renderItemsPanel();
-  renderUpgradeShop();
-  renderTokenShop();
   renderTotalLevel();
   renderLog();
   _applyAllCollapsed();

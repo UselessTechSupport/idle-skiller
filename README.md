@@ -97,13 +97,11 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - Slayer task kill-tracking with bonus XP on completion
 
 **Progression**
-- Tool upgrade shop — per-skill tool tiers that reduce action ticks (axe, pickaxe, fishing rod, lockpick)
-- Construction upgrade shop — 8 permanent buildings with global stat/speed bonuses
-- Dungeoneering token shop
+- Tool upgrade shop, Construction upgrades, Dungeoneering token shop — all consolidated inside the 🏪 Shop overlay
 - Slayer points shop — 5 permanent unlocks
 - Archaeology perk system — up to 3 active perks from artefact restoration
 - Upgrade Shop — various cross-skill enhancements
-- General Shop — Buy/Sell overlay (🏪 button); sell excess items for coins; buy summoning charms
+- General Shop — 5-tab overlay (🏪 button): **Buy** (charms, bowstring), **Sell** (all sellable items + sell-all), **Upgrades** (tool tiers), **Delving** (Dungeoneering token shop), **Construction** (building upgrades)
 
 **UI / QoL**
 - Always-visible Farming, Slayer, Prayer, and Summoning sidebar panels (usable without navigating to the skill)
