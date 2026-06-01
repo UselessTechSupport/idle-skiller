@@ -295,6 +295,7 @@
 <header>
   <h1>⛏️ Idle Skiller <span style="color:var(--dim);font-weight:400;font-size:13px;">starter</span></h1>
   <span class="total">Total level: <b id="totalLevel">1</b></span>
+  <button class="mini" onclick="openCharacters()">👤 Characters</button>
   <button class="mini" onclick="openAchievements()">🏆 Achievements</button>
   <button class="mini" onclick="openCollectionLog()">📖 Log</button>
   <button class="mini" onclick="openSettings()">⚙️ Settings</button>
@@ -514,6 +515,17 @@
   </div>
 </div>
 
+<!-- Characters overlay -->
+<div id="charactersOverlay" class="settings-overlay" onclick="if(event.target===this)closeCharacters()">
+  <div class="settings-modal" style="max-width:560px;width:95%;max-height:85vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <h2 style="margin:0;font-size:16px;">👤 Characters</h2>
+      <button class="mini" onclick="closeCharacters()">✕ Close</button>
+    </div>
+    <div id="charactersContent"></div>
+  </div>
+</div>
+
 <!-- Settings modal -->
 <div id="settingsOverlay" class="settings-overlay" onclick="if(event.target===this)closeSettings()">
   <div class="settings-modal">
@@ -568,7 +580,12 @@ const SEEDS = [
 ];
 const HERB_IDS = new Set(SEEDS.map(s => s.herb));
 const AUTOSAVE_MS = 10000;            // autosave every 10s
-const SAVE_KEY = 'idleSkillerSave_v1';
+const SAVE_KEY        = 'idleSkillerSave_v1';
+const CHARS_KEY       = 'idleSkillerChars';
+const ACTIVE_KEY      = 'idleSkillerActiveChar';
+const LEGACY_SAVE_KEY = 'idleSkillerSave_v1';
+const MAX_CHARS = 5;
+let activeCharId = null;
 
 /* ---------- 2. GAME DATA ----------
    SKILL_ROADMAP: every RuneScape 3 skill. `implemented:true` = playable now.
@@ -1977,6 +1994,10 @@ catch(e){ storageOK = false; }
 const memStore = {};
 function rawSave(k,v){ try{ if(storageOK) localStorage.setItem(k,v); else memStore[k]=v; } catch(e){ memStore[k]=v; } }
 function rawLoad(k){ try{ return storageOK ? localStorage.getItem(k) : (memStore[k] ?? null); } catch(e){ return memStore[k] ?? null; } }
+function rawDelete(k){ try{ if(storageOK) localStorage.removeItem(k); else delete memStore[k]; } catch(e){ delete memStore[k]; } }
+function getSaveKey(){ return `idleSkillerSave_v1_${activeCharId}`; }
+function loadCharIndex(){ try{ return JSON.parse(rawLoad(CHARS_KEY)||'[]'); }catch(e){ return []; } }
+function saveCharIndex(list){ rawSave(CHARS_KEY, JSON.stringify(list)); }
 
 /* ---------- 5. STATE ---------- */
 let state;
@@ -3692,6 +3713,152 @@ function applySettings(){
   document.body.classList.toggle('compact-mode', !!s.compactMode);
 }
 
+/* ---- Characters ---- */
+function openCharacters(){ $('charactersOverlay').classList.add('open'); renderCharacters(); }
+function closeCharacters(){ $('charactersOverlay').classList.remove('open'); }
+
+function switchCharacter(id){
+  save();
+  rawSave(ACTIVE_KEY, id);
+  location.reload();
+}
+
+function createCharacter(){
+  const list = loadCharIndex();
+  if (list.length >= MAX_CHARS){ log(`Max ${MAX_CHARS} characters reached.`); return; }
+  const name = prompt('Character name:', `Character ${list.length + 1}`);
+  if (!name) return;
+  const id = 'char_' + Date.now();
+  list.push({ id, name: name.trim().slice(0,24) || `Character ${list.length+1}`, lastSaved:Date.now(), totalLevel:0 });
+  saveCharIndex(list);
+  switchCharacter(id);
+}
+
+function renameCharacter(id){
+  const list = loadCharIndex();
+  const entry = list.find(c => c.id === id);
+  if (!entry) return;
+  const name = prompt('New name:', entry.name);
+  if (!name) return;
+  entry.name = name.trim().slice(0,24) || entry.name;
+  saveCharIndex(list);
+  renderCharacters();
+}
+
+function deleteCharacter(id){
+  const list = loadCharIndex();
+  if (list.length <= 1){ log('Cannot delete the only character.'); return; }
+  const entry = list.find(c => c.id === id);
+  if (!confirm(`Delete "${entry?.name}"? This cannot be undone.`)) return;
+  const remaining = list.filter(c => c.id !== id);
+  saveCharIndex(remaining);
+  rawDelete(`idleSkillerSave_v1_${id}`);
+  if (id === activeCharId) switchCharacter(remaining[0].id);
+  else renderCharacters();
+}
+
+function exportCharacter(id){
+  const list = loadCharIndex();
+  const entry = list.find(c => c.id === id);
+  const saveData = id === activeCharId ? JSON.stringify(state) : rawLoad(`idleSkillerSave_v1_${id}`);
+  if (!saveData){ log('Nothing to export.'); return; }
+  const str = JSON.stringify({ charName: entry?.name || 'Character', saveData });
+  if (navigator.clipboard?.writeText){
+    navigator.clipboard.writeText(str)
+      .then(() => log(`✅ "${entry?.name}" copied to clipboard — paste it on another device to import.`))
+      .catch(() => _downloadCharExport(str, entry?.name));
+  } else {
+    _downloadCharExport(str, entry?.name);
+  }
+}
+
+function _downloadCharExport(str, name){
+  const a = document.createElement('a');
+  a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(str);
+  a.download = `idleskiller_${(name||'char').replace(/\s+/g,'_')}.json`;
+  a.click();
+  log(`✅ "${name}" downloaded as a .json file.`);
+}
+
+function importCharacter(){
+  const list = loadCharIndex();
+  if (list.length >= MAX_CHARS){ log(`Max ${MAX_CHARS} characters reached — delete one first.`); return; }
+  const raw = $('importCharText')?.value?.trim();
+  if (!raw){ log('Paste export data first.'); return; }
+  try {
+    const obj = JSON.parse(raw);
+    const saveData = obj.saveData
+      ? (typeof obj.saveData === 'string' ? obj.saveData : JSON.stringify(obj.saveData))
+      : raw;
+    JSON.parse(saveData); // validate
+    const id = 'char_' + Date.now();
+    const name = (obj.charName || 'Imported').slice(0,24);
+    list.push({ id, name, lastSaved:Date.now(), totalLevel:0 });
+    saveCharIndex(list);
+    rawSave(`idleSkillerSave_v1_${id}`, saveData);
+    log(`✅ "${name}" imported! Switching...`);
+    switchCharacter(id);
+  } catch(e){ log('❌ Invalid import data — paste the full export text.'); }
+}
+
+function importCharacterFromFile(){
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.json,application/json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => { if ($('importCharText')) $('importCharText').value = ev.target.result; };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function renderCharacters(){
+  const el = $('charactersContent');
+  if (!el) return;
+  const list = loadCharIndex();
+  el.innerHTML = '';
+  for (const c of list){
+    const isActive = c.id === activeCharId;
+    const d = new Date(c.lastSaved);
+    const dateStr = `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+    const row = document.createElement('div');
+    row.style.cssText = `display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;background:var(--panel2);border:1px solid ${isActive?'var(--accent)':'var(--line)'};margin-bottom:6px;flex-wrap:wrap;`;
+    row.innerHTML = `
+      <div style="flex:1;min-width:120px;">
+        <div style="font-weight:600;font-size:13px;">${isActive?'▶ ':''}${c.name.replace(/</g,'&lt;')}${isActive?' <span style="font-size:11px;color:var(--accent);">(active)</span>':''}</div>
+        <div style="font-size:11px;color:var(--dim);">Total level ${c.totalLevel||0} · Saved ${dateStr}</div>
+      </div>
+      <div style="display:flex;gap:4px;flex-shrink:0;">
+        ${!isActive ? `<button class="mini" onclick="switchCharacter('${c.id}')">Play</button>` : ''}
+        <button class="mini" onclick="renameCharacter('${c.id}')">Rename</button>
+        <button class="mini" onclick="exportCharacter('${c.id}')">Export</button>
+        ${list.length>1 ? `<button class="mini" style="color:#f87171;border-color:#ef4444;" onclick="deleteCharacter('${c.id}')">Delete</button>` : ''}
+      </div>`;
+    el.appendChild(row);
+  }
+  if (list.length < MAX_CHARS){
+    const newBtn = document.createElement('button');
+    newBtn.className = 'mini';
+    newBtn.style.cssText = 'margin-top:8px;width:100%;';
+    newBtn.textContent = '＋ New Character';
+    newBtn.onclick = createCharacter;
+    el.appendChild(newBtn);
+  }
+  const impDiv = document.createElement('div');
+  impDiv.style.cssText = 'margin-top:14px;border-top:1px solid var(--line);padding-top:12px;';
+  impDiv.innerHTML = `
+    <div style="font-size:12px;font-weight:600;margin-bottom:6px;">Import Character</div>
+    <div style="font-size:11px;color:var(--dim);margin-bottom:6px;">Paste export text below, or load from a .json file.</div>
+    <textarea id="importCharText" style="width:100%;box-sizing:border-box;height:70px;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:4px;padding:6px;font-size:11px;resize:vertical;" placeholder="Paste exported character data here…"></textarea>
+    <div style="display:flex;gap:6px;margin-top:6px;">
+      <button class="mini" onclick="importCharacterFromFile()">📂 Load from file</button>
+      <button class="mini" onclick="importCharacter()">✅ Import</button>
+    </div>`;
+  el.appendChild(impDiv);
+}
+
 function openSettings(){
   renderSettings();
   $('settingsOverlay').classList.add('open');
@@ -4631,10 +4798,13 @@ function renderLog(){
 /* ---------- 9. WIRING + STARTUP ---------- */
 function save(){
   state.lastSaved = Date.now();
-  rawSave(SAVE_KEY, JSON.stringify(state));
+  rawSave(getSaveKey(), JSON.stringify(state));
+  const list = loadCharIndex();
+  const entry = list.find(c => c.id === activeCharId);
+  if (entry){ entry.lastSaved = state.lastSaved; entry.totalLevel = getTotalLevel(); saveCharIndex(list); }
 }
 function load(){
-  const raw = rawLoad(SAVE_KEY);
+  const raw = rawLoad(getSaveKey());
   if (!raw) return false;
   try {
     const loaded = JSON.parse(raw);
@@ -4657,7 +4827,26 @@ function showOffline(result){
   $('offlineModal').classList.add('show');
 }
 
+function initCharacters(){
+  let list = loadCharIndex();
+  let charId = rawLoad(ACTIVE_KEY);
+  // One-time migration: wrap existing single-slot save into first character slot
+  if (list.length === 0){
+    const legacy = rawLoad(LEGACY_SAVE_KEY);
+    const id = 'char_' + Date.now();
+    list = [{ id, name:'Character 1', lastSaved:Date.now(), totalLevel:0 }];
+    saveCharIndex(list);
+    if (legacy) rawSave(`idleSkillerSave_v1_${id}`, legacy);
+    charId = id;
+  }
+  // If stored active char no longer in list, fall back to first
+  if (!charId || !list.find(c => c.id === charId)) charId = list[0].id;
+  rawSave(ACTIVE_KEY, charId);
+  activeCharId = charId;
+}
+
 function init(){
+  initCharacters();
   const hadSave = load();
   if (!hadSave){ state = freshState(); log('New game started. Welcome!'); }
   else { log('Save loaded.'); }
