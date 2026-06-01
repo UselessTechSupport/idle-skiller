@@ -103,6 +103,8 @@ Progress is saved automatically every 10 seconds to `localStorage`. Offline gain
 - Prayer HUD in sidebar
 - Settings menu — Dark/Light theme, Compact mode, Hide locked actions, configurable log size
 - Stop button always visible next to action progress bar
+- **Achievement system** — 78 achievements across Skills, Total Level, Combat, Slayer, and Special categories; filter by All / Hide Completed / Hide Locked; locked achievements require prerequisites (slayer unlocks, quest completion, etc.)
+- **Collection Log** — 17 drop sources (bird's nests, 3 geode tiers, fishing, agility, hunter, impling jars, Abyssal Demon, 6 bosses); tracks per-item obtain counts; unobtained items shown greyed; global and per-source progress counters
 
 **Bonus drops**
 - Woodcutting: bird's nests (1%, 4 variants)
@@ -121,6 +123,6 @@ Progress is saved automatically every 10 seconds to `localStorage`. Offline gain
 
 ## Tech stack
 
-Plain HTML + CSS + JavaScript. Single file (~4,200 lines), no dependencies, no build step.
+Plain HTML + CSS + JavaScript. Single file (~4,800 lines), no dependencies, no build step.
 
 Cross-platform target: PWA first (PC/iOS/Android from browser), then Capacitor for app stores if needed.
