@@ -29,6 +29,27 @@
     z-index:1000; align-items:center; justify-content:center;
   }
   .settings-overlay.open{ display:flex; }
+  /* Achievement cards */
+  .ach-card{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;background:var(--panel2);margin-bottom:4px;border:1px solid var(--border,var(--line));}
+  .ach-card.done{border-color:#22c55e;}
+  .ach-card.locked{opacity:0.4;}
+  .ach-icon{font-size:20px;width:28px;text-align:center;}
+  .ach-name{font-weight:600;font-size:13px;}
+  .ach-desc{font-size:12px;color:var(--dim);}
+  .ach-status{margin-left:auto;font-size:14px;flex-shrink:0;}
+  .ach-cat-hdr{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin:12px 0 4px;border-bottom:1px solid var(--line);padding-bottom:3px;}
+  /* Collection log */
+  .clog-cat-hdr{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin:14px 0 6px;border-bottom:1px solid var(--line);padding-bottom:3px;}
+  .clog-source{margin-bottom:14px;}
+  .clog-source-hdr{font-weight:600;font-size:13px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
+  .clog-progress{font-size:11px;color:var(--dim);}
+  .clog-items{display:flex;flex-wrap:wrap;gap:6px;}
+  .clog-item{width:76px;text-align:center;padding:6px 4px;border-radius:5px;background:var(--panel2);border:1px solid var(--line);}
+  .clog-item.found{border-color:var(--accent);}
+  .clog-item.unfound{opacity:0.35;filter:grayscale(1);}
+  .clog-item-icon{font-size:18px;}
+  .clog-item-name{display:block;font-size:10px;color:var(--dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .clog-item-count{display:block;font-size:11px;font-weight:600;color:var(--accent);}
   .settings-modal{
     background:var(--panel); border-radius:12px; padding:20px 24px;
     width:360px; max-width:95vw; max-height:85vh; overflow-y:auto;
@@ -274,6 +295,8 @@
 <header>
   <h1>⛏️ Idle Skiller <span style="color:var(--dim);font-weight:400;font-size:13px;">starter</span></h1>
   <span class="total">Total level: <b id="totalLevel">1</b></span>
+  <button class="mini" onclick="openAchievements()">🏆 Achievements</button>
+  <button class="mini" onclick="openCollectionLog()">📖 Log</button>
   <button class="mini" onclick="openSettings()">⚙️ Settings</button>
   <button class="mini" id="debugToggle" style="color:#f97316;border-color:#c2410c;">🐛 Debug</button>
 </header>
@@ -465,6 +488,29 @@
     <h3>Welcome back!</h3>
     <div id="offlineBody"></div>
     <button id="offlineClose">Collect</button>
+  </div>
+</div>
+
+<!-- Achievements overlay -->
+<div id="achievementsOverlay" class="settings-overlay" onclick="if(event.target===this)closeAchievements()">
+  <div class="settings-modal" style="max-width:720px;width:95%;max-height:82vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <h2 style="margin:0;font-size:16px;">🏆 Achievements</h2>
+      <button class="mini" onclick="closeAchievements()">✕ Close</button>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;" id="achFilterBtns"></div>
+    <div id="achievementsList"></div>
+  </div>
+</div>
+
+<!-- Collection Log overlay -->
+<div id="collectionLogOverlay" class="settings-overlay" onclick="if(event.target===this)closeCollectionLog()">
+  <div class="settings-modal" style="max-width:720px;width:95%;max-height:82vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <h2 style="margin:0;font-size:16px;">📖 Collection Log</h2>
+      <button class="mini" onclick="closeCollectionLog()">✕ Close</button>
+    </div>
+    <div id="collectionLogContent"></div>
   </div>
 </div>
 
@@ -1470,6 +1516,198 @@ const SUMMONING_POUCHES = [
 const SUMMON_POUCH_IDS = new Set(SUMMONING_POUCHES.map(p => p.id));
 ACTIONS.summoning = SUMMONING_POUCHES;
 
+/* ---- Collection Log ---- */
+const COLLECTION_LOG_SOURCES = [
+  // Woodcutting
+  { id:'woodcutting_bonus', name:"Bird's Nests", category:'Woodcutting', items:[
+    {id:'birds_nest_seeds',    name:"Bird's nest (seeds)",    icon:'🪺'},
+    {id:'birds_nest_ring',     name:"Bird's nest (ring)",     icon:'💍'},
+    {id:'birds_nest_egg_red',  name:"Bird's nest (red egg)",  icon:'🥚'},
+    {id:'birds_nest_egg_blue', name:"Bird's nest (blue egg)", icon:'🥚'},
+    {id:'birds_nest_egg_green',name:"Bird's nest (grn egg)",  icon:'🥚'},
+  ]},
+  // Mining
+  { id:'geode_sedimentary', name:'Sedimentary Geode', category:'Mining', items:[
+    {id:'uncut_sapphire', name:'Uncut sapphire',     icon:'💎'},
+    {id:'uncut_emerald',  name:'Uncut emerald',      icon:'💚'},
+    {id:'uncut_ruby',     name:'Uncut ruby',         icon:'❤️'},
+    {id:'uncut_diamond',  name:'Uncut diamond',      icon:'🔷'},
+  ]},
+  { id:'geode_igneous', name:'Igneous Geode', category:'Mining', items:[
+    {id:'uncut_ruby',        name:'Uncut ruby',        icon:'❤️'},
+    {id:'uncut_diamond',     name:'Uncut diamond',     icon:'🔷'},
+    {id:'uncut_dragonstone', name:'Uncut dragonstone', icon:'🔵'},
+    {id:'uncut_onyx',        name:'Uncut onyx',        icon:'⚫'},
+  ]},
+  { id:'geode_metamorphic', name:'Metamorphic Geode', category:'Mining', items:[
+    {id:'uncut_dragonstone',  name:'Uncut dragonstone',  icon:'🔵'},
+    {id:'uncut_onyx',         name:'Uncut onyx',         icon:'⚫'},
+    {id:'coins',              name:'Coins (50k)',         icon:'🪙'},
+    {id:'dragonstone_charm',  name:'Dragonstone charm',  icon:'✨'},
+    {id:'uncut_hydrix',       name:'Uncut hydrix',       icon:'🟣'},
+  ]},
+  // Fishing
+  { id:'fishing_bonus', name:'Deep Sea Fishing', category:'Fishing', items:[
+    {id:'krackens_beak', name:"Kraken's Beak",  icon:'🦑'},
+    {id:'map_to_tavia',  name:'Map to Tavia',   icon:'🗺️'},
+  ]},
+  // Agility
+  { id:'agility_hefin', name:'Hefin Agility Course', category:'Agility', items:[
+    {id:'crystal_tool_seed', name:'Crystal tool seed', icon:'💠'},
+  ]},
+  // Hunter
+  { id:'hunter_bonus', name:'Hunter (Bonus Capture)', category:'Hunter', items:[
+    {id:'dragon_impling_jar', name:'Dragon impling jar', icon:'🐉'},
+  ]},
+  { id:'jar_baby',     name:'Baby Impling Jar',     category:'Hunter', items:[
+    {id:'coins',           name:'Coins',           icon:'🪙'},
+    {id:'uncut_sapphire',  name:'Uncut sapphire',  icon:'💎'},
+    {id:'tarromin_seed',   name:'Tarromin seed',   icon:'🌱'},
+    {id:'ranarr_seed',     name:'Ranarr seed',     icon:'🌱'},
+    {id:'dwarf_weed_seed', name:'Dwarf weed seed', icon:'🌱'},
+    {id:'lantadyme_seed',  name:'Lantadyme seed',  icon:'🌱'},
+    {id:'fellstalk_seed',  name:'Fellstalk seed',  icon:'🌱'},
+    {id:'spirit_weed_seed',name:'Spirit weed seed',icon:'🌱'},
+    {id:'torstol_seed',    name:'Torstol seed',    icon:'🌱'},
+  ]},
+  { id:'jar_eclectic', name:'Eclectic Impling Jar', category:'Hunter', items:[
+    {id:'coins',           name:'Coins',           icon:'🪙'},
+    {id:'uncut_ruby',      name:'Uncut ruby',      icon:'❤️'},
+    {id:'uncut_diamond',   name:'Uncut diamond',   icon:'🔷'},
+    {id:'tarromin_seed',   name:'Tarromin seed',   icon:'🌱'},
+    {id:'ranarr_seed',     name:'Ranarr seed',     icon:'🌱'},
+    {id:'dwarf_weed_seed', name:'Dwarf weed seed', icon:'🌱'},
+    {id:'lantadyme_seed',  name:'Lantadyme seed',  icon:'🌱'},
+    {id:'fellstalk_seed',  name:'Fellstalk seed',  icon:'🌱'},
+    {id:'spirit_weed_seed',name:'Spirit weed seed',icon:'🌱'},
+    {id:'torstol_seed',    name:'Torstol seed',    icon:'🌱'},
+  ]},
+  { id:'jar_dragon',   name:'Dragon Impling Jar',  category:'Hunter', items:[
+    {id:'coins',             name:'Coins',             icon:'🪙'},
+    {id:'uncut_dragonstone', name:'Uncut dragonstone', icon:'🔵'},
+    {id:'uncut_onyx',        name:'Uncut onyx',        icon:'⚫'},
+    {id:'dragon_arrows',     name:'Dragon arrows',     icon:'🏹'},
+    {id:'uncut_hydrix',      name:'Uncut hydrix',      icon:'🟣'},
+  ]},
+  // Combat
+  { id:'mob_abyssal_demon', name:'Abyssal Demon',       category:'Combat', items:[
+    {id:'abyssal_whip', name:'Abyssal whip', icon:'⚔️'},
+  ]},
+  // Bosses
+  { id:'boss_giant_mole', name:'Giant Mole',          category:'Bosses', items:[{id:'mole_skin',         name:'Mole skin',          icon:'🦔'}]},
+  { id:'boss_kbd',        name:'King Black Dragon',    category:'Bosses', items:[{id:'kbd_heads',         name:'KBD heads',          icon:'🐉'}]},
+  { id:'boss_dag_kings',  name:'Dagannoth Kings',      category:'Bosses', items:[{id:'berserker_ring',    name:'Berserker ring',     icon:'💍'}]},
+  { id:'boss_zilyana',    name:'Commander Zilyana',    category:'Bosses', items:[{id:'saradomin_sword',   name:'Saradomin sword',    icon:'⚔️'}]},
+  { id:'boss_graardor',   name:'General Graardor',     category:'Bosses', items:[{id:'bandos_chestplate', name:'Bandos chestplate',  icon:'🛡️'}]},
+  { id:'boss_nex',        name:'Nex',                  category:'Bosses', items:[{id:'torva_platebody',   name:'Torva platebody',    icon:'🛡️'}]},
+];
+const CLOG_SOURCE_MAP = {};
+for (const src of COLLECTION_LOG_SOURCES)
+  CLOG_SOURCE_MAP[src.id] = new Set(src.items.map(i => i.id));
+const MOB_CLOG_SOURCE = {
+  abyssal_demon:'mob_abyssal_demon',
+  giant_mole:'boss_giant_mole', kbd:'boss_kbd', dag_kings:'boss_dag_kings',
+  zilyana:'boss_zilyana', graardor:'boss_graardor', nex:'boss_nex',
+};
+// Openable item → collection log source ID
+const OPENABLE_CLOG_SOURCE = {
+  sedimentary_geode:'geode_sedimentary', igneous_geode:'geode_igneous',
+  metamorphic_geode:'geode_metamorphic',
+  baby_impling_jar:'jar_baby', eclectic_impling_jar:'jar_eclectic', dragon_impling_jar:'jar_dragon',
+};
+
+/* ---- Achievements ---- */
+const ACHIEVEMENTS = [
+  // Skills — level 50 + max cap
+  {id:'wc_50',   name:'Axe Hand',        desc:'Reach Woodcutting 50',    icon:'🪓', category:'Skills', checkFn:()=>levelForXp(state.skills.woodcutting.xp)>=50},
+  {id:'wc_110',  name:'Elder Cutter',    desc:'Reach Woodcutting 110',   icon:'🪓', category:'Skills', checkFn:()=>levelForXp(state.skills.woodcutting.xp)>=110},
+  {id:'mn_50',   name:'Rock Hound',      desc:'Reach Mining 50',         icon:'⛏️', category:'Skills', checkFn:()=>levelForXp(state.skills.mining.xp)>=50},
+  {id:'mn_110',  name:'Ore Master',      desc:'Reach Mining 110',        icon:'⛏️', category:'Skills', checkFn:()=>levelForXp(state.skills.mining.xp)>=110},
+  {id:'fish_50', name:'Angler',          desc:'Reach Fishing 50',        icon:'🎣', category:'Skills', checkFn:()=>levelForXp(state.skills.fishing.xp)>=50},
+  {id:'fish_99', name:'Sailfish Master', desc:'Reach Fishing 99',        icon:'🎣', category:'Skills', checkFn:()=>levelForXp(state.skills.fishing.xp)>=99},
+  {id:'farm_50', name:'Gardener',        desc:'Reach Farming 50',        icon:'🌿', category:'Skills', checkFn:()=>levelForXp(state.skills.farming.xp)>=50},
+  {id:'farm_120',name:'Master Farmer',   desc:'Reach Farming 120',       icon:'🌿', category:'Skills', checkFn:()=>levelForXp(state.skills.farming.xp)>=120},
+  {id:'hunt_50', name:'Trapper',         desc:'Reach Hunter 50',         icon:'🦎', category:'Skills', checkFn:()=>levelForXp(state.skills.hunter.xp)>=50},
+  {id:'hunt_99', name:'Master Hunter',   desc:'Reach Hunter 99',         icon:'🦎', category:'Skills', checkFn:()=>levelForXp(state.skills.hunter.xp)>=99},
+  {id:'div_50',  name:'Memory Keeper',   desc:'Reach Divination 50',     icon:'✨', category:'Skills', checkFn:()=>levelForXp(state.skills.divination.xp)>=50},
+  {id:'div_99',  name:'Seer',            desc:'Reach Divination 99',     icon:'✨', category:'Skills', checkFn:()=>levelForXp(state.skills.divination.xp)>=99},
+  {id:'sm_50',   name:'Smelter',         desc:'Reach Smithing 50',       icon:'🔨', category:'Skills', checkFn:()=>levelForXp(state.skills.smithing.xp)>=50},
+  {id:'sm_110',  name:'Master Smith',    desc:'Reach Smithing 110',      icon:'🔨', category:'Skills', checkFn:()=>levelForXp(state.skills.smithing.xp)>=110},
+  {id:'fm_50',   name:'Firemaker',       desc:'Reach Firemaking 50',     icon:'🔥', category:'Skills', checkFn:()=>levelForXp(state.skills.firemaking.xp)>=50},
+  {id:'fm_110',  name:'Inferno',         desc:'Reach Firemaking 110',    icon:'🔥', category:'Skills', checkFn:()=>levelForXp(state.skills.firemaking.xp)>=110},
+  {id:'cook_50', name:'Chef',            desc:'Reach Cooking 50',        icon:'🍳', category:'Skills', checkFn:()=>levelForXp(state.skills.cooking.xp)>=50},
+  {id:'cook_99', name:'Master Chef',     desc:'Reach Cooking 99',        icon:'🍳', category:'Skills', checkFn:()=>levelForXp(state.skills.cooking.xp)>=99},
+  {id:'fl_50',   name:'Fletcher',        desc:'Reach Fletching 50',      icon:'🪃', category:'Skills', checkFn:()=>levelForXp(state.skills.fletching.xp)>=50},
+  {id:'fl_110',  name:'Bowmaster',       desc:'Reach Fletching 110',     icon:'🪃', category:'Skills', checkFn:()=>levelForXp(state.skills.fletching.xp)>=110},
+  {id:'cr_50',   name:'Artisan',         desc:'Reach Crafting 50',       icon:'💍', category:'Skills', checkFn:()=>levelForXp(state.skills.crafting.xp)>=50},
+  {id:'cr_110',  name:'Master Crafter',  desc:'Reach Crafting 110',      icon:'💍', category:'Skills', checkFn:()=>levelForXp(state.skills.crafting.xp)>=110},
+  {id:'herb_50', name:'Apothecary',      desc:'Reach Herblore 50',       icon:'🌿', category:'Skills', checkFn:()=>levelForXp(state.skills.herblore.xp)>=50},
+  {id:'herb_120',name:'Master Herbalist',desc:'Reach Herblore 120',      icon:'🌿', category:'Skills', checkFn:()=>levelForXp(state.skills.herblore.xp)>=120},
+  {id:'rc_50',   name:'Runecrafting',    desc:'Reach Runecrafting 50',   icon:'🔮', category:'Skills', checkFn:()=>levelForXp(state.skills.runecrafting.xp)>=50},
+  {id:'rc_110',  name:'Runemaster',      desc:'Reach Runecrafting 110',  icon:'🔮', category:'Skills', checkFn:()=>levelForXp(state.skills.runecrafting.xp)>=110},
+  {id:'con_50',  name:'Builder',         desc:'Reach Construction 50',   icon:'🏠', category:'Skills', checkFn:()=>levelForXp(state.skills.construction.xp)>=50},
+  {id:'con_99',  name:'Architect',       desc:'Reach Construction 99',   icon:'🏠', category:'Skills', checkFn:()=>levelForXp(state.skills.construction.xp)>=99},
+  {id:'agil_50', name:'Parkour',         desc:'Reach Agility 50',        icon:'🏃', category:'Skills', checkFn:()=>levelForXp(state.skills.agility.xp)>=50},
+  {id:'agil_99', name:'Nimble Feet',     desc:'Reach Agility 99',        icon:'🏃', category:'Skills', checkFn:()=>levelForXp(state.skills.agility.xp)>=99},
+  {id:'th_50',   name:'Pickpocket',      desc:'Reach Thieving 50',       icon:'🪝', category:'Skills', checkFn:()=>levelForXp(state.skills.thieving.xp)>=50},
+  {id:'th_99',   name:'Master Thief',    desc:'Reach Thieving 99',       icon:'🪝', category:'Skills', checkFn:()=>levelForXp(state.skills.thieving.xp)>=99},
+  {id:'slay_sk_50',  name:'Slayer',      desc:'Reach Slayer 50',         icon:'💀', category:'Skills', checkFn:()=>levelForXp(state.skills.slayer.xp)>=50},
+  {id:'slay_sk_120', name:'Exterminator',desc:'Reach Slayer 120',        icon:'💀', category:'Skills', checkFn:()=>levelForXp(state.skills.slayer.xp)>=120},
+  {id:'dg_50',   name:'Dungeoneer',      desc:'Reach Dungeoneering 50',  icon:'🗝️', category:'Skills', checkFn:()=>levelForXp(state.skills.dungeoneering.xp)>=50},
+  {id:'dg_120',  name:'Floor Master',    desc:'Reach Dungeoneering 120', icon:'🗝️', category:'Skills', checkFn:()=>levelForXp(state.skills.dungeoneering.xp)>=120},
+  {id:'arch_50', name:'Archaeologist',   desc:'Reach Archaeology 50',    icon:'🏺', category:'Skills', checkFn:()=>levelForXp(state.skills.archaeology.xp)>=50},
+  {id:'arch_120',name:'Site Director',   desc:'Reach Archaeology 120',   icon:'🏺', category:'Skills', checkFn:()=>levelForXp(state.skills.archaeology.xp)>=120},
+  {id:'pray_50', name:'Devout',          desc:'Reach Prayer 50',         icon:'🙏', category:'Skills', checkFn:()=>levelForXp(state.skills.prayer.xp)>=50},
+  {id:'pray_99', name:'Monk of Zamorak', desc:'Reach Prayer 99',         icon:'🙏', category:'Skills', checkFn:()=>levelForXp(state.skills.prayer.xp)>=99},
+  {id:'sum_50',  name:'Summoner',        desc:'Reach Summoning 50',      icon:'🧿', category:'Skills', checkFn:()=>levelForXp(state.skills.summoning.xp)>=50},
+  {id:'sum_99',  name:'Master Summoner', desc:'Reach Summoning 99',      icon:'🧿', category:'Skills', checkFn:()=>levelForXp(state.skills.summoning.xp)>=99},
+  {id:'mel_50',  name:'Warrior',         desc:'Reach Melee 50',          icon:'⚔️', category:'Skills', checkFn:()=>levelForXp(state.skills.melee.xp)>=50},
+  {id:'mel_120', name:'Grandmaster',     desc:'Reach Melee 120',         icon:'⚔️', category:'Skills', checkFn:()=>levelForXp(state.skills.melee.xp)>=120},
+  {id:'rng_50',  name:'Marksman',        desc:'Reach Ranged 50',         icon:'🏹', category:'Skills', checkFn:()=>levelForXp(state.skills.ranged.xp)>=50},
+  {id:'rng_120', name:'Sharpshooter',    desc:'Reach Ranged 120',        icon:'🏹', category:'Skills', checkFn:()=>levelForXp(state.skills.ranged.xp)>=120},
+  {id:'mag_50',  name:'Mage',            desc:'Reach Magic 50',          icon:'🔮', category:'Skills', checkFn:()=>levelForXp(state.skills.magic.xp)>=50},
+  {id:'mag_120', name:'Archmage',        desc:'Reach Magic 120',         icon:'🔮', category:'Skills', checkFn:()=>levelForXp(state.skills.magic.xp)>=120},
+  {id:'def_50',  name:'Defender',        desc:'Reach Defence 50',        icon:'🛡️', category:'Skills', checkFn:()=>levelForXp(state.skills.defence.xp)>=50},
+  {id:'def_99',  name:'Fortress',        desc:'Reach Defence 99',        icon:'🛡️', category:'Skills', checkFn:()=>levelForXp(state.skills.defence.xp)>=99},
+  {id:'con_hp50',name:'Tough',           desc:'Reach Constitution 50',   icon:'❤️', category:'Skills', checkFn:()=>levelForXp(state.skills.constitution.xp)>=50},
+  {id:'con_hp99',name:'Unstoppable',     desc:'Reach Constitution 99',   icon:'❤️', category:'Skills', checkFn:()=>levelForXp(state.skills.constitution.xp)>=99},
+
+  // Total Level
+  {id:'tl_250',  name:'Adventurer',  desc:'Reach a total level of 250',   icon:'⭐', category:'Total Level', checkFn:()=>getTotalLevel()>=250},
+  {id:'tl_500',  name:'Veteran',     desc:'Reach a total level of 500',   icon:'⭐', category:'Total Level', checkFn:()=>getTotalLevel()>=500},
+  {id:'tl_1000', name:'Legend',      desc:'Reach a total level of 1,000', icon:'🌟', category:'Total Level', checkFn:()=>getTotalLevel()>=1000},
+  {id:'tl_2000', name:'Completionist',desc:'Reach a total level of 2,000',icon:'🌟', category:'Total Level', checkFn:()=>getTotalLevel()>=2000},
+
+  // Combat — boss kills
+  {id:'kill_mole_1',   name:'Mole Hunter',    desc:'Kill the Giant Mole',            icon:'🦔', category:'Combat', checkFn:()=>(state.combat.kills?.giant_mole||0)>=1},
+  {id:'kill_mole_50',  name:'Mole Maniac',    desc:'Kill the Giant Mole 50 times',   icon:'🦔', category:'Combat', checkFn:()=>(state.combat.kills?.giant_mole||0)>=50},
+  {id:'kill_kbd_1',    name:'Dragonslayer',   desc:'Kill the King Black Dragon',      icon:'🐉', category:'Combat', checkFn:()=>(state.combat.kills?.kbd||0)>=1,    lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<60},
+  {id:'kill_kbd_50',   name:'Dragon Farmer',  desc:'Kill the KBD 50 times',          icon:'🐉', category:'Combat', checkFn:()=>(state.combat.kills?.kbd||0)>=50,   lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<60},
+  {id:'kill_dag_1',    name:'Dagannoth Slayer',desc:'Kill the Dagannoth Kings',       icon:'👑', category:'Combat', checkFn:()=>(state.combat.kills?.dag_kings||0)>=1,  lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<75},
+  {id:'kill_dag_50',   name:'Dag King Grind', desc:'Kill the Dagannoth Kings 50×',   icon:'👑', category:'Combat', checkFn:()=>(state.combat.kills?.dag_kings||0)>=50, lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<75},
+  {id:'kill_zilyana_1',name:'Holy Warrior',   desc:'Kill Commander Zilyana',         icon:'⚔️', category:'Combat', checkFn:()=>(state.combat.kills?.zilyana||0)>=1,    lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'kill_zil_50',   name:'Sara Devout',    desc:'Kill Commander Zilyana 50×',     icon:'⚔️', category:'Combat', checkFn:()=>(state.combat.kills?.zilyana||0)>=50,   lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'kill_graardor_1',name:'Band of Brothers',desc:'Kill General Graardor',        icon:'🪖', category:'Combat', checkFn:()=>(state.combat.kills?.graardor||0)>=1,   lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'kill_graard_50',name:'Bandos Bane',    desc:'Kill General Graardor 50×',      icon:'🪖', category:'Combat', checkFn:()=>(state.combat.kills?.graardor||0)>=50,  lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'kill_nex_1',    name:'Ancient Foe',    desc:'Kill Nex',                       icon:'💀', category:'Combat', checkFn:()=>(state.combat.kills?.nex||0)>=1,        lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'kill_nex_50',   name:'Nex Nemesis',    desc:'Kill Nex 50 times',              icon:'💀', category:'Combat', checkFn:()=>(state.combat.kills?.nex||0)>=50,       lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+
+  // Slayer tasks
+  {id:'slay_10',  name:'On Task',     desc:'Complete 10 Slayer tasks',   icon:'📋', category:'Slayer', checkFn:()=>(state.slayer.totalTasksDone||0)>=10},
+  {id:'slay_50',  name:'Taskmaster',  desc:'Complete 50 Slayer tasks',   icon:'📋', category:'Slayer', checkFn:()=>(state.slayer.totalTasksDone||0)>=50},
+  {id:'slay_100', name:'Executioner', desc:'Complete 100 Slayer tasks',  icon:'📋', category:'Slayer', checkFn:()=>(state.slayer.totalTasksDone||0)>=100},
+
+  // Special / Collection
+  {id:'got_hydrix',    name:'Hydrix Hunter',     desc:'Obtain an uncut hydrix',                   icon:'🟣', category:'Special', checkFn:()=>((state.collectionLog?.geode_metamorphic?.uncut_hydrix||0)+(state.collectionLog?.jar_dragon?.uncut_hydrix||0))>0},
+  {id:'got_tavia_map', name:'Treasure Hunter',   desc:'Find the Map to Tavia',                    icon:'🗺️', category:'Special', checkFn:()=>(state.collectionLog?.fishing_bonus?.map_to_tavia||0)>0},
+  {id:'got_whip',      name:'Demon Slayer',       desc:'Obtain an Abyssal whip',                  icon:'⚔️', category:'Special', checkFn:()=>(state.collectionLog?.mob_abyssal_demon?.abyssal_whip||0)>0},
+  {id:'got_torva',     name:'Nex Conquered',      desc:'Obtain a Torva platebody',                icon:'🛡️', category:'Special', checkFn:()=>(state.collectionLog?.boss_nex?.torva_platebody||0)>0, lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'all_boss_log',  name:'Boss Logger',        desc:'Log an item from every boss',             icon:'📖', category:'Special', checkFn:()=>['boss_giant_mole','boss_kbd','boss_dag_kings','boss_zilyana','boss_graardor','boss_nex'].every(s=>Object.keys(state.collectionLog?.[s]||{}).length>0), lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'arch_3_perks',  name:'Perk Collector',     desc:'Have 3 archaeology perks active',         icon:'🏺', category:'Special', checkFn:()=>Object.keys(state.archaeology?.activePerks||{}).length>=3},
+  {id:'slay_shop_all', name:'Points Well Spent',  desc:'Purchase all Slayer shop items',          icon:'🏪', category:'Special', checkFn:()=>['boss_tasks','slayer_boost','task_extend','point_bonus'].every(k=>!!state.slayer.unlocks?.[k])},
+  {id:'got_crystal',   name:'Crystal Gifts',      desc:'Find a crystal tool seed on Hefin course',icon:'💠', category:'Special', checkFn:()=>(state.collectionLog?.agility_hefin?.crystal_tool_seed||0)>0, lockFn:()=>!state.quests?.elf_city},
+];
+
 const EQUIP_REQS = {
   ...Object.fromEntries(METAL_TIERS.flatMap(t => [
     ...ARMOUR_PIECES.map(p => [`${t.id}${p.suffix}`, {skill:'defence', level:t.levelReq}]),
@@ -1761,7 +1999,7 @@ function freshState(){
     equipment: { head:null, weapon:null, offhand:null, neck:null, cape:null, ring:null, body:null, gloves:null, legs:null, feet:null, pet:null },
     stats:     { attack:1, range:1, mage:1, defence:1, prayer:1, summoning:1, dropRate:0 },
     farming:   { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false },
-    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, attackTimer:0 },
+    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, attackTimer:0, kills:{} },
     upgrades:       {},
     quests:         {},  // { questId: true } — completed quests
     autoOpenItems:  false,
@@ -1772,6 +2010,8 @@ function freshState(){
     batch:          { limit:0, done:0 },
     summoning:      { active:null, autoRenew:true },
     prayer:         { points:0, maxPoints:1, active:{}, drainCounter:0, lastRegen:0 },
+    achievements:  {},
+    collectionLog: {},
     saveVersion:  1,
     lastSaved:    Date.now(),
   };
@@ -3087,6 +3327,7 @@ function completeAction(action, silent){
     }
     if (action.questReq === 'elf_city' && Math.random() < 0.01){
       grantItem('crystal_tool_seed', 'Crystal tool seed');
+      logCollectionDrop('agility_hefin', 'crystal_tool_seed');
       if (!silent) log(`💎 Found a crystal tool seed on the Hefin course!`);
     }
     grantXp('agility', xp, silent);
@@ -3103,11 +3344,14 @@ function completeAction(action, silent){
     ];
     for (const [sid, xp] of xpGrants) grantXp(sid, xp, silent);
     const _dropBoost = getSummonBonus('drop_rate_pct');
+    const _clogSrc = MOB_CLOG_SOURCE[action.id];
+    state.combat.kills[action.id] = (state.combat.kills[action.id] || 0) + 1;
     for (const drop of (action.drops || [])){
       const adjChance = Math.min(1.0, drop.chance * (1 + _dropBoost));
       if (Math.random() < adjChance){
         const qty = (drop.min || 1) + Math.floor(Math.random() * ((drop.max || 1) - (drop.min || 1) + 1));
         grantItem(drop.item, drop.itemName, qty);
+        if (drop.notable && _clogSrc) logCollectionDrop(_clogSrc, drop.item, qty);
         if (!silent && drop.notable) log(`+${qty} ${drop.itemName}`);
       }
     }
@@ -3142,6 +3386,7 @@ function completeAction(action, silent){
   }
   // Stop single-completion actions (floors, future one-shots)
   if (action.single){ state.current = null; state.progress = 0; }
+  if (!silent) checkAchievements();
   // Batch limit: stop after N completions
   if ((state.batch?.limit || 0) > 0){
     state.batch.done++;
@@ -3184,17 +3429,20 @@ function checkBonusDrop(skillId, action){
       id = 'birds_nest_seeds'; name = "Bird's nest (seeds)";
     }
     grantItem(id, name);
+    logCollectionDrop('woodcutting_bonus', id);
     log(`🪺 A bird's nest falls from the tree!`);
   }
 
   // Fishing: Kraken's Beak (1% from fish levelReq >= 60)
   if (skillId === 'fishing' && action.levelReq >= 60 && Math.random() < 0.01){
     grantItem('krackens_beak', "Kraken's Beak");
+    logCollectionDrop('fishing_bonus', 'krackens_beak');
     log("🦑 You wrestle a Kraken's Beak from the catch!");
   }
   // Fishing: Map to Tavia (1-in-100,000 from fish levelReq >= 85)
   if (skillId === 'fishing' && action.levelReq >= 85 && Math.random() < 0.00001){
     grantItem('map_to_tavia', 'Map to Tavia');
+    logCollectionDrop('fishing_bonus', 'map_to_tavia');
     log("🗺️ You find a mysterious map tucked inside the fish!");
   }
 
@@ -3209,6 +3457,7 @@ function checkBonusDrop(skillId, action){
   if (skillId === 'hunter' && !action.item.includes('impling_jar')){
     if (Math.random() < (action.levelReq >= 55 ? 0.01 : 0.005)){
       grantItem('dragon_impling_jar', 'Dragon impling jar');
+      logCollectionDrop('hunter_bonus', 'dragon_impling_jar');
       log(`🦋 A dragon impling escapes your trap — you manage to jar it!`);
     }
   }
@@ -3222,6 +3471,125 @@ function completeQuest(questId){
   render();
 }
 
+/* ---- Collection Log + Achievements ---- */
+function logCollectionDrop(sourceId, itemId, qty){
+  qty = qty || 1;
+  if (!CLOG_SOURCE_MAP[sourceId]?.has(itemId)) return;
+  if (!state.collectionLog[sourceId]) state.collectionLog[sourceId] = {};
+  state.collectionLog[sourceId][itemId] = (state.collectionLog[sourceId][itemId] || 0) + qty;
+}
+
+function getTotalLevel(){
+  return SKILL_ROADMAP.filter(s => s.implemented)
+    .reduce((sum, s) => sum + levelForXp(state.skills[s.id]?.xp || 0), 0);
+}
+
+function checkAchievements(){
+  for (const ach of ACHIEVEMENTS){
+    if (state.achievements[ach.id]) continue;
+    try {
+      if (ach.checkFn()){
+        state.achievements[ach.id] = true;
+        log(`🏆 Achievement unlocked: ${ach.name}!`);
+      }
+    } catch(e){}
+  }
+}
+
+let achFilter = 'all';
+function openAchievements(){ $('achievementsOverlay').classList.add('open'); renderAchievements(); }
+function closeAchievements(){ $('achievementsOverlay').classList.remove('open'); }
+function setAchFilter(f){ achFilter = f; renderAchievements(); }
+function openCollectionLog(){ $('collectionLogOverlay').classList.add('open'); renderCollectionLog(); }
+function closeCollectionLog(){ $('collectionLogOverlay').classList.remove('open'); }
+
+function renderAchievements(){
+  const list = $('achievementsList');
+  if (!list) return;
+  const filterBtns = $('achFilterBtns');
+  if (filterBtns){
+    filterBtns.innerHTML = '';
+    for (const [f, label] of [['all','All'],['hide_completed','Hide Completed'],['hide_locked','Hide Locked']]){
+      const b = document.createElement('button');
+      b.className = 'mini';
+      if (achFilter === f) b.style.cssText = 'background:var(--accent);color:#fff;border-color:var(--accent);';
+      b.textContent = label;
+      b.onclick = () => setAchFilter(f);
+      filterBtns.appendChild(b);
+    }
+  }
+  const completed = Object.keys(state.achievements||{}).length;
+  const total = ACHIEVEMENTS.length;
+  list.innerHTML = '';
+  const prog = document.createElement('div');
+  prog.style.cssText = 'font-size:12px;color:var(--dim);margin-bottom:8px;';
+  prog.textContent = `${completed} / ${total} achievements unlocked`;
+  list.appendChild(prog);
+  const cats = [...new Set(ACHIEVEMENTS.map(a => a.category))];
+  for (const cat of cats){
+    const catAchs = ACHIEVEMENTS.filter(a => a.category === cat);
+    let visible = catAchs;
+    if (achFilter === 'hide_completed') visible = visible.filter(a => !state.achievements[a.id]);
+    if (achFilter === 'hide_locked') visible = visible.filter(a => !a.lockFn?.());
+    if (!visible.length) continue;
+    const hdr = document.createElement('div');
+    hdr.className = 'ach-cat-hdr';
+    hdr.textContent = cat;
+    list.appendChild(hdr);
+    for (const ach of visible){
+      const done = !!state.achievements[ach.id];
+      const locked = !done && !!ach.lockFn?.();
+      const card = document.createElement('div');
+      card.className = 'ach-card' + (done ? ' done' : '') + (locked ? ' locked' : '');
+      card.innerHTML = `<span class="ach-icon">${ach.icon}</span><div><div class="ach-name">${ach.name}</div><div class="ach-desc">${ach.desc}</div></div><span class="ach-status">${done ? '✅' : locked ? '🔒' : ''}</span>`;
+      list.appendChild(card);
+    }
+  }
+}
+
+function renderCollectionLog(){
+  const el = $('collectionLogContent');
+  if (!el) return;
+  el.innerHTML = '';
+  const totalItems = COLLECTION_LOG_SOURCES.reduce((s, src) => s + src.items.length, 0);
+  const obtainedItems = COLLECTION_LOG_SOURCES.reduce((s, src) => {
+    const srcLog = state.collectionLog?.[src.id] || {};
+    return s + src.items.filter(i => srcLog[i.id]).length;
+  }, 0);
+  const summary = document.createElement('div');
+  summary.style.cssText = 'font-size:12px;color:var(--dim);margin-bottom:12px;';
+  summary.textContent = `${obtainedItems} / ${totalItems} items obtained across all sources`;
+  el.appendChild(summary);
+  const cats = [...new Set(COLLECTION_LOG_SOURCES.map(s => s.category))];
+  for (const cat of cats){
+    const hdr = document.createElement('div');
+    hdr.className = 'clog-cat-hdr';
+    hdr.textContent = cat;
+    el.appendChild(hdr);
+    for (const src of COLLECTION_LOG_SOURCES.filter(s => s.category === cat)){
+      const srcLog = state.collectionLog?.[src.id] || {};
+      const found = src.items.filter(i => srcLog[i.id]).length;
+      const srcDiv = document.createElement('div');
+      srcDiv.className = 'clog-source';
+      const srcHdr = document.createElement('div');
+      srcHdr.className = 'clog-source-hdr';
+      srcHdr.innerHTML = `<span>${src.name}</span><span class="clog-progress">${found} / ${src.items.length}</span>`;
+      srcDiv.appendChild(srcHdr);
+      const itemsDiv = document.createElement('div');
+      itemsDiv.className = 'clog-items';
+      for (const item of src.items){
+        const cnt = srcLog[item.id] || 0;
+        const tile = document.createElement('div');
+        tile.className = 'clog-item' + (cnt > 0 ? ' found' : ' unfound');
+        tile.innerHTML = `<div class="clog-item-icon">${item.icon || '❓'}</div><span class="clog-item-name">${item.name}</span>${cnt > 0 ? `<span class="clog-item-count">${cnt >= 1000 ? (cnt/1000).toFixed(1)+'k' : cnt}×</span>` : ''}`;
+        itemsDiv.appendChild(tile);
+      }
+      srcDiv.appendChild(itemsDiv);
+      el.appendChild(srcDiv);
+    }
+  }
+}
+
 function openItem(itemId){
   if ((state.inventory[itemId] || 0) < 1) return;
   state.inventory[itemId]--;
@@ -3233,8 +3601,11 @@ function openItem(itemId){
   reward = reward || entry.rewards[entry.rewards.length - 1];
   const qty = reward.count || 1;
   grantItem(reward.id, reward.name, qty);
+  const _openClogSrc = OPENABLE_CLOG_SOURCE[itemId];
+  if (_openClogSrc) logCollectionDrop(_openClogSrc, reward.id, qty);
   const qtyStr = qty > 1 ? `${qty.toLocaleString()}× ` : '';
   log(`📦 Opened ${state.itemNames[itemId]}: received ${qtyStr}${reward.name}!`);
+  checkAchievements();
   render();
 }
 
@@ -4306,6 +4677,9 @@ function init(){
   if (!state.archaeology.artifacts)   state.archaeology.artifacts   = {};
   if (!state.archaeology.activePerks) state.archaeology.activePerks = {};
   if (!state.batch) state.batch = { limit:0, done:0 };
+  if (!state.achievements)  state.achievements  = {};
+  if (!state.collectionLog) state.collectionLog = {};
+  if (!state.combat.kills)  state.combat.kills  = {};
   if (!state.summoning) state.summoning = { active:null, autoRenew:true };
   if (state.summoning.autoRenew == null) state.summoning.autoRenew = true;
   if (state.summoning.active && Date.now() >= state.summoning.active.expiresAt){
