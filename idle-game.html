@@ -2802,7 +2802,6 @@ function tick(){
       const action = getAction(state.current.skillId, state.current.actionId);
       if (action){
         if (state.current.skillId === 'archaeology' && action.earlyChance && Math.random() < action.earlyChance){
-          state.progress = 0;
           completeAction(action);
         } else {
           state.progress++;
@@ -2982,12 +2981,23 @@ function completeAction(action, silent){
     const siteArtifacts = ARCH_ARTIFACTS.filter(a => a.siteId === action.id);
     if (!siteArtifacts.length){ state.current = null; state.progress = 0; return; }
     const artifact = siteArtifacts[Math.floor(Math.random() * siteArtifacts.length)];
-    const prev  = state.archaeology.artifacts[artifact.id] || 0;
+    const prev = state.archaeology.artifacts[artifact.id] || 0;
+    // Past needed: extra piece → +10% XP, no counter change
+    if (prev >= artifact.needed){
+      grantXp('archaeology', artifact.xp * 1.1, silent);
+      if (!silent) log(`🏺 Extra ${artifact.name} — +10% XP`);
+      return;
+    }
+    // Progressive success chance: 75% at 0/needed → 25% at (needed-1)/needed
+    const successChance = 0.75 - 0.50 * (prev / Math.max(1, artifact.needed - 1));
+    if (Math.random() > successChance){
+      if (!silent) log(`🏺 The site was disturbed — no artefact found.`);
+      return;
+    }
     const count = prev + 1;
     state.archaeology.artifacts[artifact.id] = count;
     if (!silent){
-      if (count <= artifact.needed)
-        log(`🏺 Found: ${artifact.name} (${count}/${artifact.needed})`);
+      log(`🏺 Found: ${artifact.name} (${count}/${artifact.needed})`);
       if (count === artifact.needed){
         log(`✨ Collection complete — perk unlocked: ${artifact.perkName}!`);
         const activeCount = Object.keys(state.archaeology.activePerks).length;
@@ -3020,7 +3030,10 @@ function completeAction(action, silent){
   }
   // give item (null for consume-only skills like Firemaking)
   if (action.item){
-    grantItem(action.item, action.itemName, action.count || 1);
+    let qty = action.count || 1;
+    if (state.current?.skillId === 'divination' && !action.transmute && action.item.endsWith('_energy'))
+      qty = Math.floor(Math.random() * 5) + 1;
+    grantItem(action.item, action.itemName, qty);
   }
   // Tavia's rod: 1% chance to upgrade the caught fish to the next tier
   if (action.item && state.current?.skillId === 'fishing' &&
