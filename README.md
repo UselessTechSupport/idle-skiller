@@ -6,63 +6,116 @@ A 2D single-player idle/incremental game inspired by RuneScape 3. Built as a sin
 
 Open `idle-game.html` in any modern browser. That's it.
 
-Progress is saved automatically to `localStorage` every 30 seconds. Offline gains are applied when you reopen the file (capped at 12 hours).
+Progress is saved automatically every 10 seconds to `localStorage`. Offline gains are applied when you reopen the file (capped at 12 hours).
 
 ## Current state
 
-**17 of 29 skills implemented.** The game is actively in development.
+**24 of 29 skills implemented.** The game is actively in development.
 
 ### Implemented skills
 
-| Skill | Type | Actions | Notes |
+#### Gathering
+
+| Skill | Max Lv | Actions | Notes |
 |---|---|---|---|
-| Woodcutting | Gathering | 9 trees (Tree → Eternal magic) | Tool upgrades (bronze axe → T100) |
-| Mining | Gathering | 12 rocks (Copper → Primal) | Tool upgrades (bronze pickaxe → T100) |
-| Fishing | Gathering | 16 fish (Shrimps → Sailfish) | Rod upgrades (wood → T99); bonus Kraken's Beak drop |
-| Divination | Gathering | 10 wisps (Pale → Incandescent) + 44 transmutation actions | Gathers divine energy; transmutes gathered items up 1 tier (flat 10% breakdown → divine dust) |
-| Smithing | Artisan | 10 bars (Bronze → Primal) | Consumes ore; produces bars used by tool upgrades |
-| Firemaking | Artisan | 10 log tiers | Consumes logs |
-| Cooking | Artisan | 16 fish (Shrimps → Sailfish) | Burn mechanic (scales with level); cooking gauntlets halve burn chance |
-| Fletching | Artisan | 47 actions | Headless arrows, unstrung bows, unstrung crossbows, arrow assembly; splinter mechanic on log consumption |
-| Crafting | Artisan | 53 actions | Gem cutting (7 gems), jewellery (rings + amulets), leather armour, dragonhide armour (5 tiers), mage armour (3 tiers); action categories shown as headers in UI |
-| Farming | Gathering | 7 herb seeds (background skill) | Grows in 5 min; harvest for 3–15 herbs; auto-replant toggle; runs while doing other skills |
-| Herblore | Artisan | 21 actions (7 potion types × 3 tiers) | Herbs from Farming/combat drops; consumption system deferred |
-| Dungeoneering | Support | 3 floor types (Small, Large, Hardmode) | Earns tokens; auto-loops until stopped; token shop coming |
-| Melee / Ranged / Magic / Necromancy | Combat | 11 mobs, 10 slayer monsters, 6 bosses | 4 combat styles; Defensive mode splits XP with Defence; Constitution trains passively per kill |
-| Defence | Combat | trained via combat | Gains XP in Defensive mode |
-| Constitution | Combat | trained via combat | Gains XP on every kill (50% of action XP) |
+| Woodcutting | 110 | 13 trees (Tree → Eternal magic) | Tool upgrades (bronze axe → T100); bird's nest bonus drops |
+| Mining | 110 | 13 rocks (Copper → Primal + Rune essence) | Tool upgrades (bronze pickaxe → T100); geode bonus drops |
+| Fishing | 99 | 16 fish (Shrimps → Sailfish) | Tool upgrades (rod → Tavia's rod); Kraken's Beak + Map to Tavia rare drops |
+| Farming | 120 | 7 herb seeds | Background skill — grows in 5 min while you train anything else; harvest 3–15 herbs; auto-replant toggle; speed up with Herb Patch upgrade |
+| Hunter | 99 | 18 actions | Bird Snare (raw bird meat), Deadfall (kebbit fur → Hunter Leather via Crafting), Box Trap (chinchompas), Net Trap (salamander weapons), Pitfall (kyatt fur); Impling Jars openable for loot |
+| Divination | 99 | 10 wisps + 54 transmutations | Gathers energy; transmutes logs/ores/fish/gems up one tier; 10% breakdown chance → divine dust |
+
+#### Artisan
+
+| Skill | Max Lv | Actions | Notes |
+|---|---|---|---|
+| Smithing | 110 | 11 bar types (Bronze → Primal) + generated armour/weapons | Consumes ores; bars feed tool upgrades; batch crafting (×1 ×5 ×? ×100) |
+| Firemaking | 110 | 10 log tiers | Consumes logs for XP only; 15% fire spirit bonus event |
+| Cooking | 99 | 16 fish | Burn chance 20% → 0% over 10 levels above req; halved by Cooking Range upgrade |
+| Fletching | 110 | 38 actions | Headless arrows, unstrung short/long bows, crossbows, arrow assembly; splinter mechanic (20% → 0%) |
+| Crafting | 110 | 60 actions | Gem cutting (7), jewellery (rings + amulets), Leather Armour, Hunter Leather (kebbit + kyatt), Dragonhide (5 tiers), Mage Armour (3 tiers); batch crafting |
+| Herblore | 120 | 18 actions | 6 potion types × 3 tiers (Lesser / Normal / Supreme); herbs from Farming |
+| Runecrafting | 110 | 11 rune altars (Air → Soul) | Agility bonus speeds up crafting; +5 coming-soon infusion actions visible at lv 90+ |
+| Construction | 99 | 10 plank types + 8 permanent upgrades | Upgrades unlock in-game buildings: Sawmill, Furnace, Cooking Range, Herb Patch, Study, Workshop, Manor, Altar |
+
+#### Combat
+
+| Skill | Max Lv | Notes |
+|---|---|---|
+| Melee | 120 | Primary combat style; trains Attack + Constitution |
+| Ranged | 120 | Trains Ranged + Constitution |
+| Magic | 120 | Trains Magic + Constitution |
+| Defence | 99 | Gains XP in Defensive mode |
+| Constitution | 99 | Starts at lv 10; gains XP on every kill (50% of action XP) |
+| Prayer | 99 | Bury bones / use altar (×2.5 or ×3.5 XP); 16 active prayers across 4 tiers; drain system; protect prayers reduce damage 50% |
+
+**Mobs:** 11 standard + 10 slayer-locked (Crawling Hand → Abyssal Demon) + 6 bosses (Giant Mole, KBD, Dagannoth Kings, Commander Zilyana, General Graardor, Nex)
+
+#### Support
+
+| Skill | Max Lv | Actions | Notes |
+|---|---|---|---|
+| Agility | 99 | 7 courses (Gnome → Hefin) | Scaled XP; Wilderness course drops PK coins; Hefin requires quest + 70 Thieving; bonuses to Thieving pick/lock and Runecrafting speed |
+| Thieving | 99 | 19 actions | Pickpocket (9 NPCs, catch/stun mechanic) + Locks (10 chests); seeds, gems, and coins from drops; agility gives extra loot chance |
+| Slayer | 120 | 6 masters (Turael → Duradel) | Task assignment system; 2–30 pts/task; kill-tracking per mob; task completion bonus XP; Points Shop (5 unlocks incl. boss tasks, XP boost, extended tasks) |
+| Dungeoneering | 120 | 3 floor types | Time-based floors; earns tokens; token shop: Auto-Eat (500 tokens) |
+| Archaeology | 120 | 6 dig sites, 18 artefacts | Artefact restoration grants permanent perks (up to 3 active); perks include XP%, speed%, stat boosts, HP regen |
 
 ### Engine features
 
-- **0.6s game tick** — matches RuneScape's tick rate
-- **Real RS3 XP curve** — level 2 = 83 XP, level 99 ≈ 13M XP, level 120 cap supported
-- **Ingredient system** — actions can require and consume items from inventory
-- **Multi-item production** — a single action can produce batches (e.g. 15–120 headless arrows per log)
-- **Failure mechanics** — cooking burns fish; fletching splinters logs (both scale ~20%→0% over 10 levels); divination transmutation has a flat 10% breakdown chance (produces divine dust, scales with tier)
-- **Tool upgrade shop** — per-skill tool tiers that increase tick speed
-- **Offline progress** — calculates gains for up to 12h while the tab was closed
-- **Save/load/autosave** — localStorage with in-memory fallback for sandboxed environments
-- **Bonus drops** — rare item drops on action completion (e.g. Kraken's Beak from fishing)
-- **Level-gated content** — actions unlock automatically as skill levels increase
+**Core**
+- 0.6s game tick — RuneScape's tick rate
+- Real RS3 XP curve — level 2 = 83 XP, level 99 ≈ 13M, level 120 supported
+- Autosave every 10 seconds (localStorage + in-memory fallback for sandboxed environments)
+- Offline progress — calculates up to 12h of gains on load; "while you were away" popup
+
+**Crafting / production**
+- Ingredient system — actions consume items from inventory
+- Batch crafting — ×1 / ×5 / ×? / ×100 buttons on all ingredient-consuming actions; batch counter shown in progress bar
+- Failure mechanics — cooking burns, fletching splinters (both scale 20%→0% over 10 levels); Divination transmutation 10% flat breakdown
+- Multi-output actions — single tick can produce varied quantities (e.g. headless arrows)
+
+**Combat**
+- HP / Constitution system with per-mob HP values
+- 3 combat styles (Melee / Ranged / Magic) + Defensive mode (splits XP with Defence)
+- Food queue with configurable auto-eat threshold (unlocked via DG shop)
+- Active prayer drain system (per-tick drain based on equipped prayers)
+- Slayer task kill-tracking with bonus XP on completion
+
+**Progression**
+- Tool upgrade shop — per-skill tool tiers that reduce action ticks (axe, pickaxe, fishing rod, lockpick)
+- Construction upgrade shop — 8 permanent buildings with global stat/speed bonuses
+- Dungeoneering token shop
+- Slayer points shop — 5 permanent unlocks
+- Archaeology perk system — up to 3 active perks from artefact restoration
+- Upgrade Shop — various cross-skill enhancements
+
+**UI / QoL**
+- Always-visible Farming and Slayer sidebar panels (usable without navigating to the skill)
+- Inventory grouped by category — Openable, Equipment, Food & Potions, Seeds & Herbs, Ores & Bars, Logs, Fish, Gems & Hides, Runes & Energy, Ammo, Hunter, Currency, Other
+- Equipment panel with 11 slots (Head, Weapon, Offhand, Neck, Cape, Ring, Body, Gloves, Legs, Feet, Pet) and live stat totals
+- Prayer HUD in sidebar
+- Settings menu — Dark/Light theme, Compact mode, Hide locked actions, configurable log size
+- Stop button always visible next to action progress bar
+
+**Bonus drops**
+- Woodcutting: bird's nests (1%, 4 variants)
+- Mining: geodes (5%, 3 tiers up to metamorphic with 1-in-99k hydrix)
+- Fishing: Kraken's Beak (1% lv60+), Map to Tavia (1-in-100k lv85+)
+- Firemaking: fire spirit QTE event (15% per burn)
+- Hunter: dragon impling jar (0.5–1% per trap action)
 
 ### Not yet implemented (planned)
 
-**Gathering:** Hunter
+| Skill | Type |
+|---|---|
+| Summoning | Combat |
+| Invention | Elite |
 
-**Artisan:** Runecrafting, Construction
-- Fletching stringing (bowstring + unstrung bow → strung bow, 0 XP) — deferred
-- Smithing arrowheads (enables arrow assembly in Fletching) — deferred
-
-**Combat:** Attack, Strength, Defence, Constitution, Ranged, Magic, Prayer, Summoning, Necromancy
-
-**Support:** Agility, Thieving, Slayer, Archaeology
-
-**Elite:** Invention
-
-**Other:** PWA manifest + service worker (installable on mobile), Capacitor wrap for app stores
+**Deferred mechanics:** Fletching stringing (bowstring + unstrung → strung bow), Smithing arrowheads (enables arrow assembly), rune usage for Magic combat, PWA manifest + service worker for mobile install, Capacitor wrap for app stores
 
 ## Tech stack
 
-Plain HTML + CSS + JavaScript. Single file, no dependencies, no build step.
+Plain HTML + CSS + JavaScript. Single file (~4,200 lines), no dependencies, no build step.
 
 Cross-platform target: PWA first (PC/iOS/Android from browser), then Capacitor for app stores if needed.
