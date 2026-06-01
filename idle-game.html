@@ -13,13 +13,22 @@
     --line:#333c4a; --text:#e6e9ee; --dim:#8a93a3;
     --accent:#4caf50; --accent2:#2d7d33; --locked:#3a3f4a;
     --bar:#3a4250;
+    --fill-green:#4ade80; --fill-purple:#a78bfa;
   }
   body.light-mode{
-    --bg:#f0f2f5; --panel:#ffffff; --panel2:#e8eaed;
-    --line:#d0d5dd; --text:#1a202c; --dim:#5a6577;
-    --accent:#2d7d33; --accent2:#1a5221;
-    --locked:#d5d9e0; --bar:#c5cad5;
+    --bg:#f0f2f5; --panel:#ffffff; --panel2:#edf0f4;
+    --line:#c8cfd9; --text:#1a202c; --dim:#475569;
+    --accent:#2d7d33; --accent2:#d1fae5;
+    --locked:#d5d9e0; --bar:#d0d5e0;
+    --fill-green:#16a34a; --fill-purple:#7c3aed;
   }
+  /* Light mode targeted overrides for hardcoded colours */
+  body.light-mode .action-btn.selected{ background:var(--accent2); border-color:var(--accent); }
+  body.light-mode .action-btn.selected .meta{ color:#166534; }
+  body.light-mode .sec-hdr.equip-hdr{ border-color:#2563eb44; color:#2563eb; }
+  body.light-mode .sec-hdr.prayer-hdr{ border-color:#7c3aed44; color:#7c3aed; }
+  body.light-mode .mini.selected{ border-color:#7c3aed; color:#7c3aed; background:rgba(124,58,237,.1); }
+  body.light-mode .bar.xp > div{ background:#2563eb; }
   body.compact-mode .action-btn{ padding:5px 8px; }
   body.compact-mode .upgrade-tier{ padding:6px 10px; }
   body.compact-mode .card{ padding:10px 12px; }
@@ -2555,7 +2564,7 @@ function renderCombatPanel(){
         <span>🙏 Prayer</span><span>${pp} / ${pm}</span>
       </div>
       <div style="height:8px;background:var(--panel2);border-radius:4px;overflow:hidden;">
-        <div style="height:100%;width:${ppPct}%;background:#a78bfa;border-radius:4px;transition:width .3s;"></div>
+        <div style="height:100%;width:${ppPct}%;background:var(--fill-purple);border-radius:4px;transition:width .3s;"></div>
       </div>`;
     list.appendChild(ppDiv);
   }
@@ -2747,7 +2756,7 @@ function renderFarmTab(){
 
   if (!f.seed) {
     const msg = document.createElement('div');
-    msg.style.cssText = 'color:#aaa;margin-bottom:10px;';
+    msg.style.cssText = 'color:var(--dim);margin-bottom:10px;';
     msg.textContent = 'No crop planted.';
     el.appendChild(msg);
 
@@ -2798,17 +2807,17 @@ function renderFarmTab(){
       const barWrap = document.createElement('div');
       barWrap.style.cssText = 'background:#333;border-radius:4px;height:12px;margin-bottom:6px;overflow:hidden;';
       const bar = document.createElement('div');
-      bar.style.cssText = `background:#4ade80;height:100%;width:${pct}%;`;
+      bar.style.cssText = `background:var(--fill-green);height:100%;width:${pct}%;`;
       barWrap.appendChild(bar);
       el.appendChild(barWrap);
       const timeDiv = document.createElement('div');
-      timeDiv.style.cssText = 'color:#aaa;font-size:0.85em;margin-bottom:10px;';
+      timeDiv.style.cssText = 'color:var(--dim);font-size:0.85em;margin-bottom:10px;';
       timeDiv.textContent = `${mins}m ${secs < 10 ? '0' : ''}${secs}s remaining`;
       el.appendChild(timeDiv);
     } else {
       const btn = document.createElement('button');
       btn.className = 'mini';
-      btn.style.cssText = 'background:#4ade80;color:#000;margin-bottom:10px;';
+      btn.style.cssText = 'background:var(--fill-green);color:#000;margin-bottom:10px;';
       btn.textContent = 'Harvest';
       btn.onclick = harvestCrop;
       el.appendChild(btn);
@@ -2846,7 +2855,7 @@ function renderFarmSection(){
 
   if (!f.seed){
     const msg = document.createElement('div');
-    msg.style.cssText = 'color:#aaa;margin-bottom:10px;font-size:13px;';
+    msg.style.cssText = 'color:var(--dim);margin-bottom:10px;font-size:13px;';
     msg.textContent = 'No crop planted.';
     el.appendChild(msg);
 
@@ -2897,17 +2906,17 @@ function renderFarmSection(){
       const barWrap = document.createElement('div');
       barWrap.style.cssText = 'background:#333;border-radius:4px;height:10px;margin-bottom:6px;overflow:hidden;';
       const bar = document.createElement('div');
-      bar.style.cssText = `background:#4ade80;height:100%;width:${pct}%;`;
+      bar.style.cssText = `background:var(--fill-green);height:100%;width:${pct}%;`;
       barWrap.appendChild(bar);
       el.appendChild(barWrap);
       const timeDiv = document.createElement('div');
-      timeDiv.style.cssText = 'color:#aaa;font-size:12px;margin-bottom:10px;';
+      timeDiv.style.cssText = 'color:var(--dim);font-size:12px;margin-bottom:10px;';
       timeDiv.textContent = `${mins}m ${secs < 10 ? '0' : ''}${secs}s remaining`;
       el.appendChild(timeDiv);
     } else {
       const btn = document.createElement('button');
       btn.className = 'mini';
-      btn.style.cssText = 'background:#4ade80;color:#000;margin-bottom:10px;';
+      btn.style.cssText = 'background:var(--fill-green);color:#000;margin-bottom:10px;';
       btn.textContent = 'Harvest';
       btn.onclick = harvestCrop;
       el.appendChild(btn);
@@ -4690,7 +4699,7 @@ function renderPrayerHud(){
 
   let html = `<div style="margin-bottom:8px;">
     <div style="height:7px;background:var(--panel2);border-radius:4px;overflow:hidden;margin-bottom:3px;">
-      <div style="height:100%;width:${ppPct}%;background:#a78bfa;border-radius:4px;transition:width .3s;"></div>
+      <div style="height:100%;width:${ppPct}%;background:var(--fill-purple);border-radius:4px;transition:width .3s;"></div>
     </div>
     <div style="font-size:11px;color:var(--dim);text-align:right;">${pp} / ${pm} pts</div>
   </div>`;
@@ -4739,7 +4748,7 @@ function renderSummoningHud(){
     </div>
     <div style="font-size:12px;color:var(--accent);margin-bottom:6px;">${act.effectLabel}</div>
     <div style="height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;margin-bottom:3px;">
-      <div style="height:100%;width:${pct}%;background:#a78bfa;border-radius:3px;transition:width 1s;"></div>
+      <div style="height:100%;width:${pct}%;background:var(--fill-purple);border-radius:3px;transition:width 1s;"></div>
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;">
       <span style="font-size:11px;color:var(--dim);">${mins}:${String(secs).padStart(2,'0')} remaining</span>
