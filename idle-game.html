@@ -145,8 +145,9 @@
     border-radius:6px; cursor:pointer; font-size:14px; display:flex;
     justify-content:space-between; align-items:center; gap:8px;
   }
-  .action-btn:hover:not(:disabled){border-color:var(--accent);}
+  .action-btn:hover:not(:disabled):not(.locked){border-color:var(--accent);}
   .action-btn:disabled{opacity:.4; cursor:not-allowed;}
+  .action-btn.locked{opacity:.4; cursor:not-allowed;}
   .action-btn.selected{border-color:var(--accent); background:var(--accent2);}
   .action-btn .meta{font-size:12px; color:var(--dim); text-align:right;}
   .action-btn.selected .meta{color:#cfe9d0;}
@@ -161,6 +162,8 @@
   .inv-row{display:flex; justify-content:space-between; padding:4px 0;
     border-bottom:1px solid var(--line); font-size:14px;}
   .inv-row:last-child{border-bottom:none;}
+  .inv-cat-hdr{font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--dim); margin:8px 0 2px; padding-top:4px; border-top:1px solid var(--line);}
+  .inv-cat-hdr:first-child{border-top:none; margin-top:0; padding-top:0;}
   .inv-empty,.log-empty{color:var(--dim); font-size:13px; font-style:italic;}
   #log{max-height:180px; overflow-y:auto; font-size:13px;}
   #log div{padding:3px 0; border-bottom:1px solid var(--line); color:var(--dim);}
@@ -300,14 +303,15 @@
     <div class="barlabel"><span>Level <b id="wcLevel">1</b></span><span id="wcXpText">0 / 83 xp</span></div>
     <div class="bar xp"><div id="wcXpBar"></div></div>
 
-    <div class="now-doing" id="nowDoing">Not chopping anything. Pick a tree below.</div>
-    <div class="bar"><div id="actionBar"></div></div>
+    <div style="display:flex;align-items:flex-start;gap:8px;">
+      <div style="flex:1;min-width:0;">
+        <div class="now-doing" id="nowDoing">Not chopping anything. Pick a tree below.</div>
+        <div class="bar"><div id="actionBar"></div></div>
+      </div>
+      <button class="mini" id="stopBtn" style="flex-shrink:0;margin-top:1px;">⏹ Stop</button>
+    </div>
 
     <div id="treeList" style="margin-top:4px;"></div>
-
-    <div class="footer-actions">
-      <button class="mini" id="stopBtn">⏹ Stop</button>
-    </div>
   </div>
 
   <!-- RIGHT: equipment + prayer + inventory + log -->
@@ -506,6 +510,7 @@ const SEEDS = [
   {id:'spirit_weed_seed', name:'Spirit weed seed', herb:'spirit_weed', herbName:'Spirit weed'},
   {id:'torstol_seed',     name:'Torstol seed',     herb:'torstol',     herbName:'Torstol'},
 ];
+const HERB_IDS = new Set(SEEDS.map(s => s.herb));
 const AUTOSAVE_MS = 10000;            // autosave every 10s
 const SAVE_KEY = 'idleSkillerSave_v1';
 
@@ -935,7 +940,13 @@ const ACTIONS = {
     {id:'pickpocket_farmer',  name:'Pickpocket Farmer',       category:'Pickpocket', levelReq:10, xp:14.5,   ticks:3,
      catchChance:0.40, catchZeroAt:10, stunTicks:3,
      drops:[{item:'coins', itemName:'Coins', chance:1.0, min:15,  max:40,  notable:false},
-            {item:'herb_seed', itemName:'Herb seed', chance:0.10, min:1, max:3, notable:false}]},
+            {item:'tarromin_seed',   itemName:'Tarromin seed',   chance:0.020, min:1, max:3, notable:false},
+            {item:'ranarr_seed',     itemName:'Ranarr seed',     chance:0.020, min:1, max:2, notable:false},
+            {item:'dwarf_weed_seed', itemName:'Dwarf weed seed', chance:0.020, min:1, max:2, notable:false},
+            {item:'lantadyme_seed',  itemName:'Lantadyme seed',  chance:0.015, min:1, max:2, notable:false},
+            {item:'fellstalk_seed',  itemName:'Fellstalk seed',  chance:0.010, min:1, max:1, notable:false},
+            {item:'spirit_weed_seed',itemName:'Spirit weed seed',chance:0.010, min:1, max:1, notable:false},
+            {item:'torstol_seed',    itemName:'Torstol seed',    chance:0.005, min:1, max:1, notable:true}]},
     {id:'pickpocket_warrior', name:'Pickpocket Warrior',      category:'Pickpocket', levelReq:25, xp:26,     ticks:4,
      catchChance:0.38, catchZeroAt:10, stunTicks:4,
      drops:[{item:'coins', itemName:'Coins', chance:1.0, min:20,  max:60,  notable:false}]},
@@ -970,7 +981,13 @@ const ACTIONS = {
      drops:[{item:'coins', itemName:'Coins', chance:1.0, min:10,   max:40,   notable:false}]},
     {id:'lock_bronze',        name:'Bronze lock',    category:'Lock', levelReq:10, xp:25,  ticks:5, lock:true,
      drops:[{item:'coins', itemName:'Coins', chance:1.0, min:40,   max:100,  notable:false},
-            {item:'herb_seed', itemName:'Herb seed', chance:0.15, min:1, max:2, notable:false}]},
+            {item:'tarromin_seed',   itemName:'Tarromin seed',   chance:0.035, min:1, max:2, notable:false},
+            {item:'ranarr_seed',     itemName:'Ranarr seed',     chance:0.030, min:1, max:2, notable:false},
+            {item:'dwarf_weed_seed', itemName:'Dwarf weed seed', chance:0.025, min:1, max:2, notable:false},
+            {item:'lantadyme_seed',  itemName:'Lantadyme seed',  chance:0.025, min:1, max:1, notable:false},
+            {item:'fellstalk_seed',  itemName:'Fellstalk seed',  chance:0.015, min:1, max:1, notable:false},
+            {item:'spirit_weed_seed',itemName:'Spirit weed seed',chance:0.015, min:1, max:1, notable:false},
+            {item:'torstol_seed',    itemName:'Torstol seed',    chance:0.005, min:1, max:1, notable:true}]},
     {id:'lock_iron',          name:'Iron lock',      category:'Lock', levelReq:25, xp:45,  ticks:6, lock:true,
      drops:[{item:'coins', itemName:'Coins', chance:1.0, min:100,  max:300,  notable:false},
             {item:'uncut_sapphire', itemName:'Uncut sapphire', chance:0.10, min:1, max:1, notable:false}]},
@@ -1417,17 +1434,29 @@ const OPENABLE_ITEMS = {
   birds_nest_egg_blue: {rewards:[{id:'blue_bird_egg',  name:'Blue bird egg',  weight:1}]},
   birds_nest_egg_green:{rewards:[{id:'green_bird_egg', name:'Green bird egg', weight:1}]},
   baby_impling_jar:{rewards:[
-    {id:'coins',          name:'Coins',          weight:40, count:200},
-    {id:'herb_seed',      name:'Herb seed',      weight:30},
-    {id:'uncut_sapphire', name:'Uncut sapphire', weight:20},
-    {id:'uncut_emerald',  name:'Uncut emerald',  weight:10},
+    {id:'coins',           name:'Coins',           weight:40, count:200},
+    {id:'uncut_sapphire',  name:'Uncut sapphire',  weight:20},
+    {id:'uncut_emerald',   name:'Uncut emerald',   weight:10},
+    {id:'tarromin_seed',   name:'Tarromin seed',   weight:9},
+    {id:'ranarr_seed',     name:'Ranarr seed',     weight:7},
+    {id:'dwarf_weed_seed', name:'Dwarf weed seed', weight:6},
+    {id:'lantadyme_seed',  name:'Lantadyme seed',  weight:4},
+    {id:'fellstalk_seed',  name:'Fellstalk seed',  weight:2},
+    {id:'spirit_weed_seed',name:'Spirit weed seed',weight:1},
+    {id:'torstol_seed',    name:'Torstol seed',    weight:1},
   ]},
   eclectic_impling_jar:{rewards:[
-    {id:'coins',         name:'Coins',         weight:35, count:1000},
-    {id:'uncut_ruby',    name:'Uncut ruby',    weight:25},
-    {id:'uncut_diamond', name:'Uncut diamond', weight:20},
-    {id:'herb_seed',     name:'Herb seed',     weight:15},
-    {id:'uncut_emerald', name:'Uncut emerald', weight:5},
+    {id:'coins',           name:'Coins',           weight:35, count:1000},
+    {id:'uncut_ruby',      name:'Uncut ruby',      weight:25},
+    {id:'uncut_diamond',   name:'Uncut diamond',   weight:20},
+    {id:'uncut_emerald',   name:'Uncut emerald',   weight:5},
+    {id:'tarromin_seed',   name:'Tarromin seed',   weight:5},
+    {id:'ranarr_seed',     name:'Ranarr seed',     weight:4},
+    {id:'dwarf_weed_seed', name:'Dwarf weed seed', weight:3},
+    {id:'lantadyme_seed',  name:'Lantadyme seed',  weight:2},
+    {id:'fellstalk_seed',  name:'Fellstalk seed',  weight:0.5},
+    {id:'spirit_weed_seed',name:'Spirit weed seed',weight:0.3},
+    {id:'torstol_seed',    name:'Torstol seed',    weight:0.2},
   ]},
   dragon_impling_jar:{rewards:[
     {id:'coins',             name:'Coins',             weight:25000, count:10000},
@@ -1637,6 +1666,7 @@ function freshState(){
     settings:       { theme:'dark', compactMode:false, hideLocked:false, logLimit:60 },
     archaeology:    { artifacts:{}, activePerks:{} },
     slayer:         { points:0, task:null, unlocks:{}, totalTasksDone:0 },
+    batch:          { limit:0, done:0 },
     prayer:         { points:0, maxPoints:1, active:{}, drainCounter:0, lastRegen:0 },
     saveVersion:  1,
     lastSaved:    Date.now(),
@@ -2940,6 +2970,17 @@ function completeAction(action, silent){
   }
   // Stop single-completion actions (floors, future one-shots)
   if (action.single){ state.current = null; state.progress = 0; }
+  // Batch limit: stop after N completions
+  if ((state.batch?.limit || 0) > 0){
+    state.batch.done++;
+    if (state.batch.done >= state.batch.limit){
+      const n = state.batch.done;
+      if (!silent) log(`Batch done — made ${n}× ${action.name}.`);
+      state.current = null; state.progress = 0;
+      state.batch = { limit: 0, done: 0 };
+      return;
+    }
+  }
   if (!silent) checkBonusDrop(state.current?.skillId, action);
 }
 
@@ -3046,7 +3087,7 @@ function upgradeTool(skillId, tierId){
   render();
 }
 
-function startAction(skillId, actionId){
+function startAction(skillId, actionId, batchLimit = 0){
   const action = getAction(skillId, actionId);
   if (!action) return;
   if (levelForXp(state.skills[skillId].xp) < action.levelReq) return; // locked
@@ -3073,13 +3114,19 @@ function startAction(skillId, actionId){
     state.current = { skillId, actionId };
   }
   state.progress = 0;
-  log(`Started: ${action.name}.`);
+  state.batch = { limit: batchLimit, done: 0 };
+  log(`Started: ${action.name}${batchLimit > 0 ? ` (×${batchLimit})` : ''}.`);
   render();
+}
+function startBatchCustom(skillId, actionId){
+  const n = parseInt(prompt('How many to make?'), 10);
+  if (n > 0) startAction(skillId, actionId, n);
 }
 function stopAction(){
   if (state.current){
     state.current = null;
     state.progress = 0;
+    state.batch = { limit: 0, done: 0 };
     log('Stopped.');
     render();
   }
@@ -3364,12 +3411,13 @@ function renderActiveSkill(){
     const a = getAction(s.id, state.current.actionId);
     const curEffTicks = getCurrentEffTicks(a);
     actionPct = (state.progress / curEffTicks) * 100;
+    const batchBadge = state.batch?.limit > 0 ? ` <span style="color:var(--dim)">[${state.batch.done + 1}/${state.batch.limit}]</span>` : '';
     if (s.id === 'dungeoneering'){
       const remSecs = Math.ceil((curEffTicks - state.progress) * TICK_MS / 1000);
       const rm = Math.floor(remSecs / 60), rs = remSecs % 60;
       doing = `Now: <b>${a.name}</b> — ~${rm > 0 ? rm + 'm ' : ''}${rs}s remaining`;
     } else {
-      doing = `Now: <b>${a.name}</b>`;
+      doing = `Now: <b>${a.name}</b>${batchBadge}`;
     }
     if (s.id === 'thieving' && (state.current?.stunTicks || 0) > 0){
       const secs = Math.ceil(state.current.stunTicks * TICK_MS / 1000);
@@ -3510,10 +3558,28 @@ function renderActiveSkill(){
       const xphr = a.xp > 0 ? ` · ${Math.round(a.xp * 6000 / a.ticks).toLocaleString()} xp/hr` : '';
       metaContent = `${ingLine}${a.xp} xp · ${(a.ticks*TICK_MS/1000).toFixed(1)}s${coinBadge}${xphr}`;
     }
-    btn.innerHTML = `<span>${a.name}${unlocked ? '' : ` 🔒 Lv ${a.levelReq}`}</span>
-                     <span class="meta">${metaContent}</span>`;
-    if (unlocked) btn.onclick = () => startAction(s.id, a.id);
-    list.appendChild(btn);
+    if (a.ingredients && unlocked){
+      // Batch-mode row for ingredient-consuming actions
+      const row = document.createElement('div');
+      row.className = 'action-btn' + (selected ? ' selected' : '');
+      row.innerHTML = `
+        <div style="flex:1;min-width:0;">
+          <span>${a.name}</span>
+          <div class="meta" style="margin-top:2px;">${metaContent}</div>
+        </div>
+        <div style="display:flex;gap:3px;flex-shrink:0;">
+          <button class="mini" onclick="startAction('${s.id}','${a.id}',1)">×1</button>
+          <button class="mini" onclick="startAction('${s.id}','${a.id}',5)">×5</button>
+          <button class="mini" onclick="startBatchCustom('${s.id}','${a.id}')">×?</button>
+          <button class="mini" onclick="startAction('${s.id}','${a.id}',100)">×100</button>
+        </div>`;
+      list.appendChild(row);
+    } else {
+      btn.innerHTML = `<span>${a.name}${unlocked ? '' : ` 🔒 Lv ${a.levelReq}`}</span>
+                       <span class="meta">${metaContent}</span>`;
+      if (unlocked) btn.onclick = () => startAction(s.id, a.id);
+      list.appendChild(btn);
+    }
   });
 
   if (s.id === 'prayer'){
@@ -3873,6 +3939,27 @@ function renderPrayerHud(){
 }
 
 /* ---- Items panel ---- */
+const ITEM_CAT_ORDER = [
+  'Openable','Equipment','Food & Potions','Seeds & Herbs',
+  'Ores & Bars','Logs','Fish','Gems & Hides','Runes & Energy',
+  'Ammo','Hunter','Currency','Other'
+];
+function getItemCat(id){
+  if (OPENABLE_ITEMS[id])                        return 'Openable';
+  if (EQUIP_SLOTS[id])                           return 'Equipment';
+  if (FOOD_HEALS[id] || id.endsWith('_potion'))  return 'Food & Potions';
+  if (id.endsWith('_seed') || HERB_IDS.has(id))  return 'Seeds & Herbs';
+  if (id === 'coins' || id.endsWith('_tokens') || id.endsWith('_points')) return 'Currency';
+  if (id.endsWith('_ore') || id.endsWith('_bar') || id === 'coal' || id === 'luminite_ore' || id === 'rune_bar') return 'Ores & Bars';
+  if (id.endsWith('_logs'))                      return 'Logs';
+  if (id.startsWith('raw_'))                     return 'Fish';
+  if (id.startsWith('uncut_') || id.startsWith('cut_') || id.includes('dragonhide') || id.includes('leather') || id.endsWith('_fur') || id.endsWith('_hide')) return 'Gems & Hides';
+  if (id.endsWith('_rune') || id.endsWith('_energy') || id.includes('_memory') || id === 'rune_essence' || id === 'pure_essence') return 'Runes & Energy';
+  if (id.endsWith('_arrow') || id.endsWith('_bolt') || id.includes('chinchompa'))  return 'Ammo';
+  if (id.endsWith('_bones') || id === 'bones' || id === 'raw_bird_meat' || id === 'raw_rabbit' || id === 'larupia_fur' || id === 'kyatt_fur' || id === 'kebbit_fur') return 'Hunter';
+  return 'Other';
+}
+
 function renderItemsPanel(){
   const el = $('invPanel');
   if (!el) return;
@@ -3883,17 +3970,22 @@ function renderItemsPanel(){
     return;
   }
 
-  // Sort: openable first, then equippable, then alphabetical
+  // Sort: by category order, then alphabetically within category
   keys.sort((a, b) => {
-    const ao = !!OPENABLE_ITEMS[a], bo = !!OPENABLE_ITEMS[b];
-    const ae = !!EQUIP_SLOTS[a],    be = !!EQUIP_SLOTS[b];
-    if (ao !== bo) return ao ? -1 : 1;
-    if (ae !== be) return ae ? -1 : 1;
+    const ca = ITEM_CAT_ORDER.indexOf(getItemCat(a));
+    const cb = ITEM_CAT_ORDER.indexOf(getItemCat(b));
+    if (ca !== cb) return ca - cb;
     return (state.itemNames[a]||a).localeCompare(state.itemNames[b]||b);
   });
 
   let html = '';
+  let lastCat = null;
   for (const k of keys){
+    const cat     = getItemCat(k);
+    if (cat !== lastCat){
+      lastCat = cat;
+      html += `<div class="inv-cat-hdr">${cat}</div>`;
+    }
     const qty     = state.inventory[k];
     const name    = state.itemNames[k] || k;
     const isEquip = !!EQUIP_SLOTS[k];
@@ -3990,6 +4082,7 @@ function init(){
   if (!state.archaeology) state.archaeology = { artifacts:{}, activePerks:{} };
   if (!state.archaeology.artifacts)   state.archaeology.artifacts   = {};
   if (!state.archaeology.activePerks) state.archaeology.activePerks = {};
+  if (!state.batch) state.batch = { limit:0, done:0 };
   if (!state.slayer) state.slayer = { points:0, task:null, unlocks:{}, totalTasksDone:0 };
   if (!state.slayer.unlocks) state.slayer.unlocks = {};
   if (state.slayer.totalTasksDone === undefined) state.slayer.totalTasksDone = 0;
