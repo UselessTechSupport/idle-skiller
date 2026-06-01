@@ -1995,6 +1995,8 @@ const memStore = {};
 function rawSave(k,v){ try{ if(storageOK) localStorage.setItem(k,v); else memStore[k]=v; } catch(e){ memStore[k]=v; } }
 function rawLoad(k){ try{ return storageOK ? localStorage.getItem(k) : (memStore[k] ?? null); } catch(e){ return memStore[k] ?? null; } }
 function rawDelete(k){ try{ if(storageOK) localStorage.removeItem(k); else delete memStore[k]; } catch(e){ delete memStore[k]; } }
+function encodeSave(s){ return btoa(unescape(encodeURIComponent(s))); }
+function decodeSave(s){ return decodeURIComponent(escape(atob(s))); }
 function getSaveKey(){ return `idleSkillerSave_v1_${activeCharId}`; }
 function loadCharIndex(){ try{ return JSON.parse(rawLoad(CHARS_KEY)||'[]'); }catch(e){ return []; } }
 function saveCharIndex(list){ rawSave(CHARS_KEY, JSON.stringify(list)); }
@@ -3762,7 +3764,7 @@ function exportCharacter(id){
   const entry = list.find(c => c.id === id);
   const saveData = id === activeCharId ? JSON.stringify(state) : rawLoad(`idleSkillerSave_v1_${id}`);
   if (!saveData){ log('Nothing to export.'); return; }
-  const str = JSON.stringify({ charName: entry?.name || 'Character', saveData });
+  const str = encodeSave(JSON.stringify({ charName: entry?.name || 'Character', saveData }));
   if (navigator.clipboard?.writeText){
     navigator.clipboard.writeText(str)
       .then(() => log(`✅ "${entry?.name}" copied to clipboard — paste it on another device to import.`))
@@ -3786,7 +3788,7 @@ function importCharacter(){
   const raw = $('importCharText')?.value?.trim();
   if (!raw){ log('Paste export data first.'); return; }
   try {
-    const obj = JSON.parse(raw);
+    const obj = JSON.parse(decodeSave(raw));
     const saveData = obj.saveData
       ? (typeof obj.saveData === 'string' ? obj.saveData : JSON.stringify(obj.saveData))
       : raw;
