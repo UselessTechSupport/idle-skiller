@@ -515,6 +515,33 @@
   </div>
 </div>
 
+<!-- New Character modal -->
+<div id="newCharOverlay" class="settings-overlay" onclick="if(event.target===this)closeNewChar()">
+  <div class="settings-modal" style="max-width:440px;width:95%;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <h2 style="margin:0;font-size:16px;">Create Character</h2>
+      <button class="mini" onclick="closeNewChar()">✕</button>
+    </div>
+    <input id="newCharNameInput" type="text" maxlength="24" placeholder="Character name…"
+      style="width:100%;box-sizing:border-box;padding:8px 10px;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:5px;font-size:14px;margin-bottom:14px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+      <button onclick="confirmCreateCharacter('normal')"
+        style="padding:14px 8px;background:var(--panel2);border:1px solid var(--line);border-radius:7px;cursor:pointer;color:var(--text);text-align:center;">
+        <div style="font-size:22px;margin-bottom:4px;">⚔️</div>
+        <div style="font-weight:600;font-size:13px;">Normal</div>
+        <div style="font-size:11px;color:var(--dim);margin-top:3px;">Death is temporary.<br>HP restores on defeat.</div>
+      </button>
+      <button onclick="confirmCreateCharacter('hardcore')"
+        style="padding:14px 8px;background:var(--panel2);border:2px solid #ef4444;border-radius:7px;cursor:pointer;color:var(--text);text-align:center;">
+        <div style="font-size:22px;margin-bottom:4px;">💀</div>
+        <div style="font-weight:600;font-size:13px;color:#f87171;">Hardcore</div>
+        <div style="font-size:11px;color:var(--dim);margin-top:3px;">One life only.<br>Death is permanent.</div>
+      </button>
+    </div>
+    <button class="mini" style="width:100%;" onclick="closeNewChar()">Cancel</button>
+  </div>
+</div>
+
 <!-- Characters overlay -->
 <div id="charactersOverlay" class="settings-overlay" onclick="if(event.target===this)closeCharacters()">
   <div class="settings-modal" style="max-width:560px;width:95%;max-height:85vh;overflow-y:auto;">
@@ -2035,6 +2062,8 @@ function freshState(){
     prayer:         { points:0, maxPoints:1, active:{}, drainCounter:0, lastRegen:0 },
     achievements:  {},
     collectionLog: {},
+    hardcore:     false,
+    dead:         false,
     saveVersion:  1,
     lastSaved:    Date.now(),
   };
@@ -2410,6 +2439,18 @@ function combatTick(){
     }
   }
   if (state.combat.hp <= 0){
+    if (state.hardcore){
+      state.dead         = true;
+      state.current      = null;
+      state.progress     = 0;
+      state.combat.mobHp = 0;
+      state.combat.hp    = 0;
+      save();
+      log('💀 You have been slain! Your Hardcore character is dead.');
+      log('   Open the Characters screen to view your final stats or delete the character.');
+      render();
+      return;
+    }
     log('☠️ You have been defeated! You retreat to safety.');
     state.current      = null;
     state.progress     = 0;
@@ -3654,6 +3695,7 @@ function upgradeTool(skillId, tierId){
 }
 
 function startAction(skillId, actionId, batchLimit = 0){
+  if (state.hardcore && state.dead){ log('This character has died — create a new character to keep playing.'); return; }
   const action = getAction(skillId, actionId);
   if (!action) return;
   if (levelForXp(state.skills[skillId].xp) < action.levelReq) return; // locked
@@ -3728,11 +3770,23 @@ function switchCharacter(id){
 function createCharacter(){
   const list = loadCharIndex();
   if (list.length >= MAX_CHARS){ log(`Max ${MAX_CHARS} characters reached.`); return; }
-  const name = prompt('Character name:', `Character ${list.length + 1}`);
-  if (!name) return;
+  const inp = $('newCharNameInput');
+  if (inp) inp.value = `Character ${list.length + 1}`;
+  closeCharacters();
+  $('newCharOverlay').classList.add('open');
+  setTimeout(() => { if (inp){ inp.focus(); inp.select(); } }, 50);
+}
+function closeNewChar(){ $('newCharOverlay').classList.remove('open'); }
+function confirmCreateCharacter(mode){
+  const list = loadCharIndex();
+  if (list.length >= MAX_CHARS){ log(`Max ${MAX_CHARS} characters reached.`); closeNewChar(); return; }
+  const raw = ($('newCharNameInput')?.value || '').trim();
+  const name = raw.slice(0,24) || `Character ${list.length + 1}`;
   const id = 'char_' + Date.now();
-  list.push({ id, name: name.trim().slice(0,24) || `Character ${list.length+1}`, lastSaved:Date.now(), totalLevel:0 });
+  const hardcore = mode === 'hardcore';
+  list.push({ id, name, lastSaved:Date.now(), totalLevel:0, hardcore, dead:false });
   saveCharIndex(list);
+  closeNewChar();
   switchCharacter(id);
 }
 
@@ -3827,13 +3881,15 @@ function renderCharacters(){
     const dateStr = `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
     const row = document.createElement('div');
     row.style.cssText = `display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;background:var(--panel2);border:1px solid ${isActive?'var(--accent)':'var(--line)'};margin-bottom:6px;flex-wrap:wrap;`;
+    const hcBadge   = c.hardcore && !c.dead ? `<span style="font-size:10px;color:#f87171;border:1px solid #ef4444;border-radius:3px;padding:1px 5px;margin-left:5px;">HC</span>` : '';
+    const deadBadge = c.dead ? `<span style="font-size:10px;color:#6b7280;border:1px solid #4b5563;border-radius:3px;padding:1px 5px;margin-left:5px;">☠️ DEAD</span>` : '';
     row.innerHTML = `
       <div style="flex:1;min-width:120px;">
-        <div style="font-weight:600;font-size:13px;">${isActive?'▶ ':''}${c.name.replace(/</g,'&lt;')}${isActive?' <span style="font-size:11px;color:var(--accent);">(active)</span>':''}</div>
+        <div style="font-weight:600;font-size:13px;">${isActive?'▶ ':''}${c.name.replace(/</g,'&lt;')}${hcBadge}${deadBadge}${isActive?' <span style="font-size:11px;color:var(--accent);">(active)</span>':''}</div>
         <div style="font-size:11px;color:var(--dim);">Total level ${c.totalLevel||0} · Saved ${dateStr}</div>
       </div>
       <div style="display:flex;gap:4px;flex-shrink:0;">
-        ${!isActive ? `<button class="mini" onclick="switchCharacter('${c.id}')">Play</button>` : ''}
+        ${!isActive && !c.dead ? `<button class="mini" onclick="switchCharacter('${c.id}')">Play</button>` : ''}
         <button class="mini" onclick="renameCharacter('${c.id}')">Rename</button>
         <button class="mini" onclick="exportCharacter('${c.id}')">Export</button>
         ${list.length>1 ? `<button class="mini" style="color:#f87171;border-color:#ef4444;" onclick="deleteCharacter('${c.id}')">Delete</button>` : ''}
@@ -4803,7 +4859,7 @@ function save(){
   rawSave(getSaveKey(), JSON.stringify(state));
   const list = loadCharIndex();
   const entry = list.find(c => c.id === activeCharId);
-  if (entry){ entry.lastSaved = state.lastSaved; entry.totalLevel = getTotalLevel(); saveCharIndex(list); }
+  if (entry){ entry.lastSaved = state.lastSaved; entry.totalLevel = getTotalLevel(); entry.hardcore = !!state.hardcore; entry.dead = !!state.dead; saveCharIndex(list); }
 }
 function load(){
   const raw = rawLoad(getSaveKey());
@@ -4894,6 +4950,13 @@ function init(){
   if (!state.upgrades) state.upgrades = {};
   if (state.combat.autoEatThreshold == null) state.combat.autoEatThreshold = 50;
   if (!state.saveVersion) state.saveVersion = 1; // v0 → v1: no data migration needed
+  if (state.hardcore == null) state.hardcore = false;
+  if (state.dead     == null) state.dead     = false;
+  const _charEntry = loadCharIndex().find(c => c.id === activeCharId);
+  if (_charEntry){
+    if (_charEntry.hardcore != null) state.hardcore = !!_charEntry.hardcore;
+    if (_charEntry.dead     != null) state.dead     = !!_charEntry.dead;
+  }
   if (!state.quests) state.quests = {};
   if (state.current?.skillId === 'thieving' && state.current.stunTicks)
     state.current.stunTicks = 0; // don't resume mid-stun after reload
