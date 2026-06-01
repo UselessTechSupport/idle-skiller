@@ -8,6 +8,8 @@ Open `idle-game.html` in any modern browser. That's it.
 
 Progress is saved automatically every 10 seconds to `localStorage`. Offline gains are applied when you reopen the file (capped at 12 hours).
 
+Up to 5 named characters are supported. Use the **👤 Characters** button to switch slots, rename, or delete characters. **Export** copies a character to your clipboard (or downloads a `.json` file) for backup or transfer to another device; **Import** accepts that same text or file to create a new slot.
+
 ## Current state
 
 **25 of 29 skills implemented.** The game is actively in development.
@@ -123,6 +125,6 @@ Progress is saved automatically every 10 seconds to `localStorage`. Offline gain
 
 ## Tech stack
 
-Plain HTML + CSS + JavaScript. Single file (~4,800 lines), no dependencies, no build step.
+Plain HTML + CSS + JavaScript. Single file (~5,000 lines), no dependencies, no build step.
 
 Cross-platform target: PWA first (PC/iOS/Android from browser), then Capacitor for app stores if needed.
