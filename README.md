@@ -10,6 +10,8 @@ Progress is saved automatically every 10 seconds to `localStorage`. Offline gain
 
 Up to 5 named characters are supported. Use the **👤 Characters** button to switch slots, rename, or delete characters. **Export** copies a character to your clipboard (or downloads a `.json` file) for backup or transfer to another device; **Import** accepts that same text or file to create a new slot.
 
+When creating a new character, choose between **Normal** (death restores HP and resets combat — no penalty) or **Hardcore** (one life only — if HP hits 0, the character is permanently dead and cannot be played again). Dead Hardcore characters remain in the list as a tombstone showing their final total level.
+
 ## Current state
 
 **25 of 29 skills implemented.** The game is actively in development.
