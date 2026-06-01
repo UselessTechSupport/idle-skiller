@@ -103,6 +103,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - Slayer points shop — 5 permanent unlocks
 - Archaeology perk system — up to 3 active perks from artefact restoration
 - Upgrade Shop — various cross-skill enhancements
+- General Shop — Buy/Sell overlay (🏪 button); sell excess items for coins; buy summoning charms
 
 **UI / QoL**
 - Always-visible Farming, Slayer, Prayer, and Summoning sidebar panels (usable without navigating to the skill)
@@ -131,6 +132,6 @@ When creating a new character, choose between **Normal** (death restores HP and 
 
 ## Tech stack
 
-Plain HTML + CSS + JavaScript. Single file (~5,000 lines), no dependencies, no build step.
+Plain HTML + CSS + JavaScript. Single file (~5,200 lines), no dependencies, no build step.
 
 Cross-platform target: PWA first (PC/iOS/Android from browser), then Capacitor for app stores if needed.
