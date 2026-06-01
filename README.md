@@ -10,7 +10,7 @@ Progress is saved automatically every 10 seconds to `localStorage`. Offline gain
 
 ## Current state
 
-**24 of 29 skills implemented.** The game is actively in development.
+**25 of 29 skills implemented.** The game is actively in development.
 
 ### Implemented skills
 
@@ -61,6 +61,12 @@ Progress is saved automatically every 10 seconds to `localStorage`. Offline gain
 | Dungeoneering | 120 | 3 floor types | Time-based floors; earns tokens; token shop: Auto-Eat (500 tokens) |
 | Archaeology | 120 | 6 dig sites, 18 artefacts | Artefact restoration grants permanent perks (up to 3 active); perks include XP%, speed%, stat boosts, HP regen |
 
+#### Combat (continued)
+
+| Skill | Max Lv | Actions | Notes |
+|---|---|---|---|
+| Summoning | 99 | 18 pouches | Craft pouches from charms (gold/green/crimson/blue) + secondary; charms drop from all combat mobs; 10-min familiar timer; auto-renew from inventory; passive effects: speed, XP, attack accuracy, drop rate, HP regen; Undead Familiars (lv 80–99) replace Necromancy content |
+
 ### Engine features
 
 **Core**
@@ -91,8 +97,8 @@ Progress is saved automatically every 10 seconds to `localStorage`. Offline gain
 - Upgrade Shop — various cross-skill enhancements
 
 **UI / QoL**
-- Always-visible Farming and Slayer sidebar panels (usable without navigating to the skill)
-- Inventory grouped by category — Openable, Equipment, Food & Potions, Seeds & Herbs, Ores & Bars, Logs, Fish, Gems & Hides, Runes & Energy, Ammo, Hunter, Currency, Other
+- Always-visible Farming, Slayer, Prayer, and Summoning sidebar panels (usable without navigating to the skill)
+- Inventory grouped by category — Openable, Equipment, Food & Potions, Seeds & Herbs, Summoning Pouches, Summoning, Ores & Bars, Logs, Fish, Gems & Hides, Runes & Energy, Ammo, Hunter, Currency, Other
 - Equipment panel with 11 slots (Head, Weapon, Offhand, Neck, Cape, Ring, Body, Gloves, Legs, Feet, Pet) and live stat totals
 - Prayer HUD in sidebar
 - Settings menu — Dark/Light theme, Compact mode, Hide locked actions, configurable log size
@@ -109,7 +115,6 @@ Progress is saved automatically every 10 seconds to `localStorage`. Offline gain
 
 | Skill | Type |
 |---|---|
-| Summoning | Combat |
 | Invention | Elite |
 
 **Deferred mechanics:** Fletching stringing (bowstring + unstrung → strung bow), Smithing arrowheads (enables arrow assembly), rune usage for Magic combat, PWA manifest + service worker for mobile install, Capacitor wrap for app stores
