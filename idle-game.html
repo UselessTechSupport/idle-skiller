@@ -521,7 +521,7 @@ const SKILL_ROADMAP = [
   {id:'mining',       name:'Mining',       type:'gathering', maxLevel:110, implemented:true},
   {id:'fishing',      name:'Fishing',      type:'gathering', maxLevel:99,  implemented:true},
   {id:'farming',      name:'Farming',      type:'gathering', maxLevel:120, implemented:true, background:true},
-  {id:'hunter',       name:'Hunter',       type:'gathering', maxLevel:99,  implemented:false},
+  {id:'hunter',       name:'Hunter',       type:'gathering', maxLevel:99,  implemented:true},
   {id:'divination',   name:'Divination',   type:'gathering', maxLevel:99,  implemented:true},
   // Artisan (8)
   {id:'crafting',     name:'Crafting',     type:'artisan', maxLevel:110, implemented:true},
@@ -876,6 +876,15 @@ const ACTIONS = {
     {id:'craft_leather_body',      name:'Leather body',      label:'Leather bodies made',    levelReq:14, xp:25,    ticks:2, item:'leather_body',      itemName:'Leather body',      category:'Leather Armour', ingredients:[{item:'leather',count:3,name:'Leather'}]},
     {id:'craft_leather_chaps',     name:'Leather chaps',     label:'Leather chaps made',     levelReq:18, xp:27,    ticks:2, item:'leather_chaps',     itemName:'Leather chaps',     category:'Leather Armour', ingredients:[{item:'leather',count:2,name:'Leather'}]},
 
+    // --- Hunter Leather Armour (kebbit/kyatt furs from Hunter) ---
+    {id:'craft_kebbit_vambs',  name:'Kebbit vambraces', label:'Hunter armour crafted', category:'Hunter Leather', levelReq:20, xp:28,  ticks:2, item:'kebbit_vambraces', itemName:'Kebbit vambraces', ingredients:[{item:'kebbit_fur', count:1, name:'Kebbit fur'}]},
+    {id:'craft_kebbit_cowl',   name:'Kebbit cowl',      label:'Hunter armour crafted', category:'Hunter Leather', levelReq:24, xp:35,  ticks:2, item:'kebbit_cowl',      itemName:'Kebbit cowl',      ingredients:[{item:'kebbit_fur', count:1, name:'Kebbit fur'}]},
+    {id:'craft_kebbit_chaps',  name:'Kebbit chaps',     label:'Hunter armour crafted', category:'Hunter Leather', levelReq:28, xp:48,  ticks:2, item:'kebbit_chaps',     itemName:'Kebbit chaps',     ingredients:[{item:'kebbit_fur', count:2, name:'Kebbit fur'}]},
+    {id:'craft_kebbit_body',   name:'Kebbit body',      label:'Hunter armour crafted', category:'Hunter Leather', levelReq:33, xp:65,  ticks:2, item:'kebbit_body',      itemName:'Kebbit body',      ingredients:[{item:'kebbit_fur', count:3, name:'Kebbit fur'}]},
+    {id:'craft_kyatt_vambs',   name:'Kyatt vambraces',  label:'Hunter armour crafted', category:'Hunter Leather', levelReq:45, xp:55,  ticks:2, item:'kyatt_vambraces',  itemName:'Kyatt vambraces',  ingredients:[{item:'kyatt_fur',  count:1, name:'Kyatt fur'}]},
+    {id:'craft_kyatt_chaps',   name:'Kyatt chaps',      label:'Hunter armour crafted', category:'Hunter Leather', levelReq:52, xp:78,  ticks:2, item:'kyatt_chaps',      itemName:'Kyatt chaps',      ingredients:[{item:'kyatt_fur',  count:2, name:'Kyatt fur'}]},
+    {id:'craft_kyatt_body',    name:'Kyatt body',       label:'Hunter armour crafted', category:'Hunter Leather', levelReq:58, xp:105, ticks:2, item:'kyatt_body',       itemName:'Kyatt body',       ingredients:[{item:'kyatt_fur',  count:3, name:'Kyatt fur'}]},
+
     // --- Dragonhide Armour (hides from future combat; royal overlaps black — same as RS3) ---
     {id:'craft_green_dhide_vambs', name:"Green d'hide vambraces", label:"Green d'hide vambraces made", levelReq:57, xp:62,  ticks:3, item:'green_dhide_vambs', itemName:"Green d'hide vambraces", category:'Dragonhide Armour', ingredients:[{item:'green_dragonhide', count:1, name:'Green dragonhide'}]},
     {id:'craft_green_dhide_chaps', name:"Green d'hide chaps",     label:"Green d'hide chaps made",     levelReq:60, xp:124, ticks:3, item:'green_dhide_chaps', itemName:"Green d'hide chaps",     category:'Dragonhide Armour', ingredients:[{item:'green_dragonhide', count:2, name:'Green dragonhide'}]},
@@ -1052,6 +1061,32 @@ const ACTIONS = {
     {id:'transmute_uncut_diamond',    name:'Transmute uncut diamond',    label:'Gems transmuted', category:'Transmute — Gems', levelReq:50, xp:15, ticks:3, transmute:true, item:'uncut_dragonstone', itemName:'Uncut dragonstone', ingredients:[{item:'uncut_diamond',    count:1, name:'Uncut diamond'},    {item:'lustrous_energy',     count:20, name:'Lustrous energy'}]},
     {id:'transmute_uncut_dragonstone', name:'Transmute uncut dragonstone', label:'Gems transmuted', category:'Transmute — Gems', levelReq:70, xp:19, ticks:3, transmute:true, item:'uncut_onyx',       itemName:'Uncut onyx',       ingredients:[{item:'uncut_dragonstone', count:1, name:'Uncut dragonstone'},{item:'radiant_energy',      count:30, name:'Radiant energy'}]},
     {id:'transmute_uncut_onyx',       name:'Transmute uncut onyx',       label:'Gems transmuted', category:'Transmute — Gems', levelReq:90, xp:23, ticks:3, transmute:true, item:'uncut_hydrix',     itemName:'Uncut hydrix',     ingredients:[{item:'uncut_onyx',       count:1, name:'Uncut onyx'},       {item:'incandescent_energy', count:40, name:'Incandescent energy'}]},
+  ],
+  hunter:[
+    // Bird Snare
+    {id:'crimson_swift',      name:'Crimson swift',        category:'Bird Snare',    levelReq:1,  xp:34,  ticks:5,  item:'raw_bird_meat',        itemName:'Raw bird meat'},
+    {id:'copper_longtail',    name:'Copper longtail',      category:'Bird Snare',    levelReq:9,  xp:61,  ticks:6,  item:'raw_bird_meat',        itemName:'Raw bird meat'},
+    {id:'tropical_wagtail',   name:'Tropical wagtail',     category:'Bird Snare',    levelReq:19, xp:95,  ticks:7,  item:'raw_bird_meat',        itemName:'Raw bird meat', count:2},
+    // Deadfall Trap
+    {id:'wild_kebbit',        name:'Wild kebbit',          category:'Deadfall Trap', levelReq:7,  xp:48,  ticks:5,  item:'kebbit_fur',           itemName:'Kebbit fur'},
+    {id:'barb_tailed_kebbit', name:'Barb-tailed kebbit',   category:'Deadfall Trap', levelReq:37, xp:168, ticks:8,  item:'kebbit_fur',           itemName:'Kebbit fur',     count:2},
+    // Box Trap
+    {id:'ferret',             name:'Ferret',               category:'Box Trap',      levelReq:27, xp:115, ticks:6,  item:'raw_rabbit',           itemName:'Raw rabbit'},
+    {id:'chinchompa',         name:'Chinchompa',           category:'Box Trap',      levelReq:53, xp:198, ticks:8,  item:'chinchompa',           itemName:'Chinchompa'},
+    {id:'red_chinchompa',     name:'Red chinchompa',       category:'Box Trap',      levelReq:63, xp:265, ticks:10, item:'red_chinchompa',       itemName:'Red chinchompa'},
+    {id:'black_chinchompa',   name:'Black chinchompa',     category:'Box Trap',      levelReq:73, xp:315, ticks:11, item:'black_chinchompa',     itemName:'Black chinchompa'},
+    // Net Trap
+    {id:'swamp_lizard',       name:'Swamp lizard',         category:'Net Trap',      levelReq:29, xp:152, ticks:7,  item:'swamp_lizard',         itemName:'Swamp lizard'},
+    {id:'orange_salamander',  name:'Orange salamander',    category:'Net Trap',      levelReq:47, xp:224, ticks:9,  item:'orange_salamander',    itemName:'Orange salamander'},
+    {id:'red_salamander',     name:'Red salamander',       category:'Net Trap',      levelReq:59, xp:272, ticks:11, item:'red_salamander',       itemName:'Red salamander'},
+    {id:'black_salamander',   name:'Black salamander',     category:'Net Trap',      levelReq:67, xp:304, ticks:12, item:'black_salamander',     itemName:'Black salamander'},
+    // Pitfall
+    {id:'larupia',            name:'Larupia',              category:'Pitfall',       levelReq:31, xp:98,  ticks:5,  item:'larupia_fur',          itemName:'Larupia fur'},
+    {id:'sabre_tooth_kyatt',  name:'Sabre-tooth kyatt',    category:'Pitfall',       levelReq:55, xp:300, ticks:9,  item:'kyatt_fur',            itemName:'Kyatt fur'},
+    // Impling Jar
+    {id:'baby_impling',       name:'Baby impling jar',     category:'Impling Jar',   levelReq:17, xp:20,  ticks:4,  item:'baby_impling_jar',     itemName:'Baby impling jar'},
+    {id:'eclectic_impling',   name:'Eclectic impling jar', category:'Impling Jar',   levelReq:50, xp:150, ticks:8,  item:'eclectic_impling_jar', itemName:'Eclectic impling jar'},
+    {id:'dragon_impling',     name:'Dragon impling jar',   category:'Impling Jar',   levelReq:83, xp:350, ticks:14, item:'dragon_impling_jar',   itemName:'Dragon impling jar'},
   ],
   herblore:[
     // Attack Potions
@@ -1381,6 +1416,26 @@ const OPENABLE_ITEMS = {
   birds_nest_egg_red:  {rewards:[{id:'red_bird_egg',   name:'Red bird egg',   weight:1}]},
   birds_nest_egg_blue: {rewards:[{id:'blue_bird_egg',  name:'Blue bird egg',  weight:1}]},
   birds_nest_egg_green:{rewards:[{id:'green_bird_egg', name:'Green bird egg', weight:1}]},
+  baby_impling_jar:{rewards:[
+    {id:'coins',          name:'Coins',          weight:40, count:200},
+    {id:'herb_seed',      name:'Herb seed',      weight:30},
+    {id:'uncut_sapphire', name:'Uncut sapphire', weight:20},
+    {id:'uncut_emerald',  name:'Uncut emerald',  weight:10},
+  ]},
+  eclectic_impling_jar:{rewards:[
+    {id:'coins',         name:'Coins',         weight:35, count:1000},
+    {id:'uncut_ruby',    name:'Uncut ruby',    weight:25},
+    {id:'uncut_diamond', name:'Uncut diamond', weight:20},
+    {id:'herb_seed',     name:'Herb seed',     weight:15},
+    {id:'uncut_emerald', name:'Uncut emerald', weight:5},
+  ]},
+  dragon_impling_jar:{rewards:[
+    {id:'coins',             name:'Coins',             weight:25000, count:10000},
+    {id:'uncut_dragonstone', name:'Uncut dragonstone', weight:20000},
+    {id:'uncut_onyx',        name:'Uncut onyx',        weight:15000},
+    {id:'dragon_arrow',      name:'Dragon arrow',      weight:38999, count:25},
+    {id:'uncut_hydrix',      name:'Uncut hydrix',      weight:1},
+  ]},
 };
 
 const EQUIPMENT_SLOTS = [
@@ -1403,6 +1458,11 @@ const ITEM_STATS = {
   berserker_ring:{ attack:8, defence:4 }, kbd_heads:{ defence:5 },
   leather_cowl:{ defence:3 }, leather_gloves:{ defence:2 }, leather_boots:{ defence:3 },
   leather_vambraces:{ defence:4 }, leather_body:{ defence:8 }, leather_chaps:{ defence:6 },
+  swamp_lizard:{ attack:25, range:20 }, orange_salamander:{ attack:40, range:35 },
+  red_salamander:{ attack:55, range:50 }, black_salamander:{ attack:70, range:65 },
+  kebbit_vambraces:{ range:5, defence:5 }, kebbit_cowl:{ range:5, defence:5 },
+  kebbit_chaps:{ range:10, defence:10 }, kebbit_body:{ range:14, defence:14 },
+  kyatt_vambraces:{ range:8, defence:8 }, kyatt_chaps:{ range:16, defence:16 }, kyatt_body:{ range:22, defence:22 },
   green_dhide_vambs:{ range:8, defence:8 },   green_dhide_chaps:{ range:16, defence:16 },  green_dhide_body:{ range:24, defence:24 },
   blue_dhide_vambs:{ range:12, defence:12 },  blue_dhide_chaps:{ range:24, defence:24 },   blue_dhide_body:{ range:36, defence:36 },
   black_dhide_vambs:{ range:15, defence:15 }, black_dhide_chaps:{ range:30, defence:30 },  black_dhide_body:{ range:45, defence:45 },
@@ -1447,15 +1507,19 @@ const ITEM_STATS = {
 
 const EQUIP_SLOTS = {
   abyssal_whip:'weapon', saradomin_sword:'weapon',
-  kbd_heads:'head', leather_cowl:'head', cloth_hat:'head', splitbark_helm:'head', lunar_helm:'head',
+  swamp_lizard:'weapon', orange_salamander:'weapon', red_salamander:'weapon', black_salamander:'weapon',
+  kbd_heads:'head', leather_cowl:'head', kebbit_cowl:'head', cloth_hat:'head', splitbark_helm:'head', lunar_helm:'head',
   torva_platebody:'body', bandos_chestplate:'body',
+  kebbit_body:'body', kyatt_body:'body',
   leather_body:'body',       green_dhide_body:'body',  blue_dhide_body:'body',
   black_dhide_body:'body',   red_dhide_body:'body',    royal_dhide_body:'body',
   cloth_robe_top:'body',     splitbark_top:'body',     lunar_torso:'body',
+  kebbit_chaps:'legs', kyatt_chaps:'legs',
   leather_chaps:'legs',      green_dhide_chaps:'legs', blue_dhide_chaps:'legs',
   black_dhide_chaps:'legs',  red_dhide_chaps:'legs',   royal_dhide_chaps:'legs',
   cloth_robe_bottom:'legs',  splitbark_bottom:'legs',  lunar_legs:'legs',
   leather_vambraces:'gloves', leather_gloves:'gloves',
+  kebbit_vambraces:'gloves', kyatt_vambraces:'gloves',
   green_dhide_vambs:'gloves', blue_dhide_vambs:'gloves',
   black_dhide_vambs:'gloves', red_dhide_vambs:'gloves', royal_dhide_vambs:'gloves',
   leather_boots:'feet',
@@ -2926,6 +2990,14 @@ function checkBonusDrop(skillId, action){
     fireSpirit = { expiresAt: Date.now() + 30000 };
     $('fireSpiritToast').classList.add('show');
     log(`🔥 A fire spirit appeared! Catch it before it disappears!`);
+  }
+
+  // Hunter: 1% chance of bonus dragon impling jar from lv55+ traps; 0.5% from lower
+  if (skillId === 'hunter' && !action.item.includes('impling_jar')){
+    if (Math.random() < (action.levelReq >= 55 ? 0.01 : 0.005)){
+      grantItem('dragon_impling_jar', 'Dragon impling jar');
+      log(`🦋 A dragon impling escapes your trap — you manage to jar it!`);
+    }
   }
 }
 
