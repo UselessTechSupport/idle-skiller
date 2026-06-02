@@ -57,7 +57,9 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Constitution | 99 | Starts at lv 10; gains XP on every kill (50% of action XP) |
 | Prayer | 99 | Bury bones / use altar (×2.5 or ×3.5 XP); 16 active prayers across 4 tiers; drain system; protect prayers reduce damage 50% |
 
-**Mobs:** 11 standard + 10 slayer-locked (Crawling Hand → Abyssal Demon) + 7 bosses (Giant Mole, Void Dragon, Leviathan Kings, Ancient Lich, Commander Solara, General Karg, The Harbinger)
+**Mobs:** 11 standard + 10 slayer-locked (Crawling Hand → Abyssal Demon) + 8 bosses (Goblin King, Giant Mole, Void Dragon, Leviathan Kings, Ancient Lich, Commander Solara, General Karg, The Harbinger)
+
+**Quests:** Goblin Diplomacy — collect a Goblin Diplomatic Note from goblins (1/100 drop, guaranteed at 1000kc), then defeat the Goblin King quest boss (one-time, no drops, significantly harder than the regular version) to unlock the Goblin King as a repeatable boss. The Quests combat tab shows quest progress and the quest boss.
 
 #### Support
 
