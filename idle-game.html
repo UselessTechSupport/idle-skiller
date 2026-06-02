@@ -1079,6 +1079,12 @@ const SELL_PRICES = {
   dungeoneering_cape:49500, archaeology_cape:49500, max_cape:5000000, comp_cape:5000000000,
   bronze_arrowhead:2, iron_arrowhead:4, steel_arrowhead:7,
   mithril_arrowhead:14, adamant_arrowhead:22, rune_arrowhead:55, dragon_arrowhead:150,
+  lesser_attack_potion:150,   attack_potion:400,   supreme_attack_potion:900,
+  lesser_defence_potion:150,  defence_potion:400,  supreme_defence_potion:900,
+  lesser_ranging_potion:150,  ranging_potion:400,  supreme_ranging_potion:900,
+  lesser_magic_potion:150,    magic_potion:400,    supreme_magic_potion:900,
+  lesser_summoning_potion:150,summoning_potion:400, supreme_summoning_potion:900,
+  lesser_prayer_potion:150,   prayer_potion:400,   supreme_prayer_potion:900,
 };
 
 /* ACTIONS: what you can DO in each skill.
@@ -2660,6 +2666,27 @@ const FOOD_HEALS = {
   cooked_rocktail:55, cooked_sailfish:70,
 };
 
+const POTION_EFFECTS = {
+  lesser_attack_potion:    { type:'combat', boostType:'melee',   boost:0.05, label:'+5% Melee'    },
+  attack_potion:           { type:'combat', boostType:'melee',   boost:0.10, label:'+10% Melee'   },
+  supreme_attack_potion:   { type:'combat', boostType:'melee',   boost:0.15, label:'+15% Melee'   },
+  lesser_defence_potion:   { type:'combat', boostType:'defence', boost:0.05, label:'+5% Defence'  },
+  defence_potion:          { type:'combat', boostType:'defence', boost:0.10, label:'+10% Defence' },
+  supreme_defence_potion:  { type:'combat', boostType:'defence', boost:0.15, label:'+15% Defence' },
+  lesser_ranging_potion:   { type:'combat', boostType:'ranged',  boost:0.05, label:'+5% Ranged'   },
+  ranging_potion:          { type:'combat', boostType:'ranged',  boost:0.10, label:'+10% Ranged'  },
+  supreme_ranging_potion:  { type:'combat', boostType:'ranged',  boost:0.15, label:'+15% Ranged'  },
+  lesser_magic_potion:     { type:'combat', boostType:'magic',   boost:0.05, label:'+5% Magic'    },
+  magic_potion:            { type:'combat', boostType:'magic',   boost:0.10, label:'+10% Magic'   },
+  supreme_magic_potion:    { type:'combat', boostType:'magic',   boost:0.15, label:'+15% Magic'   },
+  lesser_summoning_potion: { type:'summoning', restore:2  },
+  summoning_potion:        { type:'summoning', restore:5  },
+  supreme_summoning_potion:{ type:'summoning', restore:10 },
+  lesser_prayer_potion:    { type:'prayer', restore:0.25 },
+  prayer_potion:           { type:'prayer', restore:0.50 },
+  supreme_prayer_potion:   { type:'prayer', restore:1.00 },
+};
+
 const FAIL_MECHANICS = {
   cooking: {
     trigger: action => !!action.ingredients,
@@ -2752,7 +2779,7 @@ function freshState(){
     equipment: { head:null, weapon:null, offhand:null, neck:null, cape:null, ring:null, body:null, gloves:null, legs:null, feet:null, pet:null },
     stats:     { attack:1, range:1, mage:1, defence:1, prayer:1, summoning:1, dropRate:0 },
     farming:   { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false },
-    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, attackTimer:0, kills:{} },
+    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, attackTimer:0, kills:{}, potionBoosts:{} },
     upgrades:       {},
     quests:         {},  // { questId: true } — completed quests
     autoOpenItems:  false,
@@ -2843,6 +2870,12 @@ function getPrayerBoost(type){
     if (p && p.type === type && p.boost > best) best = p.boost;
   }
   return best;
+}
+
+function getPotionBoost(type){
+  const boost = state.combat?.potionBoosts?.[type];
+  if (!boost || Date.now() > boost.expiresAt) return 0;
+  return boost.boost;
 }
 
 function getSummonBonus(type){
@@ -3089,7 +3122,7 @@ function getAttackBonus(styleId, stats){
 function calcPlayerDamage(styleId, mob){
   const level    = effLvl(styleId);
   const bonus    = getAttackBonus(styleId, calcStats());
-  const effLevel = Math.floor(level * (1 + getPrayerBoost(styleId) + getSummonBonusForSkill('attack_pct', styleId)));
+  const effLevel = Math.floor(level * (1 + getPrayerBoost(styleId) + getPotionBoost(styleId) + getSummonBonusForSkill('attack_pct', styleId)));
   const maxHit   = Math.max(1, Math.floor(effLevel * 0.4) + 1 + Math.floor(bonus / 10));
   const def      = mob.stats.defence || 0;
   const hit      = Math.min(0.95, Math.max(0.1, 1 - def / (def + effLevel + bonus + 1)));
@@ -3100,7 +3133,7 @@ function calcPlayerDamage(styleId, mob){
 function calcMobDamage(mob){
   const mobAtk    = (mob.stats.style === 'mage' ? mob.stats.mage : mob.stats.attack) || mob.stats.attack || 1;
   const defBoost  = getPrayerBoost('defence');
-  const baseDef   = Math.floor(effLvl('defence') * (1 + defBoost)) + calcStats().defence + getCapeBonus('defence_flat', null) + getPetBonus('defence_flat', null);
+  const baseDef   = Math.floor(effLvl('defence') * (1 + defBoost + getPotionBoost('defence'))) + calcStats().defence + getCapeBonus('defence_flat', null) + getPetBonus('defence_flat', null);
   const archDef   = getArchBonus('defence_bonus');
   const playerDef = archDef ? Math.floor(baseDef * (1 + archDef)) : baseDef;
   const maxHit    = Math.max(1, Math.floor(mobAtk * 0.4) + 1);
@@ -3202,6 +3235,33 @@ function addFoodToQueue(itemId){
 
 function removeFoodFromQueue(index){
   state.combat.foodQueue.splice(index, 1);
+  render();
+}
+
+function drinkPotion(itemId){
+  if ((state.inventory[itemId] || 0) < 1) return;
+  const effect = POTION_EFFECTS[itemId];
+  if (!effect) return;
+  state.inventory[itemId]--;
+  if (state.inventory[itemId] <= 0) delete state.inventory[itemId];
+  const name = state.itemNames[itemId] || itemId;
+  if (effect.type === 'prayer'){
+    const restore = Math.max(1, Math.floor((state.prayer?.maxPoints || 1) * effect.restore));
+    state.prayer.points = Math.min(state.prayer.maxPoints, (state.prayer.points || 0) + restore);
+    log(`🙏 Drank ${name}. +${restore} prayer points.`);
+  } else if (effect.type === 'summoning'){
+    if (!state.summoning?.active){
+      state.inventory[itemId] = (state.inventory[itemId] || 0) + 1;
+      log('No familiar active — summon one first.'); render(); return;
+    }
+    const addMs = effect.restore * 60 * 1000;
+    state.summoning.active.expiresAt = Math.min(Date.now() + 10*60*1000, state.summoning.active.expiresAt + addMs);
+    log(`🧿 Drank ${name}. Familiar extended by ${effect.restore} min.`);
+  } else {
+    if (!state.combat.potionBoosts) state.combat.potionBoosts = {};
+    state.combat.potionBoosts[effect.boostType] = { boost:effect.boost, expiresAt:Date.now() + 5*60*1000 };
+    log(`⚗️ Drank ${name}. ${effect.label} for 5 min.`);
+  }
   render();
 }
 
@@ -4043,6 +4103,12 @@ function getToolSpeedMult(skillId){
 }
 
 function tick(){
+  // Potion boost expiry
+  if (state.combat?.potionBoosts){
+    const _now = Date.now();
+    for (const t of Object.keys(state.combat.potionBoosts))
+      if (_now > state.combat.potionBoosts[t].expiresAt) delete state.combat.potionBoosts[t];
+  }
   // fire spirit expiry + countdown
   if (fireSpirit){
     if (Date.now() >= fireSpirit.expiresAt){
@@ -6253,9 +6319,10 @@ function renderItemsPanel(){
     }
     const qty     = state.inventory[k];
     const name    = state.itemNames[k] || k;
-    const isEquip = !!EQUIP_SLOTS[k];
-    const isOpen  = !!OPENABLE_ITEMS[k];
-    const isPouch = SUMMON_POUCH_IDS.has(k);
+    const isEquip   = !!EQUIP_SLOTS[k];
+    const isOpen    = !!OPENABLE_ITEMS[k];
+    const isPouch   = SUMMON_POUCH_IDS.has(k);
+    const isPotion  = !!POTION_EFFECTS[k];
     let btns = '';
     if (isEquip) btns += `<button class="mini" onclick="equipItem('${k}')">Equip</button>`;
     if (k.startsWith('clue_scroll_')){
@@ -6278,6 +6345,18 @@ function renderItemsPanel(){
         btns += `<span style="font-size:11px;color:var(--accent);">Active</span>`;
       else
         btns += `<button class="mini" onclick="activateSummon('${k}')">Summon</button>`;
+    }
+    if (isPotion){
+      const _eff = POTION_EFFECTS[k];
+      let activeLabel = '';
+      if (_eff.type === 'combat'){
+        const _ab = state.combat?.potionBoosts?.[_eff.boostType];
+        if (_ab && Date.now() < _ab.expiresAt){
+          const _mins = Math.ceil((_ab.expiresAt - Date.now()) / 60000);
+          activeLabel = `<span style="font-size:10px;color:var(--accent);margin-left:3px;">${_mins}m</span>`;
+        }
+      }
+      btns += `<button class="mini" onclick="drinkPotion('${k}')">Drink</button>${activeLabel}`;
     }
     html += `<div class="inv-row">
       <span>${name}</span>
@@ -6413,6 +6492,7 @@ function init(){
   if (!Array.isArray(state.combat.foodQueue)) state.combat.foodQueue = [];
   if (!state.upgrades) state.upgrades = {};
   if (state.combat.autoEatThreshold == null) state.combat.autoEatThreshold = 50;
+  if (!state.combat.potionBoosts) state.combat.potionBoosts = {};
   if (!state.saveVersion) state.saveVersion = 1; // v0 → v1: no data migration needed
   if (state.hardcore == null) state.hardcore = false;
   if (state.dead     == null) state.dead     = false;
