@@ -50,7 +50,8 @@
   /* Collection log */
   .clog-cat-hdr{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin:14px 0 6px;border-bottom:1px solid var(--line);padding-bottom:3px;}
   .clog-source{margin-bottom:14px;}
-  .clog-source-hdr{font-weight:600;font-size:13px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
+  .clog-source-hdr{font-weight:600;font-size:13px;margin-bottom:2px;display:flex;justify-content:space-between;align-items:center;}
+  .clog-source-count{font-size:11px;color:var(--dim);margin-bottom:6px;opacity:0.8;}
   .clog-progress{font-size:11px;color:var(--dim);}
   .clog-items{display:flex;flex-wrap:wrap;gap:6px;}
   .clog-item{width:76px;text-align:center;padding:6px 4px;border-radius:5px;background:var(--panel2);border:1px solid var(--line);}
@@ -902,6 +903,14 @@ const SKILL_ROADMAP = [
   // Elite (1)
   {id:'invention',    name:'Invention',    type:'elite', maxLevel:120, implemented:false},
 ];
+
+const SKILL_ICON = {
+  woodcutting:'🪓', mining:'⛏️',  fishing:'🎣',  farming:'🌿',  hunter:'🦎',   divination:'✨',
+  crafting:'💍',    fletching:'🪃', smithing:'🔨', cooking:'🍳',  firemaking:'🔥',
+  runecrafting:'🔮', construction:'🏠', herblore:'🌿',
+  melee:'⚔️',  defence:'🛡️', constitution:'❤️', ranged:'🏹', magic:'🔮', prayer:'🙏', summoning:'🧿',
+  agility:'🏃', thieving:'🪝', slayer:'💀', dungeoneering:'🗝️', archaeology:'🏺', invention:'⚙️',
+};
 
 const METAL_TIERS = [
   {id:'bronze',    name:'Bronze',    barItem:'bronze_bar',    barName:'Bronze bar',    levelReq:1,   xpPerBar:12,  defBase:15, atkBase:1, rngPen:-1, magPen:-1, weaponAtk:12},
@@ -2170,6 +2179,35 @@ const COLLECTION_LOG_SOURCES = [
     {id:'pet_solar_hawk',   name:'Solar Hawk',    icon:'🌟'}, {id:'pet_war_pup',      name:'War Pup',       icon:'🐕'},
     {id:'pet_void_spawn',   name:'Void Spawn',    icon:'🌌'},
   ]},
+  // Clue Scrolls
+  { id:'clue_easy',   name:'Easy Casket',   category:'Clue Scrolls', items:[
+    {id:'clue_autocomplete_easy',   name:'Auto-complete (Easy)',   icon:'📜'},
+  ]},
+  { id:'clue_medium', name:'Medium Casket', category:'Clue Scrolls', items:[
+    {id:'amulet_of_skill',          name:'Amulet of Skill',        icon:'🔮'},
+    {id:'clue_autocomplete_medium', name:'Auto-complete (Medium)', icon:'📜'},
+  ]},
+  { id:'clue_hard',   name:'Hard Casket',   category:'Clue Scrolls', items:[
+    {id:'gatherers_band',           name:"Gatherer's Band",         icon:'💍'},
+    {id:'artisan_ring',             name:"Artisan's Ring",          icon:'💍'},
+    {id:'clue_autocomplete_hard',   name:'Auto-complete (Hard)',   icon:'📜'},
+  ]},
+  { id:'clue_elite',  name:'Elite Casket',  category:'Clue Scrolls', items:[
+    {id:'spirit_catcher',           name:'Spirit Catcher',         icon:'🧿'},
+    {id:'combat_pendant',           name:'Combat Pendant',         icon:'🏅'},
+    {id:'adventurers_amulet',       name:"Adventurer's Amulet",    icon:'🗺️'},
+    {id:'crystal_tool_seed',        name:'Crystal Tool Seed',      icon:'💠'},
+    {id:'celestial_sword',          name:'Celestial Sword',        icon:'⚔️'},
+    {id:'clue_autocomplete_elite',  name:'Auto-complete (Elite)',  icon:'📜'},
+  ]},
+  { id:'clue_master', name:'Master Casket', category:'Clue Scrolls', items:[
+    {id:'masters_ring',             name:"Master's Ring",          icon:'💍'},
+    {id:'adventurers_amulet',       name:"Adventurer's Amulet",    icon:'🗺️'},
+    {id:'harbinger_amulet',         name:'Harbinger Amulet',       icon:'💀'},
+    {id:'warlord_chestplate',       name:'Warlord Chestplate',     icon:'🪖'},
+    {id:'ancient_platebody',        name:'Ancient Platebody',      icon:'🛡️'},
+    {id:'clue_autocomplete_master', name:'Auto-complete (Master)', icon:'📜'},
+  ]},
 ];
 const CLOG_SOURCE_MAP = {};
 for (const src of COLLECTION_LOG_SOURCES)
@@ -2188,6 +2226,23 @@ const OPENABLE_CLOG_SOURCE = {
   baby_impling_jar:'jar_baby', eclectic_impling_jar:'jar_eclectic', dragon_impling_jar:'jar_dragon',
   earth_impling_jar:'jar_earth', nature_impling_jar:'jar_nature', kingly_impling_jar:'jar_kingly',
 };
+// Collection log source ID → combat.kills key (for displaying kill counts)
+const CLOG_KILL_SOURCE = {
+  boss_goblin_king:'goblin_king', boss_giant_mole:'giant_mole',
+  boss_void_dragon:'void_dragon', boss_deep_kings:'deep_kings',
+  boss_solara:'solara', boss_karg:'karg', boss_harbinger:'harbinger',
+  boss_ancient_lich:'ancient_lich', mob_abyssal_demon:'abyssal_demon',
+  mob_ice_warrior:'ice_warrior', mob_vampire:'vampire',
+};
+// Collection log source ID → openCounts key (the openable item ID)
+const CLOG_OPEN_SOURCE = {
+  geode_sedimentary:'sedimentary_geode', geode_igneous:'igneous_geode',
+  geode_metamorphic:'metamorphic_geode', jar_baby:'baby_impling_jar',
+  jar_earth:'earth_impling_jar', jar_eclectic:'eclectic_impling_jar',
+  jar_nature:'nature_impling_jar', jar_dragon:'dragon_impling_jar',
+  jar_kingly:'kingly_impling_jar',
+};
+const CHARM_IDS = new Set(['gold_charm','green_charm','crimson_charm','blue_charm']);
 
 /* ---- Achievements ---- */
 const ACHIEVEMENTS = [
@@ -2540,7 +2595,13 @@ const EQUIP_SLOTS = {
 };
 
 const DG_SHOP = [
-  { id:'auto_eat', name:'Auto-Eat', desc:'Automatically eats queued food when HP drops below the set threshold.', cost:500 },
+  { id:'swift_passage',  name:'Swift Passage',  desc:'All dungeon floors complete 10% faster.',                              cost:100  },
+  { id:'token_surplus',  name:'Token Surplus',  desc:'Earn 15% more tokens from every floor.',                              cost:150  },
+  { id:'dg_xp_boost',    name:"Sage's Tome",    desc:'+10% Dungeoneering XP from all floor completions.',                  cost:250  },
+  { id:'bonecrusher',    name:'Bonecrusher',    desc:'Bones from combat auto-grant 50% of their Prayer XP. Toggleable.',   cost:400  },
+  { id:'auto_eat',       name:'Auto-Eat',       desc:'Automatically eats queued food when HP drops below the set threshold.', cost:500 },
+  { id:'charming_imp',   name:'Charming Imp',   desc:'Charms from combat drop in 10% greater quantities.',                 cost:600  },
+  { id:'scroll_of_life', name:'Scroll of Life', desc:'25% chance seeds are not consumed when planted.',                    cost:800  },
 ];
 
 const FOOD_HEALS = {
@@ -2650,8 +2711,10 @@ function freshState(){
     batch:          { limit:0, done:0 },
     summoning:      { active:null, autoRenew:true },
     prayer:         { points:0, maxPoints:1, active:{}, drainCounter:0, lastRegen:0 },
-    achievements:  {},
-    collectionLog: {},
+    achievements:    {},
+    collectionLog:   {},
+    openCounts:      {},
+    clueCompletions: {},
     clues:        { active: null },
     hardcore:     false,
     dead:         false,
@@ -2897,9 +2960,10 @@ function _grantClueReward(tier){
       grantItem(r.id, r.name, r.count || 1);
       const label = (r.count || 1) > 1 ? `${(r.count||1).toLocaleString()}× ${r.name}` : r.name;
       log(`🎁 Clue reward: ${label}!`);
-      return;
+      return r;
     }
   }
+  return rewards[rewards.length - 1];
 }
 
 function activateClueScroll(tier){
@@ -2923,7 +2987,9 @@ function claimClueReward(){
   if (have < a.qty){ log(`You need ${a.qty} ${a.itemName} to claim this reward.`); return; }
   state.inventory[a.item] -= a.qty;
   if (state.inventory[a.item] <= 0) delete state.inventory[a.item];
-  _grantClueReward(a.tier);
+  const reward = _grantClueReward(a.tier);
+  state.clueCompletions[a.tier] = (state.clueCompletions[a.tier] || 0) + 1;
+  if (reward) logCollectionDrop('clue_' + a.tier, reward.id, reward.count || 1);
   state.clues.active = null;
   render();
 }
@@ -3088,8 +3154,14 @@ function buyDgUpgrade(id){
   if (tokens < item.cost){ log(`Need ${item.cost} tokens.`); return; }
   state.inventory['dg_tokens'] -= item.cost;
   state.upgrades[id] = true;
+  if (id === 'bonecrusher') state.upgrades.bonecrusher_on = true;
   log(`Purchased: ${item.name}!`);
   render(); renderShop();
+}
+
+function toggleBonecrusher(){
+  state.upgrades.bonecrusher_on = !state.upgrades.bonecrusher_on;
+  renderShop();
 }
 
 function buyConstructionUpgrade(id){
@@ -3172,7 +3244,7 @@ function plantSeed(seedId){
   const seed = SEEDS.find(s => s.id === seedId);
   if (!seed || (state.inventory[seedId] || 0) < 1) return;
   if (state.farming.seed){ log('Already have a crop growing.'); return; }
-  state.inventory[seedId]--;
+  if (!(state.upgrades?.scroll_of_life && Math.random() < 0.25)) state.inventory[seedId]--;
   Object.assign(state.farming, {
     seed: seedId, seedName: seed.name,
     herb: seed.herb, herbName: seed.herbName,
@@ -3867,7 +3939,8 @@ function renderSlayerSection(){
 
 function calcFloorSecs(action){
   const secs = action.baseMaxSecs * (1 - 0.9 * calcSkillBonus());
-  return Math.max(action.baseMinSecs, secs);
+  const speedMult = state.upgrades?.swift_passage ? 0.9 : 1;
+  return Math.max(action.baseMinSecs, secs * speedMult);
 }
 
 function getCurrentEffTicks(action){
@@ -4259,8 +4332,13 @@ function completeAction(action, silent){
     for (const drop of (action.drops || [])){
       const adjChance = Math.min(1.0, drop.chance * (1 + _dropBoost));
       if (Math.random() < adjChance){
-        const qty = (drop.min || 1) + Math.floor(Math.random() * ((drop.max || 1) - (drop.min || 1) + 1));
+        let qty = (drop.min || 1) + Math.floor(Math.random() * ((drop.max || 1) - (drop.min || 1) + 1));
+        if (state.upgrades?.charming_imp && CHARM_IDS.has(drop.item)) qty = Math.ceil(qty * 1.1);
         grantItem(drop.item, drop.itemName, qty);
+        if (state.upgrades?.bonecrusher && state.upgrades?.bonecrusher_on){
+          const _bone = BONE_TIERS.find(b => b.item === drop.item);
+          if (_bone) grantXp('prayer', _bone.xpBase * 0.5 * qty, silent);
+        }
         if (drop.notable && _clogSrc) logCollectionDrop(_clogSrc, drop.item, qty);
         if (drop.notable) logCollectionDrop('boss_pets', drop.item, qty);
         if (!silent && drop.notable) log(`+${qty} ${drop.itemName}`);
@@ -4298,11 +4376,13 @@ function completeAction(action, silent){
     return;
   }
   // give xp + check level up
-  grantXp(state.current.skillId, action.xp, silent);
+  const _xpAmt = (state.current.skillId === 'dungeoneering' && state.upgrades?.dg_xp_boost)
+    ? Math.floor(action.xp * 1.1) : action.xp;
+  grantXp(state.current.skillId, _xpAmt, silent);
   // Award DG tokens on floor completion; refresh cached values for next loop
   if (state.current?.skillId === 'dungeoneering' && !silent){
     const dgLevel = levelForXp(state.skills['dungeoneering'].xp);
-    const tokens  = Math.max(1, Math.floor(dgLevel * action.tokenMult * (1 + getCapeBonus('dg_token_pct', null) + getPetBonus('dg_token_pct', null))));
+    const tokens  = Math.max(1, Math.floor(dgLevel * action.tokenMult * (1 + getCapeBonus('dg_token_pct', null) + getPetBonus('dg_token_pct', null) + (state.upgrades?.token_surplus ? 0.15 : 0))));
     grantItem('dg_tokens', 'Dungeoneering tokens', tokens);
     log(`⚔️ Floor complete! +${tokens} tokens.`);
     state.current.earnedTokens = tokens;
@@ -4764,11 +4844,21 @@ function renderShop(){
       card.className = 'upgrade-tier' + (owned ? ' equipped' : '');
       card.style.cssText = 'flex-direction:column;align-items:flex-start;gap:4px;';
       card.innerHTML = `<div style="font-weight:600;">${item.name}</div><div style="font-size:12px;color:var(--dim);">${item.desc}</div><div style="font-size:12px;color:var(--dim);">Cost: ${item.cost.toLocaleString()} tokens</div>`;
-      const btn = document.createElement('button');
-      btn.className = 'mini'; btn.style.marginTop = '4px';
-      if (owned)         { btn.textContent = '✓ Owned'; btn.disabled = true; }
-      else               { btn.textContent = canAfford ? 'Buy' : `Need ${item.cost - tokens} more`; btn.disabled = !canAfford; btn.onclick = () => buyDgUpgrade(item.id); }
-      card.appendChild(btn); grid.appendChild(card);
+      if (owned && item.id === 'bonecrusher'){
+        const isOn = !!state.upgrades.bonecrusher_on;
+        const togBtn = document.createElement('button');
+        togBtn.className = 'mini'; togBtn.style.marginTop = '4px';
+        togBtn.textContent = isOn ? '🟢 On' : '⚫ Off';
+        togBtn.onclick = toggleBonecrusher;
+        card.appendChild(togBtn);
+      } else {
+        const btn = document.createElement('button');
+        btn.className = 'mini'; btn.style.marginTop = '4px';
+        if (owned){ btn.textContent = '✓ Owned'; btn.disabled = true; }
+        else      { btn.textContent = canAfford ? 'Buy' : `Need ${item.cost - tokens} more`; btn.disabled = !canAfford; btn.onclick = () => buyDgUpgrade(item.id); }
+        card.appendChild(btn);
+      }
+      grid.appendChild(card);
     });
     el.appendChild(grid);
   }
@@ -4862,6 +4952,18 @@ function renderCollectionLog(){
       srcHdr.className = 'clog-source-hdr';
       srcHdr.innerHTML = `<span>${src.name}</span><span class="clog-progress">${found} / ${src.items.length}</span>`;
       srcDiv.appendChild(srcHdr);
+      let _countLabel = '';
+      if (CLOG_KILL_SOURCE[src.id]){
+        const _kc = state.combat?.kills?.[CLOG_KILL_SOURCE[src.id]] || 0;
+        _countLabel = `${_kc.toLocaleString()} kills`;
+      } else if (CLOG_OPEN_SOURCE[src.id]){
+        const _oc = state.openCounts?.[CLOG_OPEN_SOURCE[src.id]] || 0;
+        _countLabel = `${_oc.toLocaleString()} opened`;
+      } else if (src.id.startsWith('clue_')){
+        const _cc = state.clueCompletions?.[src.id.replace('clue_','')] || 0;
+        _countLabel = `${_cc.toLocaleString()} completed`;
+      }
+      if (_countLabel){ const _cd = document.createElement('div'); _cd.className = 'clog-source-count'; _cd.textContent = _countLabel; srcDiv.appendChild(_cd); }
       const itemsDiv = document.createElement('div');
       itemsDiv.className = 'clog-items';
       for (const item of src.items){
@@ -4880,6 +4982,8 @@ function renderCollectionLog(){
 function openItem(itemId){
   if ((state.inventory[itemId] || 0) < 1) return;
   state.inventory[itemId]--;
+  if (!state.openCounts) state.openCounts = {};
+  state.openCounts[itemId] = (state.openCounts[itemId] || 0) + 1;
   const entry = OPENABLE_ITEMS[itemId];
   const totalWeight = entry.rewards.reduce((s, r) => s + r.weight, 0);
   let roll = Math.random() * totalWeight;
@@ -5344,24 +5448,25 @@ function renderSkillList(){
       if (state.current && state.current.skillId === s.id) row.classList.add('active');
       if (s.type === 'combat' && state.current && COMBAT_SKILL_IDS.has(state.current.skillId))
         row.classList.add('active');
+      const _icon = SKILL_ICON[s.id] ? `${SKILL_ICON[s.id]} ` : '';
       if (s.background) {
         let badge = '';
         if (s.id === 'farming' && state.farming?.seed)
           badge = state.farming.ready ? ' 🌿' : ' 🌱';
-        row.innerHTML = `<span>${s.name}</span><span class="lvl">${lvl}/${s.maxLevel}${badge}</span>`;
+        row.innerHTML = `<span>${_icon}${s.name}</span><span class="lvl">${lvl}/${s.maxLevel}${badge}</span>`;
         row.onclick = () => document.getElementById('sec-farm')?.scrollIntoView({behavior:'smooth',block:'start'});
       } else if (s.id === 'slayer' && s.implemented) {
-        row.innerHTML = `<span>${s.name}</span><span class="lvl">${lvl}/${s.maxLevel}</span>`;
+        row.innerHTML = `<span>${_icon}${s.name}</span><span class="lvl">${lvl}/${s.maxLevel}</span>`;
         row.onclick = () => document.getElementById('sec-slayer')?.scrollIntoView({behavior:'smooth',block:'start'});
       } else if (s.type === 'combat' && s.implemented) {
-        row.innerHTML = `<span>${s.name}</span><span class="lvl">${lvl}/${s.maxLevel}</span>`;
+        row.innerHTML = `<span>${_icon}${s.name}</span><span class="lvl">${lvl}/${s.maxLevel}</span>`;
         const styleMap = {melee:'melee', ranged:'ranged', magic:'magic'};
         row.onclick = () => {
           if (styleMap[s.id]) state.combat.style = styleMap[s.id];
           selectSkill(s.id);
         };
       } else {
-        row.innerHTML = `<span>${s.name}${s.implemented ? '' : ' <span class="lvl">(soon)</span>'}</span>
+        row.innerHTML = `<span>${_icon}${s.name}${s.implemented ? '' : ' <span class="lvl">(soon)</span>'}</span>
                          <span class="lvl">${lvl}/${s.maxLevel}</span>`;
         if (s.implemented) row.onclick = () => selectSkill(s.id);
       }
@@ -6168,9 +6273,11 @@ function init(){
   if (!state.archaeology.artifacts)   state.archaeology.artifacts   = {};
   if (!state.archaeology.activePerks) state.archaeology.activePerks = {};
   if (!state.batch) state.batch = { limit:0, done:0 };
-  if (!state.achievements)  state.achievements  = {};
-  if (!state.collectionLog) state.collectionLog = {};
-  if (!state.combat.kills)  state.combat.kills  = {};
+  if (!state.achievements)    state.achievements    = {};
+  if (!state.collectionLog)   state.collectionLog   = {};
+  if (!state.openCounts)      state.openCounts      = {};
+  if (!state.clueCompletions) state.clueCompletions = {};
+  if (!state.combat.kills)    state.combat.kills    = {};
   if (!state.summoning) state.summoning = { active:null, autoRenew:true };
   if (state.summoning.autoRenew == null) state.summoning.autoRenew = true;
   if (state.summoning.active && Date.now() >= state.summoning.active.expiresAt){
