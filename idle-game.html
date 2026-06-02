@@ -1037,6 +1037,7 @@ const SELL_PRICES = {
   troll_hide:350, werewolf_fur:450, wyvern_bones:350, wyvern_scale:800,
   stone_fragment:200, vampire_dust:5000, ancient_scroll:80000,
   void_scale:3000, leviathan_fang:8000, solar_shard:12000,
+  earth_impling_jar:500, nature_impling_jar:2000, kingly_impling_jar:8000,
   clue_scroll_easy:10000, clue_scroll_medium:30000, clue_scroll_hard:75000,
   clue_scroll_elite:200000, clue_scroll_master:500000,
   clue_autocomplete_easy:15000, clue_autocomplete_medium:50000, clue_autocomplete_hard:120000,
@@ -1522,9 +1523,7 @@ const ACTIONS = {
     {id:'larupia',            name:'Larupia',              category:'Pitfall',       levelReq:31, xp:98,  ticks:5,  item:'larupia_fur',          itemName:'Larupia fur'},
     {id:'sabre_tooth_kyatt',  name:'Sabre-tooth kyatt',    category:'Pitfall',       levelReq:55, xp:300, ticks:9,  item:'kyatt_fur',            itemName:'Kyatt fur'},
     // Impling Jar
-    {id:'baby_impling',       name:'Baby impling jar',     category:'Impling Jar',   levelReq:17, xp:20,  ticks:4,  item:'baby_impling_jar',     itemName:'Baby impling jar'},
-    {id:'eclectic_impling',   name:'Eclectic impling jar', category:'Impling Jar',   levelReq:50, xp:150, ticks:8,  item:'eclectic_impling_jar', itemName:'Eclectic impling jar'},
-    {id:'dragon_impling',     name:'Dragon impling jar',   category:'Impling Jar',   levelReq:83, xp:350, ticks:14, item:'dragon_impling_jar',   itemName:'Dragon impling jar'},
+    // Impling jars are obtained passively while training other hunter actions (see checkBonusDrop)
   ],
   herblore:[
     // Attack Potions
@@ -2044,8 +2043,13 @@ const COLLECTION_LOG_SOURCES = [
     {id:'crystal_tool_seed', name:'Crystal tool seed', icon:'💠'},
   ]},
   // Hunter
-  { id:'hunter_bonus', name:'Hunter (Bonus Capture)', category:'Hunter', items:[
-    {id:'dragon_impling_jar', name:'Dragon impling jar', icon:'🐉'},
+  { id:'hunter_bonus', name:'Impling Catches', category:'Hunter', items:[
+    {id:'baby_impling_jar',     name:'Baby impling jar',     icon:'🦋'},
+    {id:'earth_impling_jar',    name:'Earth impling jar',    icon:'🦋'},
+    {id:'eclectic_impling_jar', name:'Eclectic impling jar', icon:'🦋'},
+    {id:'nature_impling_jar',   name:'Nature impling jar',   icon:'🦋'},
+    {id:'dragon_impling_jar',   name:'Dragon impling jar',   icon:'🦋'},
+    {id:'kingly_impling_jar',   name:'Kingly impling jar',   icon:'🦋'},
   ]},
   { id:'jar_baby',     name:'Baby Impling Jar',     category:'Hunter', items:[
     {id:'coins',           name:'Coins',           icon:'🪙'},
@@ -2074,8 +2078,35 @@ const COLLECTION_LOG_SOURCES = [
     {id:'coins',             name:'Coins',             icon:'🪙'},
     {id:'uncut_dragonstone', name:'Uncut dragonstone', icon:'🔵'},
     {id:'uncut_onyx',        name:'Uncut onyx',        icon:'⚫'},
-    {id:'dragon_arrows',     name:'Dragon arrows',     icon:'🏹'},
+    {id:'dragon_arrow',      name:'Dragon arrow',      icon:'🏹'},
     {id:'uncut_hydrix',      name:'Uncut hydrix',      icon:'🟣'},
+  ]},
+  { id:'jar_earth',    name:'Earth Impling Jar',   category:'Hunter', items:[
+    {id:'coins',          name:'Coins',          icon:'🪙'},
+    {id:'uncut_emerald',  name:'Uncut emerald',  icon:'💚'},
+    {id:'uncut_ruby',     name:'Uncut ruby',     icon:'❤️'},
+    {id:'thornweed_seed', name:'Thornweed seed', icon:'🌱'},
+    {id:'goldbloom_seed', name:'Goldbloom seed', icon:'🌱'},
+    {id:'gold_ore',       name:'Gold ore',       icon:'✨'},
+    {id:'iron_ore',       name:'Iron ore',       icon:'⛏️'},
+  ]},
+  { id:'jar_nature',   name:'Nature Impling Jar',  category:'Hunter', items:[
+    {id:'coins',            name:'Coins',            icon:'🪙'},
+    {id:'uncut_diamond',    name:'Uncut diamond',    icon:'🔷'},
+    {id:'uncut_dragonstone',name:'Uncut dragonstone',icon:'🔵'},
+    {id:'duskroot_seed',   name:'Duskroot seed',   icon:'🌱'},
+    {id:'veilmoss_seed',   name:'Veilmoss seed',   icon:'🌱'},
+    {id:'yew_logs',         name:'Yew logs',         icon:'🪵'},
+    {id:'mithril_ore',      name:'Mithril ore',      icon:'⛏️'},
+  ]},
+  { id:'jar_kingly',   name:'Kingly Impling Jar',  category:'Hunter', items:[
+    {id:'coins',            name:'Coins',            icon:'🪙'},
+    {id:'crimsonherb_seed', name:'Crimsonherb seed', icon:'🌱'},
+    {id:'dragon_bones',     name:'Dragon bones',     icon:'🦴'},
+    {id:'blue_charm',       name:'Blue charm',       icon:'🔵'},
+    {id:'soul_rune',        name:'Soul rune',        icon:'🔮'},
+    {id:'uncut_onyx',       name:'Uncut onyx',       icon:'⚫'},
+    {id:'uncut_hydrix',     name:'Uncut hydrix',     icon:'🟣'},
   ]},
   // Combat
   { id:'mob_abyssal_demon', name:'Abyssal Demon',       category:'Combat', items:[
@@ -2128,6 +2159,7 @@ const OPENABLE_CLOG_SOURCE = {
   sedimentary_geode:'geode_sedimentary', igneous_geode:'geode_igneous',
   metamorphic_geode:'geode_metamorphic',
   baby_impling_jar:'jar_baby', eclectic_impling_jar:'jar_eclectic', dragon_impling_jar:'jar_dragon',
+  earth_impling_jar:'jar_earth', nature_impling_jar:'jar_nature', kingly_impling_jar:'jar_kingly',
 };
 
 /* ---- Achievements ---- */
@@ -2292,36 +2324,66 @@ const OPENABLE_ITEMS = {
   birds_nest_egg_blue: {rewards:[{id:'blue_bird_egg',  name:'Blue bird egg',  weight:1}]},
   birds_nest_egg_green:{rewards:[{id:'green_bird_egg', name:'Green bird egg', weight:1}]},
   baby_impling_jar:{rewards:[
-    {id:'coins',           name:'Coins',           weight:40, count:200},
-    {id:'uncut_sapphire',  name:'Uncut sapphire',  weight:20},
-    {id:'uncut_emerald',   name:'Uncut emerald',   weight:10},
-    {id:'ironwort_seed',   name:'Ironwort seed',   weight:9},
-    {id:'shimmerleaf_seed',     name:'Shimmerleaf seed',     weight:7},
-    {id:'thornweed_seed', name:'Thornweed seed', weight:6},
-    {id:'goldbloom_seed',  name:'Goldbloom seed',  weight:4},
-    {id:'duskroot_seed',  name:'Duskroot seed',  weight:2},
-    {id:'veilmoss_seed',name:'Veilmoss seed',weight:1},
-    {id:'crimsonherb_seed',    name:'Crimsonherb seed',    weight:1},
+    {id:'coins',           name:'Coins',           weight:400, count:200},
+    {id:'uncut_sapphire',  name:'Uncut sapphire',  weight:200},
+    {id:'uncut_emerald',   name:'Uncut emerald',   weight:100},
+    {id:'ironwort_seed',   name:'Ironwort seed',   weight:90, count:3},
+    {id:'shimmerleaf_seed',name:'Shimmerleaf seed',weight:70, count:3},
+    {id:'thornweed_seed',  name:'Thornweed seed',  weight:60, count:3},
+    {id:'goldbloom_seed',  name:'Goldbloom seed',  weight:40, count:3},
+    {id:'duskroot_seed',   name:'Duskroot seed',   weight:20, count:3},
+    {id:'veilmoss_seed',   name:'Veilmoss seed',   weight:10, count:3},
+    {id:'crimsonherb_seed',name:'Crimsonherb seed',weight:10, count:3},
   ]},
   eclectic_impling_jar:{rewards:[
-    {id:'coins',           name:'Coins',           weight:35, count:1000},
-    {id:'uncut_ruby',      name:'Uncut ruby',      weight:25},
-    {id:'uncut_diamond',   name:'Uncut diamond',   weight:20},
-    {id:'uncut_emerald',   name:'Uncut emerald',   weight:5},
-    {id:'ironwort_seed',   name:'Ironwort seed',   weight:5},
-    {id:'shimmerleaf_seed',     name:'Shimmerleaf seed',     weight:4},
-    {id:'thornweed_seed', name:'Thornweed seed', weight:3},
-    {id:'goldbloom_seed',  name:'Goldbloom seed',  weight:2},
-    {id:'duskroot_seed',  name:'Duskroot seed',  weight:0.5},
-    {id:'veilmoss_seed',name:'Veilmoss seed',weight:0.3},
-    {id:'crimsonherb_seed',    name:'Crimsonherb seed',    weight:0.2},
+    {id:'coins',           name:'Coins',           weight:350, count:1000},
+    {id:'uncut_ruby',      name:'Uncut ruby',      weight:250},
+    {id:'uncut_diamond',   name:'Uncut diamond',   weight:200},
+    {id:'uncut_emerald',   name:'Uncut emerald',   weight:50},
+    {id:'ironwort_seed',   name:'Ironwort seed',   weight:50, count:5},
+    {id:'shimmerleaf_seed',name:'Shimmerleaf seed',weight:40, count:5},
+    {id:'thornweed_seed',  name:'Thornweed seed',  weight:30, count:5},
+    {id:'goldbloom_seed',  name:'Goldbloom seed',  weight:20, count:5},
+    {id:'duskroot_seed',   name:'Duskroot seed',   weight:5,  count:3},
+    {id:'veilmoss_seed',   name:'Veilmoss seed',   weight:3,  count:3},
+    {id:'crimsonherb_seed',name:'Crimsonherb seed',weight:2,  count:3},
   ]},
   dragon_impling_jar:{rewards:[
-    {id:'coins',             name:'Coins',             weight:25000, count:10000},
-    {id:'uncut_dragonstone', name:'Uncut dragonstone', weight:20000},
-    {id:'uncut_onyx',        name:'Uncut onyx',        weight:15000},
-    {id:'dragon_arrow',      name:'Dragon arrow',      weight:38999, count:25},
+    {id:'coins',             name:'Coins',             weight:500, count:10000},
+    {id:'uncut_dragonstone', name:'Uncut dragonstone', weight:300},
+    {id:'dragon_arrow',      name:'Dragon arrow',      weight:150, count:25},
+    {id:'uncut_onyx',        name:'Uncut onyx',        weight:40},
+    {id:'duskroot_seed',     name:'Duskroot seed',     weight:5,   count:5},
+    {id:'veilmoss_seed',     name:'Veilmoss seed',     weight:3,   count:5},
+    {id:'crimsonherb_seed',  name:'Crimsonherb seed',  weight:1,   count:5},
     {id:'uncut_hydrix',      name:'Uncut hydrix',      weight:1},
+  ]},
+  earth_impling_jar:{rewards:[
+    {id:'coins',          name:'Coins',          weight:300, count:500},
+    {id:'uncut_emerald',  name:'Uncut emerald',  weight:200},
+    {id:'uncut_ruby',     name:'Uncut ruby',     weight:150, count:2},
+    {id:'thornweed_seed', name:'Thornweed seed', weight:120, count:5},
+    {id:'goldbloom_seed', name:'Goldbloom seed', weight:100, count:4},
+    {id:'gold_ore',       name:'Gold ore',       weight:80,  count:15},
+    {id:'iron_ore',       name:'Iron ore',       weight:50,  count:20},
+  ]},
+  nature_impling_jar:{rewards:[
+    {id:'coins',            name:'Coins',            weight:400, count:3000},
+    {id:'uncut_diamond',    name:'Uncut diamond',    weight:200, count:2},
+    {id:'uncut_dragonstone',name:'Uncut dragonstone',weight:150, count:2},
+    {id:'duskroot_seed',    name:'Duskroot seed',    weight:100, count:5},
+    {id:'veilmoss_seed',    name:'Veilmoss seed',    weight:80,  count:4},
+    {id:'yew_logs',         name:'Yew logs',         weight:50,  count:10},
+    {id:'mithril_ore',      name:'Mithril ore',      weight:20,  count:20},
+  ]},
+  kingly_impling_jar:{rewards:[
+    {id:'coins',            name:'Coins',            weight:500, count:15000},
+    {id:'crimsonherb_seed', name:'Crimsonherb seed', weight:200, count:5},
+    {id:'dragon_bones',     name:'Dragon bones',     weight:150, count:10},
+    {id:'blue_charm',       name:'Blue charm',       weight:100, count:5},
+    {id:'soul_rune',        name:'Soul rune',        weight:47,  count:20},
+    {id:'uncut_onyx',       name:'Uncut onyx',       weight:2},
+    {id:'uncut_hydrix',     name:'Uncut hydrix',     weight:1},
   ]},
 };
 
@@ -4216,8 +4278,10 @@ function checkBonusDrop(skillId, action){
     log(`🪺 A bird's nest falls from the tree!`);
   }
 
-  // Fishing: Kraken's Beak (1% from fish levelReq >= 60)
-  if (skillId === 'fishing' && action.levelReq >= 60 && Math.random() < 0.01){
+  // Fishing: Kraken's Beak (1% from fish levelReq >= 60; capped at 1, blocked if dragon rod or above equipped)
+  if (skillId === 'fishing' && action.levelReq >= 60 && Math.random() < 0.01
+      && (state.inventory['krackens_beak'] || 0) < 1
+      && !['dragon_rod','crystal_rod','abyssal_rod'].includes(state.tools?.fishing)){
     grantItem('krackens_beak', "Kraken's Beak");
     logCollectionDrop('fishing_bonus', 'krackens_beak');
     log("🦑 You wrestle a Kraken's Beak from the catch!");
@@ -4242,13 +4306,20 @@ function checkBonusDrop(skillId, action){
     }
   }
 
-  // Hunter: 1% chance of bonus dragon impling jar from lv55+ traps; 0.5% from lower
-  if (skillId === 'hunter' && !action.item.includes('impling_jar')){
-    if (Math.random() < (action.levelReq >= 55 ? 0.01 : 0.005)){
-      grantItem('dragon_impling_jar', 'Dragon impling jar');
-      logCollectionDrop('hunter_bonus', 'dragon_impling_jar');
-      log(`🦋 A dragon impling escapes your trap — you manage to jar it!`);
-    }
+  // Hunter: passive impling spawn (1% per non-impling action; tier scales with hunter level)
+  if (skillId === 'hunter' && !action.item?.includes('impling_jar') && Math.random() < 0.01){
+    const hunterLvl = levelForXp(state.skills.hunter.xp);
+    const r = Math.random() * 100;
+    let jar, jarName;
+    if      (hunterLvl >= 91 && r < 10) { jar='kingly_impling_jar';   jarName='Kingly impling jar'; }
+    else if (hunterLvl >= 83 && r < 25) { jar='dragon_impling_jar';   jarName='Dragon impling jar'; }
+    else if (hunterLvl >= 62 && r < 45) { jar='nature_impling_jar';   jarName='Nature impling jar'; }
+    else if (hunterLvl >= 50 && r < 60) { jar='eclectic_impling_jar'; jarName='Eclectic impling jar'; }
+    else if (hunterLvl >= 36 && r < 75) { jar='earth_impling_jar';    jarName='Earth impling jar'; }
+    else                                 { jar='baby_impling_jar';     jarName='Baby impling jar'; }
+    grantItem(jar, jarName);
+    logCollectionDrop('hunter_bonus', jar, 1);
+    log(`🦋 An impling flutters by — you catch it! (${jarName})`);
   }
 
   // Skilling pets — 1/5000 per action (0.0002); only if not already owned/equipped
