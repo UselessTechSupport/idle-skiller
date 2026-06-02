@@ -68,7 +68,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Agility | 99 | 7 courses (Verdant Trail → Crystal) | Scaled XP; Danger Trail drops PK coins; Crystal course requires quest + 70 Thieving; bonuses to Thieving pick/lock and Runecrafting speed |
 | Thieving | 99 | 19 actions | Pickpocket (9 NPCs, catch/stun mechanic) + Locks (10 chests); seeds, gems, and coins from drops; agility gives extra loot chance |
 | Slayer | 120 | 6 masters (Aldric → Duroc) | Task assignment system; 2–30 pts/task; kill-tracking per mob; task completion bonus XP; Points Shop (5 unlocks incl. boss tasks, XP boost, extended tasks) |
-| Dungeoneering | 120 | 3 floor types | Time-based floors; earns tokens; token shop: Auto-Eat (500 tokens) |
+| Dungeoneering | 120 | 3 floor types | Time-based floors; earns tokens; token shop: 7 unlocks — Swift Passage (floors 10% faster), Token Surplus (+15% tokens), Sage's Tome (+10% DG XP), Bonecrusher (auto Prayer XP from bones; toggleable), Auto-Eat, Charming Imp (+10% charm drops), Scroll of Life (25% seed preservation) |
 | Archaeology | 120 | 6 dig sites, 18 artefacts | Artefact restoration grants permanent perks (up to 3 active); perks include XP%, speed%, stat boosts, HP regen |
 
 #### Combat (continued)
@@ -115,7 +115,8 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - Settings menu — Dark/Light theme, Compact mode, Hide locked actions, configurable log size
 - Stop button always visible next to action progress bar
 - **Achievement system** — 78 achievements across Skills, Total Level, Combat, Slayer, and Special categories; filter by All / Hide Completed / Hide Locked; locked achievements require prerequisites (slayer unlocks, quest completion, etc.)
-- **Collection Log** — 25 drop sources across 5 categories (Woodcutting, Mining, Fishing, Agility, Hunter, Combat, Bosses, Pets); tracks per-item obtain counts; unobtained items shown greyed; global and per-source progress counters
+- **Skill icons** — emoji icon prefixed on every skill row in the sidebar
+- **Collection Log** — 33 drop sources across 6 categories (Woodcutting, Mining, Fishing, Agility, Hunter, Combat, Bosses, Pets, Clue Scrolls); tracks per-item obtain counts; unobtained items shown greyed; global and per-source progress counters; kill count shown per boss/mob source, opened count per geode/jar source, completion count per clue tier
 
 **Bonus drops**
 - Woodcutting: bird's nests (1%, 4 variants)
@@ -136,6 +137,6 @@ When creating a new character, choose between **Normal** (death restores HP and 
 
 ## Tech stack
 
-Plain HTML + CSS + JavaScript. Single file (~5,800 lines), no dependencies, no build step.
+Plain HTML + CSS + JavaScript. Single file (~6,400 lines), no dependencies, no build step.
 
 Cross-platform target: PWA first (PC/iOS/Android from browser), then Capacitor for app stores if needed.
