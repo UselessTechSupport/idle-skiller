@@ -614,6 +614,36 @@ const TICK_MS = 600;                  // game tick = 0.6s
 const MAX_OFFLINE_HOURS = 12;         // cap on offline catch-up
 const FARM_GROW_MS = 5 * 60 * 1000;  // herb growth time: 5 minutes
 
+const SKILLCAPES = [
+  {id:'woodcutting_cape', name:'Woodcutting cape', icon:'🪓', skillId:'woodcutting', cost:99000, perkType:'speed_pct',    perkValue:0.10, perkLabel:'10% faster Woodcutting'},
+  {id:'mining_cape',      name:'Mining cape',      icon:'⛏️', skillId:'mining',      cost:99000, perkType:'speed_pct',    perkValue:0.10, perkLabel:'10% faster Mining'},
+  {id:'fishing_cape',     name:'Fishing cape',     icon:'🎣', skillId:'fishing',     cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Fishing XP'},
+  {id:'farming_cape',     name:'Farming cape',     icon:'🌾', skillId:'farming',     cost:99000, perkType:'farm_speed',   perkValue:0.15, perkLabel:'Crops grow 15% faster'},
+  {id:'hunter_cape',      name:'Hunter cape',      icon:'🦎', skillId:'hunter',      cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Hunter XP'},
+  {id:'divination_cape',  name:'Divination cape',  icon:'✨', skillId:'divination',  cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Divination XP'},
+  {id:'crafting_cape',    name:'Crafting cape',    icon:'💍', skillId:'crafting',    cost:99000, perkType:'speed_pct',    perkValue:0.10, perkLabel:'10% faster Crafting'},
+  {id:'fletching_cape',   name:'Fletching cape',   icon:'🪃', skillId:'fletching',   cost:99000, perkType:'speed_pct',    perkValue:0.10, perkLabel:'10% faster Fletching'},
+  {id:'smithing_cape',    name:'Smithing cape',    icon:'🔨', skillId:'smithing',    cost:99000, perkType:'speed_pct',    perkValue:0.10, perkLabel:'10% faster Smithing'},
+  {id:'cooking_cape',     name:'Cooking cape',     icon:'🍳', skillId:'cooking',     cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Cooking XP'},
+  {id:'firemaking_cape',  name:'Firemaking cape',  icon:'🔥', skillId:'firemaking',  cost:99000, perkType:'speed_pct',    perkValue:0.10, perkLabel:'10% faster Firemaking'},
+  {id:'runecrafting_cape',name:'Runecrafting cape',icon:'🔮', skillId:'runecrafting',cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Runecrafting XP'},
+  {id:'construction_cape',name:'Construction cape',icon:'🏠', skillId:'construction',cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Construction XP'},
+  {id:'herblore_cape',    name:'Herblore cape',    icon:'🧪', skillId:'herblore',    cost:99000, perkType:'speed_pct',    perkValue:0.10, perkLabel:'10% faster Herblore'},
+  {id:'melee_cape',       name:'Melee cape',       icon:'⚔️', skillId:'melee',       cost:99000, perkType:'melee_dmg',    perkValue:0.05, perkLabel:'+5% Melee damage'},
+  {id:'defence_cape',     name:'Defence cape',     icon:'🛡️', skillId:'defence',     cost:99000, perkType:'defence_flat', perkValue:10,   perkLabel:'+10 Defence bonus'},
+  {id:'constitution_cape',name:'Constitution cape',icon:'❤️', skillId:'constitution',cost:99000, perkType:'hp_regen_mult',perkValue:0.15, perkLabel:'+15% HP regen rate'},
+  {id:'ranged_cape',      name:'Ranged cape',      icon:'🏹', skillId:'ranged',      cost:99000, perkType:'ranged_dmg',   perkValue:0.05, perkLabel:'+5% Ranged damage'},
+  {id:'magic_cape',       name:'Magic cape',       icon:'🪄', skillId:'magic',       cost:99000, perkType:'magic_dmg',    perkValue:0.05, perkLabel:'+5% Magic damage'},
+  {id:'prayer_cape',      name:'Prayer cape',      icon:'🙏', skillId:'prayer',      cost:99000, perkType:'prayer_drain', perkValue:0.15, perkLabel:'-15% Prayer drain rate'},
+  {id:'summoning_cape',   name:'Summoning cape',   icon:'🧿', skillId:'summoning',   cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Summoning XP'},
+  {id:'agility_cape',     name:'Agility cape',     icon:'🏃', skillId:'agility',     cost:99000, perkType:'speed_pct',    perkValue:0.10, perkLabel:'10% faster Agility'},
+  {id:'thieving_cape',    name:'Thieving cape',    icon:'🪝', skillId:'thieving',    cost:99000, perkType:'stun_reduction',perkValue:0.25,perkLabel:'25% reduced stun duration'},
+  {id:'slayer_cape',      name:'Slayer cape',      icon:'💀', skillId:'slayer',      cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Slayer XP'},
+  {id:'dungeoneering_cape',name:'Dungeoneering cape',icon:'🗝️',skillId:'dungeoneering',cost:99000,perkType:'dg_token_pct',perkValue:0.10,perkLabel:'+10% Dungeoneering token gain'},
+  {id:'archaeology_cape', name:'Archaeology cape', icon:'🏺', skillId:'archaeology', cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Archaeology XP'},
+  {id:'max_cape',         name:'Max cape',         icon:'🎓', skillId:null,          cost:10000000, perkType:null, perkValue:0, perkLabel:'All skillcape perks combined'},
+];
+
 const COMBAT_STYLES = [
   {id:'melee',  label:'Melee'},
   {id:'ranged', label:'Range'},
@@ -816,6 +846,13 @@ const SELL_PRICES = {
   troll_hide:350, werewolf_fur:450, wyvern_bones:350, wyvern_scale:800,
   stone_fragment:200, vampire_dust:5000, ancient_scroll:80000,
   void_scale:3000, leviathan_fang:8000, solar_shard:12000,
+  woodcutting_cape:49500, mining_cape:49500, fishing_cape:49500, farming_cape:49500,
+  hunter_cape:49500, divination_cape:49500, crafting_cape:49500, fletching_cape:49500,
+  smithing_cape:49500, cooking_cape:49500, firemaking_cape:49500, runecrafting_cape:49500,
+  construction_cape:49500, herblore_cape:49500, melee_cape:49500, defence_cape:49500,
+  constitution_cape:49500, ranged_cape:49500, magic_cape:49500, prayer_cape:49500,
+  summoning_cape:49500, agility_cape:49500, thieving_cape:49500, slayer_cape:49500,
+  dungeoneering_cape:49500, archaeology_cape:49500, max_cape:5000000,
 };
 
 /* ACTIONS: what you can DO in each skill.
@@ -1968,6 +2005,7 @@ const EQUIP_REQS = {
   ])),
   abyssal_whip:    {skill:'melee', level:70},
   celestial_sword: {skill:'melee', level:65},
+  ...Object.fromEntries(SKILLCAPES.filter(c => c.skillId).map(c => [c.id, {skill:c.skillId, level:99}])),
 };
 
 const CONSTRUCTION_SHOP = [
@@ -2172,6 +2210,7 @@ const EQUIP_SLOTS = {
   maple_longbow:'weapon', mahogany_longbow:'weapon', yew_longbow:'weapon', magic_longbow:'weapon',
   elder_longbow:'weapon', eternal_longbow:'weapon',
   warlord_helm:'head', harbinger_amulet:'neck', ice_gloves:'gloves',
+  ...Object.fromEntries(SKILLCAPES.map(c => [c.id, 'cape'])),
 };
 
 const DG_SHOP = [
@@ -2333,6 +2372,8 @@ function grantXp(skillId, xp, silent=false){
   }
   const sumXp = getSummonBonusForSkill('xp_pct', skillId);
   if (sumXp) xp *= (1 + sumXp);
+  const capeXp = getCapeBonus('xp_pct', skillId);
+  if (capeXp) xp *= (1 + capeXp);
   const before = levelForXp(sk.xp);
   sk.xp += xp;
   const after = levelForXp(sk.xp);
@@ -2489,6 +2530,20 @@ function getArchBonus(type){
   return total;
 }
 
+function getCapeBonus(type, skillId){
+  const capeId = state.equipment?.cape;
+  if (!capeId) return 0;
+  if (capeId === 'max_cape'){
+    return SKILLCAPES.filter(c => c.perkType === type &&
+      (skillId == null || c.skillId === skillId || c.skillId == null))
+      .reduce((sum, c) => sum + c.perkValue, 0);
+  }
+  const cape = SKILLCAPES.find(c => c.id === capeId);
+  if (!cape || cape.perkType !== type) return 0;
+  if (skillId != null && cape.skillId !== skillId) return 0;
+  return cape.perkValue;
+}
+
 function canAfford(action){
   if (!action.ingredients) return null;
   return action.ingredients.find(ing => (state.inventory[ing.item] || 0) < ing.count) || null;
@@ -2518,7 +2573,7 @@ function calcPlayerDamage(styleId, mob){
 function calcMobDamage(mob){
   const mobAtk    = (mob.stats.style === 'mage' ? mob.stats.mage : mob.stats.attack) || mob.stats.attack || 1;
   const defBoost  = getPrayerBoost('defence');
-  const baseDef   = Math.floor(levelForXp(state.skills.defence.xp) * (1 + defBoost)) + calcStats().defence;
+  const baseDef   = Math.floor(levelForXp(state.skills.defence.xp) * (1 + defBoost)) + calcStats().defence + getCapeBonus('defence_flat', null);
   const archDef   = getArchBonus('defence_bonus');
   const playerDef = archDef ? Math.floor(baseDef * (1 + archDef)) : baseDef;
   const maxHit    = Math.max(1, Math.floor(mobAtk * 0.4) + 1);
@@ -2549,6 +2604,12 @@ function getWeaponStats(){
 function equipItem(itemId){
   const slot = EQUIP_SLOTS[itemId];
   if (!slot || (state.inventory[itemId] || 0) < 1) return;
+
+  if (itemId === 'max_cape'){
+    const missing = SKILL_ROADMAP.filter(s => s.implemented && s.id !== 'invention')
+      .find(s => levelForXp(state.skills[s.id]?.xp || 0) < 99);
+    if (missing){ log(`Max cape requires level 99 in all skills (need: ${missing.name}).`); return; }
+  }
 
   const req = EQUIP_REQS[itemId];
   if (req){
@@ -2651,6 +2712,8 @@ function combatTick(){
     if (playerDmg > 0) playerDmg = Math.max(1, Math.round(playerDmg * wStats.damageMult));
     const archMelee = getArchBonus('melee_dmg');
     if (archMelee && playerDmg > 0) playerDmg = Math.max(1, Math.round(playerDmg * (1 + archMelee)));
+    const capeDmg = getCapeBonus(`${state.current.skillId}_dmg`, null);
+    if (capeDmg && playerDmg > 0) playerDmg = Math.max(1, Math.ceil(playerDmg * (1 + capeDmg)));
     state.combat.mobHp = Math.max(0, state.combat.mobHp - playerDmg);
   }
   const mobDmg = calcMobDamage(action);
@@ -3013,7 +3076,7 @@ function renderFarmTab(){
     el.appendChild(plantRow);
   } else {
     const elapsed   = Date.now() - f.plantedAt;
-    const growMs    = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1);
+    const growMs    = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming'));
     const pct       = Math.min(100, Math.floor(elapsed / growMs * 100));
     const remaining = Math.max(0, Math.ceil((f.plantedAt + growMs - Date.now()) / 1000));
     const mins = Math.floor(remaining / 60);
@@ -3117,7 +3180,7 @@ function renderFarmSection(){
     el.appendChild(plantRow);
   } else {
     const elapsed = Date.now() - f.plantedAt;
-    const growMs  = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1);
+    const growMs  = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming'));
     const pct     = Math.min(100, Math.floor(elapsed / growMs * 100));
     const remaining = Math.max(0, Math.ceil((f.plantedAt + growMs - Date.now()) / 1000));
     const mins = Math.floor(remaining / 60);
@@ -3272,22 +3335,23 @@ function getCurrentEffTicks(action){
   if (state.current?.floorTicks) return state.current.floorTicks;
   if (action.baseMaxSecs) return Math.round(calcFloorSecs(action) / (TICK_MS / 1000)); // DG fallback
   const base = action.ticks || 1;
-  const sumSpeed = getSummonBonusForSkill('speed_pct', state.current?.skillId);
+  const sumSpeed  = getSummonBonusForSkill('speed_pct', state.current?.skillId);
+  const capeSpeed = getCapeBonus('speed_pct', state.current?.skillId);
   if (state.current?.skillId === 'thieving'){
     const agilLevel = levelForXp(state.skills.agility.xp);
     if (action.lock){
       const toolMult = getToolSpeedMult('thieving');
       const agilMult = 1 - (agilLevel / 99 * 0.30);
-      return Math.max(1, Math.ceil(base * toolMult * agilMult * (1 - sumSpeed)));
+      return Math.max(1, Math.ceil(base * toolMult * agilMult * (1 - sumSpeed) * (1 - capeSpeed)));
     }
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20)) * (1 - sumSpeed)));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20)) * (1 - sumSpeed) * (1 - capeSpeed)));
   }
   if (state.current?.skillId === 'runecrafting'){
     const agilLevel = levelForXp(state.skills.agility.xp);
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed)));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed) * (1 - capeSpeed)));
   }
   const archSpeed = getArchBonus(`speed_${state.current.skillId}`);
-  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId) * getConstructionMult(state.current.skillId) * (1 - archSpeed) * (1 - sumSpeed)));
+  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId) * getConstructionMult(state.current.skillId) * (1 - archSpeed) * (1 - sumSpeed) * (1 - capeSpeed)));
 }
 
 function getConstructionMult(skillId){
@@ -3356,7 +3420,7 @@ function tick(){
   // Passive HP regen — 1% maxHp every 10s
   if (state.combat.maxHp && state.combat.hp < state.combat.maxHp){
     const now = Date.now();
-    if (now - (state.combat.lastRegen || 0) >= 30000 / (1 + getArchBonus('hp_regen') + getSummonBonus('hp_regen_mult'))){
+    if (now - (state.combat.lastRegen || 0) >= 30000 / (1 + getArchBonus('hp_regen') + getSummonBonus('hp_regen_mult') + getCapeBonus('hp_regen_mult', null))){
       state.combat.hp = Math.min(state.combat.maxHp, state.combat.hp + 1);
       state.combat.lastRegen = now;
     }
@@ -3370,7 +3434,8 @@ function tick(){
     }, 0);
     if (totalDrain > 0){
       const pBonus = Math.max(1, state.stats.prayer || 1);
-      const threshold = Math.max(1, Math.round(10 / totalDrain * (1 + pBonus / 30)));
+      const prayerDrainReduction = getCapeBonus('prayer_drain', null);
+      const threshold = Math.max(1, Math.round(10 / totalDrain * (1 + pBonus / 30) / Math.max(0.01, 1 - prayerDrainReduction)));
       state.prayer.drainCounter = (state.prayer.drainCounter || 0) + 1;
       if (state.prayer.drainCounter >= threshold){
         state.prayer.drainCounter = 0;
@@ -3406,7 +3471,7 @@ function tick(){
   }
   // Farming: detect crop becoming ready and log once
   if (state.farming?.seed && !state.farming.ready) {
-    const growMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1);
+    const growMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming'));
     if (Date.now() >= state.farming.plantedAt + growMs) {
       state.farming.ready = true;
       log(`Your ${state.farming.seedName} are ready to harvest!`);
@@ -3460,7 +3525,8 @@ function completeAction(action, silent){
     const noCatchAt = action.levelReq + zeroAt;
     const catchChance = Math.max(0, (noCatchAt - level) / zeroAt * action.catchChance);
     if (Math.random() < catchChance){
-      state.current.stunTicks = action.stunTicks || 5;
+      const stunReduction = getCapeBonus('stun_reduction', null);
+      state.current.stunTicks = Math.max(1, Math.round((action.stunTicks || 5) * (1 - stunReduction)));
       const secs = Math.ceil(state.current.stunTicks * TICK_MS / 1000);
       if (!silent) log(`🚨 Caught! Stunned for ${secs}s.`);
       return;
@@ -3677,7 +3743,7 @@ function completeAction(action, silent){
   // Award DG tokens on floor completion; refresh cached values for next loop
   if (state.current?.skillId === 'dungeoneering' && !silent){
     const dgLevel = levelForXp(state.skills['dungeoneering'].xp);
-    const tokens  = Math.max(1, Math.floor(dgLevel * action.tokenMult));
+    const tokens  = Math.max(1, Math.floor(dgLevel * action.tokenMult * (1 + getCapeBonus('dg_token_pct', null))));
     grantItem('dg_tokens', 'Dungeoneering tokens', tokens);
     log(`⚔️ Floor complete! +${tokens} tokens.`);
     state.current.earnedTokens = tokens;
@@ -3823,6 +3889,29 @@ function buyShopItem(id, qty){
   render();
 }
 
+function buySkillcape(capeId){
+  const cape = SKILLCAPES.find(c => c.id === capeId);
+  if (!cape) return;
+  if ((state.inventory[capeId] || 0) > 0 || state.equipment?.cape === capeId){
+    log('You already own this cape.'); return;
+  }
+  if (capeId === 'max_cape'){
+    const missing = SKILL_ROADMAP.filter(s => s.implemented && s.id !== 'invention')
+      .find(s => levelForXp(state.skills[s.id]?.xp || 0) < 99);
+    if (missing){ log(`Max cape requires level 99 in all skills (need: ${missing.name}).`); return; }
+  } else {
+    const lvl = levelForXp(state.skills[cape.skillId]?.xp || 0);
+    if (lvl < 99){ log(`Need level 99 ${SKILL_BY_ID[cape.skillId].name} to buy this cape.`); return; }
+  }
+  const coins = state.inventory['coins'] || 0;
+  if (coins < cape.cost){ log(`Need ${cape.cost.toLocaleString()} coins.`); return; }
+  state.inventory['coins'] = coins - cape.cost;
+  if (state.inventory['coins'] <= 0) delete state.inventory['coins'];
+  grantItem(capeId, cape.name, 1);
+  log(`🎓 Purchased ${cape.name} for ${cape.cost.toLocaleString()} coins!`);
+  renderShop(); render();
+}
+
 function sellItem(id, qty){
   const have = state.inventory[id] || 0;
   qty = Math.min(qty === 'all' ? have : (qty || 1), have);
@@ -3881,6 +3970,42 @@ function renderShop(){
           <button class="mini" ${canBuy1?'':'disabled'} onclick="buyShopItem('${item.id}',1)">×1</button>
           <button class="mini" ${canBuy10?'':'disabled'} onclick="buyShopItem('${item.id}',10)">×10</button>
         </div>`;
+      el.appendChild(card);
+    }
+
+    // Skillcapes section
+    const capeHdr = document.createElement('div');
+    capeHdr.className = 'ach-cat-hdr';
+    capeHdr.style.marginTop = '14px';
+    capeHdr.textContent = 'Skillcapes';
+    el.appendChild(capeHdr);
+    for (const cape of SKILLCAPES){
+      const owned = (state.inventory[cape.id] || 0) > 0 || state.equipment?.cape === cape.id;
+      let meetsReq = false;
+      if (cape.id === 'max_cape'){
+        meetsReq = !SKILL_ROADMAP.filter(s => s.implemented && s.id !== 'invention')
+          .find(s => levelForXp(state.skills[s.id]?.xp || 0) < 99);
+      } else {
+        meetsReq = levelForXp(state.skills[cape.skillId]?.xp || 0) >= 99;
+      }
+      const canAffordCape = coins >= cape.cost;
+      const card = document.createElement('div');
+      card.className = 'upgrade-tier';
+      card.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:6px;' + (owned ? 'border-color:var(--accent);' : '');
+      const reqLabel = cape.id === 'max_cape' ? 'Requires level 99 in all skills' : `Requires level 99 ${SKILL_BY_ID[cape.skillId].name}`;
+      card.innerHTML = `
+        <span style="font-size:20px;">${cape.icon}</span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:600;font-size:13px;">${cape.name}</div>
+          <div style="font-size:11px;color:var(--dim);">${cape.perkLabel}</div>
+          <div style="font-size:11px;margin-top:2px;">
+            🪙 ${cape.cost.toLocaleString()} &nbsp;·&nbsp;
+            <span style="color:${meetsReq ? '#4ade80' : '#f87171'}">${meetsReq ? '✓' : '✗'} ${reqLabel}</span>
+          </div>
+        </div>
+        <button class="mini" ${owned || !meetsReq || !canAffordCape ? 'disabled' : ''} onclick="buySkillcape('${cape.id}')">
+          ${owned ? '✓ Owned' : 'Buy'}
+        </button>`;
       el.appendChild(card);
     }
   } else if (shopTab === 'sell') {
@@ -5306,7 +5431,7 @@ function renderItemsPanel(){
 
   // Inline farm status
   if (state.farming?.seed){
-    const growMs  = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1);
+    const growMs  = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming'));
     const elapsed = Date.now() - state.farming.plantedAt;
     const pct     = Math.min(100, Math.round(elapsed / growMs * 100));
     html += `<div style="margin-top:10px;border-top:1px solid var(--line);padding-top:8px;">
@@ -5447,7 +5572,7 @@ function init(){
   if (state.prayer.drainCounter == null)         state.prayer.drainCounter = 0;
 
   // Farming: mark ready if crop matured while offline (timestamps survive saves)
-  const _offlineGrowMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1);
+  const _offlineGrowMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming'));
   if (state.farming?.seed && !state.farming.ready &&
       Date.now() >= state.farming.plantedAt + _offlineGrowMs) {
     state.farming.ready = true;
