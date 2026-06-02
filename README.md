@@ -18,7 +18,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 
 ## Current state
 
-**26 of 27 skills implemented.** The game is actively in development.
+**All 26 skills implemented.** The game is actively in development.
 
 ### Implemented skills
 
@@ -131,12 +131,6 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - Hunter: passive impling jar (1% per trap action, tier by hunter level; 6 tiers from Baby to Kingly)
 - All skills: respective skilling pet (1/5000 per action)
 - All bosses: respective boss pet (1/500–1/1000 per kill)
-
-### Not yet implemented (planned)
-
-| Skill | Type |
-|---|---|
-| Invention | Elite |
 
 **Deferred mechanics:** Fletching stringing (bowstring + unstrung → strung bow), Smithing arrowheads (enables arrow assembly), rune usage for Magic combat, PWA manifest + service worker for mobile install, Capacitor wrap for app stores
 
