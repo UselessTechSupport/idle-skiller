@@ -28,9 +28,9 @@ When creating a new character, choose between **Normal** (death restores HP and 
 |---|---|---|---|
 | Woodcutting | 110 | 13 trees (Tree → Eternal magic) | Tool upgrades (bronze axe → T100); bird's nest bonus drops |
 | Mining | 110 | 13 rocks (Copper → Primal + Rune essence) | Tool upgrades (bronze pickaxe → T100); geode bonus drops |
-| Fishing | 99 | 16 fish (Shrimps → Sailfish) | Tool upgrades (rod → Abyssal Rod); Kraken's Beak + Map to the Deep rare drops |
+| Fishing | 99 | 16 fish (Shrimps → Sailfish) | Tool upgrades (rod → Abyssal Rod); Kraken's Beak (capped at 1; blocked once Dragon Rod built) + Map to the Deep rare drops |
 | Farming | 120 | 7 herb seeds | Background skill — grows in 5 min while you train anything else; harvest 3–15 herbs; auto-replant toggle; XP scales by seed tier (150–2000 per harvest); speed up with Herb Patch upgrade |
-| Hunter | 99 | 18 actions | Bird Snare (raw bird meat), Deadfall (kebbit fur → Hunter Leather via Crafting), Box Trap (chinchompas), Net Trap (salamander weapons), Pitfall (kyatt fur); Impling Jars openable for loot |
+| Hunter | 99 | 15 actions | Bird Snare (raw bird meat), Deadfall (kebbit fur → Hunter Leather via Crafting), Box Trap (chinchompas), Net Trap (salamander weapons), Pitfall (kyatt fur); **passive impling spawns** (1% per trap action, tier scales with hunter level — Baby lv17, Earth lv36, Eclectic lv50, Nature lv62, Dragon lv83, Kingly lv91); all 6 jar types openable for loot |
 | Divination | 99 | 10 wisps + 54 transmutations | Gathers energy; transmutes logs/ores/fish/gems up one tier; 10% breakdown chance → divine dust |
 
 #### Artisan
@@ -113,14 +113,14 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - Settings menu — Dark/Light theme, Compact mode, Hide locked actions, configurable log size
 - Stop button always visible next to action progress bar
 - **Achievement system** — 78 achievements across Skills, Total Level, Combat, Slayer, and Special categories; filter by All / Hide Completed / Hide Locked; locked achievements require prerequisites (slayer unlocks, quest completion, etc.)
-- **Collection Log** — 22 drop sources across 5 categories (Woodcutting, Mining, Fishing, Agility, Hunter, Combat, Bosses, Pets); tracks per-item obtain counts; unobtained items shown greyed; global and per-source progress counters
+- **Collection Log** — 25 drop sources across 5 categories (Woodcutting, Mining, Fishing, Agility, Hunter, Combat, Bosses, Pets); tracks per-item obtain counts; unobtained items shown greyed; global and per-source progress counters
 
 **Bonus drops**
 - Woodcutting: bird's nests (1%, 4 variants)
 - Mining: geodes (5%, 3 tiers up to metamorphic with 1-in-99k hydrix)
 - Fishing: Kraken's Beak (1% lv60+), Map to the Deep (1-in-100k lv85+)
 - Firemaking: fire spirit QTE event (15% per burn)
-- Hunter: dragon impling jar (0.5–1% per trap action)
+- Hunter: passive impling jar (1% per trap action, tier by hunter level; 6 tiers from Baby to Kingly)
 - All skills: respective skilling pet (1/5000 per action)
 - All bosses: respective boss pet (1/500–1/1000 per kill)
 
