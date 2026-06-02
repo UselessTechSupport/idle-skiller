@@ -348,9 +348,9 @@
 </nav>
 
 <div class="wrap">
-  <!-- LEFT: all 29 skills -->
+  <!-- LEFT: all 26 skills -->
   <div class="card panel-skills" id="sec-skills">
-    <h2>Skills (29 total)</h2>
+    <h2>Skills (26 total)</h2>
     <div id="skillList"></div>
   </div>
 
@@ -617,7 +617,7 @@
 
    HOW THIS FILE IS ORGANISED (read top to bottom):
      1. CONFIG          — knobs you can tweak
-     2. GAME DATA       — the 29 skills + woodcutting trees (edit these to add content)
+     2. GAME DATA       — the 26 skills + woodcutting trees (edit these to add content)
      3. XP MATH         — experience formula
      4. STORAGE         — save/load that survives sandboxes and works as a real file
      5. STATE           — the player's save data
@@ -869,7 +869,7 @@ const MAX_CHARS = 5;
 let activeCharId = null;
 
 /* ---------- 2. GAME DATA ----------
-   SKILL_ROADMAP: all 29 skills. `implemented:true` = playable now.
+   SKILL_ROADMAP: all 26 skills. `implemented:true` = playable now.
    To "turn on" a skill later: set implemented:true and add its actions to ACTIONS. */
 const SKILL_TYPES = ['gathering','artisan','combat','support','elite'];
 const TYPE_LABEL  = {gathering:'Gathering', artisan:'Artisan', combat:'Combat', support:'Support', elite:'Elite'};
@@ -905,8 +905,6 @@ const SKILL_ROADMAP = [
   {id:'slayer',       name:'Slayer',       type:'support', maxLevel:120, implemented:true},
   {id:'dungeoneering',name:'Dungeoneering',type:'support', maxLevel:120, implemented:true},
   {id:'archaeology',  name:'Archaeology',  type:'support', maxLevel:120, implemented:true},
-  // Elite (1)
-  {id:'invention',    name:'Invention',    type:'elite', maxLevel:120, implemented:false},
 ];
 
 const SKILL_ICON = {
@@ -914,7 +912,7 @@ const SKILL_ICON = {
   crafting:'💍',    fletching:'🪃', smithing:'🔨', cooking:'🍳',  firemaking:'🔥',
   runecrafting:'🔮', construction:'🏠', herblore:'🌿',
   melee:'⚔️',  defence:'🛡️', constitution:'❤️', ranged:'🏹', magic:'🔮', prayer:'🙏', summoning:'🧿',
-  agility:'🏃', thieving:'🪝', slayer:'💀', dungeoneering:'🗝️', archaeology:'🏺', invention:'⚙️',
+  agility:'🏃', thieving:'🪝', slayer:'💀', dungeoneering:'🗝️', archaeology:'🏺',
 };
 
 const TUTORIAL_STEPS = [
@@ -2751,7 +2749,7 @@ function freshState(){
 
 /* ---------- 6. CORE LOOP + OFFLINE ---------- */
 function calcSkillBonus(){
-  const nonDg = SKILL_ROADMAP.filter(s => s.id !== 'dungeoneering');
+  const nonDg = SKILL_ROADMAP.filter(s => s.id !== 'dungeoneering' && s.implemented);
   const current = nonDg.reduce((sum, s) => sum + levelForXp(state.skills[s.id].xp), 0);
   const base    = nonDg.length;
   const max     = nonDg.reduce((sum, s) => sum + s.maxLevel, 0);
@@ -3106,12 +3104,12 @@ function equipItem(itemId){
   if (!slot || (state.inventory[itemId] || 0) < 1) return;
 
   if (itemId === 'comp_cape'){
-    const missing150 = SKILL_ROADMAP.filter(s => s.implemented && s.id !== 'invention')
+    const missing150 = SKILL_ROADMAP.filter(s => s.implemented)
       .find(s => levelForXp(state.skills[s.id]?.xp || 0) < 150);
     if (missing150){ log(`Completionist cape requires virtual level 150 in all skills (need: ${missing150.name}).`); return; }
     if (!ACHIEVEMENTS.every(a => !!state.achievements?.[a.id])){ log('Completionist cape requires all achievements completed.'); return; }
   } else if (itemId === 'max_cape'){
-    const missing = SKILL_ROADMAP.filter(s => s.implemented && s.id !== 'invention')
+    const missing = SKILL_ROADMAP.filter(s => s.implemented)
       .find(s => levelForXp(state.skills[s.id]?.xp || 0) < 99);
     if (missing){ log(`Max cape requires level 99 in all skills (need: ${missing.name}).`); return; }
   }
@@ -4670,12 +4668,12 @@ function buySkillcape(capeId){
     log('You already own this cape.'); return;
   }
   if (capeId === 'comp_cape'){
-    const missing150 = SKILL_ROADMAP.filter(s => s.implemented && s.id !== 'invention')
+    const missing150 = SKILL_ROADMAP.filter(s => s.implemented)
       .find(s => levelForXp(state.skills[s.id]?.xp || 0) < 150);
     if (missing150){ log(`Completionist cape requires virtual level 150 in all skills (need: ${missing150.name}).`); return; }
     if (!ACHIEVEMENTS.every(a => !!state.achievements?.[a.id])){ log('Completionist cape requires all achievements completed.'); return; }
   } else if (capeId === 'max_cape'){
-    const missing = SKILL_ROADMAP.filter(s => s.implemented && s.id !== 'invention')
+    const missing = SKILL_ROADMAP.filter(s => s.implemented)
       .find(s => levelForXp(state.skills[s.id]?.xp || 0) < 99);
     if (missing){ log(`Max cape requires level 99 in all skills (need: ${missing.name}).`); return; }
   } else {
@@ -4762,11 +4760,11 @@ function renderShop(){
       const owned = (state.inventory[cape.id] || 0) > 0 || state.equipment?.cape === cape.id;
       let meetsReq = false;
       if (cape.id === 'comp_cape'){
-        meetsReq = !SKILL_ROADMAP.filter(s => s.implemented && s.id !== 'invention')
+        meetsReq = !SKILL_ROADMAP.filter(s => s.implemented)
           .find(s => levelForXp(state.skills[s.id]?.xp || 0) < 150)
           && ACHIEVEMENTS.every(a => !!state.achievements?.[a.id]);
       } else if (cape.id === 'max_cape'){
-        meetsReq = !SKILL_ROADMAP.filter(s => s.implemented && s.id !== 'invention')
+        meetsReq = !SKILL_ROADMAP.filter(s => s.implemented)
           .find(s => levelForXp(state.skills[s.id]?.xp || 0) < 99);
       } else {
         meetsReq = levelForXp(state.skills[cape.skillId]?.xp || 0) >= 99;
@@ -5521,6 +5519,7 @@ function renderSkillList(){
   el.innerHTML = '';
   SKILL_TYPES.forEach(type => {
     const skillsOfType = SKILL_ROADMAP.filter(s => s.type === type);
+    if (skillsOfType.length === 0) return;
     const label = document.createElement('div');
     label.className = 'skill-group-label';
     label.textContent = TYPE_LABEL[type];
