@@ -983,16 +983,16 @@ const SLAYER_MASTERS = [
   { id:'turael',   name:'Aldric',   levelReq:1,  pointsPerTask:2,  taskMin:10, taskMax:20,
     pool:['goblin','cow','guard','barbarian'], bossPool:[] },
   { id:'mazchna',  name:'Mira',  levelReq:20, pointsPerTask:5,  taskMin:20, taskMax:40,
-    pool:['guard','barbarian','hill_giant','crawling_hand','cave_crawler','banshee','skeleton_warrior'], bossPool:[] },
+    pool:['guard','barbarian','hill_giant','scuttling_claw','tunnel_lurker','wailing_wraith','skeleton_warrior'], bossPool:[] },
   { id:'vannaka',  name:'Karok',  levelReq:40, pointsPerTask:10, taskMin:30, taskMax:60,
-    pool:['hill_giant','moss_giant','banshee','rock_slug','cockatrice','skeleton_warrior','troll','werewolf'], bossPool:[] },
+    pool:['hill_giant','moss_giant','wailing_wraith','stone_creeper','venom_basilisk','skeleton_warrior','troll','werewolf'], bossPool:[] },
   { id:'chaeldar', name:'Sylva', levelReq:60, pointsPerTask:15, taskMin:40, taskMax:80,
-    pool:['fire_giant','green_dragon','infernal_mage','bloodveld','aberrant_spectre','ice_warrior','wyvern'], bossPool:[] },
+    pool:['fire_giant','emerald_drake','hellfire_conjurer','crimson_hound','corrupt_shade','ice_warrior','wyvern'], bossPool:[] },
   { id:'sumona',   name:'Ashara',   levelReq:75, pointsPerTask:20, taskMin:50, taskMax:100,
-    pool:['blue_dragon','aberrant_spectre','dust_devil','dark_beast','black_dragon','wyvern','gargoyle','vampire'], bossPool:[] },
+    pool:['azure_drake','corrupt_shade','grit_elemental','dusk_prowler','obsidian_drake','wyvern','stone_sentinel','vampire'], bossPool:[] },
   { id:'duradel',  name:'Duroc',  levelReq:90, pointsPerTask:30, taskMin:60, taskMax:120,
-    pool:['dark_beast','abyssal_demon','black_dragon','gargoyle','vampire'],
-    bossPool:['giant_mole','void_dragon','deep_kings','solara','karg','harbinger','ancient_lich'] },
+    pool:['dusk_prowler','void_stalker','obsidian_drake','stone_sentinel','vampire'],
+    bossPool:['burrower','void_dragon','deep_kings','solara','karg','harbinger','ancient_lich'] },
 ];
 
 const SLAYER_SHOP = [
@@ -1679,21 +1679,21 @@ const ACTIONS = {
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.12, min:1,max:1, notable:false},
              {item:'green_charm',  itemName:'Green charm',  chance:0.04, min:1,max:1, notable:false},
              {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,max:1, notable:true}]},
-    {id:'green_dragon', name:'Green Dragon',  category:'Mobs', levelReq:55, xp:500,  ticks:13, stats:{hp:170, attack:40, defence:28},
+    {id:'emerald_drake', name:'Emerald Drake', category:'Mobs', levelReq:55, xp:500,  ticks:13, stats:{hp:170, attack:40, defence:28},
       drops:[{item:'dragon_bones', itemName:'Dragon bones', chance:1.00, min:1,max:1, notable:true},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:120,max:400, notable:false},
              {item:'green_dhide',  itemName:'Green dragonhide',chance:1.00,min:1,max:1,notable:true},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.12, min:1,max:1, notable:false},
              {item:'green_charm',  itemName:'Green charm',  chance:0.04, min:1,max:1, notable:false},
              {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,max:1, notable:true}]},
-    {id:'blue_dragon',  name:'Blue Dragon',   category:'Mobs', levelReq:65, xp:650,  ticks:15, stats:{hp:230, attack:50, defence:35},
+    {id:'azure_drake',   name:'Azure Drake',   category:'Mobs', levelReq:65, xp:650,  ticks:15, stats:{hp:230, attack:50, defence:35},
       drops:[{item:'dragon_bones', itemName:'Dragon bones', chance:1.00, min:1,max:1, notable:true},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:180,max:600, notable:false},
              {item:'blue_dhide',   itemName:'Blue dragonhide',chance:1.00,min:1,max:1,notable:true},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.13, min:1,max:1, notable:false},
              {item:'green_charm',  itemName:'Green charm',  chance:0.05, min:1,max:1, notable:false},
              {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,max:1, notable:true}]},
-    {id:'black_dragon', name:'Black Dragon',  category:'Mobs', levelReq:80, xp:900,  ticks:18, stats:{hp:320, attack:65, defence:48},
+    {id:'obsidian_drake', name:'Obsidian Drake', category:'Mobs', levelReq:80, xp:900,  ticks:18, stats:{hp:320, attack:65, defence:48},
       drops:[{item:'dragon_bones', itemName:'Dragon bones', chance:1.00, min:1,max:1, notable:true},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:250,max:900, notable:false},
              {item:'black_dhide',  itemName:'Black dragonhide',chance:1.00,min:1,max:1,notable:true},
@@ -1711,7 +1711,7 @@ const ACTIONS = {
       {item:'crimson_charm',itemName:'Crimson charm', chance:0.03, min:1,  max:1,   notable:false},
       {item:'blue_charm',   itemName:'Blue charm',    chance:0.01, min:1,  max:1,   notable:false},
     ]},
-    {id:'dark_beast',   name:'Dark Beast',    category:'Mobs', levelReq:90, xp:1100, ticks:21, stats:{hp:430, attack:80, defence:60},
+    {id:'dusk_prowler',  name:'Dusk Prowler',  category:'Mobs', levelReq:90, xp:1100, ticks:21, stats:{hp:430, attack:80, defence:60},
       drops:[{item:'big_bones',    itemName:'Big bones',    chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:350,max:1400, notable:false},
              {item:'soul_rune',    itemName:'Soul rune',    chance:0.08, min:5,  max:15,   notable:false},
@@ -1720,40 +1720,40 @@ const ACTIONS = {
              {item:'crimson_charm',itemName:'Crimson charm',chance:0.04, min:1,max:1, notable:true},
              {item:'blue_charm',   itemName:'Blue charm',   chance:0.02, min:1,max:1, notable:true}]},
     // ── Slayer Monsters ───────────────────────────────────────────────────────
-    {id:'crawling_hand',     name:'Crawling Hand',     category:'Slayer Monsters', levelReq:5,  xp:45,  ticks:5,  slayerReq:5,  stats:{hp:12,  attack:5,  defence:2},
+    {id:'scuttling_claw',    name:'Scuttling Claw',    category:'Slayer Monsters', levelReq:5,  xp:45,  ticks:5,  slayerReq:5,  stats:{hp:12,  attack:5,  defence:2},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:8, max:25,  notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.08, min:1,max:1, notable:false}]},
-    {id:'cave_crawler',      name:'Cave Crawler',      category:'Slayer Monsters', levelReq:10, xp:70,  ticks:6,  slayerReq:10, stats:{hp:18,  attack:9,  defence:5},
+    {id:'tunnel_lurker',     name:'Tunnel Lurker',     category:'Slayer Monsters', levelReq:10, xp:70,  ticks:6,  slayerReq:10, stats:{hp:18,  attack:9,  defence:5},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:12,max:40,  notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.09, min:1,max:1, notable:false}]},
-    {id:'banshee',           name:'Banshee',           category:'Slayer Monsters', levelReq:15, xp:95,  ticks:7,  slayerReq:15, stats:{hp:28,  attack:13, defence:7},
+    {id:'wailing_wraith',    name:'Wailing Wraith',    category:'Slayer Monsters', levelReq:15, xp:95,  ticks:7,  slayerReq:15, stats:{hp:28,  attack:13, defence:7},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:15,max:55,  notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.09, min:1,max:1, notable:false}]},
-    {id:'rock_slug',         name:'Rock Slug',         category:'Slayer Monsters', levelReq:20, xp:130, ticks:8,  slayerReq:20, stats:{hp:38,  attack:16, defence:10},
+    {id:'stone_creeper',     name:'Stone Creeper',     category:'Slayer Monsters', levelReq:20, xp:130, ticks:8,  slayerReq:20, stats:{hp:38,  attack:16, defence:10},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:20,max:70,  notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.09, min:1,max:1, notable:false},
              {item:'green_charm',  itemName:'Green charm',  chance:0.03, min:1,max:1, notable:false}]},
-    {id:'cockatrice',        name:'Cockatrice',        category:'Slayer Monsters', levelReq:25, xp:175, ticks:8,  slayerReq:25, stats:{hp:50,  attack:20, defence:12},
+    {id:'venom_basilisk',    name:'Venom Basilisk',    category:'Slayer Monsters', levelReq:25, xp:175, ticks:8,  slayerReq:25, stats:{hp:50,  attack:20, defence:12},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:25,max:90,  notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.10, min:1,max:1, notable:false},
              {item:'green_charm',  itemName:'Green charm',  chance:0.03, min:1,max:1, notable:false}]},
-    {id:'infernal_mage',     name:'Infernal Mage',     category:'Slayer Monsters', levelReq:45, xp:300, ticks:10, slayerReq:45, stats:{hp:120, attack:32, defence:20, style:'mage'},
+    {id:'hellfire_conjurer', name:'Hellfire Conjurer', category:'Slayer Monsters', levelReq:45, xp:300, ticks:10, slayerReq:45, stats:{hp:120, attack:32, defence:20, style:'mage'},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:60,max:200, notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.11, min:1,max:1, notable:false},
              {item:'green_charm',  itemName:'Green charm',  chance:0.04, min:1,max:1, notable:false}]},
-    {id:'bloodveld',         name:'Bloodveld',         category:'Slayer Monsters', levelReq:50, xp:370, ticks:11, slayerReq:50, stats:{hp:135, attack:33, defence:22},
+    {id:'crimson_hound',     name:'Crimson Hound',     category:'Slayer Monsters', levelReq:50, xp:370, ticks:11, slayerReq:50, stats:{hp:135, attack:33, defence:22},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:80,max:280, notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.12, min:1,max:1, notable:false},
              {item:'green_charm',  itemName:'Green charm',  chance:0.04, min:1,max:1, notable:false},
              {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,max:1, notable:true}]},
-    {id:'aberrant_spectre',  name:'Aberrant Spectre',  category:'Slayer Monsters', levelReq:60, xp:510, ticks:13, slayerReq:60, stats:{hp:200, attack:45, defence:30},
+    {id:'corrupt_shade',     name:'Corrupt Shade',     category:'Slayer Monsters', levelReq:60, xp:510, ticks:13, slayerReq:60, stats:{hp:200, attack:45, defence:30},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:100,max:380, notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.12, min:1,max:1, notable:false},
@@ -1769,13 +1769,13 @@ const ACTIONS = {
       {item:'green_charm',  itemName:'Green charm',   chance:0.04,  min:1, max:1,   notable:false},
       {item:'crimson_charm',itemName:'Crimson charm', chance:0.03,  min:1, max:1,   notable:false},
     ]},
-    {id:'dust_devil',        name:'Dust Devil',        category:'Slayer Monsters', levelReq:65, xp:600, ticks:14, slayerReq:65, stats:{hp:240, attack:52, defence:36},
+    {id:'grit_elemental',    name:'Grit Elemental',    category:'Slayer Monsters', levelReq:65, xp:600, ticks:14, slayerReq:65, stats:{hp:240, attack:52, defence:36},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:120,max:450, notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.13, min:1,max:1, notable:false},
              {item:'green_charm',  itemName:'Green charm',  chance:0.05, min:1,max:1, notable:false},
              {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,max:1, notable:true}]},
-    {id:'gargoyle', name:'Gargoyle', category:'Slayer', levelReq:75, slayerReq:75, xp:850, ticks:18, stats:{hp:300, attack:60, defence:45},
+    {id:'stone_sentinel', name:'Stone Sentinel', category:'Slayer', levelReq:75, slayerReq:75, xp:850, ticks:18, stats:{hp:300, attack:60, defence:45},
      drops:[
       {item:'big_bones',     itemName:'Big bones',     chance:1.0,   min:1,  max:1,   notable:false},
       {item:'coins',         itemName:'Coins',         chance:1.0,   min:200,max:800,  notable:false},
@@ -1798,7 +1798,7 @@ const ACTIONS = {
       {item:'crimson_charm',itemName:'Crimson charm', chance:0.034, min:1,  max:1,   notable:false},
       {item:'blue_charm',   itemName:'Blue charm',    chance:0.017, min:1,  max:1,   notable:false},
     ]},
-    {id:'abyssal_demon',     name:'Abyssal Demon',     category:'Slayer Monsters', levelReq:85, xp:900, ticks:19, slayerReq:85, stats:{hp:360, attack:70, defence:55},
+    {id:'void_stalker',      name:'Void Stalker',      category:'Slayer Monsters', levelReq:85, xp:900, ticks:19, slayerReq:85, stats:{hp:360, attack:70, defence:55},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:200,max:800, notable:false},
              {item:'abyssal_whip', itemName:'Abyssal whip', chance:0.01, min:1,max:1, notable:true},
@@ -1807,7 +1807,7 @@ const ACTIONS = {
              {item:'crimson_charm',itemName:'Crimson charm',chance:0.04, min:1,max:1, notable:true},
              {item:'blue_charm',   itemName:'Blue charm',   chance:0.02, min:1,max:1, notable:true}]},
     // ── Bosses ────────────────────────────────────────────────────────────────
-    {id:'giant_mole', name:'Giant Mole',          category:'Bosses', levelReq:30,  xp:800,   ticks:50,  stats:{hp:500,  attack:18, defence:12},
+    {id:'burrower',   name:'The Burrower',         category:'Bosses', levelReq:30,  xp:800,   ticks:50,  stats:{hp:500,  attack:18, defence:12},
       drops:[{item:'big_bones',       itemName:'Big bones',          chance:1.00, min:1,max:1, notable:false},
              {item:'coins',           itemName:'Coins',              chance:1.00, min:200,max:1000, notable:false},
              {item:'mole_skin',       itemName:'Mole skin',          chance:1.00, min:1,max:1, notable:true},
@@ -2140,7 +2140,7 @@ const COLLECTION_LOG_SOURCES = [
     {id:'uncut_hydrix',     name:'Uncut hydrix',     icon:'🟣'},
   ]},
   // Combat
-  { id:'mob_abyssal_demon', name:'Abyssal Demon',       category:'Combat', items:[
+  { id:'mob_void_stalker',  name:'Void Stalker',         category:'Combat', items:[
     {id:'abyssal_whip', name:'Abyssal whip', icon:'⚔️'},
   ]},
   { id:'mob_ice_warrior',  name:'Ice Warrior',  category:'Combat', items:[{id:'ice_gloves',    name:'Ice gloves',    icon:'🧤'}]},
@@ -2150,7 +2150,7 @@ const COLLECTION_LOG_SOURCES = [
     {id:'goblin_crown', name:'Goblin Crown', icon:'👑'},
     {id:'goblin_sword', name:'Goblin Sword', icon:'⚔️'},
   ]},
-  { id:'boss_giant_mole', name:'Giant Mole',          category:'Bosses', items:[{id:'mole_skin',         name:'Mole skin',          icon:'🦔'}]},
+  { id:'boss_burrower',   name:'The Burrower',         category:'Bosses', items:[{id:'mole_skin',         name:'Mole skin',          icon:'🦔'}]},
   { id:'boss_void_dragon',        name:'Void Dragon',    category:'Bosses', items:[{id:'void_drake_head',         name:'Void drake head',          icon:'🐉'},{id:'void_scale', name:'Void scale', icon:'🐉'}]},
   { id:'boss_deep_kings',  name:'Leviathan Kings',      category:'Bosses', items:[{id:'berserker_ring',    name:'Berserker ring',     icon:'💍'},{id:'leviathan_fang', name:'Leviathan fang', icon:'👑'}]},
   { id:'boss_solara',    name:'Commander Solara',    category:'Bosses', items:[{id:'celestial_sword',   name:'Celestial sword',    icon:'⚔️'},{id:'solar_shard', name:'Solar shard', icon:'☀️'}]},
@@ -2213,9 +2213,9 @@ const CLOG_SOURCE_MAP = {};
 for (const src of COLLECTION_LOG_SOURCES)
   CLOG_SOURCE_MAP[src.id] = new Set(src.items.map(i => i.id));
 const MOB_CLOG_SOURCE = {
-  abyssal_demon:'mob_abyssal_demon',
+  void_stalker:'mob_void_stalker',
   goblin_king:'boss_goblin_king',
-  giant_mole:'boss_giant_mole', void_dragon:'boss_void_dragon', deep_kings:'boss_deep_kings',
+  burrower:'boss_burrower', void_dragon:'boss_void_dragon', deep_kings:'boss_deep_kings',
   solara:'boss_solara', karg:'boss_karg', harbinger:'boss_harbinger',
   ice_warrior:'mob_ice_warrior', vampire:'mob_vampire', ancient_lich:'boss_ancient_lich',
 };
@@ -2228,10 +2228,10 @@ const OPENABLE_CLOG_SOURCE = {
 };
 // Collection log source ID → combat.kills key (for displaying kill counts)
 const CLOG_KILL_SOURCE = {
-  boss_goblin_king:'goblin_king', boss_giant_mole:'giant_mole',
+  boss_goblin_king:'goblin_king', boss_burrower:'burrower',
   boss_void_dragon:'void_dragon', boss_deep_kings:'deep_kings',
   boss_solara:'solara', boss_karg:'karg', boss_harbinger:'harbinger',
-  boss_ancient_lich:'ancient_lich', mob_abyssal_demon:'abyssal_demon',
+  boss_ancient_lich:'ancient_lich', mob_void_stalker:'void_stalker',
   mob_ice_warrior:'ice_warrior', mob_vampire:'vampire',
 };
 // Collection log source ID → openCounts key (the openable item ID)
@@ -2307,8 +2307,8 @@ const ACHIEVEMENTS = [
   {id:'tl_2000', name:'Completionist',desc:'Reach a total level of 2,000',icon:'🌟', category:'Total Level', checkFn:()=>getTotalLevel()>=2000},
 
   // Combat — boss kills
-  {id:'kill_mole_1',   name:'Mole Hunter',    desc:'Kill the Giant Mole',            icon:'🦔', category:'Combat', checkFn:()=>(state.combat.kills?.giant_mole||0)>=1},
-  {id:'kill_mole_50',  name:'Mole Maniac',    desc:'Kill the Giant Mole 50 times',   icon:'🦔', category:'Combat', checkFn:()=>(state.combat.kills?.giant_mole||0)>=50},
+  {id:'kill_mole_1',   name:'Mole Hunter',    desc:'Kill the Burrower',              icon:'🦔', category:'Combat', checkFn:()=>(state.combat.kills?.burrower||0)>=1},
+  {id:'kill_mole_50',  name:'Mole Maniac',    desc:'Kill the Burrower 50 times',     icon:'🦔', category:'Combat', checkFn:()=>(state.combat.kills?.burrower||0)>=50},
   {id:'kill_kbd_1',    name:'Dragonslayer',   desc:'Kill the Void Dragon',      icon:'🐉', category:'Combat', checkFn:()=>(state.combat.kills?.void_dragon||0)>=1,    lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<60},
   {id:'kill_kbd_50',   name:'Dragon Farmer',  desc:'Kill the Void Dragon 50 times',          icon:'🐉', category:'Combat', checkFn:()=>(state.combat.kills?.void_dragon||0)>=50,   lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<60},
   {id:'kill_dag_1',    name:'Depths Slayer',desc:'Kill the Leviathan Kings',       icon:'👑', category:'Combat', checkFn:()=>(state.combat.kills?.deep_kings||0)>=1,  lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<75},
@@ -2330,9 +2330,9 @@ const ACHIEVEMENTS = [
   // Special / Collection
   {id:'got_hydrix',    name:'Hydrix Hunter',     desc:'Obtain an uncut hydrix',                   icon:'🟣', category:'Special', checkFn:()=>((state.collectionLog?.geode_metamorphic?.uncut_hydrix||0)+(state.collectionLog?.jar_dragon?.uncut_hydrix||0))>0},
   {id:'got_tavia_map', name:'Treasure Hunter',   desc:'Find the Map to the Deep',                    icon:'🗺️', category:'Special', checkFn:()=>(state.collectionLog?.fishing_bonus?.map_to_the_deep||0)>0},
-  {id:'got_whip',      name:'Demon Slayer',       desc:'Obtain an Abyssal whip',                  icon:'⚔️', category:'Special', checkFn:()=>(state.collectionLog?.mob_abyssal_demon?.abyssal_whip||0)>0},
+  {id:'got_whip',      name:'Void Hunter',        desc:'Obtain an Abyssal whip',                  icon:'⚔️', category:'Special', checkFn:()=>(state.collectionLog?.mob_void_stalker?.abyssal_whip||0)>0},
   {id:'got_ancient',     name:'Darkness Conquered',      desc:'Obtain an Ancient platebody',                icon:'🛡️', category:'Special', checkFn:()=>(state.collectionLog?.boss_harbinger?.ancient_platebody||0)>0, lockFn:()=>!state.slayer.unlocks?.boss_tasks},
-  {id:'all_boss_log',  name:'Boss Logger',        desc:'Log an item from every boss',             icon:'📖', category:'Special', checkFn:()=>['boss_giant_mole','boss_void_dragon','boss_deep_kings','boss_solara','boss_karg','boss_harbinger','boss_ancient_lich'].every(s=>Object.keys(state.collectionLog?.[s]||{}).length>0), lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'all_boss_log',  name:'Boss Logger',        desc:'Log an item from every boss',             icon:'📖', category:'Special', checkFn:()=>['boss_burrower','boss_void_dragon','boss_deep_kings','boss_solara','boss_karg','boss_harbinger','boss_ancient_lich'].every(s=>Object.keys(state.collectionLog?.[s]||{}).length>0), lockFn:()=>!state.slayer.unlocks?.boss_tasks},
   {id:'arch_3_perks',  name:'Perk Collector',     desc:'Have 3 archaeology perks active',         icon:'🏺', category:'Special', checkFn:()=>Object.keys(state.archaeology?.activePerks||{}).length>=3},
   {id:'slay_shop_all', name:'Points Well Spent',  desc:'Purchase all Slayer shop items',          icon:'🏪', category:'Special', checkFn:()=>['boss_tasks','slayer_boost','task_extend','point_bonus'].every(k=>!!state.slayer.unlocks?.[k])},
   {id:'goblin_diplomacy_done', name:'Diplomat', desc:'Complete the Goblin Diplomacy quest', icon:'📜', category:'Special', checkFn:()=>!!state.quests?.goblin_diplomacy},
@@ -3507,14 +3507,14 @@ function renderCombatPanel(){
         : `Kill goblins to obtain a Goblin Diplomatic Note.<br><span style="font-size:11px;">Kills: <b>${goblinKc.toLocaleString()}</b> / 1,000 guaranteed</span>`;
       list.appendChild(noteInfo);
       if (questAction){
-        const unlocked = combatLvl >= questAction.levelReq && hasNote;
+        const unlocked = hasNote;
         const btn = document.createElement('button');
         btn.className = 'action-btn' + (state.current?.actionId === 'goblin_king_quest' ? ' selected' : '');
         btn.disabled = !unlocked;
         const mobInfo = `<br><span style="color:var(--dim);font-size:11px;">HP: ${questAction.stats.hp}  ATK: ${questAction.stats.attack}  DEF: ${questAction.stats.defence} — No drops, quest completion only</span>`;
-        const lockStr = !hasNote ? `<br><span style="color:#f87171;font-size:11px;">🔒 Requires Goblin Diplomatic Note</span>` :
-                        combatLvl < questAction.levelReq ? `<br><span style="color:#f87171;font-size:11px;">🔒 Lv ${questAction.levelReq} required</span>` : '';
-        btn.innerHTML = `<span>${questAction.name}${mobInfo}${lockStr}</span><span class="meta">Quest boss</span>`;
+        const recStr = combatLvl < questAction.levelReq ? `<span style="color:#f59e0b;font-size:11px;"> ⚠ Rec. Lv ${questAction.levelReq}</span>` : '';
+        const lockStr = !hasNote ? `<br><span style="color:#f87171;font-size:11px;">🔒 Requires Goblin Diplomatic Note</span>` : '';
+        btn.innerHTML = `<span>${questAction.name}${recStr}${mobInfo}${lockStr}</span><span class="meta">Quest boss</span>`;
         if (unlocked) btn.onclick = () => startAction(styleId, 'goblin_king_quest');
         list.appendChild(btn);
       }
@@ -3524,21 +3524,21 @@ function renderCombatPanel(){
     // Filter out quest-locked bosses
     const visibleMobs = mobs.filter(a => !a.questReq || !!state.quests?.[a.questReq]);
     visibleMobs.forEach(a => {
-      const unlocked = combatLvl >= a.levelReq;
       const slayerLocked = !!(a.slayerReq && slayerLv < a.slayerReq);
       const selected = state.current && COMBAT_SKILL_IDS.has(state.current.skillId) && state.current.actionId === a.id;
       const onTask   = state.slayer?.task?.mobId === a.id;
       const btn = document.createElement('button');
       btn.className = 'action-btn' + (selected ? ' selected' : '');
-      btn.disabled = !unlocked || slayerLocked;
+      btn.disabled = slayerLocked;
       const dropPreview = (a.drops || []).filter(d => d.notable).map(d => d.itemName).join(', ');
       const dropStr = dropPreview ? `<br><span style="color:var(--dim);font-size:11px;">Drops: ${dropPreview}</span>` : '';
       const mobInfo = a.stats ? `<br><span style="color:var(--dim);font-size:11px;">HP: ${a.stats.hp}  ATK: ${a.stats.attack}  DEF: ${a.stats.defence}</span>` : '';
       const slayerLockStr = slayerLocked ? `<br><span style="color:#f87171;font-size:11px;">🔒 Requires Slayer lv ${a.slayerReq}</span>` : '';
+      const recStr = combatLvl < a.levelReq ? `<span style="color:#f59e0b;font-size:11px;"> ⚠ Rec. Lv ${a.levelReq}</span>` : '';
       const taskBadge = onTask ? ` <span style="background:#f59e0b;color:#000;font-size:10px;padding:1px 5px;border-radius:3px;font-weight:bold;">📋 ON TASK</span>` : '';
-      btn.innerHTML = `<span>${a.name}${unlocked ? '' : ` 🔒 Lv ${a.levelReq}`}${taskBadge}${mobInfo}${slayerLockStr}${dropStr}</span>
+      btn.innerHTML = `<span>${a.name}${recStr}${taskBadge}${mobInfo}${slayerLockStr}${dropStr}</span>
                        <span class="meta">${a.xp} xp</span>`;
-      if (unlocked && !slayerLocked) btn.onclick = () => startAction(styleId, a.id);
+      if (!slayerLocked) btn.onclick = () => startAction(styleId, a.id);
       list.appendChild(btn);
     });
     if (visibleMobs.length === 0){
@@ -6344,6 +6344,24 @@ function init(){
   if (state.combat?.kills) for (const [old,nw] of Object.entries(_killRenames)){
     if (state.combat.kills[old]){ state.combat.kills[nw]=(state.combat.kills[nw]||0)+state.combat.kills[old]; delete state.combat.kills[old]; }
   }
+  // Mob ID rename migration
+  const _mobIdRenames = {
+    crawling_hand:'scuttling_claw', cave_crawler:'tunnel_lurker', banshee:'wailing_wraith',
+    rock_slug:'stone_creeper', cockatrice:'venom_basilisk', infernal_mage:'hellfire_conjurer',
+    bloodveld:'crimson_hound', aberrant_spectre:'corrupt_shade', dust_devil:'grit_elemental',
+    gargoyle:'stone_sentinel', abyssal_demon:'void_stalker', dark_beast:'dusk_prowler',
+    green_dragon:'emerald_drake', blue_dragon:'azure_drake', black_dragon:'obsidian_drake',
+    giant_mole:'burrower',
+  };
+  if (state.combat?.kills) for (const [o,n] of Object.entries(_mobIdRenames))
+    if (state.combat.kills[o]){ state.combat.kills[n]=(state.combat.kills[n]||0)+state.combat.kills[o]; delete state.combat.kills[o]; }
+  const _clogMobRenames = { mob_abyssal_demon:'mob_void_stalker', boss_giant_mole:'boss_burrower' };
+  if (state.collectionLog) for (const [o,n] of Object.entries(_clogMobRenames))
+    if (state.collectionLog[o]){ state.collectionLog[n]=state.collectionLog[o]; delete state.collectionLog[o]; }
+  if (state.slayer?.task?.mobId && _mobIdRenames[state.slayer.task.mobId])
+    state.slayer.task.mobId = _mobIdRenames[state.slayer.task.mobId];
+  if (state.current?.actionId && _mobIdRenames[state.current.actionId])
+    state.current.actionId = _mobIdRenames[state.current.actionId];
   const _herbRenames = {
     tarromin:'ironwort', ranarr_weed:'shimmerleaf', dwarf_weed:'thornweed',
     lantadyme:'goldbloom', fellstalk:'duskroot', spirit_weed:'veilmoss', torstol:'crimsonherb',
