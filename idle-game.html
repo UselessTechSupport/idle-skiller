@@ -3849,7 +3849,7 @@ function renderShop(){
   el.appendChild(bal);
   const tabs = document.createElement('div');
   tabs.style.cssText = 'display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:10px;';
-  for (const [key, label] of [['buy','🛒 Buy'],['sell','💰 Sell'],['upgrades','⚒️ Upgrades'],['delving','🗝️ Delving'],['construction','🏗️ Construction']]){
+  for (const [key, label] of [['buy','🛒 Buy'],['sell','💰 Sell'],['upgrades','⚒️ Upgrades'],['delving','🗝️ Dungeoneering'],['construction','🏗️ Construction']]){
     const b = document.createElement('button');
     b.className = 'mini';
     if (shopTab === key) b.style.cssText = 'background:var(--accent2);color:var(--text);border-color:var(--accent);font-weight:600;';
@@ -3883,7 +3883,7 @@ function renderShop(){
         </div>`;
       el.appendChild(card);
     }
-  } else {
+  } else if (shopTab === 'sell') {
     const sellable = Object.keys(state.inventory)
       .filter(id => id !== 'coins' && SELL_PRICES[id] && (state.inventory[id] || 0) > 0)
       .sort((a, b) => {
