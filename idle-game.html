@@ -339,6 +339,7 @@
   <a href="#sec-equip">⚔️ Equip</a>
   <a href="#sec-prayer">🙏 Prayer</a>
   <a href="#sec-farm">🌿 Farm</a>
+  <a href="#sec-clues">🗺️ Clues</a>
   <a href="#sec-slayer">🗡️ Slayer</a>
   <a href="#sec-inv">🎒 Items</a>
   <a href="#sec-log">📜 Log</a>
@@ -415,6 +416,18 @@
       </div>
       <div id="sec-body-farm" class="sec-body">
         <div id="farmPanel"></div>
+      </div>
+    </div>
+
+    <!-- Clue Scrolls -->
+    <div id="sec-clues" class="sec-anchor">
+      <div class="sec-hdr" onclick="toggleSection('clues')">
+        🗺️ Clues
+        <span id="clueSectionBadge" class="sec-badge"></span>
+        <span class="chev">▼</span>
+      </div>
+      <div id="sec-body-clues" class="sec-body">
+        <div id="cluePanel"></div>
       </div>
     </div>
 
@@ -682,6 +695,146 @@ const PETS = [
   {id:'pet_void_spawn',    name:'Void Spawn',     icon:'🌌', skillId:null,           perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% all XP'},
 ];
 
+const CLUE_TIERS = [
+  {id:'easy',   name:'Easy',   icon:'📜', color:'#4ade80', minLevel:1},
+  {id:'medium', name:'Medium', icon:'📜', color:'#60a5fa', minLevel:40},
+  {id:'hard',   name:'Hard',   icon:'📜', color:'#f59e0b', minLevel:70},
+  {id:'elite',  name:'Elite',  icon:'📜', color:'#e879f9', minLevel:85},
+  {id:'master', name:'Master', icon:'📜', color:'#f87171', minLevel:100},
+];
+
+const CLUE_FIND_MESSAGES = {
+  woodcutting:   '📜 A scroll tumbles from the tree as it sways. ({tier} clue)',
+  mining:        '📜 You find a scroll wedged deep in the rock face. ({tier} clue)',
+  fishing:       '📜 Something tugs the line — a rolled-up scroll? ({tier} clue)',
+  farming:       '📜 A scroll was buried beneath your herb patch. ({tier} clue)',
+  hunter:        '📜 Your prey had something tucked away — a scroll. ({tier} clue)',
+  divination:    '📜 A wisp drifts a scroll into your hands. ({tier} clue)',
+  crafting:      '📜 A scroll was folded inside a scrap of leather. ({tier} clue)',
+  fletching:     '📜 A scroll was wrapped around one of the shafts. ({tier} clue)',
+  smithing:      '📜 A scroll falls from behind the furnace wall. ({tier} clue)',
+  cooking:       '📜 Something was folded inside the fish — a scroll! ({tier} clue)',
+  firemaking:    '📜 A scroll drifts from the embers, unburnt. ({tier} clue)',
+  runecrafting:  '📜 The altar pulses — a scroll materialises nearby. ({tier} clue)',
+  construction:  '📜 A scroll was hidden inside the wall cavity. ({tier} clue)',
+  herblore:      '📜 A scroll slips out from between the herb bundles. ({tier} clue)',
+  agility:       '📜 A scroll is tucked into the obstacle as you pass. ({tier} clue)',
+  thieving:      '📜 Amongst the loot — a scroll? ({tier} clue)',
+  dungeoneering: '📜 A scroll is lodged behind a loose floor tile. ({tier} clue)',
+  archaeology:   '📜 A scroll surfaces at the dig site — not from this era. ({tier} clue)',
+  prayer:        '📜 A scroll was tucked beneath the altar cloth. ({tier} clue)',
+  summoning:     '📜 Your familiar noses out a hidden scroll. ({tier} clue)',
+};
+
+const CLUE_TASKS = {
+  easy:[
+    {item:'oak_logs',       itemName:'Oak logs',       qty:25, text:'Gather 25 oak logs'},
+    {item:'iron_ore',       itemName:'Iron ore',        qty:30, text:'Mine 30 iron ore'},
+    {item:'cooked_trout',   itemName:'Cooked trout',    qty:20, text:'Cook 20 trout'},
+    {item:'bronze_bar',     itemName:'Bronze bars',     qty:15, text:'Smelt 15 bronze bars'},
+    {item:'air_rune',       itemName:'Air runes',       qty:50, text:'Craft 50 air runes'},
+    {item:'leather_body',   itemName:'Leather bodies',  qty:10, text:'Craft 10 leather bodies'},
+    {item:'bones',          itemName:'Bones',           qty:40, text:'Obtain 40 bones'},
+  ],
+  medium:[
+    {item:'teak_logs',      itemName:'Teak logs',       qty:20, text:'Chop 20 teak logs'},
+    {item:'cooked_lobster', itemName:'Cooked lobster',  qty:15, text:'Cook 15 lobster'},
+    {item:'mithril_bar',    itemName:'Mithril bars',    qty:10, text:'Smelt 10 mithril bars'},
+    {item:'earth_rune',     itemName:'Earth runes',     qty:60, text:'Craft 60 earth runes'},
+    {item:'green_dragonhide',itemName:'Green dragonhide',qty:10,text:'Obtain 10 green dragonhide'},
+    {item:'ironwort',       itemName:'Ironwort',        qty:20, text:'Harvest 20 Ironwort'},
+    {item:'big_bones',      itemName:'Big bones',       qty:20, text:'Obtain 20 big bones'},
+  ],
+  hard:[
+    {item:'yew_logs',       itemName:'Yew logs',        qty:15, text:'Chop 15 yew logs'},
+    {item:'rune_bar',       itemName:'Rune bars',       qty:8,  text:'Smelt 8 rune bars'},
+    {item:'cooked_swordfish',itemName:'Cooked swordfish',qty:10,text:'Cook 10 swordfish'},
+    {item:'death_rune',     itemName:'Death runes',     qty:30, text:'Craft 30 death runes'},
+    {item:'adamantite_ore', itemName:'Adamantite ore',  qty:20, text:'Mine 20 adamantite ore'},
+    {item:'crimson_charm',  itemName:'Crimson charms',  qty:10, text:'Obtain 10 crimson charms'},
+    {item:'dragon_bones',   itemName:'Dragon bones',    qty:10, text:'Obtain 10 dragon bones'},
+  ],
+  elite:[
+    {item:'magic_logs',     itemName:'Magic logs',      qty:10, text:'Chop 10 magic logs'},
+    {item:'cooked_shark',   itemName:'Cooked shark',    qty:8,  text:'Cook 8 shark'},
+    {item:'blood_rune',     itemName:'Blood runes',     qty:20, text:'Craft 20 blood runes'},
+    {item:'dragonstone_ring',itemName:'Dragonstone rings',qty:5,text:'Craft 5 dragonstone rings'},
+    {item:'blue_charm',     itemName:'Blue charms',     qty:10, text:'Obtain 10 blue charms'},
+    {item:'uncut_onyx',     itemName:'Uncut onyx',      qty:3,  text:'Obtain 3 uncut onyx'},
+  ],
+  master:[
+    {item:'eternal_magic_logs',itemName:'Eternal magic logs',qty:5,text:'Chop 5 eternal magic logs'},
+    {item:'primal_ore',     itemName:'Primal ore',      qty:5,  text:'Mine 5 primal ore'},
+    {item:'cooked_sailfish',itemName:'Cooked sailfish', qty:5,  text:'Cook 5 sailfish'},
+    {item:'soul_rune',      itemName:'Soul runes',      qty:10, text:'Craft 10 soul runes'},
+    {item:'uncut_hydrix',   itemName:'Uncut hydrix',    qty:2,  text:'Obtain 2 uncut hydrix'},
+    {item:'dragon_bones',   itemName:'Dragon bones',    qty:20, text:'Obtain 20 dragon bones'},
+  ],
+};
+
+const CLUE_REWARDS = {
+  easy:[
+    {id:'coins',          name:'Coins',          weight:25, count:25000},
+    {id:'mithril_bar',    name:'Mithril bar',    weight:20, count:10},
+    {id:'uncut_sapphire', name:'Uncut sapphire', weight:18, count:8},
+    {id:'steel_bar',      name:'Steel bar',      weight:15, count:20},
+    {id:'ironwort_seed',  name:'Ironwort seed',  weight:12, count:10},
+    {id:'rune_bar',       name:'Rune bar',       weight:8,  count:3},
+    {id:'coins',          name:'Coins',          weight:5,  count:100000},
+    {id:'clue_autocomplete_easy', name:'Auto-complete (easy)', weight:2, count:1},
+  ],
+  medium:[
+    {id:'coins',          name:'Coins',          weight:22, count:150000},
+    {id:'rune_bar',       name:'Rune bar',       weight:18, count:10},
+    {id:'uncut_ruby',     name:'Uncut ruby',     weight:15, count:5},
+    {id:'adamant_bar',    name:'Adamant bar',    weight:15, count:20},
+    {id:'blue_charm',     name:'Blue charm',     weight:12, count:5},
+    {id:'dragon_bones',   name:'Dragon bones',   weight:8,  count:5},
+    {id:'amulet_of_skill',name:'Amulet of Skill',weight:5,  count:1},
+    {id:'coins',          name:'Coins',          weight:4,  count:500000},
+    {id:'clue_autocomplete_medium', name:'Auto-complete (medium)', weight:2, count:1},
+  ],
+  hard:[
+    {id:'coins',           name:'Coins',           weight:18, count:500000},
+    {id:'uncut_dragonstone',name:'Uncut dragonstone',weight:15,count:5},
+    {id:'blue_charm',      name:'Blue charm',      weight:14, count:15},
+    {id:'dragon_bones',    name:'Dragon bones',    weight:12, count:15},
+    {id:'uncut_onyx',      name:'Uncut onyx',      weight:10, count:2},
+    {id:'gatherers_band',  name:"Gatherer's Band", weight:8,  count:1},
+    {id:'artisan_ring',    name:"Artisan's Ring",  weight:6,  count:1},
+    {id:'void_scale',      name:'Void scale',      weight:6,  count:3},
+    {id:'coins',           name:'Coins',           weight:5,  count:1500000},
+    {id:'clue_autocomplete_hard', name:'Auto-complete (hard)', weight:4, count:1},
+    {id:'amulet_of_skill', name:'Amulet of Skill', weight:2,  count:1},
+  ],
+  elite:[
+    {id:'coins',           name:'Coins',           weight:18, count:2000000},
+    {id:'uncut_hydrix',    name:'Uncut hydrix',    weight:14, count:1},
+    {id:'ancient_scroll',  name:'Ancient scroll',  weight:10, count:1},
+    {id:'spirit_catcher',  name:'Spirit Catcher',  weight:10, count:1},
+    {id:'combat_pendant',  name:'Combat Pendant',  weight:10, count:1},
+    {id:'uncut_onyx',      name:'Uncut onyx',      weight:10, count:5},
+    {id:'crystal_tool_seed',name:'Crystal tool seed',weight:8,count:1},
+    {id:'celestial_sword', name:'Celestial sword', weight:6,  count:1},
+    {id:'coins',           name:'Coins',           weight:6,  count:5000000},
+    {id:'clue_autocomplete_elite', name:'Auto-complete (elite)', weight:4, count:1},
+    {id:'adventurers_amulet',name:"Adventurer's Amulet",weight:2,count:1},
+  ],
+  master:[
+    {id:'coins',            name:'Coins',            weight:18, count:7500000},
+    {id:'uncut_hydrix',     name:'Uncut hydrix',     weight:14, count:3},
+    {id:'adventurers_amulet',name:"Adventurer's Amulet",weight:12,count:1},
+    {id:'masters_ring',     name:"Master's Ring",    weight:12, count:1},
+    {id:'ancient_platebody',name:'Ancient platebody',weight:10, count:1},
+    {id:'harbinger_amulet', name:'Harbinger amulet', weight:8,  count:1},
+    {id:'crystal_tool_seed',name:'Crystal tool seed',weight:8,  count:1},
+    {id:'warlord_chestplate',name:'Warlord chestplate',weight:6,count:1},
+    {id:'ancient_scroll',   name:'Ancient scroll',   weight:6,  count:3},
+    {id:'coins',            name:'Coins',            weight:4,  count:20000000},
+    {id:'clue_autocomplete_master', name:'Auto-complete (master)', weight:2, count:1},
+  ],
+};
+
 const COMBAT_STYLES = [
   {id:'melee',  label:'Melee'},
   {id:'ranged', label:'Range'},
@@ -884,6 +1037,12 @@ const SELL_PRICES = {
   troll_hide:350, werewolf_fur:450, wyvern_bones:350, wyvern_scale:800,
   stone_fragment:200, vampire_dust:5000, ancient_scroll:80000,
   void_scale:3000, leviathan_fang:8000, solar_shard:12000,
+  clue_scroll_easy:10000, clue_scroll_medium:30000, clue_scroll_hard:75000,
+  clue_scroll_elite:200000, clue_scroll_master:500000,
+  clue_autocomplete_easy:15000, clue_autocomplete_medium:50000, clue_autocomplete_hard:120000,
+  clue_autocomplete_elite:350000, clue_autocomplete_master:800000,
+  amulet_of_skill:500000, gatherers_band:400000, artisan_ring:400000,
+  spirit_catcher:800000, combat_pendant:600000, adventurers_amulet:2000000, masters_ring:1500000,
   woodcutting_cape:49500, mining_cape:49500, fishing_cape:49500, farming_cape:49500,
   hunter_cape:49500, divination_cape:49500, crafting_cape:49500, fletching_cape:49500,
   smithing_cape:49500, cooking_cape:49500, firemaking_cape:49500, runecrafting_cape:49500,
@@ -2214,6 +2373,8 @@ const ITEM_STATS = {
   ice_gloves:{defence:25},
   warlord_helm:{defence:40, attack:10},
   harbinger_amulet:{attack:15, range:15, mage:15, defence:20, dropRate:0.05},
+  combat_pendant:{attack:3, defence:3},
+  adventurers_amulet:{dropRate:5},
   ...Object.fromEntries(
     METAL_TIERS.flatMap(t => ARMOUR_PIECES.map(p => {
       const def = Math.max(1, Math.round(t.defBase * p.statMult));
@@ -2279,6 +2440,8 @@ const EQUIP_SLOTS = {
   warlord_helm:'head', harbinger_amulet:'neck', ice_gloves:'gloves',
   ...Object.fromEntries(SKILLCAPES.map(c => [c.id, 'cape'])),
   ...Object.fromEntries(PETS.map(p => [p.id, 'pet'])),
+  amulet_of_skill:'neck', spirit_catcher:'neck', combat_pendant:'neck', adventurers_amulet:'neck',
+  gatherers_band:'ring', artisan_ring:'ring', masters_ring:'ring',
 };
 
 const DG_SHOP = [
@@ -2394,6 +2557,7 @@ function freshState(){
     prayer:         { points:0, maxPoints:1, active:{}, drainCounter:0, lastRegen:0 },
     achievements:  {},
     collectionLog: {},
+    clues:        { active: null },
     hardcore:     false,
     dead:         false,
     saveVersion:  1,
@@ -2444,6 +2608,11 @@ function grantXp(skillId, xp, silent=false){
   if (capeXp) xp *= (1 + capeXp);
   const petXp = getPetBonus('xp_pct', skillId);
   if (petXp) xp *= (1 + petXp);
+  const neck = state.equipment?.neck, ring = state.equipment?.ring;
+  if (neck === 'amulet_of_skill' && !COMBAT_SKILL_IDS.has(skillId)) xp *= 1.05;
+  if (neck === 'combat_pendant'  && COMBAT_SKILL_IDS.has(skillId))  xp *= 1.07;
+  if (neck === 'adventurers_amulet') xp *= 1.05;
+  if (ring === 'masters_ring' && state.current?.skillId === skillId) xp *= 1.10;
   const before = levelForXp(sk.xp);
   sk.xp += xp;
   const after = levelForXp(sk.xp);
@@ -2623,13 +2792,78 @@ function getPetBonus(type, skillId){
   return pet.perkValue;
 }
 
+function _grantClueReward(tier){
+  const rewards = CLUE_REWARDS[tier];
+  const total = rewards.reduce((s, r) => s + r.weight, 0);
+  let roll = Math.random() * total;
+  for (const r of rewards){
+    roll -= r.weight;
+    if (roll <= 0){
+      grantItem(r.id, r.name, r.count || 1);
+      const label = (r.count || 1) > 1 ? `${(r.count||1).toLocaleString()}× ${r.name}` : r.name;
+      log(`🎁 Clue reward: ${label}!`);
+      return;
+    }
+  }
+}
+
+function activateClueScroll(tier){
+  if (state.clues?.active){ log('You already have an active clue task.'); return; }
+  const scrollId = `clue_scroll_${tier}`;
+  if ((state.inventory[scrollId] || 0) < 1) return;
+  state.inventory[scrollId]--;
+  if (state.inventory[scrollId] <= 0) delete state.inventory[scrollId];
+  const tasks = CLUE_TASKS[tier];
+  const task = tasks[Math.floor(Math.random() * tasks.length)];
+  if (!state.clues) state.clues = {};
+  state.clues.active = { tier, item: task.item, itemName: task.itemName, qty: task.qty, text: task.text };
+  log(`📜 Clue task (${tier}): ${task.text}`);
+  render();
+}
+
+function claimClueReward(){
+  const a = state.clues?.active;
+  if (!a) return;
+  const have = state.inventory[a.item] || 0;
+  if (have < a.qty){ log(`You need ${a.qty} ${a.itemName} to claim this reward.`); return; }
+  state.inventory[a.item] -= a.qty;
+  if (state.inventory[a.item] <= 0) delete state.inventory[a.item];
+  _grantClueReward(a.tier);
+  state.clues.active = null;
+  render();
+}
+
+function useAutoComplete(tier){
+  const a = state.clues?.active;
+  if (!a || a.tier !== tier){ log(`No active ${tier} clue to auto-complete.`); return; }
+  const acId = `clue_autocomplete_${tier}`;
+  if ((state.inventory[acId] || 0) < 1) return;
+  state.inventory[acId]--;
+  if (state.inventory[acId] <= 0) delete state.inventory[acId];
+  log(`✨ Auto-complete used!`);
+  _grantClueReward(tier);
+  state.clues.active = null;
+  render();
+}
+
+function abandonClue(){
+  if (!state.clues?.active) return;
+  state.clues.active = null;
+  log('Clue task abandoned.');
+  render();
+}
+
 function canAfford(action){
   if (!action.ingredients) return null;
   return action.ingredients.find(ing => (state.inventory[ing.item] || 0) < ing.count) || null;
 }
 function consumeIngredients(action){
   if (!action.ingredients) return;
-  for (const ing of action.ingredients) state.inventory[ing.item] -= ing.count;
+  const hasSaving = state.equipment?.ring === 'artisan_ring';
+  for (const ing of action.ingredients){
+    if (hasSaving && Math.random() < 0.08) continue;
+    state.inventory[ing.item] -= ing.count;
+  }
 }
 
 function getAttackBonus(styleId, stats){
@@ -3309,6 +3543,95 @@ function renderFarmSection(){
   el.appendChild(tog);
 }
 
+function renderClueSection(){
+  const el = $('cluePanel');
+  if (!el) return;
+  const badge = $('clueSectionBadge');
+  const active = state.clues?.active;
+  if (badge) badge.textContent = active ? `🗺️ ${active.tier}` : '';
+  el.innerHTML = '';
+
+  if (active){
+    const tier = CLUE_TIERS.find(t => t.id === active.tier);
+    const have = state.inventory[active.item] || 0;
+    const progress = Math.min(have, active.qty);
+    const pct = Math.round(progress / active.qty * 100);
+    const ready = have >= active.qty;
+
+    const header = document.createElement('div');
+    header.style.cssText = 'font-weight:600;margin-bottom:6px;font-size:13px;';
+    header.innerHTML = `<span style="color:${tier?.color || 'var(--accent)'}">Clue (${tier?.name || active.tier})</span>`;
+    el.appendChild(header);
+
+    const taskDiv = document.createElement('div');
+    taskDiv.style.cssText = 'font-size:13px;color:var(--dim);margin-bottom:8px;';
+    taskDiv.textContent = active.text;
+    el.appendChild(taskDiv);
+
+    const progLine = document.createElement('div');
+    progLine.style.cssText = 'font-size:12px;color:var(--dim);margin-bottom:4px;';
+    progLine.textContent = `${active.itemName}: ${progress.toLocaleString()} / ${active.qty.toLocaleString()}`;
+    el.appendChild(progLine);
+
+    const barWrap = document.createElement('div');
+    barWrap.style.cssText = 'background:#333;border-radius:4px;height:8px;margin-bottom:10px;overflow:hidden;';
+    const bar = document.createElement('div');
+    bar.style.cssText = `background:${tier?.color || 'var(--accent)'};height:100%;width:${pct}%;transition:width .3s;`;
+    barWrap.appendChild(bar);
+    el.appendChild(barWrap);
+
+    const btnRow = document.createElement('div');
+    btnRow.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;';
+    const claimBtn = document.createElement('button');
+    claimBtn.className = 'mini';
+    claimBtn.textContent = '🎁 Claim Reward';
+    claimBtn.disabled = !ready;
+    if (ready) claimBtn.style.cssText = 'color:var(--accent);border-color:var(--accent);';
+    claimBtn.onclick = claimClueReward;
+    btnRow.appendChild(claimBtn);
+
+    const acId = `clue_autocomplete_${active.tier}`;
+    if ((state.inventory[acId] || 0) > 0){
+      const acBtn = document.createElement('button');
+      acBtn.className = 'mini';
+      acBtn.textContent = '✨ Auto-complete';
+      acBtn.onclick = () => useAutoComplete(active.tier);
+      btnRow.appendChild(acBtn);
+    }
+
+    const abBtn = document.createElement('button');
+    abBtn.className = 'mini';
+    abBtn.style.cssText = 'color:var(--dim);';
+    abBtn.textContent = '✕ Abandon';
+    abBtn.onclick = abandonClue;
+    btnRow.appendChild(abBtn);
+    el.appendChild(btnRow);
+
+  } else {
+    // Show any clue scrolls in inventory
+    const tiers = CLUE_TIERS.filter(t => (state.inventory[`clue_scroll_${t.id}`] || 0) > 0);
+    if (tiers.length === 0){
+      const msg = document.createElement('div');
+      msg.style.cssText = 'color:var(--dim);font-size:13px;';
+      msg.textContent = 'No clue scrolls in inventory.';
+      el.appendChild(msg);
+    } else {
+      tiers.forEach(t => {
+        const count = state.inventory[`clue_scroll_${t.id}`] || 0;
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:13px;';
+        row.innerHTML = `<span>📜 <span style="color:${t.color}">${t.name} clue</span> ×${count}</span>`;
+        const btn = document.createElement('button');
+        btn.className = 'mini';
+        btn.textContent = 'Activate';
+        btn.onclick = () => activateClueScroll(t.id);
+        row.appendChild(btn);
+        el.appendChild(row);
+      });
+    }
+  }
+}
+
 function renderSlayerSection(){
   const el = $('slayerPanel');
   if (!el) return;
@@ -3728,6 +4051,9 @@ function completeAction(action, silent){
     if (state.current?.skillId === 'divination' && !action.transmute && action.item.endsWith('_energy'))
       qty = Math.floor(Math.random() * 5) + 1;
     grantItem(action.item, action.itemName, qty);
+    // Gatherer's Band: 10% chance to double-yield from gathering skills
+    if (SKILL_BY_ID[skillId]?.type === 'gathering' && state.equipment?.ring === 'gatherers_band' && Math.random() < 0.10)
+      grantItem(action.item, action.itemName, qty);
   }
   // Abyssal Rod: 1% chance to upgrade the caught fish to the next tier
   if (action.item && state.current?.skillId === 'fishing' &&
@@ -3797,7 +4123,9 @@ function completeAction(action, silent){
       ...(state.combat.defensive ? [['defence', base * 0.5]] : []),
     ];
     for (const [sid, xp] of xpGrants) grantXp(sid, xp, silent);
-    const _dropBoost = getSummonBonus('drop_rate_pct') + getPetBonus('drop_rate_pct', null);
+    const _dropBoost = getSummonBonus('drop_rate_pct') + getPetBonus('drop_rate_pct', null)
+      + (state.equipment?.neck === 'adventurers_amulet' ? 0.05 : 0)
+      + (state.equipment?.ring === 'masters_ring' ? 0.05 : 0);
     const _clogSrc = MOB_CLOG_SOURCE[action.id];
     state.combat.kills[action.id] = (state.combat.kills[action.id] || 0) + 1;
     for (const drop of (action.drops || [])){
@@ -3903,9 +4231,15 @@ function checkBonusDrop(skillId, action){
 
   // Firemaking: fire spirit QTE (15% per burn; only one spirit at a time)
   if (skillId === 'firemaking' && !fireSpirit && Math.random() < 0.15){
-    fireSpirit = { expiresAt: Date.now() + 30000 };
-    $('fireSpiritToast').classList.add('show');
-    log(`🔥 A fire spirit appeared! Catch it before it disappears!`);
+    const autoCollect = state.equipment?.neck === 'spirit_catcher' || state.equipment?.neck === 'adventurers_amulet';
+    if (autoCollect){
+      grantItem('fire_spirit', 'Fire spirit');
+      log('🔥 A fire spirit drifts towards you — caught automatically!');
+    } else {
+      fireSpirit = { expiresAt: Date.now() + 30000 };
+      $('fireSpiritToast').classList.add('show');
+      log(`🔥 A fire spirit appeared! Catch it before it disappears!`);
+    }
   }
 
   // Hunter: 1% chance of bonus dragon impling jar from lv55+ traps; 0.5% from lower
@@ -3950,6 +4284,19 @@ function checkBonusDrop(skillId, action){
   if (skillId === 'slayer')      _tryPet('pet_imp',          'Imp',          '👺', 'An imp decides you are scary enough to follow!');
   if (skillId === 'dungeoneering')_tryPet('pet_dungeon_rat', 'Dungeon Rat',  '🐀', 'A dungeon rat scurries out of the darkness!');
   if (skillId === 'archaeology') _tryPet('pet_dig_sprite',   'Dig Sprite',   '🏺', 'A sprite drifts from the excavation!');
+
+  // Clue scrolls — 1/1000 per action; tier based on action level requirement
+  if (Math.random() < 0.001){
+    const lvl = action?.levelReq || 1;
+    const tier = lvl >= 100 ? 'master' : lvl >= 85 ? 'elite' : lvl >= 70 ? 'hard' : lvl >= 40 ? 'medium' : 'easy';
+    const itemId = `clue_scroll_${tier}`;
+    grantItem(itemId, `Clue scroll (${tier})`);
+    const isCombat = new Set(['melee','ranged','magic','slayer']).has(skillId);
+    const msg = isCombat
+      ? `📜 Your foe drops a clue scroll (${tier}).`
+      : (CLUE_FIND_MESSAGES[skillId] || `📜 You find a clue scroll (${tier})!`).replace('{tier}', tier);
+    log(msg);
+  }
 }
 
 function completeQuest(questId){
@@ -4711,6 +5058,7 @@ function render(){
   renderPrayerHud();
   renderSummoningHud();
   renderFarmSection();
+  renderClueSection();
   renderSlayerSection();
   renderItemsPanel();
   renderTotalLevel();
@@ -5476,13 +5824,14 @@ function renderSummoningHud(){
 
 /* ---- Items panel ---- */
 const ITEM_CAT_ORDER = [
-  'Openable','Equipment','Pets','Food & Potions','Seeds & Herbs',
+  'Openable','Equipment','Pets','Clues','Food & Potions','Seeds & Herbs',
   'Summoning Pouches','Summoning',
   'Ores & Bars','Logs','Fish','Gems & Hides','Runes & Energy',
   'Ammo','Hunter','Currency','Other'
 ];
 function getItemCat(id){
   if (id.startsWith('pet_'))                     return 'Pets';
+  if (id.startsWith('clue_'))                    return 'Clues';
   if (OPENABLE_ITEMS[id])                        return 'Openable';
   if (SUMMON_POUCH_IDS.has(id))                  return 'Summoning Pouches';
   if (id.endsWith('_charm'))                     return 'Summoning';
@@ -5533,6 +5882,14 @@ function renderItemsPanel(){
     const isPouch = SUMMON_POUCH_IDS.has(k);
     let btns = '';
     if (isEquip) btns += `<button class="mini" onclick="equipItem('${k}')">Equip</button>`;
+    if (k.startsWith('clue_scroll_')){
+      const tier = k.replace('clue_scroll_','');
+      btns += `<button class="mini" onclick="activateClueScroll('${tier}')">Activate</button>`;
+    }
+    if (k.startsWith('clue_autocomplete_')){
+      const tier = k.replace('clue_autocomplete_','');
+      btns += `<button class="mini" onclick="useAutoComplete('${tier}')">Use</button>`;
+    }
     if (isOpen){
       if (state.autoOpenItems){
         btns += `<span style="font-size:11px;color:var(--accent);">↻ auto</span>`;
