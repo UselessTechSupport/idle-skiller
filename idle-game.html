@@ -644,6 +644,44 @@ const SKILLCAPES = [
   {id:'max_cape',         name:'Max cape',         icon:'🎓', skillId:null,          cost:10000000, perkType:null, perkValue:0, perkLabel:'All skillcape perks combined'},
 ];
 
+const PETS = [
+  // Skilling pets — 1/5000 per action
+  {id:'pet_beaver',        name:'Beaver',         icon:'🦫', skillId:'woodcutting',  perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Woodcutting speed'},
+  {id:'pet_rock_golem',    name:'Rock Golem',     icon:'🪨', skillId:'mining',       perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Mining speed'},
+  {id:'pet_tiny_kraken',   name:'Tiny Kraken',    icon:'🦑', skillId:'fishing',      perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Fishing XP'},
+  {id:'pet_herb_sprite',   name:'Herb Sprite',    icon:'🌿', skillId:'farming',      perkType:'farm_speed',   perkValue:0.10, perkLabel:'Crops grow 10% faster'},
+  {id:'pet_gecko',         name:'Gecko',          icon:'🦎', skillId:'hunter',       perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Hunter XP'},
+  {id:'pet_wisp',          name:'Memory Wisp',    icon:'💫', skillId:'divination',   perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Divination XP'},
+  {id:'pet_crafting_imp',  name:'Crafting Imp',   icon:'🎭', skillId:'crafting',     perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Crafting speed'},
+  {id:'pet_robin',         name:'Robin',          icon:'🐦', skillId:'fletching',    perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Fletching speed'},
+  {id:'pet_forge_sprite',  name:'Forge Sprite',   icon:'🌋', skillId:'smithing',     perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Smithing speed'},
+  {id:'pet_chef_mouse',    name:'Chef Mouse',     icon:'🐭', skillId:'cooking',      perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Cooking XP'},
+  {id:'pet_fire_sprite',   name:'Fire Sprite',    icon:'🕯️', skillId:'firemaking',   perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Firemaking XP'},
+  {id:'pet_rune_sprite',   name:'Rune Sprite',    icon:'🔮', skillId:'runecrafting', perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Runecrafting XP'},
+  {id:'pet_chisel_gnome',  name:'Chisel Gnome',   icon:'🪵', skillId:'construction', perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Construction XP'},
+  {id:'pet_herb_frog',     name:'Herb Frog',      icon:'🐸', skillId:'herblore',     perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Herblore speed'},
+  {id:'pet_tiny_warrior',  name:'Tiny Warrior',   icon:'⚔️', skillId:'melee',        perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Melee XP'},
+  {id:'pet_shield_crab',   name:'Shield Crab',    icon:'🦀', skillId:'defence',      perkType:'defence_flat', perkValue:5,    perkLabel:'+5 Defence bonus'},
+  {id:'pet_blood_sprite',  name:'Blood Sprite',   icon:'❤️', skillId:'constitution', perkType:'hp_regen_mult',perkValue:0.10, perkLabel:'+10% HP regen rate'},
+  {id:'pet_golden_eagle',  name:'Golden Eagle',   icon:'🦅', skillId:'ranged',       perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Ranged XP'},
+  {id:'pet_magic_owl',     name:'Magic Owl',      icon:'🦉', skillId:'magic',        perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Magic XP'},
+  {id:'pet_divine_lamb',   name:'Divine Lamb',    icon:'🐑', skillId:'prayer',       perkType:'prayer_drain', perkValue:0.10, perkLabel:'-10% Prayer drain rate'},
+  {id:'pet_mini_familiar', name:'Mini Familiar',  icon:'🌀', skillId:'summoning',    perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Summoning XP'},
+  {id:'pet_nimble_cat',    name:'Nimble Cat',     icon:'🐱', skillId:'agility',      perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Agility speed'},
+  {id:'pet_raccoon',       name:'Raccoon',        icon:'🦝', skillId:'thieving',     perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Thieving XP'},
+  {id:'pet_imp',           name:'Imp',            icon:'👺', skillId:'slayer',       perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Slayer XP'},
+  {id:'pet_dungeon_rat',   name:'Dungeon Rat',    icon:'🐀', skillId:'dungeoneering',perkType:'dg_token_pct', perkValue:0.05, perkLabel:'+5% Dungeoneering token gain'},
+  {id:'pet_dig_sprite',    name:'Dig Sprite',     icon:'🏺', skillId:'archaeology',  perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Archaeology XP'},
+  // Boss pets
+  {id:'pet_baby_mole',     name:'Baby Mole',      icon:'🦔', skillId:null,           perkType:'drop_rate_pct',perkValue:0.05, perkLabel:'+5% drop rate'},
+  {id:'pet_void_wyrm',     name:'Void Wyrm',      icon:'🐲', skillId:null,           perkType:'hp_regen_mult',perkValue:0.15, perkLabel:'+15% HP regen rate'},
+  {id:'pet_deep_spawn',    name:'Deep Spawn',     icon:'🦈', skillId:'slayer',       perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Slayer XP'},
+  {id:'pet_lich_familiar', name:'Lich Familiar',  icon:'💀', skillId:null,           perkType:'prayer_drain', perkValue:0.10, perkLabel:'-10% Prayer drain rate'},
+  {id:'pet_solar_hawk',    name:'Solar Hawk',     icon:'🌟', skillId:null,           perkType:'ranged_dmg',   perkValue:0.05, perkLabel:'+5% Ranged damage'},
+  {id:'pet_war_pup',       name:'War Pup',        icon:'🐕', skillId:null,           perkType:'melee_dmg',    perkValue:0.05, perkLabel:'+5% Melee damage'},
+  {id:'pet_void_spawn',    name:'Void Spawn',     icon:'🌌', skillId:null,           perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% all XP'},
+];
+
 const COMBAT_STYLES = [
   {id:'melee',  label:'Melee'},
   {id:'ranged', label:'Range'},
@@ -1606,7 +1644,8 @@ const ACTIONS = {
              {item:'coins',           itemName:'Coins',              chance:1.00, min:200,max:1000, notable:false},
              {item:'mole_skin',       itemName:'Mole skin',          chance:1.00, min:1,max:1, notable:true},
              {item:'gold_charm',      itemName:'Gold charm',         chance:0.10, min:1,max:1, notable:false},
-             {item:'green_charm',     itemName:'Green charm',        chance:0.03, min:1,max:1, notable:false}]},
+             {item:'green_charm',     itemName:'Green charm',        chance:0.03, min:1,max:1, notable:false},
+             {item:'pet_baby_mole',   itemName:'Baby Mole',          chance:0.002,min:1,max:1, notable:true}]},
     {id:'void_dragon',        name:'Void Dragon',   category:'Bosses', levelReq:60,  xp:2500,  ticks:130, stats:{hp:1500, attack:45, defence:35},
       drops:[{item:'dragon_bones',    itemName:'Dragon bones',       chance:1.00, min:1,max:1, notable:false},
              {item:'coins',           itemName:'Coins',              chance:1.00, min:500,max:2000, notable:false},
@@ -1614,7 +1653,8 @@ const ACTIONS = {
              {item:'void_scale',      itemName:'Void scale',         chance:0.10, min:1,max:1, notable:true},
              {item:'gold_charm',      itemName:'Gold charm',         chance:0.12, min:1,max:1, notable:false},
              {item:'green_charm',     itemName:'Green charm',        chance:0.04, min:1,max:1, notable:false},
-             {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.03, min:1,max:1, notable:true}]},
+             {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.03, min:1,max:1, notable:true},
+             {item:'pet_void_wyrm',   itemName:'Void Wyrm',          chance:0.002,min:1,max:1, notable:true}]},
     {id:'deep_kings',  name:'Leviathan Kings',     category:'Bosses', levelReq:75,  xp:4000,  ticks:180, stats:{hp:2500, attack:55, defence:45},
       drops:[{item:'big_bones',       itemName:'Big bones',          chance:1.00, min:1,max:1, notable:false},
              {item:'coins',           itemName:'Coins',              chance:1.00, min:800,max:3000, notable:false},
@@ -1623,7 +1663,8 @@ const ACTIONS = {
              {item:'gold_charm',      itemName:'Gold charm',         chance:0.14, min:1,max:1, notable:false},
              {item:'green_charm',     itemName:'Green charm',        chance:0.05, min:1,max:1, notable:false},
              {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.03, min:1,max:1, notable:true},
-             {item:'blue_charm',      itemName:'Blue charm',         chance:0.02, min:1,max:1, notable:true}]},
+             {item:'blue_charm',      itemName:'Blue charm',         chance:0.02, min:1,max:1, notable:true},
+             {item:'pet_deep_spawn',  itemName:'Deep Spawn',         chance:0.00133,min:1,max:1,notable:true}]},
     {id:'ancient_lich', name:'Ancient Lich', category:'Bosses', levelReq:90, xp:7500, ticks:280, stats:{hp:4500, attack:75, defence:65},
      drops:[
       {item:'dragon_bones',  itemName:'Dragon bones',  chance:1.0,  min:1,   max:1,   notable:false},
@@ -1635,6 +1676,7 @@ const ACTIONS = {
       {item:'green_charm',   itemName:'Green charm',   chance:0.06, min:1,   max:1,   notable:false},
       {item:'crimson_charm', itemName:'Crimson charm', chance:0.037,min:1,   max:1,   notable:false},
       {item:'blue_charm',    itemName:'Blue charm',    chance:0.019,min:1,   max:1,   notable:true},
+      {item:'pet_lich_familiar',itemName:'Lich Familiar',chance:0.00133,min:1,max:1,  notable:true},
     ]},
     {id:'solara',    name:'Commander Solara',   category:'Bosses', levelReq:85,  xp:6000,  ticks:220, stats:{hp:3000, attack:65, defence:55},
       drops:[{item:'dragon_bones',    itemName:'Dragon bones',       chance:1.00, min:1,max:1, notable:false},
@@ -1644,7 +1686,8 @@ const ACTIONS = {
              {item:'gold_charm',      itemName:'Gold charm',         chance:0.14, min:1,max:1, notable:false},
              {item:'green_charm',     itemName:'Green charm',        chance:0.05, min:1,max:1, notable:false},
              {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.04, min:1,max:1, notable:true},
-             {item:'blue_charm',      itemName:'Blue charm',         chance:0.02, min:1,max:1, notable:true}]},
+             {item:'blue_charm',      itemName:'Blue charm',         chance:0.02, min:1,max:1, notable:true},
+             {item:'pet_solar_hawk',  itemName:'Solar Hawk',         chance:0.00133,min:1,max:1,notable:true}]},
     {id:'karg',   name:'General Karg',    category:'Bosses', levelReq:85,  xp:6000,  ticks:220, stats:{hp:3000, attack:68, defence:52},
       drops:[{item:'dragon_bones',      itemName:'Dragon bones',     chance:1.00, min:1,max:1, notable:false},
              {item:'coins',             itemName:'Coins',            chance:1.00, min:1000,max:4000, notable:false},
@@ -1653,7 +1696,8 @@ const ACTIONS = {
              {item:'gold_charm',        itemName:'Gold charm',       chance:0.14, min:1,max:1, notable:false},
              {item:'green_charm',       itemName:'Green charm',      chance:0.05, min:1,max:1, notable:false},
              {item:'crimson_charm',     itemName:'Crimson charm',    chance:0.04, min:1,max:1, notable:true},
-             {item:'blue_charm',        itemName:'Blue charm',       chance:0.02, min:1,max:1, notable:true}]},
+             {item:'blue_charm',        itemName:'Blue charm',       chance:0.02, min:1,max:1, notable:true},
+             {item:'pet_war_pup',       itemName:'War Pup',          chance:0.00133,min:1,max:1,notable:true}]},
     {id:'harbinger',        name:'The Harbinger',                 category:'Bosses', levelReq:100, xp:10000, ticks:350, stats:{hp:6000, attack:85, defence:70},
       drops:[{item:'dragon_bones',    itemName:'Dragon bones',       chance:1.00, min:1,max:1, notable:false},
              {item:'coins',           itemName:'Coins',              chance:1.00, min:2000,max:8000, notable:false},
@@ -1662,7 +1706,8 @@ const ACTIONS = {
              {item:'gold_charm',      itemName:'Gold charm',         chance:0.15, min:1,max:1, notable:false},
              {item:'green_charm',     itemName:'Green charm',        chance:0.06, min:1,max:1, notable:false},
              {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.04, min:1,max:1, notable:true},
-             {item:'blue_charm',      itemName:'Blue charm',         chance:0.02, min:1,max:1, notable:true}]},
+             {item:'blue_charm',      itemName:'Blue charm',         chance:0.02, min:1,max:1, notable:true},
+             {item:'pet_void_spawn',  itemName:'Void Spawn',         chance:0.001, min:1,max:1,notable:true}]},
   ],
   prayer:[
     { id:'bury_auto',  name:'Bury bones',      label:'Bones buried',  category:'Burying',
@@ -1887,6 +1932,28 @@ const COLLECTION_LOG_SOURCES = [
   { id:'boss_karg',   name:'General Karg',     category:'Bosses', items:[{id:'warlord_chestplate', name:'Warlord chestplate',  icon:'🛡️'},{id:'warlord_helm', name:'Warlord helm', icon:'🪖'}]},
   { id:'boss_harbinger',        name:'The Harbinger',                  category:'Bosses', items:[{id:'ancient_platebody',   name:'Ancient platebody',    icon:'🛡️'},{id:'harbinger_amulet', name:'Harbinger amulet', icon:'💀'}]},
   { id:'boss_ancient_lich',name:'Ancient Lich', category:'Bosses', items:[{id:'ancient_scroll',name:'Ancient scroll',icon:'📜'}]},
+  // Pets
+  { id:'skilling_pets', name:'Skilling Pets', category:'Pets', items:[
+    {id:'pet_beaver',       name:'Beaver',        icon:'🦫'}, {id:'pet_rock_golem',   name:'Rock Golem',    icon:'🪨'},
+    {id:'pet_tiny_kraken',  name:'Tiny Kraken',   icon:'🦑'}, {id:'pet_herb_sprite',  name:'Herb Sprite',   icon:'🌿'},
+    {id:'pet_gecko',        name:'Gecko',         icon:'🦎'}, {id:'pet_wisp',         name:'Memory Wisp',   icon:'💫'},
+    {id:'pet_crafting_imp', name:'Crafting Imp',  icon:'🎭'}, {id:'pet_robin',        name:'Robin',         icon:'🐦'},
+    {id:'pet_forge_sprite', name:'Forge Sprite',  icon:'🌋'}, {id:'pet_chef_mouse',   name:'Chef Mouse',    icon:'🐭'},
+    {id:'pet_fire_sprite',  name:'Fire Sprite',   icon:'🕯️'}, {id:'pet_rune_sprite',  name:'Rune Sprite',   icon:'🔮'},
+    {id:'pet_chisel_gnome', name:'Chisel Gnome',  icon:'🪵'}, {id:'pet_herb_frog',    name:'Herb Frog',     icon:'🐸'},
+    {id:'pet_tiny_warrior', name:'Tiny Warrior',  icon:'⚔️'}, {id:'pet_shield_crab',  name:'Shield Crab',   icon:'🦀'},
+    {id:'pet_blood_sprite', name:'Blood Sprite',  icon:'❤️'}, {id:'pet_golden_eagle', name:'Golden Eagle',  icon:'🦅'},
+    {id:'pet_magic_owl',    name:'Magic Owl',     icon:'🦉'}, {id:'pet_divine_lamb',  name:'Divine Lamb',   icon:'🐑'},
+    {id:'pet_mini_familiar',name:'Mini Familiar', icon:'🌀'}, {id:'pet_nimble_cat',   name:'Nimble Cat',    icon:'🐱'},
+    {id:'pet_raccoon',      name:'Raccoon',       icon:'🦝'}, {id:'pet_imp',          name:'Imp',           icon:'👺'},
+    {id:'pet_dungeon_rat',  name:'Dungeon Rat',   icon:'🐀'}, {id:'pet_dig_sprite',   name:'Dig Sprite',    icon:'🏺'},
+  ]},
+  { id:'boss_pets', name:'Boss Pets', category:'Pets', items:[
+    {id:'pet_baby_mole',    name:'Baby Mole',     icon:'🦔'}, {id:'pet_void_wyrm',    name:'Void Wyrm',     icon:'🐲'},
+    {id:'pet_deep_spawn',   name:'Deep Spawn',    icon:'🦈'}, {id:'pet_lich_familiar',name:'Lich Familiar', icon:'💀'},
+    {id:'pet_solar_hawk',   name:'Solar Hawk',    icon:'🌟'}, {id:'pet_war_pup',      name:'War Pup',       icon:'🐕'},
+    {id:'pet_void_spawn',   name:'Void Spawn',    icon:'🌌'},
+  ]},
 ];
 const CLOG_SOURCE_MAP = {};
 for (const src of COLLECTION_LOG_SOURCES)
@@ -2211,6 +2278,7 @@ const EQUIP_SLOTS = {
   elder_longbow:'weapon', eternal_longbow:'weapon',
   warlord_helm:'head', harbinger_amulet:'neck', ice_gloves:'gloves',
   ...Object.fromEntries(SKILLCAPES.map(c => [c.id, 'cape'])),
+  ...Object.fromEntries(PETS.map(p => [p.id, 'pet'])),
 };
 
 const DG_SHOP = [
@@ -2374,6 +2442,8 @@ function grantXp(skillId, xp, silent=false){
   if (sumXp) xp *= (1 + sumXp);
   const capeXp = getCapeBonus('xp_pct', skillId);
   if (capeXp) xp *= (1 + capeXp);
+  const petXp = getPetBonus('xp_pct', skillId);
+  if (petXp) xp *= (1 + petXp);
   const before = levelForXp(sk.xp);
   sk.xp += xp;
   const after = levelForXp(sk.xp);
@@ -2544,6 +2614,15 @@ function getCapeBonus(type, skillId){
   return cape.perkValue;
 }
 
+function getPetBonus(type, skillId){
+  const petId = state.equipment?.pet;
+  if (!petId) return 0;
+  const pet = PETS.find(p => p.id === petId);
+  if (!pet || pet.perkType !== type) return 0;
+  if (skillId != null && pet.skillId != null && pet.skillId !== skillId) return 0;
+  return pet.perkValue;
+}
+
 function canAfford(action){
   if (!action.ingredients) return null;
   return action.ingredients.find(ing => (state.inventory[ing.item] || 0) < ing.count) || null;
@@ -2573,7 +2652,7 @@ function calcPlayerDamage(styleId, mob){
 function calcMobDamage(mob){
   const mobAtk    = (mob.stats.style === 'mage' ? mob.stats.mage : mob.stats.attack) || mob.stats.attack || 1;
   const defBoost  = getPrayerBoost('defence');
-  const baseDef   = Math.floor(levelForXp(state.skills.defence.xp) * (1 + defBoost)) + calcStats().defence + getCapeBonus('defence_flat', null);
+  const baseDef   = Math.floor(levelForXp(state.skills.defence.xp) * (1 + defBoost)) + calcStats().defence + getCapeBonus('defence_flat', null) + getPetBonus('defence_flat', null);
   const archDef   = getArchBonus('defence_bonus');
   const playerDef = archDef ? Math.floor(baseDef * (1 + archDef)) : baseDef;
   const maxHit    = Math.max(1, Math.floor(mobAtk * 0.4) + 1);
@@ -2714,6 +2793,8 @@ function combatTick(){
     if (archMelee && playerDmg > 0) playerDmg = Math.max(1, Math.round(playerDmg * (1 + archMelee)));
     const capeDmg = getCapeBonus(`${state.current.skillId}_dmg`, null);
     if (capeDmg && playerDmg > 0) playerDmg = Math.max(1, Math.ceil(playerDmg * (1 + capeDmg)));
+    const petDmg = getPetBonus(`${state.current.skillId}_dmg`, null);
+    if (petDmg && playerDmg > 0) playerDmg = Math.max(1, Math.ceil(playerDmg * (1 + petDmg)));
     state.combat.mobHp = Math.max(0, state.combat.mobHp - playerDmg);
   }
   const mobDmg = calcMobDamage(action);
@@ -2774,14 +2855,21 @@ function plantSeed(seedId){
 
 function harvestCrop(){
   if (!state.farming.seed || !state.farming.ready) return;
+  const seed = SEEDS.find(s => s.id === state.farming.seed);
   const farmLevel = levelForXp(state.skills.farming.xp);
   const minY = Math.max(3, 3 + Math.floor(farmLevel / 20));
   const maxY = Math.min(15, 7 + Math.floor(farmLevel / 10));
   const qty  = minY + Math.floor(Math.random() * (maxY - minY + 1));
-  const xp   = seed.xp;
+  const xp   = seed ? seed.xp : Math.floor(30 + farmLevel * 1.5);
   grantItem(state.farming.herb, state.farming.herbName, qty);
   grantXp('farming', xp);
   log(`Harvested ${qty} ${state.farming.herbName}. (+${xp} xp)`);
+  // Farming pet: 1/5000 per harvest
+  if ((state.inventory['pet_herb_sprite'] || 0) === 0 && state.equipment?.pet !== 'pet_herb_sprite' && Math.random() < 0.0002){
+    grantItem('pet_herb_sprite', 'Herb Sprite', 1);
+    logCollectionDrop('skilling_pets', 'pet_herb_sprite', 1);
+    log('🌿 An herb sprite dances out of the harvest!');
+  }
   const seedId = state.farming.seed;
   Object.assign(state.farming, { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false });
   if (state.farming.autoReplant && (state.inventory[seedId] || 0) > 0) plantSeed(seedId);
@@ -3076,7 +3164,7 @@ function renderFarmTab(){
     el.appendChild(plantRow);
   } else {
     const elapsed   = Date.now() - f.plantedAt;
-    const growMs    = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming'));
+    const growMs    = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming')) * (1 - getPetBonus('farm_speed','farming'));
     const pct       = Math.min(100, Math.floor(elapsed / growMs * 100));
     const remaining = Math.max(0, Math.ceil((f.plantedAt + growMs - Date.now()) / 1000));
     const mins = Math.floor(remaining / 60);
@@ -3180,7 +3268,7 @@ function renderFarmSection(){
     el.appendChild(plantRow);
   } else {
     const elapsed = Date.now() - f.plantedAt;
-    const growMs  = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming'));
+    const growMs  = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming')) * (1 - getPetBonus('farm_speed','farming'));
     const pct     = Math.min(100, Math.floor(elapsed / growMs * 100));
     const remaining = Math.max(0, Math.ceil((f.plantedAt + growMs - Date.now()) / 1000));
     const mins = Math.floor(remaining / 60);
@@ -3337,21 +3425,22 @@ function getCurrentEffTicks(action){
   const base = action.ticks || 1;
   const sumSpeed  = getSummonBonusForSkill('speed_pct', state.current?.skillId);
   const capeSpeed = getCapeBonus('speed_pct', state.current?.skillId);
+  const petSpeed  = getPetBonus('speed_pct', state.current?.skillId);
   if (state.current?.skillId === 'thieving'){
     const agilLevel = levelForXp(state.skills.agility.xp);
     if (action.lock){
       const toolMult = getToolSpeedMult('thieving');
       const agilMult = 1 - (agilLevel / 99 * 0.30);
-      return Math.max(1, Math.ceil(base * toolMult * agilMult * (1 - sumSpeed) * (1 - capeSpeed)));
+      return Math.max(1, Math.ceil(base * toolMult * agilMult * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed)));
     }
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20)) * (1 - sumSpeed) * (1 - capeSpeed)));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20)) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed)));
   }
   if (state.current?.skillId === 'runecrafting'){
     const agilLevel = levelForXp(state.skills.agility.xp);
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed) * (1 - capeSpeed)));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed)));
   }
   const archSpeed = getArchBonus(`speed_${state.current.skillId}`);
-  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId) * getConstructionMult(state.current.skillId) * (1 - archSpeed) * (1 - sumSpeed) * (1 - capeSpeed)));
+  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId) * getConstructionMult(state.current.skillId) * (1 - archSpeed) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed)));
 }
 
 function getConstructionMult(skillId){
@@ -3420,7 +3509,7 @@ function tick(){
   // Passive HP regen — 1% maxHp every 10s
   if (state.combat.maxHp && state.combat.hp < state.combat.maxHp){
     const now = Date.now();
-    if (now - (state.combat.lastRegen || 0) >= 30000 / (1 + getArchBonus('hp_regen') + getSummonBonus('hp_regen_mult') + getCapeBonus('hp_regen_mult', null))){
+    if (now - (state.combat.lastRegen || 0) >= 30000 / (1 + getArchBonus('hp_regen') + getSummonBonus('hp_regen_mult') + getCapeBonus('hp_regen_mult', null) + getPetBonus('hp_regen_mult', null))){
       state.combat.hp = Math.min(state.combat.maxHp, state.combat.hp + 1);
       state.combat.lastRegen = now;
     }
@@ -3434,7 +3523,7 @@ function tick(){
     }, 0);
     if (totalDrain > 0){
       const pBonus = Math.max(1, state.stats.prayer || 1);
-      const prayerDrainReduction = getCapeBonus('prayer_drain', null);
+      const prayerDrainReduction = getCapeBonus('prayer_drain', null) + getPetBonus('prayer_drain', null);
       const threshold = Math.max(1, Math.round(10 / totalDrain * (1 + pBonus / 30) / Math.max(0.01, 1 - prayerDrainReduction)));
       state.prayer.drainCounter = (state.prayer.drainCounter || 0) + 1;
       if (state.prayer.drainCounter >= threshold){
@@ -3471,7 +3560,7 @@ function tick(){
   }
   // Farming: detect crop becoming ready and log once
   if (state.farming?.seed && !state.farming.ready) {
-    const growMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming'));
+    const growMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming')) * (1 - getPetBonus('farm_speed','farming'));
     if (Date.now() >= state.farming.plantedAt + growMs) {
       state.farming.ready = true;
       log(`Your ${state.farming.seedName} are ready to harvest!`);
@@ -3708,7 +3797,7 @@ function completeAction(action, silent){
       ...(state.combat.defensive ? [['defence', base * 0.5]] : []),
     ];
     for (const [sid, xp] of xpGrants) grantXp(sid, xp, silent);
-    const _dropBoost = getSummonBonus('drop_rate_pct');
+    const _dropBoost = getSummonBonus('drop_rate_pct') + getPetBonus('drop_rate_pct', null);
     const _clogSrc = MOB_CLOG_SOURCE[action.id];
     state.combat.kills[action.id] = (state.combat.kills[action.id] || 0) + 1;
     for (const drop of (action.drops || [])){
@@ -3717,6 +3806,7 @@ function completeAction(action, silent){
         const qty = (drop.min || 1) + Math.floor(Math.random() * ((drop.max || 1) - (drop.min || 1) + 1));
         grantItem(drop.item, drop.itemName, qty);
         if (drop.notable && _clogSrc) logCollectionDrop(_clogSrc, drop.item, qty);
+        if (drop.notable) logCollectionDrop('boss_pets', drop.item, qty);
         if (!silent && drop.notable) log(`+${qty} ${drop.itemName}`);
       }
     }
@@ -3743,7 +3833,7 @@ function completeAction(action, silent){
   // Award DG tokens on floor completion; refresh cached values for next loop
   if (state.current?.skillId === 'dungeoneering' && !silent){
     const dgLevel = levelForXp(state.skills['dungeoneering'].xp);
-    const tokens  = Math.max(1, Math.floor(dgLevel * action.tokenMult * (1 + getCapeBonus('dg_token_pct', null))));
+    const tokens  = Math.max(1, Math.floor(dgLevel * action.tokenMult * (1 + getCapeBonus('dg_token_pct', null) + getPetBonus('dg_token_pct', null))));
     grantItem('dg_tokens', 'Dungeoneering tokens', tokens);
     log(`⚔️ Floor complete! +${tokens} tokens.`);
     state.current.earnedTokens = tokens;
@@ -3826,6 +3916,40 @@ function checkBonusDrop(skillId, action){
       log(`🦋 A dragon impling escapes your trap — you manage to jar it!`);
     }
   }
+
+  // Skilling pets — 1/5000 per action (0.0002); only if not already owned/equipped
+  const _tryPet = (id, name, icon, msg) => {
+    if ((state.inventory[id] || 0) === 0 && state.equipment?.pet !== id && Math.random() < 0.0002){
+      grantItem(id, name, 1);
+      logCollectionDrop('skilling_pets', id, 1);
+      log(`${icon} ${msg}`);
+    }
+  };
+  if (skillId === 'woodcutting') _tryPet('pet_beaver',       'Beaver',       '🦫', 'A beaver follows you home!');
+  if (skillId === 'mining')      _tryPet('pet_rock_golem',   'Rock Golem',   '🪨', 'A tiny rock golem emerges from the ore!');
+  if (skillId === 'fishing')     _tryPet('pet_tiny_kraken',  'Tiny Kraken',  '🦑', 'A tiny kraken latches onto your line!');
+  if (skillId === 'hunter')      _tryPet('pet_gecko',        'Gecko',        '🦎', 'A gecko leaps into your trap!');
+  if (skillId === 'divination')  _tryPet('pet_wisp',         'Memory Wisp',  '💫', 'A wisp chooses you as its anchor!');
+  if (skillId === 'crafting')    _tryPet('pet_crafting_imp', 'Crafting Imp', '🎭', 'An imp takes an interest in your craft!');
+  if (skillId === 'fletching')   _tryPet('pet_robin',        'Robin',        '🐦', 'A robin lands on your fletcher!');
+  if (skillId === 'smithing')    _tryPet('pet_forge_sprite', 'Forge Sprite', '🌋', 'A sprite leaps from the forge!');
+  if (skillId === 'cooking')     _tryPet('pet_chef_mouse',   'Chef Mouse',   '🐭', 'A mouse steals a taste and decides to stay!');
+  if (skillId === 'firemaking')  _tryPet('pet_fire_sprite',  'Fire Sprite',  '🕯️', 'A fire sprite dances from the flames!');
+  if (skillId === 'runecrafting')_tryPet('pet_rune_sprite',  'Rune Sprite',  '🔮', 'A rune sprite crystallises before you!');
+  if (skillId === 'construction')_tryPet('pet_chisel_gnome', 'Chisel Gnome', '🪵', 'A gnome inspects your craftsmanship!');
+  if (skillId === 'herblore')    _tryPet('pet_herb_frog',    'Herb Frog',    '🐸', 'A frog hops out of the herbs!');
+  if (skillId === 'melee')       _tryPet('pet_tiny_warrior', 'Tiny Warrior', '⚔️', 'A tiny warrior salutes your combat!');
+  if (skillId === 'defence')     _tryPet('pet_shield_crab',  'Shield Crab',  '🦀', 'A shield crab scuttles to your side!');
+  if (skillId === 'constitution')_tryPet('pet_blood_sprite', 'Blood Sprite', '❤️', 'A blood sprite takes a liking to you!');
+  if (skillId === 'ranged')      _tryPet('pet_golden_eagle', 'Golden Eagle', '🦅', 'A golden eagle swoops down!');
+  if (skillId === 'magic')       _tryPet('pet_magic_owl',    'Magic Owl',    '🦉', 'A magic owl perches on your staff!');
+  if (skillId === 'prayer')      _tryPet('pet_divine_lamb',  'Divine Lamb',  '🐑', 'A divine lamb nuzzles your offering!');
+  if (skillId === 'summoning')   _tryPet('pet_mini_familiar','Mini Familiar','🌀', 'A miniature familiar bonds with you!');
+  if (skillId === 'agility')     _tryPet('pet_nimble_cat',   'Nimble Cat',   '🐱', 'A nimble cat matches your every move!');
+  if (skillId === 'thieving')    _tryPet('pet_raccoon',      'Raccoon',      '🦝', 'A raccoon picks your pocket back!');
+  if (skillId === 'slayer')      _tryPet('pet_imp',          'Imp',          '👺', 'An imp decides you are scary enough to follow!');
+  if (skillId === 'dungeoneering')_tryPet('pet_dungeon_rat', 'Dungeon Rat',  '🐀', 'A dungeon rat scurries out of the darkness!');
+  if (skillId === 'archaeology') _tryPet('pet_dig_sprite',   'Dig Sprite',   '🏺', 'A sprite drifts from the excavation!');
 }
 
 function completeQuest(questId){
@@ -5352,12 +5476,13 @@ function renderSummoningHud(){
 
 /* ---- Items panel ---- */
 const ITEM_CAT_ORDER = [
-  'Openable','Equipment','Food & Potions','Seeds & Herbs',
+  'Openable','Equipment','Pets','Food & Potions','Seeds & Herbs',
   'Summoning Pouches','Summoning',
   'Ores & Bars','Logs','Fish','Gems & Hides','Runes & Energy',
   'Ammo','Hunter','Currency','Other'
 ];
 function getItemCat(id){
+  if (id.startsWith('pet_'))                     return 'Pets';
   if (OPENABLE_ITEMS[id])                        return 'Openable';
   if (SUMMON_POUCH_IDS.has(id))                  return 'Summoning Pouches';
   if (id.endsWith('_charm'))                     return 'Summoning';
@@ -5431,7 +5556,7 @@ function renderItemsPanel(){
 
   // Inline farm status
   if (state.farming?.seed){
-    const growMs  = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming'));
+    const growMs  = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming')) * (1 - getPetBonus('farm_speed','farming'));
     const elapsed = Date.now() - state.farming.plantedAt;
     const pct     = Math.min(100, Math.round(elapsed / growMs * 100));
     html += `<div style="margin-top:10px;border-top:1px solid var(--line);padding-top:8px;">
@@ -5572,7 +5697,7 @@ function init(){
   if (state.prayer.drainCounter == null)         state.prayer.drainCounter = 0;
 
   // Farming: mark ready if crop matured while offline (timestamps survive saves)
-  const _offlineGrowMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming'));
+  const _offlineGrowMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming')) * (1 - getPetBonus('farm_speed','farming'));
   if (state.farming?.seed && !state.farming.ready &&
       Date.now() >= state.farming.plantedAt + _offlineGrowMs) {
     state.farming.ready = true;
