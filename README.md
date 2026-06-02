@@ -42,7 +42,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Cooking | 99 | 16 fish | Burn chance 20% → 0% over 10 levels above req; halved by Cooking Range upgrade |
 | Fletching | 110 | 38 actions | Headless arrows, unstrung short/long bows, crossbows, arrow assembly (Bronze–Dragon); splinter mechanic (20% → 0%); dragon arrowheads drop from drakes |
 | Crafting | 110 | 60 actions | Gem cutting (7), jewellery (rings + amulets), Leather Armour, Hunter Leather (kebbit + kyatt), Dragonhide (5 tiers), Mage Armour (3 tiers); batch crafting |
-| Herblore | 120 | 18 actions | 6 potion types × 3 tiers (Lesser / Normal / Supreme); herbs from Farming |
+| Herblore | 120 | 18 actions | 6 potion types × 3 tiers (Lesser / Normal / Supreme); herbs from Farming; drink from inventory — attack/defence/ranging/magic potions give +5/10/15% combat boost for 5 min; prayer potions restore 25/50/100% of prayer points; summoning potions extend familiar by 2/5/10 min |
 | Runecrafting | 110 | 11 rune altars (Air → Soul) | Agility bonus speeds up crafting; +5 coming-soon infusion actions visible at lv 90+ |
 | Construction | 99 | 10 plank types + 8 permanent upgrades | Upgrades unlock in-game buildings: Sawmill, Furnace, Cooking Range, Herb Patch, Study, Workshop, Manor, Altar |
 
