@@ -554,6 +554,10 @@
     </div>
     <input id="newCharNameInput" type="text" maxlength="24" placeholder="Character name…"
       style="width:100%;box-sizing:border-box;padding:8px 10px;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:5px;font-size:14px;margin-bottom:14px;">
+    <label style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:13px;cursor:pointer;">
+      <input type="checkbox" id="newCharTutorial" checked style="width:15px;height:15px;accent-color:var(--accent);">
+      Start with tutorial
+    </label>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
       <button onclick="confirmCreateCharacter('normal')"
         style="padding:14px 8px;background:var(--panel2);border:1px solid var(--line);border-radius:7px;cursor:pointer;color:var(--text);text-align:center;">
@@ -911,6 +915,19 @@ const SKILL_ICON = {
   melee:'⚔️',  defence:'🛡️', constitution:'❤️', ranged:'🏹', magic:'🔮', prayer:'🙏', summoning:'🧿',
   agility:'🏃', thieving:'🪝', slayer:'💀', dungeoneering:'🗝️', archaeology:'🏺', invention:'⚙️',
 };
+
+const TUTORIAL_STEPS = [
+  { icon:'⛏️', title:'Welcome to Idle Skiller',
+    body:'Idle Skiller is an incremental RPG. Train skills, collect items, unlock gear, and take on bosses — all at your own pace. Everything runs automatically once you set it going.' },
+  { icon:'📊', title:'Your Skills',
+    body:'The panel on the left lists all your skills, grouped by type. Click any skill row to open it in the centre panel. Each skill has a level that grows as you earn XP.' },
+  { icon:'▶️', title:'Starting an Action',
+    body:'Each skill shows a list of actions you can train. Click one to begin — a progress bar fills, then the action repeats on its own. Click <b>Stop</b> at any time to pause.' },
+  { icon:'🎒', title:'Items & Inventory',
+    body:'Most actions produce items: logs, ores, fish, bars, and more. Everything you collect appears in the Inventory panel on the right, grouped by category.' },
+  { icon:'🗺️', title:"What\'s Next",
+    body:'Once you have some levels and items, explore <b>Combat</b>, the <b>🏪 Shop</b> for tool upgrades, <b>Slayer</b> tasks, and <b>Dungeoneering</b>. There\'s no wrong order — just start clicking!' },
+];
 
 const METAL_TIERS = [
   {id:'bronze',    name:'Bronze',    barItem:'bronze_bar',    barName:'Bronze bar',    levelReq:1,   xpPerBar:12,  defBase:15, atkBase:1, rngPen:-1, magPen:-1, weaponAtk:12},
@@ -2337,6 +2354,7 @@ const ACHIEVEMENTS = [
   {id:'slay_shop_all', name:'Points Well Spent',  desc:'Purchase all Slayer shop items',          icon:'🏪', category:'Special', checkFn:()=>['boss_tasks','slayer_boost','task_extend','point_bonus'].every(k=>!!state.slayer.unlocks?.[k])},
   {id:'goblin_diplomacy_done', name:'Diplomat', desc:'Complete the Goblin Diplomacy quest', icon:'📜', category:'Special', checkFn:()=>!!state.quests?.goblin_diplomacy},
   {id:'got_crystal',   name:'Crystal Gifts',      desc:'Find a crystal tool seed on Crystal course',icon:'💠', category:'Special', checkFn:()=>(state.collectionLog?.agility_crystal?.crystal_tool_seed||0)>0, lockFn:()=>!state.quests?.lost_city},
+  {id:'tutorial_done', name:'First Steps',        desc:'Complete or skip the tutorial',              icon:'📖', category:'Special', checkFn:()=>!!state.tutorial?.done},
 ];
 
 const EQUIP_REQS = {
@@ -2713,6 +2731,7 @@ function freshState(){
     prayer:         { points:0, maxPoints:1, active:{}, drainCounter:0, lastRegen:0 },
     achievements:    {},
     collectionLog:   {},
+    tutorial:        { done: false },
     openCounts:      {},
     clueCompletions: {},
     clues:        { active: null },
@@ -4573,6 +4592,39 @@ function checkAchievements(){
 
 let achFilter = 'all';
 let shopTab   = 'buy';
+/* ---- Tutorial ---- */
+let tutorialStep = 0;
+function openTutorial(){
+  tutorialStep = 0;
+  renderTutorial();
+  $('tutorialOverlay').classList.add('open');
+}
+function closeTutorial(){
+  $('tutorialOverlay').classList.remove('open');
+  if (!state.tutorial) state.tutorial = { done: false };
+  state.tutorial.done = true;
+  checkAchievements();
+}
+function tutorialNext(){
+  if (tutorialStep < TUTORIAL_STEPS.length - 1){ tutorialStep++; renderTutorial(); }
+  else closeTutorial();
+}
+function renderTutorial(){
+  const el = $('tutorialContent');
+  if (!el) return;
+  const s = TUTORIAL_STEPS[tutorialStep];
+  const isLast = tutorialStep === TUTORIAL_STEPS.length - 1;
+  el.innerHTML = `
+    <div style="text-align:center;font-size:40px;margin-bottom:10px;">${s.icon}</div>
+    <h2 style="margin:0 0 10px;font-size:17px;text-align:center;">${s.title}</h2>
+    <p style="color:var(--dim);font-size:14px;line-height:1.65;margin:0 0 18px;">${s.body}</p>
+    <div style="font-size:11px;color:var(--dim);text-align:center;margin-bottom:14px;">Step ${tutorialStep+1} of ${TUTORIAL_STEPS.length}</div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="mini" onclick="closeTutorial()">Skip</button>
+      <button class="mini" style="background:var(--accent);color:#000;font-weight:600;" onclick="tutorialNext()">${isLast ? 'Finish ✓' : 'Next →'}</button>
+    </div>`;
+}
+
 function openAchievements(){ $('achievementsOverlay').classList.add('open'); renderAchievements(); }
 function closeAchievements(){ $('achievementsOverlay').classList.remove('open'); }
 function setAchFilter(f){ achFilter = f; renderAchievements(); }
@@ -5113,8 +5165,10 @@ function confirmCreateCharacter(mode){
   const hardcore = mode === 'hardcore';
   list.push({ id, name, lastSaved:Date.now(), totalLevel:0, hardcore, dead:false });
   saveCharIndex(list);
+  const wantTutorial = !!$('newCharTutorial')?.checked;
   closeNewChar();
   switchCharacter(id);
+  if (wantTutorial) openTutorial();
 }
 
 function renameCharacter(id){
@@ -5312,6 +5366,14 @@ function renderSettings(){
     renderLog();
   };
   row(logGrp, 'Log size', 'Maximum number of log entries to keep', logSel);
+
+  // Tutorial
+  const tutGrp = group('Tutorial');
+  const tutBtn = document.createElement('button');
+  tutBtn.className = 'mini';
+  tutBtn.textContent = '📖 Replay Tutorial';
+  tutBtn.onclick = () => { closeSettings(); openTutorial(); };
+  row(tutGrp, 'Tutorial', 'Walk through the basics again', tutBtn);
 }
 
 function render(){
@@ -6277,6 +6339,7 @@ function init(){
   if (!state.collectionLog)   state.collectionLog   = {};
   if (!state.openCounts)      state.openCounts      = {};
   if (!state.clueCompletions) state.clueCompletions = {};
+  if (!state.tutorial)        state.tutorial        = { done: false };
   if (!state.combat.kills)    state.combat.kills    = {};
   if (!state.summoning) state.summoning = { active:null, autoRenew:true };
   if (state.summoning.autoRenew == null) state.summoning.autoRenew = true;
@@ -6466,5 +6529,13 @@ document.addEventListener('visibilitychange', () => { if (document.hidden) save(
 
 init();
 </script>
+
+<!-- Tutorial overlay -->
+<div id="tutorialOverlay" class="settings-overlay" onclick="if(event.target===this)closeTutorial()">
+  <div class="settings-modal" style="max-width:480px;width:95%;">
+    <div id="tutorialContent"></div>
+  </div>
+</div>
+
 </body>
 </html>
