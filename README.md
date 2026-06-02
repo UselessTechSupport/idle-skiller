@@ -53,7 +53,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Melee | 120 | Primary combat style; trains Attack + Constitution |
 | Ranged | 120 | Trains Ranged + Constitution |
 | Magic | 120 | Trains Magic + Constitution |
-| Defence | 99 | Gains XP in Defensive mode |
+| Defence | 120 | Gains XP in Defensive mode |
 | Constitution | 99 | Starts at lv 10; gains XP on every kill (50% of action XP) |
 | Prayer | 99 | Bury bones / use altar (×2.5 or ×3.5 XP); 16 active prayers across 4 tiers; drain system; protect prayers reduce damage 50% |
 
@@ -101,8 +101,10 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - Slayer task kill-tracking with bonus XP on completion
 
 **Progression**
+- **Virtual levels** — all skills can accumulate XP up to virtual level 150 (sidebar displays e.g. `130/99`); virtual levels are cosmetic only and do not boost stats or gameplay
 - **Skillcapes** — 26 skill-specific capes (level 99 required, 99,000 coins each) with passive perks: gathering/artisan capes give +10% speed or +15% XP; combat capes give damage/defence/regen bonuses; support capes give thematic bonuses (prayer drain reduction, stun reduction, token gain, etc.)
 - **Max Cape** — requires level 99 in all 26 skills, costs 10M coins; contains every skillcape perk simultaneously
+- **Completionist Cape** — requires virtual level 150 in all implemented skills + all 79 achievements completed; costs 10B coins; contains all skillcape perks + BiS combat stats (ATK/RNG/MAG 80, DEF 120)
 - **Pets** — 33 equippable pets (26 from skilling at 1/5000, 7 from bosses at 1/500–1/1000); each grants a passive perk (+5% XP, +5% speed, or unique bonus); only one active at a time; tracked in Collection Log
 - Tool upgrade shop, Construction upgrades, Dungeoneering token shop — all consolidated inside the 🏪 Shop overlay
 - Slayer points shop — 5 permanent unlocks
