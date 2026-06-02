@@ -660,6 +660,7 @@ const SKILLCAPES = [
   {id:'dungeoneering_cape',name:'Dungeoneering cape',icon:'🗝️',skillId:'dungeoneering',cost:99000,perkType:'dg_token_pct',perkValue:0.10,perkLabel:'+10% Dungeoneering token gain'},
   {id:'archaeology_cape', name:'Archaeology cape', icon:'🏺', skillId:'archaeology', cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Archaeology XP'},
   {id:'max_cape',         name:'Max cape',         icon:'🎓', skillId:null,          cost:10000000, perkType:null, perkValue:0, perkLabel:'All skillcape perks combined'},
+  {id:'comp_cape',        name:'Completionist Cape',icon:'🏆',skillId:null,          cost:10000000000, perkType:null, perkValue:0, perkLabel:'All skillcape perks + powerful combat bonuses'},
 ];
 
 const PETS = [
@@ -892,7 +893,7 @@ const SKILL_ROADMAP = [
   {id:'herblore',     name:'Herblore',     type:'artisan', maxLevel:120, implemented:true},
   // Combat (9)
   {id:'melee',        name:'Melee',        type:'combat', maxLevel:120, implemented:true},
-  {id:'defence',      name:'Defence',      type:'combat', maxLevel:99,  implemented:true},
+  {id:'defence',      name:'Defence',      type:'combat', maxLevel:120, implemented:true},
   {id:'constitution', name:'Constitution', type:'combat', maxLevel:99,  implemented:true, startLevel:10},
   {id:'ranged',       name:'Ranged',       type:'combat', maxLevel:120, implemented:true},
   {id:'magic',        name:'Magic',        type:'combat', maxLevel:120, implemented:true},
@@ -1077,7 +1078,7 @@ const SELL_PRICES = {
   construction_cape:49500, herblore_cape:49500, melee_cape:49500, defence_cape:49500,
   constitution_cape:49500, ranged_cape:49500, magic_cape:49500, prayer_cape:49500,
   summoning_cape:49500, agility_cape:49500, thieving_cape:49500, slayer_cape:49500,
-  dungeoneering_cape:49500, archaeology_cape:49500, max_cape:5000000,
+  dungeoneering_cape:49500, archaeology_cape:49500, max_cape:5000000, comp_cape:5000000000,
 };
 
 /* ACTIONS: what you can DO in each skill.
@@ -2505,6 +2506,7 @@ const EQUIPMENT_SLOTS = [
 ];
 
 const ITEM_STATS = {
+  comp_cape:{ attack:80, range:80, mage:80, defence:120 },
   abyssal_whip:{ attack:82 }, celestial_sword:{ attack:75 },
   ancient_platebody:{ attack:8, defence:95 }, warlord_chestplate:{ attack:6, defence:80 },
   berserker_ring:{ attack:8, defence:4 }, void_drake_head:{ defence:5 },
@@ -2669,7 +2671,7 @@ const STAT_DEFS = [
 const XP_TABLE = (() => {
   const table = [0, 0]; // index 0 unused, level 1 = 0 xp
   let points = 0;
-  for (let lvl = 1; lvl <= 120; lvl++){
+  for (let lvl = 1; lvl <= 150; lvl++){
     points += Math.floor(lvl + 300 * Math.pow(2, lvl / 7));
     table[lvl + 1] = Math.floor(points / 4);
   }
@@ -2677,8 +2679,13 @@ const XP_TABLE = (() => {
 })();
 function levelForXp(xp){
   let lvl = 1;
-  while (lvl < 120 && XP_TABLE[lvl + 1] <= xp) lvl++;
+  while (lvl < 150 && XP_TABLE[lvl + 1] <= xp) lvl++;
   return lvl;
+}
+// Returns skill level capped at that skill's maxLevel — use for all gameplay calculations
+// so that virtual levels (above maxLevel, up to 150) are display-only.
+function effLvl(skillId){
+  return Math.min(levelForXp(state.skills[skillId].xp), SKILL_BY_ID[skillId].maxLevel);
 }
 
 /* ---------- 4. STORAGE (sandbox-safe) ----------
@@ -2794,9 +2801,9 @@ function grantXp(skillId, xp, silent=false){
   sk.xp += xp;
   const after = levelForXp(sk.xp);
   if (after > before && !silent) log(`🎉 ${SKILL_BY_ID[skillId].name} level ${after}!`);
-  if (skillId === 'constitution' && after > before) state.combat.maxHp = after * 10;
+  if (skillId === 'constitution' && after > before) state.combat.maxHp = Math.min(after, SKILL_BY_ID['constitution'].maxLevel) * 10;
   if (skillId === 'prayer' && after > before){
-    state.prayer.maxPoints = after;
+    state.prayer.maxPoints = Math.min(after, SKILL_BY_ID['prayer'].maxLevel);
     if (state.prayer.points === 0) state.prayer.points = 1;
   }
 }
@@ -2949,7 +2956,7 @@ function getArchBonus(type){
 function getCapeBonus(type, skillId){
   const capeId = state.equipment?.cape;
   if (!capeId) return 0;
-  if (capeId === 'max_cape'){
+  if (capeId === 'max_cape' || capeId === 'comp_cape'){
     return SKILLCAPES.filter(c => c.perkType === type &&
       (skillId == null || c.skillId === skillId || c.skillId == null))
       .reduce((sum, c) => sum + c.perkValue, 0);
@@ -3053,7 +3060,7 @@ function getAttackBonus(styleId, stats){
 }
 
 function calcPlayerDamage(styleId, mob){
-  const level    = levelForXp(state.skills[styleId].xp);
+  const level    = effLvl(styleId);
   const bonus    = getAttackBonus(styleId, calcStats());
   const effLevel = Math.floor(level * (1 + getPrayerBoost(styleId) + getSummonBonusForSkill('attack_pct', styleId)));
   const maxHit   = Math.max(1, Math.floor(effLevel * 0.4) + 1 + Math.floor(bonus / 10));
@@ -3066,7 +3073,7 @@ function calcPlayerDamage(styleId, mob){
 function calcMobDamage(mob){
   const mobAtk    = (mob.stats.style === 'mage' ? mob.stats.mage : mob.stats.attack) || mob.stats.attack || 1;
   const defBoost  = getPrayerBoost('defence');
-  const baseDef   = Math.floor(levelForXp(state.skills.defence.xp) * (1 + defBoost)) + calcStats().defence + getCapeBonus('defence_flat', null) + getPetBonus('defence_flat', null);
+  const baseDef   = Math.floor(effLvl('defence') * (1 + defBoost)) + calcStats().defence + getCapeBonus('defence_flat', null) + getPetBonus('defence_flat', null);
   const archDef   = getArchBonus('defence_bonus');
   const playerDef = archDef ? Math.floor(baseDef * (1 + archDef)) : baseDef;
   const maxHit    = Math.max(1, Math.floor(mobAtk * 0.4) + 1);
@@ -3098,7 +3105,12 @@ function equipItem(itemId){
   const slot = EQUIP_SLOTS[itemId];
   if (!slot || (state.inventory[itemId] || 0) < 1) return;
 
-  if (itemId === 'max_cape'){
+  if (itemId === 'comp_cape'){
+    const missing150 = SKILL_ROADMAP.filter(s => s.implemented && s.id !== 'invention')
+      .find(s => levelForXp(state.skills[s.id]?.xp || 0) < 150);
+    if (missing150){ log(`Completionist cape requires virtual level 150 in all skills (need: ${missing150.name}).`); return; }
+    if (!ACHIEVEMENTS.every(a => !!state.achievements?.[a.id])){ log('Completionist cape requires all achievements completed.'); return; }
+  } else if (itemId === 'max_cape'){
     const missing = SKILL_ROADMAP.filter(s => s.implemented && s.id !== 'invention')
       .find(s => levelForXp(state.skills[s.id]?.xp || 0) < 99);
     if (missing){ log(`Max cape requires level 99 in all skills (need: ${missing.name}).`); return; }
@@ -3970,7 +3982,7 @@ function getCurrentEffTicks(action){
   const capeSpeed = getCapeBonus('speed_pct', state.current?.skillId);
   const petSpeed  = getPetBonus('speed_pct', state.current?.skillId);
   if (state.current?.skillId === 'thieving'){
-    const agilLevel = levelForXp(state.skills.agility.xp);
+    const agilLevel = effLvl('agility');
     if (action.lock){
       const toolMult = getToolSpeedMult('thieving');
       const agilMult = 1 - (agilLevel / 99 * 0.30);
@@ -3979,7 +3991,7 @@ function getCurrentEffTicks(action){
     return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20)) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed)));
   }
   if (state.current?.skillId === 'runecrafting'){
-    const agilLevel = levelForXp(state.skills.agility.xp);
+    const agilLevel = effLvl('agility');
     return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed)));
   }
   const archSpeed = getArchBonus(`speed_${state.current.skillId}`);
@@ -4657,7 +4669,12 @@ function buySkillcape(capeId){
   if ((state.inventory[capeId] || 0) > 0 || state.equipment?.cape === capeId){
     log('You already own this cape.'); return;
   }
-  if (capeId === 'max_cape'){
+  if (capeId === 'comp_cape'){
+    const missing150 = SKILL_ROADMAP.filter(s => s.implemented && s.id !== 'invention')
+      .find(s => levelForXp(state.skills[s.id]?.xp || 0) < 150);
+    if (missing150){ log(`Completionist cape requires virtual level 150 in all skills (need: ${missing150.name}).`); return; }
+    if (!ACHIEVEMENTS.every(a => !!state.achievements?.[a.id])){ log('Completionist cape requires all achievements completed.'); return; }
+  } else if (capeId === 'max_cape'){
     const missing = SKILL_ROADMAP.filter(s => s.implemented && s.id !== 'invention')
       .find(s => levelForXp(state.skills[s.id]?.xp || 0) < 99);
     if (missing){ log(`Max cape requires level 99 in all skills (need: ${missing.name}).`); return; }
@@ -4744,7 +4761,11 @@ function renderShop(){
     for (const cape of SKILLCAPES){
       const owned = (state.inventory[cape.id] || 0) > 0 || state.equipment?.cape === cape.id;
       let meetsReq = false;
-      if (cape.id === 'max_cape'){
+      if (cape.id === 'comp_cape'){
+        meetsReq = !SKILL_ROADMAP.filter(s => s.implemented && s.id !== 'invention')
+          .find(s => levelForXp(state.skills[s.id]?.xp || 0) < 150)
+          && ACHIEVEMENTS.every(a => !!state.achievements?.[a.id]);
+      } else if (cape.id === 'max_cape'){
         meetsReq = !SKILL_ROADMAP.filter(s => s.implemented && s.id !== 'invention')
           .find(s => levelForXp(state.skills[s.id]?.xp || 0) < 99);
       } else {
@@ -4754,7 +4775,8 @@ function renderShop(){
       const card = document.createElement('div');
       card.className = 'upgrade-tier';
       card.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:6px;' + (owned ? 'border-color:var(--accent);' : '');
-      const reqLabel = cape.id === 'max_cape' ? 'Requires level 99 in all skills' : `Requires level 99 ${SKILL_BY_ID[cape.skillId].name}`;
+      const reqLabel = cape.id === 'comp_cape' ? 'Requires virtual lv 150 in all skills + all achievements'
+        : cape.id === 'max_cape' ? 'Requires level 99 in all skills' : `Requires level 99 ${SKILL_BY_ID[cape.skillId].name}`;
       card.innerHTML = `
         <span style="font-size:20px;">${cape.icon}</span>
         <div style="flex:1;min-width:0;">
@@ -6323,7 +6345,7 @@ function init(){
   const offline = applyOffline();
 
   // Init player HP from constitution level (handles both new games and save migration)
-  const constLvl = levelForXp(state.skills.constitution.xp);
+  const constLvl = Math.min(levelForXp(state.skills.constitution.xp), SKILL_BY_ID['constitution'].maxLevel);
   state.combat.maxHp = constLvl * 10;
   if (!state.combat.hp || state.combat.hp <= 0) state.combat.hp = state.combat.maxHp;
   state.combat.hp = Math.min(state.combat.hp, state.combat.maxHp);
@@ -6376,7 +6398,7 @@ function init(){
     state.current.stunTicks = 0; // don't resume mid-stun after reload
   if (state.current?.actionId?.startsWith('headless_from_')) state.current.actionId = 'headless_auto';
   if (!state.prayer){
-    const pLvl = levelForXp(state.skills.prayer?.xp || 0);
+    const pLvl = Math.min(levelForXp(state.skills.prayer?.xp || 0), SKILL_BY_ID['prayer'].maxLevel);
     state.prayer = { points:pLvl, maxPoints:pLvl, active:{}, drainCounter:0, lastRegen:0 };
   }
   if (!state.prayer.active)                     state.prayer.active      = {};
