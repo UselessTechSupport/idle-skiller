@@ -91,6 +91,8 @@
   }
   header h1{font-size:17px; margin:0; font-weight:600;}
   header .total{font-size:13px; color:var(--dim);}
+  .header-left{ display:flex; align-items:center; gap:12px; }
+  .header-btns{ display:flex; gap:6px; align-items:center; }
   .wrap{
     display:grid; gap:14px; padding:14px; max-width:1160px; margin:0 auto;
     grid-template-columns:1fr;
@@ -107,6 +109,22 @@
     .panel-skills{ order:3; }
     .panel-active{ order:1; }
     .panel-right { order:2; }
+
+    /* Header: stack title row above scrollable button strip */
+    header{ flex-direction:column; align-items:stretch; gap:6px; padding:8px 12px; }
+    .header-left{ justify-content:space-between; }
+    .header-btns{ overflow-x:auto; white-space:nowrap; flex-wrap:nowrap; padding-bottom:2px; -webkit-overflow-scrolling:touch; }
+    .header-btns .mini{ flex-shrink:0; }
+
+    /* Larger touch targets */
+    .mini{ padding:8px 12px; min-height:38px; }
+
+    /* Batch action buttons wrap below name/meta on narrow screens */
+    .action-btn{ flex-wrap:wrap; }
+    .action-btn .meta{ text-align:left; width:100%; }
+
+    /* Equipment slots single column */
+    .equip-grid{ grid-template-columns:1fr; }
   }
 
   /* Mobile sticky jump nav */
@@ -302,14 +320,18 @@
 <body>
 
 <header>
-  <h1>⛏️ Idle Skiller <span style="color:var(--dim);font-weight:400;font-size:13px;">starter</span></h1>
-  <span class="total">Total level: <b id="totalLevel">1</b></span>
-  <button class="mini" onclick="openShop()">🏪 Shop</button>
-  <button class="mini" onclick="openCharacters()">👤 Characters</button>
-  <button class="mini" onclick="openAchievements()">🏆 Achievements</button>
-  <button class="mini" onclick="openCollectionLog()">📖 Log</button>
-  <button class="mini" onclick="openSettings()">⚙️ Settings</button>
-  <button class="mini" id="debugToggle" style="color:#f97316;border-color:#c2410c;">🐛 Debug</button>
+  <div class="header-left">
+    <h1>⛏️ Idle Skiller <span style="color:var(--dim);font-weight:400;font-size:13px;">starter</span></h1>
+    <span class="total">Total level: <b id="totalLevel">1</b></span>
+  </div>
+  <div class="header-btns">
+    <button class="mini" onclick="openShop()">🏪 Shop</button>
+    <button class="mini" onclick="openCharacters()">👤 Characters</button>
+    <button class="mini" onclick="openAchievements()">🏆 Achievements</button>
+    <button class="mini" onclick="openCollectionLog()">📖 Log</button>
+    <button class="mini" onclick="openSettings()">⚙️ Settings</button>
+    <button class="mini" id="debugToggle" style="color:#f97316;border-color:#c2410c;">🐛 Debug</button>
+  </div>
 </header>
 
 <nav class="mobile-nav">
@@ -326,7 +348,7 @@
 <div class="wrap">
   <!-- LEFT: all 29 skills -->
   <div class="card panel-skills" id="sec-skills">
-    <h2>Skills (RS3 — 29 total)</h2>
+    <h2>Skills (29 total)</h2>
     <div id="skillList"></div>
   </div>
 
@@ -471,7 +493,7 @@
 <!-- Wilderness PKer QTE — same layout as fire spirit -->
 <div id="wildernessPkToast" class="fire-spirit-overlay">
   <div class="fire-spirit-modal">
-    <div class="spirit-title">⚔️ A player is targeting you!</div>
+    <div class="spirit-title">⚔️ A bandit is targeting you!</div>
     <div class="spirit-timer">Flee in <b id="pkTimer">15</b>s or lose coins</div>
     <button class="mini" id="rollPkBtn" style="width:100%;padding:10px;font-size:15px;color:#f87171;border-color:#ef4444;">Roll to fight!</button>
   </div>
@@ -578,7 +600,7 @@
    HOW THIS FILE IS ORGANISED (read top to bottom):
      1. CONFIG          — knobs you can tweak
      2. GAME DATA       — the 29 skills + woodcutting trees (edit these to add content)
-     3. XP MATH         — RuneScape's real experience formula
+     3. XP MATH         — experience formula
      4. STORAGE         — save/load that survives sandboxes and works as a real file
      5. STATE           — the player's save data
      6. CORE LOOP       — the 0.6s "tick" + offline catch-up
@@ -588,7 +610,7 @@
    ================================================================ */
 
 /* ---------- 1. CONFIG ---------- */
-const TICK_MS = 600;                  // RuneScape's game tick = 0.6s
+const TICK_MS = 600;                  // game tick = 0.6s
 const MAX_OFFLINE_HOURS = 12;         // cap on offline catch-up
 const FARM_GROW_MS = 5 * 60 * 1000;  // herb growth time: 5 minutes
 
@@ -602,13 +624,13 @@ const COMBAT_SKILL_IDS = new Set(
 );
 
 const SEEDS = [
-  {id:'tarromin_seed',    name:'Tarromin seed',    herb:'tarromin',    herbName:'Tarromin'},
-  {id:'ranarr_seed',      name:'Ranarr seed',      herb:'ranarr_weed', herbName:'Ranarr weed'},
-  {id:'dwarf_weed_seed',  name:'Dwarf weed seed',  herb:'dwarf_weed',  herbName:'Dwarf weed'},
-  {id:'lantadyme_seed',   name:'Lantadyme seed',   herb:'lantadyme',   herbName:'Lantadyme'},
-  {id:'fellstalk_seed',   name:'Fellstalk seed',   herb:'fellstalk',   herbName:'Fellstalk'},
-  {id:'spirit_weed_seed', name:'Spirit weed seed', herb:'spirit_weed', herbName:'Spirit weed'},
-  {id:'torstol_seed',     name:'Torstol seed',     herb:'torstol',     herbName:'Torstol'},
+  {id:'ironwort_seed',    name:'Ironwort seed',      herb:'ironwort',    herbName:'Ironwort',    levelReq:1,  xp:150},
+  {id:'shimmerleaf_seed',      name:'Shimmerleaf seed',   herb:'shimmerleaf', herbName:'Shimmerleaf', levelReq:25, xp:300},
+  {id:'thornweed_seed',  name:'Thornweed seed',     herb:'thornweed',  herbName:'Thornweed',   levelReq:40, xp:500},
+  {id:'goldbloom_seed',   name:'Goldbloom seed',     herb:'goldbloom',   herbName:'Goldbloom',   levelReq:55, xp:750},
+  {id:'duskroot_seed',   name:'Duskroot seed',      herb:'duskroot',   herbName:'Duskroot',    levelReq:70, xp:1050},
+  {id:'veilmoss_seed', name:'Veilmoss seed',      herb:'veilmoss', herbName:'Veilmoss',    levelReq:85, xp:1400},
+  {id:'crimsonherb_seed',     name:'Crimsonherb seed',   herb:'crimsonherb',     herbName:'Crimsonherb', levelReq:99, xp:2000},
 ];
 const HERB_IDS = new Set(SEEDS.map(s => s.herb));
 const AUTOSAVE_MS = 10000;            // autosave every 10s
@@ -620,7 +642,7 @@ const MAX_CHARS = 5;
 let activeCharId = null;
 
 /* ---------- 2. GAME DATA ----------
-   SKILL_ROADMAP: every RuneScape 3 skill. `implemented:true` = playable now.
+   SKILL_ROADMAP: all 29 skills. `implemented:true` = playable now.
    To "turn on" a skill later: set implemented:true and add its actions to ACTIONS. */
 const SKILL_TYPES = ['gathering','artisan','combat','support','elite'];
 const TYPE_LABEL  = {gathering:'Gathering', artisan:'Artisan', combat:'Combat', support:'Support', elite:'Elite'};
@@ -771,8 +793,8 @@ const SELL_PRICES = {
   raw_shrimps:6, raw_sardine:10, raw_trout:20, raw_salmon:35,
   raw_tuna:55, raw_lobster:80, raw_swordfish:130, raw_shark:250,
   raw_rocktail:450, raw_sailfish:700,
-  tarromin:150, ranarr_weed:350, dwarf_weed:550, lantadyme:800,
-  fellstalk:1100, spirit_weed:1400, torstol:2000,
+  ironwort:150, shimmerleaf:350, thornweed:550, goldbloom:800,
+  duskroot:1100, veilmoss:1400, crimsonherb:2000,
   uncut_sapphire:80, uncut_emerald:150, uncut_ruby:300, uncut_diamond:700,
   uncut_dragonstone:2500, uncut_onyx:15000, uncut_hydrix:150000,
   cut_sapphire:150, cut_emerald:280, cut_ruby:560, cut_diamond:1200, cut_dragonstone:4000,
@@ -800,8 +822,7 @@ const SELL_PRICES = {
    Woodcutting = trees. Each: level needed, xp per log, how many ticks it takes,
    and which item it gives. ADD A NEW TREE by copying a line. */
 const ACTIONS = {
-  // RS3 woodcutting. Levels, XP, and tree names match the RS3 wiki.
-  // Ticks are tuned so XP/hr always increases: each tier beats the last.
+  // Woodcutting. Ticks are tuned so XP/hr always increases: each tier beats the last.
   woodcutting: [
     {id:'normal_logs',        name:'Tree',               levelReq:1,   xp:25,    ticks:5,  item:'normal_logs',        itemName:'Logs'},
     {id:'oak_logs',           name:'Oak tree',           levelReq:10,  xp:37.5,  ticks:6,  item:'oak_logs',           itemName:'Oak logs'},
@@ -814,10 +835,7 @@ const ACTIONS = {
     {id:'elder_logs',         name:'Elder tree',         levelReq:90,  xp:425,   ticks:16, item:'elder_logs',         itemName:'Elder logs'},
     {id:'eternal_magic_logs', name:'Eternal magic tree', levelReq:100, xp:635,   ticks:20, item:'eternal_magic_logs', itemName:'Eternal magic logs'},
   ],
-  // RS3 mining (post-2019 rework). Level requirements changed dramatically vs classic:
-  // Mithril 55→30, Adamantite 70→40, Runite 85→50. New high-level ores fill 60–90.
-  // XP for Orichalcite and above are approximated (RS3 uses per-swing dynamic scaling
-  // rather than fixed-per-ore; these values maintain a clean XP/hr progression).
+  // Mining. XP values maintain a clean XP/hr progression across tiers.
   mining: [
     {id:'copper_ore',      name:'Copper rock',       levelReq:1,  xp:17.5, ticks:3,  item:'copper_ore',      itemName:'Copper ore'},
     {id:'tin_ore',         name:'Tin rock',          levelReq:1,  xp:17.5, ticks:3,  item:'tin_ore',         itemName:'Tin ore'},
@@ -838,13 +856,11 @@ const ACTIONS = {
     // that takes 4× the base animica time and awards 4× the XP.
     {id:'elder_rune_ore',  name:'Elder rune rock',   levelReq:90, xp:1040, ticks:48, item:'elder_rune_ore',  itemName:'Elder rune ore'},
     // Primal bar = 2 primal ores (10 ores per 5 bars). Base primal rock is slower
-    // than animica; 2 ores per action keeps the ratio accurate to RS3.
+    // than animica; 2 ores per action keeps the XP ratio consistent.
     {id:'primal_ore',      name:'Primal rock',       levelReq:100,xp:1400, ticks:60, item:'primal_ore',      itemName:'Primal ore'},
     {id:'rune_essence',    name:'Rune essence rock', levelReq:1,  xp:5,    ticks:4,  item:'rune_essence',    itemName:'Rune essence'},
   ],
-  // RS3 bar smelting. Ingredients are consumed from inventory on each completion.
-  // XP: classic RS values for Bronze–Rune; scaled estimates for RS3-specific tiers.
-  // Level requirements match RS3's post-2019 Mining & Smithing rework.
+  // Bar smelting. Ingredients are consumed from inventory on each completion.
   smithing: [
     {id:'bronze_bar',     name:'Bronze bar',     category:'Metal Bars', levelReq:1,   xp:6.2,  ticks:3,
      item:'bronze_bar',     itemName:'Bronze bar',
@@ -918,7 +934,7 @@ const ACTIONS = {
     }))),
   ],
   // Firemaking: burns logs for XP only — no output item (item:null).
-  // Levels and XP match RS3 wiki. Ticks tuned so XP/hr rises each tier.
+  // Ticks tuned so XP/hr rises each tier.
   firemaking: [
     {id:'burn_normal_logs',        name:'Burn logs',               label:'Logs burned',               levelReq:1,   xp:40,    ticks:3,  item:null, ingredients:[{item:'normal_logs',        count:1, name:'Logs'}]},
     {id:'burn_oak_logs',           name:'Burn oak logs',           label:'Oak logs burned',            levelReq:15,  xp:60,    ticks:4,  item:null, ingredients:[{item:'oak_logs',           count:1, name:'Oak logs'}]},
@@ -1061,7 +1077,7 @@ const ACTIONS = {
     {id:'craft_kyatt_chaps',   name:'Kyatt chaps',      label:'Hunter armour crafted', category:'Hunter Leather', levelReq:52, xp:78,  ticks:2, item:'kyatt_chaps',      itemName:'Kyatt chaps',      ingredients:[{item:'kyatt_fur',  count:2, name:'Kyatt fur'}]},
     {id:'craft_kyatt_body',    name:'Kyatt body',       label:'Hunter armour crafted', category:'Hunter Leather', levelReq:58, xp:105, ticks:2, item:'kyatt_body',       itemName:'Kyatt body',       ingredients:[{item:'kyatt_fur',  count:3, name:'Kyatt fur'}]},
 
-    // --- Dragonhide Armour (hides from future combat; royal overlaps black — same as RS3) ---
+    // --- Dragonhide Armour (hides from future combat) ---
     {id:'craft_green_dhide_vambs', name:"Green d'hide vambraces", label:"Green d'hide vambraces made", levelReq:57, xp:62,  ticks:3, item:'green_dhide_vambs', itemName:"Green d'hide vambraces", category:'Dragonhide Armour', ingredients:[{item:'green_dragonhide', count:1, name:'Green dragonhide'}]},
     {id:'craft_green_dhide_chaps', name:"Green d'hide chaps",     label:"Green d'hide chaps made",     levelReq:60, xp:124, ticks:3, item:'green_dhide_chaps', itemName:"Green d'hide chaps",     category:'Dragonhide Armour', ingredients:[{item:'green_dragonhide', count:2, name:'Green dragonhide'}]},
     {id:'craft_green_dhide_body',  name:"Green d'hide body",      label:"Green d'hide bodies made",    levelReq:63, xp:186, ticks:3, item:'green_dhide_body',  itemName:"Green d'hide body",      category:'Dragonhide Armour', ingredients:[{item:'green_dragonhide', count:3, name:'Green dragonhide'}]},
@@ -1095,13 +1111,13 @@ const ACTIONS = {
     {id:'hardmode_floor', name:'Hardmode floor', levelReq:90, xp:30000, baseMaxSecs:3600, baseMinSecs:360, tokenMult:6  },
   ],
   agility:[
-    {id:'gnome_stronghold',  name:'Gnome Stronghold',    levelReq:1,  xp:86,   ticks:10, coinReward:15},
-    {id:'wilderness_course', name:'Wilderness Course',    levelReq:1,  xp:0,    ticks:18, wilderness:true, xpBase:150, xpPerLevel:4, pkCoinBase:200, pkCoinPerLevel:15, coinReward:75},
-    {id:'barbarian_outpost', name:'Barbarian Outpost',    levelReq:35, xp:152,  ticks:14, coinReward:40},
-    {id:'ape_atoll',         name:'Ape Atoll Course',     levelReq:48, xp:420,  ticks:20, coinReward:80},
+    {id:'verdant_trail',  name:'Verdant Trail',       levelReq:1,  xp:86,   ticks:10, coinReward:15},
+    {id:'danger_trail', name:'Danger Trail',    levelReq:1,  xp:0,    ticks:18, wilderness:true, xpBase:150, xpPerLevel:4, pkCoinBase:200, pkCoinPerLevel:15, coinReward:75},
+    {id:'iron_pass', name:'Iron Pass',             levelReq:35, xp:152,  ticks:14, coinReward:40},
+    {id:'jungle_canopy',         name:'Jungle Canopy Course', levelReq:48, xp:420,  ticks:20, coinReward:80},
     {id:'serenity',          name:'Serenity Course',      levelReq:60, xp:380,  ticks:17, coinReward:110},
     {id:'crystal_course',      name:'Crystal Agility Course', levelReq:70, xp:2000, ticks:25,
-     questReq:'crystal_city', skillReqs:[{id:'agility',lvl:70},{id:'thieving',lvl:70}], coinReward:175},
+     questReq:'lost_city', skillReqs:[{id:'agility',lvl:70},{id:'thieving',lvl:70}], coinReward:175},
   ],
   thieving:[
     // --- Pickpocket --- (catchZeroAt:10 = safe within 10 levels of req)
@@ -1111,13 +1127,13 @@ const ACTIONS = {
     {id:'pickpocket_farmer',  name:'Pickpocket Farmer',       category:'Pickpocket', levelReq:10, xp:14.5,   ticks:3,
      catchChance:0.40, catchZeroAt:10, stunTicks:3,
      drops:[{item:'coins', itemName:'Coins', chance:1.0, min:15,  max:40,  notable:false},
-            {item:'tarromin_seed',   itemName:'Tarromin seed',   chance:0.020, min:1, max:3, notable:false},
-            {item:'ranarr_seed',     itemName:'Ranarr seed',     chance:0.020, min:1, max:2, notable:false},
-            {item:'dwarf_weed_seed', itemName:'Dwarf weed seed', chance:0.020, min:1, max:2, notable:false},
-            {item:'lantadyme_seed',  itemName:'Lantadyme seed',  chance:0.015, min:1, max:2, notable:false},
-            {item:'fellstalk_seed',  itemName:'Fellstalk seed',  chance:0.010, min:1, max:1, notable:false},
-            {item:'spirit_weed_seed',itemName:'Spirit weed seed',chance:0.010, min:1, max:1, notable:false},
-            {item:'torstol_seed',    itemName:'Torstol seed',    chance:0.005, min:1, max:1, notable:true}]},
+            {item:'ironwort_seed',   itemName:'Ironwort seed',   chance:0.020, min:1, max:3, notable:false},
+            {item:'shimmerleaf_seed',     itemName:'Shimmerleaf seed',     chance:0.020, min:1, max:2, notable:false},
+            {item:'thornweed_seed', itemName:'Thornweed seed', chance:0.020, min:1, max:2, notable:false},
+            {item:'goldbloom_seed',  itemName:'Goldbloom seed',  chance:0.015, min:1, max:2, notable:false},
+            {item:'duskroot_seed',  itemName:'Duskroot seed',  chance:0.010, min:1, max:1, notable:false},
+            {item:'veilmoss_seed',itemName:'Veilmoss seed',chance:0.010, min:1, max:1, notable:false},
+            {item:'crimsonherb_seed',    itemName:'Crimsonherb seed',    chance:0.005, min:1, max:1, notable:true}]},
     {id:'pickpocket_warrior', name:'Pickpocket Warrior',      category:'Pickpocket', levelReq:25, xp:26,     ticks:4,
      catchChance:0.38, catchZeroAt:10, stunTicks:4,
      drops:[{item:'coins', itemName:'Coins', chance:1.0, min:20,  max:60,  notable:false}]},
@@ -1152,13 +1168,13 @@ const ACTIONS = {
      drops:[{item:'coins', itemName:'Coins', chance:1.0, min:10,   max:40,   notable:false}]},
     {id:'lock_bronze',        name:'Bronze lock',    category:'Lock', levelReq:10, xp:25,  ticks:5, lock:true,
      drops:[{item:'coins', itemName:'Coins', chance:1.0, min:40,   max:100,  notable:false},
-            {item:'tarromin_seed',   itemName:'Tarromin seed',   chance:0.035, min:1, max:2, notable:false},
-            {item:'ranarr_seed',     itemName:'Ranarr seed',     chance:0.030, min:1, max:2, notable:false},
-            {item:'dwarf_weed_seed', itemName:'Dwarf weed seed', chance:0.025, min:1, max:2, notable:false},
-            {item:'lantadyme_seed',  itemName:'Lantadyme seed',  chance:0.025, min:1, max:1, notable:false},
-            {item:'fellstalk_seed',  itemName:'Fellstalk seed',  chance:0.015, min:1, max:1, notable:false},
-            {item:'spirit_weed_seed',itemName:'Spirit weed seed',chance:0.015, min:1, max:1, notable:false},
-            {item:'torstol_seed',    itemName:'Torstol seed',    chance:0.005, min:1, max:1, notable:true}]},
+            {item:'ironwort_seed',   itemName:'Ironwort seed',   chance:0.035, min:1, max:2, notable:false},
+            {item:'shimmerleaf_seed',     itemName:'Shimmerleaf seed',     chance:0.030, min:1, max:2, notable:false},
+            {item:'thornweed_seed', itemName:'Thornweed seed', chance:0.025, min:1, max:2, notable:false},
+            {item:'goldbloom_seed',  itemName:'Goldbloom seed',  chance:0.025, min:1, max:1, notable:false},
+            {item:'duskroot_seed',  itemName:'Duskroot seed',  chance:0.015, min:1, max:1, notable:false},
+            {item:'veilmoss_seed',itemName:'Veilmoss seed',chance:0.015, min:1, max:1, notable:false},
+            {item:'crimsonherb_seed',    itemName:'Crimsonherb seed',    chance:0.005, min:1, max:1, notable:true}]},
     {id:'lock_iron',          name:'Iron lock',      category:'Lock', levelReq:25, xp:45,  ticks:6, lock:true,
      drops:[{item:'coins', itemName:'Coins', chance:1.0, min:100,  max:300,  notable:false},
             {item:'uncut_sapphire', itemName:'Uncut sapphire', chance:0.10, min:1, max:1, notable:false}]},
@@ -1278,29 +1294,29 @@ const ACTIONS = {
   ],
   herblore:[
     // Attack Potions
-    {id:'brew_lesser_attack',     name:'Lesser attack potion',     label:'Potions brewed', category:'Attack Potions',     levelReq:1,  xp:25,  ticks:3, item:'lesser_attack_potion',     itemName:'Lesser attack potion',     ingredients:[{item:'tarromin',                  count:1, name:'Tarromin'}]},
-    {id:'brew_attack',            name:'Attack potion',            label:'Potions brewed', category:'Attack Potions',     levelReq:50, xp:75,  ticks:3, item:'attack_potion',            itemName:'Attack potion',            ingredients:[{item:'lesser_attack_potion',     count:1, name:'Lesser attack potion'}, {item:'tarromin',    count:1, name:'Tarromin'}]},
-    {id:'brew_supreme_attack',    name:'Supreme attack potion',    label:'Potions brewed', category:'Attack Potions',     levelReq:90, xp:150, ticks:3, item:'supreme_attack_potion',    itemName:'Supreme attack potion',    ingredients:[{item:'attack_potion',            count:1, name:'Attack potion'},          {item:'tarromin',    count:1, name:'Tarromin'}]},
+    {id:'brew_lesser_attack',     name:'Lesser attack potion',     label:'Potions brewed', category:'Attack Potions',     levelReq:1,  xp:25,  ticks:3, item:'lesser_attack_potion',     itemName:'Lesser attack potion',     ingredients:[{item:'ironwort',                  count:1, name:'Ironwort'}]},
+    {id:'brew_attack',            name:'Attack potion',            label:'Potions brewed', category:'Attack Potions',     levelReq:50, xp:75,  ticks:3, item:'attack_potion',            itemName:'Attack potion',            ingredients:[{item:'lesser_attack_potion',     count:1, name:'Lesser attack potion'}, {item:'ironwort',    count:1, name:'Ironwort'}]},
+    {id:'brew_supreme_attack',    name:'Supreme attack potion',    label:'Potions brewed', category:'Attack Potions',     levelReq:90, xp:150, ticks:3, item:'supreme_attack_potion',    itemName:'Supreme attack potion',    ingredients:[{item:'attack_potion',            count:1, name:'Attack potion'},          {item:'ironwort',    count:1, name:'Ironwort'}]},
     // Defence Potions
-    {id:'brew_lesser_defence',    name:'Lesser defence potion',    label:'Potions brewed', category:'Defence Potions',    levelReq:1,  xp:25,  ticks:3, item:'lesser_defence_potion',    itemName:'Lesser defence potion',    ingredients:[{item:'ranarr_weed',               count:1, name:'Ranarr weed'}]},
-    {id:'brew_defence',           name:'Defence potion',           label:'Potions brewed', category:'Defence Potions',    levelReq:50, xp:75,  ticks:3, item:'defence_potion',           itemName:'Defence potion',           ingredients:[{item:'lesser_defence_potion',    count:1, name:'Lesser defence potion'}, {item:'ranarr_weed', count:1, name:'Ranarr weed'}]},
-    {id:'brew_supreme_defence',   name:'Supreme defence potion',   label:'Potions brewed', category:'Defence Potions',    levelReq:90, xp:150, ticks:3, item:'supreme_defence_potion',   itemName:'Supreme defence potion',   ingredients:[{item:'defence_potion',           count:1, name:'Defence potion'},         {item:'ranarr_weed', count:1, name:'Ranarr weed'}]},
+    {id:'brew_lesser_defence',    name:'Lesser defence potion',    label:'Potions brewed', category:'Defence Potions',    levelReq:1,  xp:25,  ticks:3, item:'lesser_defence_potion',    itemName:'Lesser defence potion',    ingredients:[{item:'shimmerleaf',               count:1, name:'Shimmerleaf'}]},
+    {id:'brew_defence',           name:'Defence potion',           label:'Potions brewed', category:'Defence Potions',    levelReq:50, xp:75,  ticks:3, item:'defence_potion',           itemName:'Defence potion',           ingredients:[{item:'lesser_defence_potion',    count:1, name:'Lesser defence potion'}, {item:'shimmerleaf', count:1, name:'Shimmerleaf'}]},
+    {id:'brew_supreme_defence',   name:'Supreme defence potion',   label:'Potions brewed', category:'Defence Potions',    levelReq:90, xp:150, ticks:3, item:'supreme_defence_potion',   itemName:'Supreme defence potion',   ingredients:[{item:'defence_potion',           count:1, name:'Defence potion'},         {item:'shimmerleaf', count:1, name:'Shimmerleaf'}]},
     // Ranging Potions
-    {id:'brew_lesser_ranging',    name:'Lesser ranging potion',    label:'Potions brewed', category:'Ranging Potions',    levelReq:1,  xp:25,  ticks:3, item:'lesser_ranging_potion',    itemName:'Lesser ranging potion',    ingredients:[{item:'dwarf_weed',                count:1, name:'Dwarf weed'}]},
-    {id:'brew_ranging',           name:'Ranging potion',           label:'Potions brewed', category:'Ranging Potions',    levelReq:50, xp:75,  ticks:3, item:'ranging_potion',           itemName:'Ranging potion',           ingredients:[{item:'lesser_ranging_potion',    count:1, name:'Lesser ranging potion'}, {item:'dwarf_weed',  count:1, name:'Dwarf weed'}]},
-    {id:'brew_supreme_ranging',   name:'Supreme ranging potion',   label:'Potions brewed', category:'Ranging Potions',    levelReq:90, xp:150, ticks:3, item:'supreme_ranging_potion',   itemName:'Supreme ranging potion',   ingredients:[{item:'ranging_potion',           count:1, name:'Ranging potion'},         {item:'dwarf_weed',  count:1, name:'Dwarf weed'}]},
+    {id:'brew_lesser_ranging',    name:'Lesser ranging potion',    label:'Potions brewed', category:'Ranging Potions',    levelReq:1,  xp:25,  ticks:3, item:'lesser_ranging_potion',    itemName:'Lesser ranging potion',    ingredients:[{item:'thornweed',                count:1, name:'Thornweed'}]},
+    {id:'brew_ranging',           name:'Ranging potion',           label:'Potions brewed', category:'Ranging Potions',    levelReq:50, xp:75,  ticks:3, item:'ranging_potion',           itemName:'Ranging potion',           ingredients:[{item:'lesser_ranging_potion',    count:1, name:'Lesser ranging potion'}, {item:'thornweed',  count:1, name:'Thornweed'}]},
+    {id:'brew_supreme_ranging',   name:'Supreme ranging potion',   label:'Potions brewed', category:'Ranging Potions',    levelReq:90, xp:150, ticks:3, item:'supreme_ranging_potion',   itemName:'Supreme ranging potion',   ingredients:[{item:'ranging_potion',           count:1, name:'Ranging potion'},         {item:'thornweed',  count:1, name:'Thornweed'}]},
     // Magic Potions
-    {id:'brew_lesser_magic',      name:'Lesser magic potion',      label:'Potions brewed', category:'Magic Potions',      levelReq:1,  xp:25,  ticks:3, item:'lesser_magic_potion',      itemName:'Lesser magic potion',      ingredients:[{item:'lantadyme',                 count:1, name:'Lantadyme'}]},
-    {id:'brew_magic',             name:'Magic potion',             label:'Potions brewed', category:'Magic Potions',      levelReq:50, xp:75,  ticks:3, item:'magic_potion',             itemName:'Magic potion',             ingredients:[{item:'lesser_magic_potion',      count:1, name:'Lesser magic potion'},   {item:'lantadyme',   count:1, name:'Lantadyme'}]},
-    {id:'brew_supreme_magic',     name:'Supreme magic potion',     label:'Potions brewed', category:'Magic Potions',      levelReq:90, xp:150, ticks:3, item:'supreme_magic_potion',     itemName:'Supreme magic potion',     ingredients:[{item:'magic_potion',             count:1, name:'Magic potion'},           {item:'lantadyme',   count:1, name:'Lantadyme'}]},
+    {id:'brew_lesser_magic',      name:'Lesser magic potion',      label:'Potions brewed', category:'Magic Potions',      levelReq:1,  xp:25,  ticks:3, item:'lesser_magic_potion',      itemName:'Lesser magic potion',      ingredients:[{item:'goldbloom',                 count:1, name:'Goldbloom'}]},
+    {id:'brew_magic',             name:'Magic potion',             label:'Potions brewed', category:'Magic Potions',      levelReq:50, xp:75,  ticks:3, item:'magic_potion',             itemName:'Magic potion',             ingredients:[{item:'lesser_magic_potion',      count:1, name:'Lesser magic potion'},   {item:'goldbloom',   count:1, name:'Goldbloom'}]},
+    {id:'brew_supreme_magic',     name:'Supreme magic potion',     label:'Potions brewed', category:'Magic Potions',      levelReq:90, xp:150, ticks:3, item:'supreme_magic_potion',     itemName:'Supreme magic potion',     ingredients:[{item:'magic_potion',             count:1, name:'Magic potion'},           {item:'goldbloom',   count:1, name:'Goldbloom'}]},
     // Summoning Potions
-    {id:'brew_lesser_summoning',  name:'Lesser summoning potion',  label:'Potions brewed', category:'Summoning Potions',  levelReq:1,  xp:25,  ticks:3, item:'lesser_summoning_potion',  itemName:'Lesser summoning potion',  ingredients:[{item:'spirit_weed',               count:1, name:'Spirit weed'}]},
-    {id:'brew_summoning',         name:'Summoning potion',         label:'Potions brewed', category:'Summoning Potions',  levelReq:50, xp:75,  ticks:3, item:'summoning_potion',         itemName:'Summoning potion',         ingredients:[{item:'lesser_summoning_potion',  count:1, name:'Lesser summoning potion'},{item:'spirit_weed', count:1, name:'Spirit weed'}]},
-    {id:'brew_supreme_summoning', name:'Supreme summoning potion', label:'Potions brewed', category:'Summoning Potions',  levelReq:90, xp:150, ticks:3, item:'supreme_summoning_potion', itemName:'Supreme summoning potion', ingredients:[{item:'summoning_potion',          count:1, name:'Summoning potion'},        {item:'spirit_weed', count:1, name:'Spirit weed'}]},
+    {id:'brew_lesser_summoning',  name:'Lesser summoning potion',  label:'Potions brewed', category:'Summoning Potions',  levelReq:1,  xp:25,  ticks:3, item:'lesser_summoning_potion',  itemName:'Lesser summoning potion',  ingredients:[{item:'veilmoss',               count:1, name:'Veilmoss'}]},
+    {id:'brew_summoning',         name:'Summoning potion',         label:'Potions brewed', category:'Summoning Potions',  levelReq:50, xp:75,  ticks:3, item:'summoning_potion',         itemName:'Summoning potion',         ingredients:[{item:'lesser_summoning_potion',  count:1, name:'Lesser summoning potion'},{item:'veilmoss', count:1, name:'Veilmoss'}]},
+    {id:'brew_supreme_summoning', name:'Supreme summoning potion', label:'Potions brewed', category:'Summoning Potions',  levelReq:90, xp:150, ticks:3, item:'supreme_summoning_potion', itemName:'Supreme summoning potion', ingredients:[{item:'summoning_potion',          count:1, name:'Summoning potion'},        {item:'veilmoss', count:1, name:'Veilmoss'}]},
     // Prayer Potions
-    {id:'brew_lesser_prayer',     name:'Lesser prayer potion',     label:'Potions brewed', category:'Prayer Potions',     levelReq:1,  xp:25,  ticks:3, item:'lesser_prayer_potion',     itemName:'Lesser prayer potion',     ingredients:[{item:'torstol',                   count:1, name:'Torstol'}]},
-    {id:'brew_prayer',            name:'Prayer potion',            label:'Potions brewed', category:'Prayer Potions',     levelReq:50, xp:75,  ticks:3, item:'prayer_potion',            itemName:'Prayer potion',            ingredients:[{item:'lesser_prayer_potion',     count:1, name:'Lesser prayer potion'},  {item:'torstol',     count:1, name:'Torstol'}]},
-    {id:'brew_supreme_prayer',    name:'Supreme prayer potion',    label:'Potions brewed', category:'Prayer Potions',     levelReq:90, xp:150, ticks:3, item:'supreme_prayer_potion',    itemName:'Supreme prayer potion',    ingredients:[{item:'prayer_potion',            count:1, name:'Prayer potion'},          {item:'torstol',     count:1, name:'Torstol'}]},
+    {id:'brew_lesser_prayer',     name:'Lesser prayer potion',     label:'Potions brewed', category:'Prayer Potions',     levelReq:1,  xp:25,  ticks:3, item:'lesser_prayer_potion',     itemName:'Lesser prayer potion',     ingredients:[{item:'crimsonherb',                   count:1, name:'Crimsonherb'}]},
+    {id:'brew_prayer',            name:'Prayer potion',            label:'Potions brewed', category:'Prayer Potions',     levelReq:50, xp:75,  ticks:3, item:'prayer_potion',            itemName:'Prayer potion',            ingredients:[{item:'lesser_prayer_potion',     count:1, name:'Lesser prayer potion'},  {item:'crimsonherb',     count:1, name:'Crimsonherb'}]},
+    {id:'brew_supreme_prayer',    name:'Supreme prayer potion',    label:'Potions brewed', category:'Prayer Potions',     levelReq:90, xp:150, ticks:3, item:'supreme_prayer_potion',    itemName:'Supreme prayer potion',    ingredients:[{item:'prayer_potion',            count:1, name:'Prayer potion'},          {item:'crimsonherb',     count:1, name:'Crimsonherb'}]},
   ],
   runecrafting:[
     // --- Rune Crafting (essence mined in Mining skill) ---
@@ -1338,11 +1354,11 @@ const ACTIONS = {
      levelReq:90, xp:300, ticks:18, item:'soul_rune',   itemName:'Soul rune',   count:1,
      ingredients:[{item:'rune_essence', count:6, name:'Rune essence'}]},
     // --- Infuse Magic Gear (Coming Soon: lv90-110) ---
-    {id:'infuse_armadyl_battlestaff', name:'Infuse Armadyl battlestaff', levelReq:90,  xp:0, ticks:1, comingSoon:true},
-    {id:'infuse_noxious_staff',       name:'Infuse Noxious staff',       levelReq:95,  xp:0, ticks:1, comingSoon:true},
-    {id:'infuse_seismic_wand',        name:'Infuse Seismic wand',        levelReq:100, xp:0, ticks:1, comingSoon:true},
-    {id:'infuse_noxious_scythe',      name:'Infuse Noxious scythe',      levelReq:105, xp:0, ticks:1, comingSoon:true},
-    {id:'infuse_praesul_wand',        name:'Infuse Praesul wand',        levelReq:110, xp:0, ticks:1, comingSoon:true},
+    {id:'infuse_stormwing_staff',  name:'Infuse Stormwing staff',  levelReq:90,  xp:0, ticks:1, comingSoon:true},
+    {id:'infuse_venomous_staff',   name:'Infuse Venomous staff',   levelReq:95,  xp:0, ticks:1, comingSoon:true},
+    {id:'infuse_tremor_wand',      name:'Infuse Tremor wand',      levelReq:100, xp:0, ticks:1, comingSoon:true},
+    {id:'infuse_venomous_scythe',  name:'Infuse Venomous scythe',  levelReq:105, xp:0, ticks:1, comingSoon:true},
+    {id:'infuse_sovereign_wand',   name:'Infuse Sovereign wand',   levelReq:110, xp:0, ticks:1, comingSoon:true},
   ],
   construction:[
     {id:'make_plank',          name:'Make plank',          label:'Planks made', levelReq:1,  xp:29,  ticks:4,  item:'plank',          itemName:'Plank',          ingredients:[{item:'normal_logs',        count:1, name:'Logs'}]},
@@ -1391,8 +1407,8 @@ const ACTIONS = {
     {id:'moss_giant',   name:'Moss Giant',    category:'Mobs', levelReq:30, xp:220,  ticks:9,  stats:{hp:70,  attack:22, defence:14},
       drops:[{item:'big_bones',    itemName:'Big bones',    chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:60,max:200, notable:false},
-             {item:'tarromin_seed',itemName:'Tarromin seed',chance:0.05, min:1,max:2, notable:true},
-             {item:'ranarr_seed',  itemName:'Ranarr seed',  chance:0.02, min:1,max:2, notable:false},
+             {item:'ironwort_seed',itemName:'Ironwort seed',chance:0.05, min:1,max:2, notable:true},
+             {item:'shimmerleaf_seed',  itemName:'Shimmerleaf seed',  chance:0.02, min:1,max:2, notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.10, min:1,max:1, notable:false},
              {item:'green_charm',  itemName:'Green charm',  chance:0.03, min:1,max:1, notable:false}]},
     {id:'troll', name:'Troll', category:'Mobs', levelReq:40, xp:280, ticks:10, stats:{hp:110, attack:28, defence:18},
@@ -1415,7 +1431,7 @@ const ACTIONS = {
     {id:'fire_giant',   name:'Fire Giant',    category:'Mobs', levelReq:50, xp:400,  ticks:12, stats:{hp:140, attack:35, defence:25},
       drops:[{item:'big_bones',    itemName:'Big bones',    chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:100,max:350, notable:false},
-             {item:'tarromin_seed',itemName:'Tarromin seed',chance:0.08, min:1,max:2, notable:true},
+             {item:'ironwort_seed',itemName:'Ironwort seed',chance:0.08, min:1,max:2, notable:true},
              {item:'death_rune',   itemName:'Death rune',   chance:0.05, min:3, max:8,  notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.12, min:1,max:1, notable:false},
              {item:'green_charm',  itemName:'Green charm',  chance:0.04, min:1,max:1, notable:false},
@@ -1616,7 +1632,7 @@ const ACTIONS = {
       levelReq:1, xp:0, ticks:2, autoBone:true },
     { id:'altar_auto', name:'Personal altar',   label:'Bones offered', category:'Personal Altar',
       levelReq:1, xp:0, ticks:2, autoBone:true, altarMult:2.5, altarReq:true },
-    { id:'wild_altar', name:'Wilderness altar', label:'Bones offered', category:'Wilderness Altar',
+    { id:'ruined_altar', name:'Ruined altar', label:'Bones offered', category:'Ruined Altar',
       levelReq:1, xp:0, ticks:2, autoBone:true, altarMult:3.5,
       wilderness:true, pkCoinBase:80, pkCoinPerLevel:12 },
   ],
@@ -1729,11 +1745,11 @@ const SUMMONING_POUCHES = [
   {id:'bronze_minotaur_pouch', name:'Bronze minotaur pouch', icon:'🐂', category:'Familiars',       levelReq:8,  xp:14,    consumeXp:0.6, ticks:4, item:'bronze_minotaur_pouch', itemName:'Bronze minotaur pouch', effectType:'attack_pct',    effectValue:0.04, affectedSkills:['melee'],                 effectLabel:'+4% Melee accuracy',       ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'copper_ore',   count:1,name:'Copper ore'}]},
   {id:'spirit_spider_pouch',   name:'Spirit spider pouch',   icon:'🕷', category:'Familiars',       levelReq:10, xp:14,    consumeXp:0.8, ticks:4, item:'spirit_spider_pouch',   itemName:'Spirit spider pouch',   effectType:'drop_rate_pct', effectValue:0.05, affectedSkills:[],                        effectLabel:'+5% Drop rate',            ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'bones',        count:1,name:'Bones'}]},
   {id:'granite_crab_pouch',    name:'Granite crab pouch',    icon:'🦀', category:'Familiars',       levelReq:16, xp:16.8,  consumeXp:1.2, ticks:4, item:'granite_crab_pouch',    itemName:'Granite crab pouch',    effectType:'xp_pct',        effectValue:0.04, affectedSkills:['mining'],                effectLabel:'+4% Mining XP',            ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'coal',         count:1,name:'Coal'}]},
-  {id:'compost_mound_pouch',   name:'Compost mound pouch',   icon:'🪱', category:'Familiars',       levelReq:17, xp:19.6,  consumeXp:1.0, ticks:4, item:'compost_mound_pouch',   itemName:'Compost mound pouch',   effectType:'xp_pct',        effectValue:0.05, affectedSkills:['farming'],               effectLabel:'+5% Farming XP',           ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'tarromin',     count:1,name:'Tarromin'}]},
+  {id:'compost_mound_pouch',   name:'Compost mound pouch',   icon:'🪱', category:'Familiars',       levelReq:17, xp:19.6,  consumeXp:1.0, ticks:4, item:'compost_mound_pouch',   itemName:'Compost mound pouch',   effectType:'xp_pct',        effectValue:0.05, affectedSkills:['farming'],               effectLabel:'+5% Farming XP',           ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'ironwort',     count:1,name:'Ironwort'}]},
   {id:'spirit_mosquito_pouch', name:'Spirit mosquito pouch', icon:'🦟', category:'Familiars',       levelReq:17, xp:19.6,  consumeXp:1.0, ticks:4, item:'spirit_mosquito_pouch', itemName:'Spirit mosquito pouch', effectType:'hp_regen_mult',  effectValue:0.25, affectedSkills:[],                        effectLabel:'+25% HP regen rate',       ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'raw_bird_meat',count:1,name:'Raw bird meat'}]},
   {id:'spirit_scorpion_pouch', name:'Spirit scorpion pouch', icon:'🦂', category:'Familiars',       levelReq:26, xp:30,    consumeXp:1.5, ticks:4, item:'spirit_scorpion_pouch', itemName:'Spirit scorpion pouch', effectType:'attack_pct',    effectValue:0.06, affectedSkills:['melee'],                 effectLabel:'+6% Melee accuracy',       ingredients:[{item:'green_charm',  count:1,name:'Green charm'},  {item:'copper_ore',   count:1,name:'Copper ore'}]},
   {id:'spirit_tz_kih_pouch',   name:'Spirit Tz-kih pouch',   icon:'🦇', category:'Familiars',       levelReq:22, xp:25.4,  consumeXp:1.4, ticks:4, item:'spirit_tz_kih_pouch',   itemName:'Spirit Tz-kih pouch',   effectType:'speed_pct',     effectValue:0.04, affectedSkills:null,                      effectLabel:'+4% all skilling speed',   ingredients:[{item:'green_charm',  count:1,name:'Green charm'},  {item:'raw_rabbit',   count:1,name:'Raw rabbit'}]},
-  {id:'bull_ant_pouch',        name:'Bull ant pouch',        icon:'🐜', category:'Familiars',       levelReq:40, xp:46.2,  consumeXp:2.5, ticks:4, item:'bull_ant_pouch',        itemName:'Bull ant pouch',        effectType:'xp_pct',        effectValue:0.06, affectedSkills:null,                      effectLabel:'+6% all XP',               ingredients:[{item:'green_charm',  count:1,name:'Green charm'},  {item:'tarromin',     count:1,name:'Tarromin'}]},
+  {id:'bull_ant_pouch',        name:'Bull ant pouch',        icon:'🐜', category:'Familiars',       levelReq:40, xp:46.2,  consumeXp:2.5, ticks:4, item:'bull_ant_pouch',        itemName:'Bull ant pouch',        effectType:'xp_pct',        effectValue:0.06, affectedSkills:null,                      effectLabel:'+6% all XP',               ingredients:[{item:'green_charm',  count:1,name:'Green charm'},  {item:'ironwort',     count:1,name:'Ironwort'}]},
   {id:'spirit_kyatt_pouch',    name:'Spirit kyatt pouch',    icon:'🐆', category:'Familiars',       levelReq:57, xp:65.4,  consumeXp:3.2, ticks:4, item:'spirit_kyatt_pouch',    itemName:'Spirit kyatt pouch',    effectType:'drop_rate_pct', effectValue:0.08, affectedSkills:[],                        effectLabel:'+8% Drop rate',            ingredients:[{item:'green_charm',  count:1,name:'Green charm'},  {item:'big_bones',    count:1,name:'Big bones'}]},
   {id:'abyssal_lurker_pouch',  name:'Abyssal lurker pouch',  icon:'👁', category:'Familiars',       levelReq:62, xp:75,    consumeXp:3.8, ticks:4, item:'abyssal_lurker_pouch',  itemName:'Abyssal lurker pouch',  effectType:'speed_pct',     effectValue:0.08, affectedSkills:['runecrafting'],          effectLabel:'+8% Runecrafting speed',   ingredients:[{item:'crimson_charm',count:1,name:'Crimson charm'},{item:'coal',         count:1,name:'Coal'}]},
   {id:'steel_titan_pouch',     name:'Steel titan pouch',     icon:'🤖', category:'Familiars',       levelReq:64, xp:83,    consumeXp:4.0, ticks:4, item:'steel_titan_pouch',     itemName:'Steel titan pouch',     effectType:'attack_pct',    effectValue:0.08, affectedSkills:['melee','ranged','magic'], effectLabel:'+8% combat accuracy',      ingredients:[{item:'crimson_charm',count:1,name:'Crimson charm'},{item:'steel_bar',    count:1,name:'Steel bar'}]},
@@ -1793,25 +1809,25 @@ const COLLECTION_LOG_SOURCES = [
   { id:'jar_baby',     name:'Baby Impling Jar',     category:'Hunter', items:[
     {id:'coins',           name:'Coins',           icon:'🪙'},
     {id:'uncut_sapphire',  name:'Uncut sapphire',  icon:'💎'},
-    {id:'tarromin_seed',   name:'Tarromin seed',   icon:'🌱'},
-    {id:'ranarr_seed',     name:'Ranarr seed',     icon:'🌱'},
-    {id:'dwarf_weed_seed', name:'Dwarf weed seed', icon:'🌱'},
-    {id:'lantadyme_seed',  name:'Lantadyme seed',  icon:'🌱'},
-    {id:'fellstalk_seed',  name:'Fellstalk seed',  icon:'🌱'},
-    {id:'spirit_weed_seed',name:'Spirit weed seed',icon:'🌱'},
-    {id:'torstol_seed',    name:'Torstol seed',    icon:'🌱'},
+    {id:'ironwort_seed',   name:'Ironwort seed',   icon:'🌱'},
+    {id:'shimmerleaf_seed',     name:'Shimmerleaf seed',     icon:'🌱'},
+    {id:'thornweed_seed', name:'Thornweed seed', icon:'🌱'},
+    {id:'goldbloom_seed',  name:'Goldbloom seed',  icon:'🌱'},
+    {id:'duskroot_seed',  name:'Duskroot seed',  icon:'🌱'},
+    {id:'veilmoss_seed',name:'Veilmoss seed',icon:'🌱'},
+    {id:'crimsonherb_seed',    name:'Crimsonherb seed',    icon:'🌱'},
   ]},
   { id:'jar_eclectic', name:'Eclectic Impling Jar', category:'Hunter', items:[
     {id:'coins',           name:'Coins',           icon:'🪙'},
     {id:'uncut_ruby',      name:'Uncut ruby',      icon:'❤️'},
     {id:'uncut_diamond',   name:'Uncut diamond',   icon:'🔷'},
-    {id:'tarromin_seed',   name:'Tarromin seed',   icon:'🌱'},
-    {id:'ranarr_seed',     name:'Ranarr seed',     icon:'🌱'},
-    {id:'dwarf_weed_seed', name:'Dwarf weed seed', icon:'🌱'},
-    {id:'lantadyme_seed',  name:'Lantadyme seed',  icon:'🌱'},
-    {id:'fellstalk_seed',  name:'Fellstalk seed',  icon:'🌱'},
-    {id:'spirit_weed_seed',name:'Spirit weed seed',icon:'🌱'},
-    {id:'torstol_seed',    name:'Torstol seed',    icon:'🌱'},
+    {id:'ironwort_seed',   name:'Ironwort seed',   icon:'🌱'},
+    {id:'shimmerleaf_seed',     name:'Shimmerleaf seed',     icon:'🌱'},
+    {id:'thornweed_seed', name:'Thornweed seed', icon:'🌱'},
+    {id:'goldbloom_seed',  name:'Goldbloom seed',  icon:'🌱'},
+    {id:'duskroot_seed',  name:'Duskroot seed',  icon:'🌱'},
+    {id:'veilmoss_seed',name:'Veilmoss seed',icon:'🌱'},
+    {id:'crimsonherb_seed',    name:'Crimsonherb seed',    icon:'🌱'},
   ]},
   { id:'jar_dragon',   name:'Dragon Impling Jar',  category:'Hunter', items:[
     {id:'coins',             name:'Coins',             icon:'🪙'},
@@ -1942,7 +1958,7 @@ const ACHIEVEMENTS = [
   {id:'all_boss_log',  name:'Boss Logger',        desc:'Log an item from every boss',             icon:'📖', category:'Special', checkFn:()=>['boss_giant_mole','boss_void_dragon','boss_deep_kings','boss_solara','boss_karg','boss_harbinger','boss_ancient_lich'].every(s=>Object.keys(state.collectionLog?.[s]||{}).length>0), lockFn:()=>!state.slayer.unlocks?.boss_tasks},
   {id:'arch_3_perks',  name:'Perk Collector',     desc:'Have 3 archaeology perks active',         icon:'🏺', category:'Special', checkFn:()=>Object.keys(state.archaeology?.activePerks||{}).length>=3},
   {id:'slay_shop_all', name:'Points Well Spent',  desc:'Purchase all Slayer shop items',          icon:'🏪', category:'Special', checkFn:()=>['boss_tasks','slayer_boost','task_extend','point_bonus'].every(k=>!!state.slayer.unlocks?.[k])},
-  {id:'got_crystal',   name:'Crystal Gifts',      desc:'Find a crystal tool seed on Crystal course',icon:'💠', category:'Special', checkFn:()=>(state.collectionLog?.agility_crystal?.crystal_tool_seed||0)>0, lockFn:()=>!state.quests?.crystal_city},
+  {id:'got_crystal',   name:'Crystal Gifts',      desc:'Find a crystal tool seed on Crystal course',icon:'💠', category:'Special', checkFn:()=>(state.collectionLog?.agility_crystal?.crystal_tool_seed||0)>0, lockFn:()=>!state.quests?.lost_city},
 ];
 
 const EQUIP_REQS = {
@@ -2015,26 +2031,26 @@ const OPENABLE_ITEMS = {
     {id:'coins',           name:'Coins',           weight:40, count:200},
     {id:'uncut_sapphire',  name:'Uncut sapphire',  weight:20},
     {id:'uncut_emerald',   name:'Uncut emerald',   weight:10},
-    {id:'tarromin_seed',   name:'Tarromin seed',   weight:9},
-    {id:'ranarr_seed',     name:'Ranarr seed',     weight:7},
-    {id:'dwarf_weed_seed', name:'Dwarf weed seed', weight:6},
-    {id:'lantadyme_seed',  name:'Lantadyme seed',  weight:4},
-    {id:'fellstalk_seed',  name:'Fellstalk seed',  weight:2},
-    {id:'spirit_weed_seed',name:'Spirit weed seed',weight:1},
-    {id:'torstol_seed',    name:'Torstol seed',    weight:1},
+    {id:'ironwort_seed',   name:'Ironwort seed',   weight:9},
+    {id:'shimmerleaf_seed',     name:'Shimmerleaf seed',     weight:7},
+    {id:'thornweed_seed', name:'Thornweed seed', weight:6},
+    {id:'goldbloom_seed',  name:'Goldbloom seed',  weight:4},
+    {id:'duskroot_seed',  name:'Duskroot seed',  weight:2},
+    {id:'veilmoss_seed',name:'Veilmoss seed',weight:1},
+    {id:'crimsonherb_seed',    name:'Crimsonherb seed',    weight:1},
   ]},
   eclectic_impling_jar:{rewards:[
     {id:'coins',           name:'Coins',           weight:35, count:1000},
     {id:'uncut_ruby',      name:'Uncut ruby',      weight:25},
     {id:'uncut_diamond',   name:'Uncut diamond',   weight:20},
     {id:'uncut_emerald',   name:'Uncut emerald',   weight:5},
-    {id:'tarromin_seed',   name:'Tarromin seed',   weight:5},
-    {id:'ranarr_seed',     name:'Ranarr seed',     weight:4},
-    {id:'dwarf_weed_seed', name:'Dwarf weed seed', weight:3},
-    {id:'lantadyme_seed',  name:'Lantadyme seed',  weight:2},
-    {id:'fellstalk_seed',  name:'Fellstalk seed',  weight:0.5},
-    {id:'spirit_weed_seed',name:'Spirit weed seed',weight:0.3},
-    {id:'torstol_seed',    name:'Torstol seed',    weight:0.2},
+    {id:'ironwort_seed',   name:'Ironwort seed',   weight:5},
+    {id:'shimmerleaf_seed',     name:'Shimmerleaf seed',     weight:4},
+    {id:'thornweed_seed', name:'Thornweed seed', weight:3},
+    {id:'goldbloom_seed',  name:'Goldbloom seed',  weight:2},
+    {id:'duskroot_seed',  name:'Duskroot seed',  weight:0.5},
+    {id:'veilmoss_seed',name:'Veilmoss seed',weight:0.3},
+    {id:'crimsonherb_seed',    name:'Crimsonherb seed',    weight:0.2},
   ]},
   dragon_impling_jar:{rewards:[
     {id:'coins',             name:'Coins',             weight:25000, count:10000},
@@ -2204,7 +2220,7 @@ const STAT_DEFS = [
   {key:'dropRate',   label:'Drop Rate', pct:true},
 ];
 
-/* ---------- 3. XP MATH (RuneScape's real formula) ---------- */
+/* ---------- 3. XP MATH ---------- */
 // Cumulative xp needed to REACH a given level. xpForLevel(1)=0, (2)=83, (99)=13,034,431.
 const XP_TABLE = (() => {
   const table = [0, 0]; // index 0 unused, level 1 = 0 xp
@@ -2699,7 +2715,7 @@ function harvestCrop(){
   const minY = Math.max(3, 3 + Math.floor(farmLevel / 20));
   const maxY = Math.min(15, 7 + Math.floor(farmLevel / 10));
   const qty  = minY + Math.floor(Math.random() * (maxY - minY + 1));
-  const xp   = Math.floor(30 + farmLevel * 1.5);
+  const xp   = seed.xp;
   grantItem(state.farming.herb, state.farming.herbName, qty);
   grantXp('farming', xp);
   log(`Harvested ${qty} ${state.farming.herbName}. (+${xp} xp)`);
@@ -2951,6 +2967,8 @@ function renderCombatPanel(){
 
 function renderFarmTab(){
   const el = $('invPanel') || { innerHTML:'' };
+  const farmLvl = levelForXp(state.skills.farming?.xp || 0);
+  const prevSeed = document.getElementById('seedDropdown')?.value;
   el.innerHTML = '';
   const f = state.farming;
 
@@ -2976,9 +2994,12 @@ function renderFarmTab(){
       available.forEach(s => {
         const opt = document.createElement('option');
         opt.value = s.id;
-        opt.textContent = `${s.name} ×${state.inventory[s.id]}`;
+        const lvlTag = s.levelReq > 1 ? ` (lv${s.levelReq})` : '';
+        opt.textContent = `${s.name}${lvlTag} ×${state.inventory[s.id]}`;
+        if (farmLvl < s.levelReq) opt.style.color = 'var(--dim)';
         sel.appendChild(opt);
       });
+      if (prevSeed && available.some(s => s.id === prevSeed)) sel.value = prevSeed;
     }
 
     const plantBtn = document.createElement('button');
@@ -3045,6 +3066,7 @@ function renderFarmSection(){
     badge.textContent = f.seed ? (f.ready ? '🌿 READY' : '🌱') : '';
   }
 
+  const prevSeed = $('farmSeedDropdown')?.value;
   el.innerHTML = '';
 
   const lvlDiv = document.createElement('div');
@@ -3075,9 +3097,13 @@ function renderFarmSection(){
       available.forEach(s => {
         const opt = document.createElement('option');
         opt.value = s.id;
-        opt.textContent = `${s.name} ×${state.inventory[s.id]}`;
+        const lvlTag = s.levelReq > 1 ? ` (lv${s.levelReq})` : '';
+        const canPlant = farmLvl >= s.levelReq;
+        opt.textContent = `${s.name}${lvlTag} ×${state.inventory[s.id]}`;
+        if (!canPlant) opt.style.color = 'var(--dim)';
         sel.appendChild(opt);
       });
+      if (prevSeed && available.some(s => s.id === prevSeed)) sel.value = prevSeed;
     }
 
     const plantBtn = document.createElement('button');
@@ -3319,7 +3345,7 @@ function tick(){
         } else {
           state.progress++;
           const effTicks = getCurrentEffTicks(action);
-          if (state.progress >= effTicks){
+          if (state.progress > effTicks){
             state.progress = 0;
             completeAction(action);
           }
@@ -3598,7 +3624,7 @@ function completeAction(action, silent){
     if (action.coinReward){
       grantItem('coins', 'Coins', action.coinReward);
     }
-    if (action.questReq === 'crystal_city' && Math.random() < 0.01){
+    if (action.questReq === 'lost_city' && Math.random() < 0.01){
       grantItem('crystal_tool_seed', 'Crystal tool seed');
       logCollectionDrop('agility_crystal', 'crystal_tool_seed');
       if (!silent) log(`💎 Found a crystal tool seed on the Crystal course!`);
@@ -3685,7 +3711,7 @@ function checkBonusDrop(skillId, action){
     log(`💎 Found a ${name.toLowerCase()} while mining!`);
   }
 
-  // Woodcutting: bird's nests (1% per chop; RS3 type weights)
+  // Woodcutting: bird's nests (1% per chop)
   if (skillId === 'woodcutting' && Math.random() < 0.01){
     const roll = Math.random();
     let id, name;
@@ -3739,7 +3765,7 @@ function checkBonusDrop(skillId, action){
 function completeQuest(questId){
   if (!state.quests) state.quests = {};
   state.quests[questId] = true;
-  const name = questId === 'crystal_city' ? 'Discovering Crystal City' : questId;
+  const name = questId === 'lost_city' ? 'Discovering the Lost City' : questId;
   log(`✨ Quest complete: ${name}! The Crystal course is now accessible.`);
   render();
 }
@@ -4741,7 +4767,7 @@ function renderActiveSkill(){
       const reqs = a.skillReqs || [];
       const skillReqsMet = reqs.every(r => levelForXp(state.skills[r.id].xp) >= r.lvl);
       const reqText = reqs.map(r => `Lv${r.lvl} ${SKILL_BY_ID[r.id].name}`).join(', ');
-      const questLabel = a.questReq === 'crystal_city' ? 'Discovering Crystal City' : a.questReq;
+      const questLabel = a.questReq === 'lost_city' ? 'Discovering the Lost City' : a.questReq;
       if (skillReqsMet){
         btn.disabled = false;
         btn.innerHTML = `<span>${a.name}</span><span class="meta" style="color:#4ade80">All reqs met — Complete quest to unlock</span>`;
@@ -5440,11 +5466,25 @@ function init(){
   if (state.collectionLog) for (const [old,nw] of Object.entries(_clogRenames)){
     if (state.collectionLog[old]){ state.collectionLog[nw]=state.collectionLog[old]; delete state.collectionLog[old]; }
   }
-  if (state.quests?.elf_city && !state.quests?.crystal_city){ state.quests.crystal_city=true; delete state.quests.elf_city; }
+  if (state.quests?.elf_city && !state.quests?.lost_city){ state.quests.lost_city=true; delete state.quests.elf_city; }
   const _killRenames = { kbd:'void_dragon', dag_kings:'deep_kings', zilyana:'solara', graardor:'karg', nex:'harbinger' };
   if (state.combat?.kills) for (const [old,nw] of Object.entries(_killRenames)){
     if (state.combat.kills[old]){ state.combat.kills[nw]=(state.combat.kills[nw]||0)+state.combat.kills[old]; delete state.combat.kills[old]; }
   }
+  const _herbRenames = {
+    tarromin:'ironwort', ranarr_weed:'shimmerleaf', dwarf_weed:'thornweed',
+    lantadyme:'goldbloom', fellstalk:'duskroot', spirit_weed:'veilmoss', torstol:'crimsonherb',
+    tarromin_seed:'ironwort_seed', ranarr_seed:'shimmerleaf_seed', dwarf_weed_seed:'thornweed_seed',
+    lantadyme_seed:'goldbloom_seed', fellstalk_seed:'duskroot_seed', spirit_weed_seed:'veilmoss_seed',
+    torstol_seed:'crimsonherb_seed',
+  };
+  for (const [old, nw] of Object.entries(_herbRenames)){
+    if (state.inventory[old]){ state.inventory[nw]=(state.inventory[nw]||0)+state.inventory[old]; delete state.inventory[old]; }
+    if (state.itemNames?.[old]){ state.itemNames[nw]=state.itemNames[old]; delete state.itemNames[old]; }
+  }
+  if (state.farming?.seed && _herbRenames[state.farming.seed]) state.farming.seed=_herbRenames[state.farming.seed];
+  if (state.farming?.herb && _herbRenames[state.farming.herb]) state.farming.herb=_herbRenames[state.farming.herb];
+  if (state.quests?.crystal_city){ state.quests.lost_city=state.quests.crystal_city; delete state.quests.crystal_city; }
 
   showOffline(offline);
 
