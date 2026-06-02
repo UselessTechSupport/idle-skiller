@@ -57,7 +57,9 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Constitution | 99 | Starts at lv 10; gains XP on every kill (50% of action XP) |
 | Prayer | 99 | Bury bones / use altar (×2.5 or ×3.5 XP); 16 active prayers across 4 tiers; drain system; protect prayers reduce damage 50% |
 
-**Mobs:** 11 standard + 10 slayer-locked (Scuttling Claw → Void Stalker) + 8 bosses (Goblin King, The Burrower, Void Dragon, Leviathan Kings, Ancient Lich, Commander Solara, General Karg, The Harbinger)
+**Mobs:** 13 standard + 10 slayer-locked (Scuttling Claw → Void Stalker) + 8 bosses (Goblin King, The Burrower, Void Dragon, Leviathan Kings, Ancient Lich, Commander Solara, General Karg, The Harbinger)
+
+**Drakes:** Emerald (lv55, green hide), Azure (lv65, blue hide), Crimson (lv72, red hide), Obsidian (lv80, black hide), Gilded (lv87, royal hide) — all drop dragon bones and dragon arrowheads
 
 **Combat level requirements** are recommendations only — all mobs are attackable at any level; a yellow ⚠ Rec. Lv hint appears when below the suggested level. Slayer level requirements still hard-lock slayer monsters.
 
