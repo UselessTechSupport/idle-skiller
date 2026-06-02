@@ -29,7 +29,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Woodcutting | 110 | 13 trees (Tree → Eternal magic) | Tool upgrades (bronze axe → T100); bird's nest bonus drops |
 | Mining | 110 | 13 rocks (Copper → Primal + Rune essence) | Tool upgrades (bronze pickaxe → T100); geode bonus drops |
 | Fishing | 99 | 16 fish (Shrimps → Sailfish) | Tool upgrades (rod → Abyssal Rod); Kraken's Beak + Map to the Deep rare drops |
-| Farming | 120 | 7 herb seeds | Background skill — grows in 5 min while you train anything else; harvest 3–15 herbs; auto-replant toggle; speed up with Herb Patch upgrade |
+| Farming | 120 | 7 herb seeds | Background skill — grows in 5 min while you train anything else; harvest 3–15 herbs; auto-replant toggle; XP scales by seed tier (150–2000 per harvest); speed up with Herb Patch upgrade |
 | Hunter | 99 | 18 actions | Bird Snare (raw bird meat), Deadfall (kebbit fur → Hunter Leather via Crafting), Box Trap (chinchompas), Net Trap (salamander weapons), Pitfall (kyatt fur); Impling Jars openable for loot |
 | Divination | 99 | 10 wisps + 54 transmutations | Gathers energy; transmutes logs/ores/fish/gems up one tier; 10% breakdown chance → divine dust |
 
@@ -57,13 +57,13 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Constitution | 99 | Starts at lv 10; gains XP on every kill (50% of action XP) |
 | Prayer | 99 | Bury bones / use altar (×2.5 or ×3.5 XP); 16 active prayers across 4 tiers; drain system; protect prayers reduce damage 50% |
 
-**Mobs:** 11 standard + 10 slayer-locked (Crawling Hand → Abyssal Demon) + 6 bosses (Giant Mole, Void Dragon, Leviathan Kings, Commander Solara, General Karg, The Harbinger)
+**Mobs:** 11 standard + 10 slayer-locked (Crawling Hand → Abyssal Demon) + 7 bosses (Giant Mole, Void Dragon, Leviathan Kings, Ancient Lich, Commander Solara, General Karg, The Harbinger)
 
 #### Support
 
 | Skill | Max Lv | Actions | Notes |
 |---|---|---|---|
-| Agility | 99 | 7 courses (Gnome → Crystal) | Scaled XP; Wilderness course drops PK coins; Crystal course requires quest + 70 Thieving; bonuses to Thieving pick/lock and Runecrafting speed |
+| Agility | 99 | 7 courses (Verdant Trail → Crystal) | Scaled XP; Danger Trail drops PK coins; Crystal course requires quest + 70 Thieving; bonuses to Thieving pick/lock and Runecrafting speed |
 | Thieving | 99 | 19 actions | Pickpocket (9 NPCs, catch/stun mechanic) + Locks (10 chests); seeds, gems, and coins from drops; agility gives extra loot chance |
 | Slayer | 120 | 6 masters (Aldric → Duroc) | Task assignment system; 2–30 pts/task; kill-tracking per mob; task completion bonus XP; Points Shop (5 unlocks incl. boss tasks, XP boost, extended tasks) |
 | Dungeoneering | 120 | 3 floor types | Time-based floors; earns tokens; token shop: Auto-Eat (500 tokens) |
@@ -78,8 +78,8 @@ When creating a new character, choose between **Normal** (death restores HP and 
 ### Engine features
 
 **Core**
-- 0.6s game tick — RuneScape's tick rate
-- Real RS3 XP curve — level 2 = 83 XP, level 99 ≈ 13M, level 120 supported
+- 0.6s game tick
+- XP curve: level 2 = 83 XP, level 99 ≈ 13M, level 120 supported
 - Autosave every 10 seconds (localStorage + in-memory fallback for sandboxed environments)
 - Offline progress — calculates up to 12h of gains on load; "while you were away" popup
 
@@ -97,21 +97,23 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - Slayer task kill-tracking with bonus XP on completion
 
 **Progression**
+- **Skillcapes** — 26 skill-specific capes (level 99 required, 99,000 coins each) with passive perks: gathering/artisan capes give +10% speed or +15% XP; combat capes give damage/defence/regen bonuses; support capes give thematic bonuses (prayer drain reduction, stun reduction, token gain, etc.)
+- **Max Cape** — requires level 99 in all 26 skills, costs 10M coins; contains every skillcape perk simultaneously
+- **Pets** — 33 equippable pets (26 from skilling at 1/5000, 7 from bosses at 1/500–1/1000); each grants a passive perk (+5% XP, +5% speed, or unique bonus); only one active at a time; tracked in Collection Log
 - Tool upgrade shop, Construction upgrades, Dungeoneering token shop — all consolidated inside the 🏪 Shop overlay
 - Slayer points shop — 5 permanent unlocks
 - Archaeology perk system — up to 3 active perks from artefact restoration
-- Upgrade Shop — various cross-skill enhancements
-- General Shop — 5-tab overlay (🏪 button): **Buy** (charms, bowstring), **Sell** (all sellable items + sell-all), **Upgrades** (tool tiers), **Delving** (Dungeoneering token shop), **Construction** (building upgrades)
 
 **UI / QoL**
+- Mobile-first layout: header collapses to title row + scrollable button strip on narrow screens; larger touch targets; equipment grid single-column on mobile
 - Always-visible Farming, Slayer, Prayer, and Summoning sidebar panels (usable without navigating to the skill)
-- Inventory grouped by category — Openable, Equipment, Food & Potions, Seeds & Herbs, Summoning Pouches, Summoning, Ores & Bars, Logs, Fish, Gems & Hides, Runes & Energy, Ammo, Hunter, Currency, Other
+- Inventory grouped by category — Openable, Equipment, Pets, Food & Potions, Seeds & Herbs, Summoning Pouches, Summoning, Ores & Bars, Logs, Fish, Gems & Hides, Runes & Energy, Ammo, Hunter, Currency, Other
 - Equipment panel with 11 slots (Head, Weapon, Offhand, Neck, Cape, Ring, Body, Gloves, Legs, Feet, Pet) and live stat totals
 - Prayer HUD in sidebar
 - Settings menu — Dark/Light theme, Compact mode, Hide locked actions, configurable log size
 - Stop button always visible next to action progress bar
 - **Achievement system** — 78 achievements across Skills, Total Level, Combat, Slayer, and Special categories; filter by All / Hide Completed / Hide Locked; locked achievements require prerequisites (slayer unlocks, quest completion, etc.)
-- **Collection Log** — 17 drop sources (bird's nests, 3 geode tiers, fishing, agility, hunter, impling jars, Abyssal Demon, 6 bosses); tracks per-item obtain counts; unobtained items shown greyed; global and per-source progress counters
+- **Collection Log** — 22 drop sources across 5 categories (Woodcutting, Mining, Fishing, Agility, Hunter, Combat, Bosses, Pets); tracks per-item obtain counts; unobtained items shown greyed; global and per-source progress counters
 
 **Bonus drops**
 - Woodcutting: bird's nests (1%, 4 variants)
@@ -119,6 +121,8 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - Fishing: Kraken's Beak (1% lv60+), Map to the Deep (1-in-100k lv85+)
 - Firemaking: fire spirit QTE event (15% per burn)
 - Hunter: dragon impling jar (0.5–1% per trap action)
+- All skills: respective skilling pet (1/5000 per action)
+- All bosses: respective boss pet (1/500–1/1000 per kill)
 
 ### Not yet implemented (planned)
 
@@ -130,6 +134,6 @@ When creating a new character, choose between **Normal** (death restores HP and 
 
 ## Tech stack
 
-Plain HTML + CSS + JavaScript. Single file (~5,200 lines), no dependencies, no build step.
+Plain HTML + CSS + JavaScript. Single file (~5,800 lines), no dependencies, no build step.
 
 Cross-platform target: PWA first (PC/iOS/Android from browser), then Capacitor for app stores if needed.
