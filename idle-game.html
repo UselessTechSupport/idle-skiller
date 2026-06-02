@@ -1042,6 +1042,7 @@ const SELL_PRICES = {
   clue_scroll_elite:200000, clue_scroll_master:500000,
   clue_autocomplete_easy:15000, clue_autocomplete_medium:50000, clue_autocomplete_hard:120000,
   clue_autocomplete_elite:350000, clue_autocomplete_master:800000,
+  goblin_crown:15000, goblin_sword:25000,
   amulet_of_skill:500000, gatherers_band:400000, artisan_ring:400000,
   spirit_catcher:800000, combat_pendant:600000, adventurers_amulet:2000000, masters_ring:1500000,
   woodcutting_cape:49500, mining_cape:49500, fishing_cape:49500, farming_cape:49500,
@@ -1856,6 +1857,27 @@ const ACTIONS = {
              {item:'crimson_charm',     itemName:'Crimson charm',    chance:0.04, min:1,max:1, notable:true},
              {item:'blue_charm',        itemName:'Blue charm',       chance:0.02, min:1,max:1, notable:true},
              {item:'pet_war_pup',       itemName:'War Pup',          chance:0.00133,min:1,max:1,notable:true}]},
+    // Quest Boss — one-time, no drops, significantly harder than the regular version
+    {id:'goblin_king_quest', name:'Goblin King (Quest)', category:'Quest Bosses', levelReq:50, xp:0, ticks:180,
+      stats:{hp:2500, attack:65, defence:50}, drops:[]},
+    // Regular Boss — unlocked after Goblin Diplomacy quest
+    {id:'goblin_king', name:'Goblin King', category:'Bosses', levelReq:30, xp:2000, ticks:100,
+      questReq:'goblin_diplomacy',
+      stats:{hp:900, attack:40, defence:30},
+      drops:[
+        {item:'big_bones',    itemName:'Big bones',    chance:1.0,  min:1,  max:1,   notable:false},
+        {item:'coins',        itemName:'Coins',        chance:1.0,  min:1500, max:5000, notable:false},
+        {item:'iron_ore',     itemName:'Iron ore',     chance:0.50, min:10, max:20,  notable:false},
+        {item:'bronze_bar',   itemName:'Bronze bar',   chance:0.40, min:5,  max:10,  notable:false},
+        {item:'steel_bar',    itemName:'Steel bar',    chance:0.25, min:3,  max:8,   notable:false},
+        {item:'gold_ore',     itemName:'Gold ore',     chance:0.20, min:5,  max:10,  notable:false},
+        {item:'mithril_ore',  itemName:'Mithril ore',  chance:0.15, min:3,  max:5,   notable:false},
+        {item:'gold_charm',   itemName:'Gold charm',   chance:0.15, min:1,  max:2,   notable:false},
+        {item:'green_charm',  itemName:'Green charm',  chance:0.08, min:1,  max:1,   notable:false},
+        {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,  max:1,   notable:false},
+        {item:'goblin_crown', itemName:'Goblin Crown', chance:0.03, min:1,  max:1,   notable:true},
+        {item:'goblin_sword', itemName:'Goblin Sword', chance:0.04, min:1,  max:1,   notable:true},
+      ]},
     {id:'harbinger',        name:'The Harbinger',                 category:'Bosses', levelReq:100, xp:10000, ticks:350, stats:{hp:6000, attack:85, defence:70},
       drops:[{item:'dragon_bones',    itemName:'Dragon bones',       chance:1.00, min:1,max:1, notable:false},
              {item:'coins',           itemName:'Coins',              chance:1.00, min:2000,max:8000, notable:false},
@@ -2115,6 +2137,10 @@ const COLLECTION_LOG_SOURCES = [
   { id:'mob_ice_warrior',  name:'Ice Warrior',  category:'Combat', items:[{id:'ice_gloves',    name:'Ice gloves',    icon:'🧤'}]},
   { id:'mob_vampire',      name:'Vampire',      category:'Combat', items:[{id:'vampire_dust',  name:'Vampire dust',  icon:'🧪'}]},
   // Bosses
+  { id:'boss_goblin_king', name:'Goblin King',        category:'Bosses', items:[
+    {id:'goblin_crown', name:'Goblin Crown', icon:'👑'},
+    {id:'goblin_sword', name:'Goblin Sword', icon:'⚔️'},
+  ]},
   { id:'boss_giant_mole', name:'Giant Mole',          category:'Bosses', items:[{id:'mole_skin',         name:'Mole skin',          icon:'🦔'}]},
   { id:'boss_void_dragon',        name:'Void Dragon',    category:'Bosses', items:[{id:'void_drake_head',         name:'Void drake head',          icon:'🐉'},{id:'void_scale', name:'Void scale', icon:'🐉'}]},
   { id:'boss_deep_kings',  name:'Leviathan Kings',      category:'Bosses', items:[{id:'berserker_ring',    name:'Berserker ring',     icon:'💍'},{id:'leviathan_fang', name:'Leviathan fang', icon:'👑'}]},
@@ -2150,6 +2176,7 @@ for (const src of COLLECTION_LOG_SOURCES)
   CLOG_SOURCE_MAP[src.id] = new Set(src.items.map(i => i.id));
 const MOB_CLOG_SOURCE = {
   abyssal_demon:'mob_abyssal_demon',
+  goblin_king:'boss_goblin_king',
   giant_mole:'boss_giant_mole', void_dragon:'boss_void_dragon', deep_kings:'boss_deep_kings',
   solara:'boss_solara', karg:'boss_karg', harbinger:'boss_harbinger',
   ice_warrior:'mob_ice_warrior', vampire:'mob_vampire', ancient_lich:'boss_ancient_lich',
@@ -2253,6 +2280,7 @@ const ACHIEVEMENTS = [
   {id:'all_boss_log',  name:'Boss Logger',        desc:'Log an item from every boss',             icon:'📖', category:'Special', checkFn:()=>['boss_giant_mole','boss_void_dragon','boss_deep_kings','boss_solara','boss_karg','boss_harbinger','boss_ancient_lich'].every(s=>Object.keys(state.collectionLog?.[s]||{}).length>0), lockFn:()=>!state.slayer.unlocks?.boss_tasks},
   {id:'arch_3_perks',  name:'Perk Collector',     desc:'Have 3 archaeology perks active',         icon:'🏺', category:'Special', checkFn:()=>Object.keys(state.archaeology?.activePerks||{}).length>=3},
   {id:'slay_shop_all', name:'Points Well Spent',  desc:'Purchase all Slayer shop items',          icon:'🏪', category:'Special', checkFn:()=>['boss_tasks','slayer_boost','task_extend','point_bonus'].every(k=>!!state.slayer.unlocks?.[k])},
+  {id:'goblin_diplomacy_done', name:'Diplomat', desc:'Complete the Goblin Diplomacy quest', icon:'📜', category:'Special', checkFn:()=>!!state.quests?.goblin_diplomacy},
   {id:'got_crystal',   name:'Crystal Gifts',      desc:'Find a crystal tool seed on Crystal course',icon:'💠', category:'Special', checkFn:()=>(state.collectionLog?.agility_crystal?.crystal_tool_seed||0)>0, lockFn:()=>!state.quests?.lost_city},
 ];
 
@@ -2264,6 +2292,8 @@ const EQUIP_REQS = {
   abyssal_whip:    {skill:'melee', level:70},
   celestial_sword: {skill:'melee', level:65},
   ...Object.fromEntries(SKILLCAPES.filter(c => c.skillId).map(c => [c.id, {skill:c.skillId, level:99}])),
+  goblin_crown:{skill:'defence', level:20},
+  goblin_sword:{skill:'melee',   level:25},
 };
 
 const CONSTRUCTION_SHOP = [
@@ -2437,6 +2467,8 @@ const ITEM_STATS = {
   harbinger_amulet:{attack:15, range:15, mage:15, defence:20, dropRate:0.05},
   combat_pendant:{attack:3, defence:3},
   adventurers_amulet:{dropRate:5},
+  goblin_crown:{attack:8, defence:25},
+  goblin_sword:{attack:50, attackInterval:4, damageMult:1.0},
   ...Object.fromEntries(
     METAL_TIERS.flatMap(t => ARMOUR_PIECES.map(p => {
       const def = Math.max(1, Math.round(t.defBase * p.statMult));
@@ -2504,6 +2536,7 @@ const EQUIP_SLOTS = {
   ...Object.fromEntries(PETS.map(p => [p.id, 'pet'])),
   amulet_of_skill:'neck', spirit_catcher:'neck', combat_pendant:'neck', adventurers_amulet:'neck',
   gatherers_band:'ring', artisan_ring:'ring', masters_ring:'ring',
+  goblin_crown:'head', goblin_sword:'weapon',
 };
 
 const DG_SHOP = [
@@ -3379,13 +3412,46 @@ function renderCombatPanel(){
   const combatLvl = lvl;
 
   if (state.combat.tab === 'quests'){
-    const empty = document.createElement('div');
-    empty.className = 'inv-empty';
-    empty.textContent = 'Quests coming soon.';
-    list.appendChild(empty);
+    // Goblin Diplomacy quest
+    const hasNote  = (state.inventory['goblin_diplomatic_note'] || 0) > 0;
+    const questDone = !!state.quests?.goblin_diplomacy;
+    const goblinKc  = state.combat.kills?.goblin || 0;
+    const qHdr = document.createElement('div');
+    qHdr.className = 'action-category-header';
+    qHdr.textContent = 'Goblin Diplomacy';
+    list.appendChild(qHdr);
+    if (questDone){
+      const done = document.createElement('div');
+      done.className = 'dg-bonus';
+      done.innerHTML = `✅ <b>Complete</b> — The Goblin King is now available in the Bosses tab.`;
+      list.appendChild(done);
+    } else {
+      const questAction = (ACTIONS.combat || []).find(a => a.id === 'goblin_king_quest');
+      const noteInfo = document.createElement('div');
+      noteInfo.className = 'dg-bonus';
+      noteInfo.style.marginBottom = '10px';
+      noteInfo.innerHTML = hasNote
+        ? `📜 <b>Goblin Diplomatic Note</b> in hand — challenge the Goblin King!`
+        : `Kill goblins to obtain a Goblin Diplomatic Note.<br><span style="font-size:11px;">Kills: <b>${goblinKc.toLocaleString()}</b> / 1,000 guaranteed</span>`;
+      list.appendChild(noteInfo);
+      if (questAction){
+        const unlocked = combatLvl >= questAction.levelReq && hasNote;
+        const btn = document.createElement('button');
+        btn.className = 'action-btn' + (state.current?.actionId === 'goblin_king_quest' ? ' selected' : '');
+        btn.disabled = !unlocked;
+        const mobInfo = `<br><span style="color:var(--dim);font-size:11px;">HP: ${questAction.stats.hp}  ATK: ${questAction.stats.attack}  DEF: ${questAction.stats.defence} — No drops, quest completion only</span>`;
+        const lockStr = !hasNote ? `<br><span style="color:#f87171;font-size:11px;">🔒 Requires Goblin Diplomatic Note</span>` :
+                        combatLvl < questAction.levelReq ? `<br><span style="color:#f87171;font-size:11px;">🔒 Lv ${questAction.levelReq} required</span>` : '';
+        btn.innerHTML = `<span>${questAction.name}${mobInfo}${lockStr}</span><span class="meta">Quest boss</span>`;
+        if (unlocked) btn.onclick = () => startAction(styleId, 'goblin_king_quest');
+        list.appendChild(btn);
+      }
+    }
   } else {
     const slayerLv = levelForXp(state.skills.slayer?.xp || 0);
-    mobs.forEach(a => {
+    // Filter out quest-locked bosses
+    const visibleMobs = mobs.filter(a => !a.questReq || !!state.quests?.[a.questReq]);
+    visibleMobs.forEach(a => {
       const unlocked = combatLvl >= a.levelReq;
       const slayerLocked = !!(a.slayerReq && slayerLv < a.slayerReq);
       const selected = state.current && COMBAT_SKILL_IDS.has(state.current.skillId) && state.current.actionId === a.id;
@@ -3403,7 +3469,7 @@ function renderCombatPanel(){
       if (unlocked && !slayerLocked) btn.onclick = () => startAction(styleId, a.id);
       list.appendChild(btn);
     });
-    if (mobs.length === 0){
+    if (visibleMobs.length === 0){
       const empty = document.createElement('div');
       empty.className = 'inv-empty';
       empty.textContent = 'Nothing here yet.';
@@ -4201,6 +4267,19 @@ function completeAction(action, silent){
       }
     }
     if (!silent) checkBonusDrop(state.current?.skillId, action);
+    // Goblin Diplomatic Note — 1/100 from goblins; guaranteed at 1000kc
+    if (action.id === 'goblin' && !(state.inventory['goblin_diplomatic_note'] || 0) && !state.quests?.goblin_diplomacy){
+      const kc = state.combat.kills['goblin'] || 0;
+      if (Math.random() < 0.01 || kc >= 1000){
+        grantItem('goblin_diplomatic_note', 'Goblin Diplomatic Note', 1);
+        if (!silent) log('📜 A goblin drops a crumpled Diplomatic Note...');
+      }
+    }
+    // Goblin King quest completion
+    if (action.id === 'goblin_king_quest'){
+      completeQuest('goblin_diplomacy');
+      if ((state.inventory['goblin_diplomatic_note'] || 0) > 0) delete state.inventory['goblin_diplomatic_note'];
+    }
     // Slayer task kill tracking
     if (state.slayer?.task?.mobId === action.id){
       const boost = state.slayer.unlocks?.slayer_boost ? 1.1 : 1.0;
@@ -4370,11 +4449,20 @@ function checkBonusDrop(skillId, action){
   }
 }
 
+const QUEST_NAMES = {
+  lost_city:        'Discovering the Lost City',
+  goblin_diplomacy: 'Goblin Diplomacy',
+};
+const QUEST_COMPLETE_MSGS = {
+  lost_city:        'The Crystal course is now accessible.',
+  goblin_diplomacy: 'The Goblin King now roams — challenge him in the Bosses tab.',
+};
 function completeQuest(questId){
   if (!state.quests) state.quests = {};
   state.quests[questId] = true;
-  const name = questId === 'lost_city' ? 'Discovering the Lost City' : questId;
-  log(`✨ Quest complete: ${name}! The Crystal course is now accessible.`);
+  const name = QUEST_NAMES[questId] || questId;
+  const msg  = QUEST_COMPLETE_MSGS[questId] || '';
+  log(`✨ Quest complete: ${name}! ${msg}`);
   render();
 }
 
