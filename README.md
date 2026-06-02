@@ -114,9 +114,10 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - Inventory grouped by category — Openable, Equipment, Pets, Food & Potions, Seeds & Herbs, Summoning Pouches, Summoning, Ores & Bars, Logs, Fish, Gems & Hides, Runes & Energy, Ammo, Hunter, Currency, Other
 - Equipment panel with 11 slots (Head, Weapon, Offhand, Neck, Cape, Ring, Body, Gloves, Legs, Feet, Pet) and live stat totals
 - Prayer HUD in sidebar
-- Settings menu — Dark/Light theme, Compact mode, Hide locked actions, configurable log size
+- Settings menu — Dark/Light theme, Compact mode, Hide locked actions, configurable log size, Replay Tutorial
+- **Tutorial** — opt-in at character creation (checkbox, on by default); 5-step overlay covering skills, actions, inventory, and next steps; skippable at any time; "First Steps" achievement fires on first completion or skip; replayable from Settings
 - Stop button always visible next to action progress bar
-- **Achievement system** — 78 achievements across Skills, Total Level, Combat, Slayer, and Special categories; filter by All / Hide Completed / Hide Locked; locked achievements require prerequisites (slayer unlocks, quest completion, etc.)
+- **Achievement system** — 79 achievements across Skills, Total Level, Combat, Slayer, and Special categories; filter by All / Hide Completed / Hide Locked; locked achievements require prerequisites (slayer unlocks, quest completion, etc.)
 - **Skill icons** — emoji icon prefixed on every skill row in the sidebar
 - **Collection Log** — 33 drop sources across 6 categories (Woodcutting, Mining, Fishing, Agility, Hunter, Combat, Bosses, Pets, Clue Scrolls); tracks per-item obtain counts; unobtained items shown greyed; global and per-source progress counters; kill count shown per boss/mob source, opened count per geode/jar source, completion count per clue tier
 
