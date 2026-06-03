@@ -52,7 +52,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 |---|---|---|
 | Melee | 120 | Primary combat style; trains Attack + Constitution |
 | Ranged | 120 | Trains Ranged + Constitution; requires ammo in Ammo slot — arrows (Bronze–Dragon, +1–20 range bonus, 1 consumed per attack) or chinchompas (lv45/55/65, bleed on hit — refreshes, does not stack) |
-| Magic | 120 | Trains Magic + Constitution |
+| Magic | 120 | Trains Magic + Constitution; requires a rune loaded in the Ammo slot — each rune defines a spell school with a unique effect: Air (5% bonus hit), Water (5% mob atk reduction), Earth (15% mob dmg reduction), Fire (burn DoT), Mind (20% mob dmg reduction), Cosmic (25% crit ×2), Chaos (40% miss + ×2.5 on hit), Nature (25% root), Law (15% reflect), Death (5% execute at <25% HP), Blood (25% lifesteal), Soul (+20% mob combat stats as flat dmg); Magic cape saves 85% of rune casts |
 | Defence | 120 | Gains XP in Defensive mode |
 | Constitution | 99 | Starts at lv 10; gains XP on every kill (50% of action XP) |
 | Prayer | 99 | Bury bones / use altar (×2.5 or ×3.5 XP); 16 active prayers across 4 tiers; drain system; protect prayers reduce damage 50% |

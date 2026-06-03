@@ -1050,6 +1050,7 @@ const SELL_PRICES = {
   larupia_fur:80, kebbit_fur:120, kyatt_fur:250,
   air_rune:6, water_rune:6, earth_rune:6, fire_rune:6,
   mind_rune:10, chaos_rune:35, death_rune:70, blood_rune:130, soul_rune:200,
+  cosmic_rune:20, nature_rune:40, law_rune:60,
   pale_energy:4, flickering_energy:10, bright_energy:20, glowing_energy:35,
   vibrant_energy:60, lustrous_energy:90, brilliant_energy:130,
   radiant_energy:180, luminous_energy:240, incandescent_energy:320,
@@ -1098,6 +1099,21 @@ const SELL_PRICES = {
   longbow:130,       oak_longbow:380,        willow_longbow:720,        teak_longbow:1000,
   maple_longbow:1500,   mahogany_longbow:2000,   yew_longbow:3600,      magic_longbow:7000,
   elder_longbow:12000,  eternal_longbow:18000,
+};
+
+const RUNE_SPELLS = {
+  air_rune:    {name:'Wind Strike',   effect:{type:'bonus_hit',   chance:0.05}},
+  water_rune:  {name:'Water Surge',   effect:{type:'mob_reduce',  pct:0.05}},
+  earth_rune:  {name:'Stone Skin',    effect:{type:'mob_reduce',  pct:0.15}},
+  fire_rune:   {name:'Fire Blast',    effect:{type:'burn',        dmgPct:0.25, ticks:3}},
+  mind_rune:   {name:'Mind Drain',    effect:{type:'mob_reduce',  pct:0.20}},
+  cosmic_rune: {name:'Cosmic Strike', effect:{type:'crit',        chance:0.25}},
+  chaos_rune:  {name:'Chaos Surge',   effect:{type:'chaos',       missPct:0.40, mult:2.5}},
+  nature_rune: {name:'Nature Root',   effect:{type:'root_chance', chance:0.25}},
+  law_rune:    {name:'Reflection',    effect:{type:'reflect',     pct:0.15}},
+  death_rune:  {name:'Death Knell',   effect:{type:'execute',     threshold:0.25, chance:0.05}},
+  blood_rune:  {name:'Blood Barrage', effect:{type:'lifesteal',   pct:0.25}},
+  soul_rune:   {name:'Soul Rend',     effect:{type:'soul_scale',  pct:0.20}},
 };
 
 /* ACTIONS: what you can DO in each skill.
@@ -2427,6 +2443,10 @@ const EQUIP_REQS = {
   chinchompa:{skill:'ranged',level:45},
   red_chinchompa:{skill:'ranged',level:55},
   black_chinchompa:{skill:'ranged',level:65},
+  mind_rune:{skill:'magic',level:20},   cosmic_rune:{skill:'magic',level:27},
+  chaos_rune:{skill:'magic',level:35},  nature_rune:{skill:'magic',level:44},
+  law_rune:{skill:'magic',level:54},    death_rune:{skill:'magic',level:65},
+  blood_rune:{skill:'magic',level:77},  soul_rune:{skill:'magic',level:90},
 };
 
 const CONSTRUCTION_SHOP = [
@@ -2674,6 +2694,9 @@ const EQUIP_SLOTS = {
   bronze_arrow:'ammo', iron_arrow:'ammo', steel_arrow:'ammo', mithril_arrow:'ammo',
   adamant_arrow:'ammo', rune_arrow:'ammo', dragon_arrow:'ammo',
   chinchompa:'ammo', red_chinchompa:'ammo', black_chinchompa:'ammo',
+  air_rune:'ammo', water_rune:'ammo', earth_rune:'ammo',  fire_rune:'ammo',
+  mind_rune:'ammo', cosmic_rune:'ammo', chaos_rune:'ammo', nature_rune:'ammo',
+  law_rune:'ammo',  death_rune:'ammo',  blood_rune:'ammo', soul_rune:'ammo',
   warlord_helm:'head', harbinger_amulet:'neck', ice_gloves:'gloves',
   ...Object.fromEntries(SKILLCAPES.map(c => [c.id, 'cape'])),
   ...Object.fromEntries(PETS.map(p => [p.id, 'pet'])),
@@ -2814,7 +2837,7 @@ function freshState(){
     equipment: { head:null, weapon:null, offhand:null, ammo:null, neck:null, cape:null, ring:null, body:null, gloves:null, legs:null, feet:null, pet:null },
     stats:     { attack:1, range:1, mage:1, defence:1, prayer:1, summoning:1, dropRate:0 },
     farming:   { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false },
-    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, attackTimer:0, kills:{}, potionBoosts:{}, bleed:{dmg:0, ticks:0} },
+    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, attackTimer:0, kills:{}, potionBoosts:{}, bleed:{dmg:0, ticks:0}, burn:{dmg:0, ticks:0} },
     upgrades:       {},
     quests:         {},  // { questId: true } — completed quests
     autoOpenItems:  false,
@@ -3344,7 +3367,7 @@ function combatTick(){
     state.combat.mobMaxHp = action.stats.hp;
     state.combat.attackTimer = 0;
   }
-  // Tick bleed each game tick
+  // Tick bleed each game tick (chinchompa)
   if ((state.combat.bleed?.ticks || 0) > 0){
     state.combat.mobHp = Math.max(0, state.combat.mobHp - state.combat.bleed.dmg);
     state.combat.bleed.ticks--;
@@ -3352,6 +3375,17 @@ function combatTick(){
       completeAction(action);
       if (state.current){ state.combat.mobHp = action.stats.hp; state.combat.mobMaxHp = action.stats.hp; state.progress = 0; }
       state.combat.bleed = {dmg:0, ticks:0};
+      return;
+    }
+  }
+  // Tick burn each game tick (fire rune)
+  if ((state.combat.burn?.ticks || 0) > 0){
+    state.combat.mobHp = Math.max(0, state.combat.mobHp - state.combat.burn.dmg);
+    state.combat.burn.ticks--;
+    if (state.combat.mobHp <= 0){
+      completeAction(action);
+      if (state.current){ state.combat.mobHp = action.stats.hp; state.combat.mobMaxHp = action.stats.hp; state.progress = 0; }
+      state.combat.burn = {dmg:0, ticks:0};
       return;
     }
   }
@@ -3372,6 +3406,26 @@ function combatTick(){
         if (state.inventory[ammoId] <= 0) delete state.inventory[ammoId];
       }
     }
+    // Magic: consume one rune per attack; stop if out or none loaded
+    if (state.current.skillId === 'magic'){
+      const runeId = state.equipment.ammo;
+      if (!runeId || !RUNE_SPELLS[runeId]){
+        log('🔮 No rune loaded! Equip a rune type to cast spells.');
+        state.current = null; state.progress = 0; render(); return;
+      }
+      if ((state.inventory[runeId] || 0) <= 0){
+        log('🔮 Out of runes! Restock to continue casting.');
+        state.current = null; state.progress = 0; render(); return;
+      }
+      const runeSave = getCapeBonus('rune_save', null);
+      if (!runeSave || Math.random() >= runeSave){
+        state.inventory[runeId]--;
+        if (state.inventory[runeId] <= 0) delete state.inventory[runeId];
+      }
+    }
+    // Resolve active spell for magic
+    const spell = state.current.skillId === 'magic' && state.equipment.ammo
+      ? RUNE_SPELLS[state.equipment.ammo] : null;
     let playerDmg = calcPlayerDamage(state.current.skillId, action);
     if (playerDmg > 0) playerDmg = Math.max(1, Math.round(playerDmg * wStats.damageMult));
     const archMelee = getArchBonus('melee_dmg');
@@ -3380,7 +3434,37 @@ function combatTick(){
     if (capeDmg && playerDmg > 0) playerDmg = Math.max(1, Math.ceil(playerDmg * (1 + capeDmg)));
     const petDmg = getPetBonus(`${state.current.skillId}_dmg`, null);
     if (petDmg && playerDmg > 0) playerDmg = Math.max(1, Math.ceil(playerDmg * (1 + petDmg)));
+    // Spell effects on player damage (pre-apply)
+    if (spell){
+      const fx = spell.effect;
+      if (fx.type === 'chaos'){
+        if (playerDmg > 0 && Math.random() < fx.missPct) playerDmg = 0;
+        else if (playerDmg > 0) playerDmg = Math.max(1, Math.floor(playerDmg * fx.mult));
+      }
+      if (fx.type === 'crit' && playerDmg > 0 && Math.random() < fx.chance)
+        playerDmg *= 2;
+      if (fx.type === 'execute' && playerDmg > 0 && state.combat.mobHp > 0)
+        if ((state.combat.mobHp / state.combat.mobMaxHp) < fx.threshold && Math.random() < fx.chance)
+          playerDmg = state.combat.mobHp;
+      if (fx.type === 'soul_scale' && playerDmg > 0){
+        const ms = action.stats || {};
+        const total = (ms.attack||0) + (ms.defence||0) + (ms.mage||0) + (ms.magic||0) + (ms.range||0);
+        playerDmg += Math.max(0, Math.floor(total * fx.pct));
+      }
+    }
     state.combat.mobHp = Math.max(0, state.combat.mobHp - playerDmg);
+    // Spell effects after damage (post-apply)
+    if (spell && playerDmg > 0){
+      const fx = spell.effect;
+      if (fx.type === 'lifesteal')
+        state.combat.hp = Math.min(state.combat.maxHp, state.combat.hp + Math.max(1, Math.floor(playerDmg * fx.pct)));
+      if (fx.type === 'burn' && state.combat.mobHp > 0)
+        state.combat.burn = { dmg: Math.max(1, Math.floor(playerDmg * fx.dmgPct)), ticks: fx.ticks };
+      if (fx.type === 'bonus_hit' && Math.random() < fx.chance){
+        const bonus = calcPlayerDamage(state.current.skillId, action);
+        if (bonus > 0) state.combat.mobHp = Math.max(0, state.combat.mobHp - bonus);
+      }
+    }
     // Apply/refresh chinchompa bleed on hit (no stack — overwrites existing bleed)
     const bleedStats = state.current.skillId === 'ranged' && state.equipment.ammo
       ? ITEM_STATS[state.equipment.ammo]?.bleed
@@ -3389,7 +3473,21 @@ function combatTick(){
       state.combat.bleed = { dmg: bleedStats.dmg, ticks: bleedStats.ticks };
     }
   }
-  const mobDmg = calcMobDamage(action);
+  // Mob damage with spell effects applied
+  let mobDmg = calcMobDamage(action);
+  const _spell = state.current.skillId === 'magic' && state.equipment.ammo
+    ? RUNE_SPELLS[state.equipment.ammo] : null;
+  if (_spell){
+    const fx = _spell.effect;
+    if (fx.type === 'mob_reduce' && mobDmg > 0)
+      mobDmg = Math.floor(mobDmg * (1 - fx.pct));
+    if (fx.type === 'root_chance' && Math.random() < fx.chance)
+      mobDmg = 0;
+    if (fx.type === 'reflect' && mobDmg > 0){
+      const reflected = Math.max(1, Math.floor(mobDmg * fx.pct));
+      state.combat.mobHp = Math.max(0, state.combat.mobHp - reflected);
+    }
+  }
   state.combat.hp = Math.max(0, state.combat.hp - mobDmg);
   // Auto-eat: fire before death check so food can save the player
   if (state.upgrades?.auto_eat && state.combat.foodQueue.length > 0){
@@ -6357,6 +6455,7 @@ function getItemCat(id){
   if (SUMMON_POUCH_IDS.has(id))                  return 'Summoning Pouches';
   if (id.endsWith('_charm'))                     return 'Summoning';
   if (id.endsWith('_arrow') || id.endsWith('_bolt') || id.includes('chinchompa')) return 'Ammo';
+  if (id.endsWith('_rune') || id.endsWith('_energy') || id.includes('_memory') || id === 'rune_essence' || id === 'pure_essence') return 'Runes & Energy';
   if (EQUIP_SLOTS[id])                           return 'Equipment';
   if (FOOD_HEALS[id] || id.endsWith('_potion'))  return 'Food & Potions';
   if (id.endsWith('_seed') || HERB_IDS.has(id))  return 'Seeds & Herbs';
@@ -6365,7 +6464,6 @@ function getItemCat(id){
   if (id.endsWith('_logs'))                      return 'Logs';
   if (id.startsWith('raw_'))                     return 'Fish';
   if (id.startsWith('uncut_') || id.startsWith('cut_') || id.includes('dragonhide') || id.includes('leather') || id.endsWith('_fur') || id.endsWith('_hide')) return 'Gems & Hides';
-  if (id.endsWith('_rune') || id.endsWith('_energy') || id.includes('_memory') || id === 'rune_essence' || id === 'pure_essence') return 'Runes & Energy';
   if (id.endsWith('_bones') || id === 'bones' || id === 'raw_bird_meat' || id === 'raw_rabbit' || id === 'larupia_fur' || id === 'kyatt_fur' || id === 'kebbit_fur') return 'Hunter';
   return 'Other';
 }
@@ -6539,6 +6637,7 @@ function init(){
   if (!('offhand' in state.equipment)) state.equipment.offhand = null;
   if (!('ammo' in state.equipment))    state.equipment.ammo    = null;
   if (!state.combat.bleed)             state.combat.bleed      = {dmg:0, ticks:0};
+  if (!state.combat.burn)              state.combat.burn       = {dmg:0, ticks:0};
   if (state.combat.attackTimer == null) state.combat.attackTimer = 0;
   if (state.autoOpenItems == null) state.autoOpenItems = false;
   if (!state.archaeology) state.archaeology = { artifacts:{}, activePerks:{} };
