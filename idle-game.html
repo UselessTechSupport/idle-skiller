@@ -316,6 +316,16 @@
   .token-balance span{font-size:13px; font-weight:400; color:var(--dim);}
   .reward-placeholder{background:var(--panel2); border:1px dashed var(--line); border-radius:8px;
     padding:16px; text-align:center; color:var(--dim); font-size:13px; font-style:italic;}
+.game-tooltip{
+  position:fixed; z-index:9999; pointer-events:none; display:none;
+  background:var(--panel2); border:1px solid var(--accent);
+  border-radius:6px; padding:8px 12px; font-size:12px; line-height:1.7;
+  max-width:240px; box-shadow:0 4px 16px rgba(0,0,0,0.5);
+}
+.game-tooltip .tip-name{ display:block; font-weight:600; margin-bottom:3px; color:var(--accent); }
+.game-tooltip .tip-line{ display:block; color:var(--text); white-space:nowrap; }
+.game-tooltip .tip-perk{ display:block; color:#a3e635; white-space:nowrap; }
+.game-tooltip .tip-req { display:block; color:var(--dim); font-size:11px; margin-top:3px; }
 </style>
 </head>
 <body>
@@ -3155,6 +3165,93 @@ function getArchBonus(type){
     if (a?.bonusType === type) total += a.bonusVal;
   }
   return total;
+}
+
+function getItemTooltip(itemId){
+  if (!itemId) return '';
+  const name = state.itemNames[itemId] || itemId;
+  const lines = [];
+  const st = ITEM_STATS[itemId];
+  if (st){
+    if (st.attack)   lines.push(`<span class="tip-line">⚔️ Attack: +${st.attack}</span>`);
+    if (st.range)    lines.push(`<span class="tip-line">🏹 Range: +${st.range}</span>`);
+    if (st.mage)     lines.push(`<span class="tip-line">🔮 Magic: +${st.mage}</span>`);
+    if (st.defence)  lines.push(`<span class="tip-line">🛡️ Defence: +${st.defence}</span>`);
+    if (st.dropRate) lines.push(`<span class="tip-line">🍀 Drop rate: +${st.dropRate}%</span>`);
+    if (st.attackInterval && st.attackInterval !== 4)
+      lines.push(`<span class="tip-line">⏱ Attack speed: ${st.attackInterval} ticks</span>`);
+    if (st.damageMult && st.damageMult !== 1.0)
+      lines.push(`<span class="tip-line">💥 Damage: ×${st.damageMult}</span>`);
+    if (st.bleed)
+      lines.push(`<span class="tip-perk">🩸 Bleed: ${st.bleed.dmg} dmg × ${st.bleed.ticks} ticks on hit</span>`);
+    if (st.twoHanded)
+      lines.push(`<span class="tip-line">⚠ Two-handed</span>`);
+  }
+  const jp = JEWELRY_PERKS[itemId];
+  if (jp) lines.push(`<span class="tip-perk">✨ ${_describePerk(jp)}</span>`);
+  const sp = RUNE_SPELLS[itemId];
+  if (sp) lines.push(`<span class="tip-perk">🔮 ${sp.name}: ${_describeEffect(sp.effect)}</span>`);
+  const cape = SKILLCAPES.find(c => c.id === itemId);
+  if (cape?.perkLabel) lines.push(`<span class="tip-perk">✨ ${cape.perkLabel}</span>`);
+  const pet = PETS.find(p => p.id === itemId);
+  if (pet?.perkLabel) lines.push(`<span class="tip-perk">✨ ${pet.perkLabel}</span>`);
+  const heal = FOOD_HEALS[itemId];
+  if (heal) lines.push(`<span class="tip-perk">❤️ Heals: +${heal} HP</span>`);
+  const req = EQUIP_REQS[itemId];
+  if (req) lines.push(`<span class="tip-req">Requires ${req.level} ${SKILL_BY_ID[req.skill]?.name || req.skill}</span>`);
+  if (lines.length === 0) return '';
+  return `<span class="tip-name">${name}</span>` + lines.join('');
+}
+function _describePerk(p){
+  const pct = v => Math.round(v * 100) + '%';
+  switch(p.type){
+    case 'xp_pct':             return `+${pct(p.value)} ${p.skillId || 'all skills'} XP`;
+    case 'rune_save':          return `${pct(p.value)} chance to save rune on cast`;
+    case 'farm_speed':         return `Crops grow ${pct(p.value)} faster`;
+    case 'hp_regen_mult':      return `HP regen ${pct(p.value)} faster`;
+    case 'prayer_drain':       return `-${pct(p.value)} prayer drain rate`;
+    case 'speed_pct':          return `+${pct(p.value)} ${p.skillId || 'all skills'} speed`;
+    case 'bone_xp':            return `+${pct(p.value)} prayer XP from bones`;
+    case 'dodge':              return `${pct(p.value)} chance to dodge each mob attack`;
+    case 'slayer_double_kill': return `${pct(p.value)} chance each kill counts twice`;
+    case 'slayer_zero_kill':   return `${pct(p.value)} chance each kill counts as 0`;
+    case 'ammo_save':          return `${pct(p.value)} chance to save ammo on attack`;
+    default:                   return p.type;
+  }
+}
+function _describeEffect(fx){
+  if (!fx) return '';
+  const pct = v => Math.round(v * 100) + '%';
+  switch(fx.type){
+    case 'bonus_hit':   return `${pct(fx.chance)} chance to attack again`;
+    case 'mob_reduce':  return `Mob deals ${pct(fx.pct)} less damage`;
+    case 'burn':        return `Burn: ${pct(fx.dmgPct)} hit dmg × ${fx.ticks} ticks`;
+    case 'crit':        return `${pct(fx.chance)} crit → ×2 damage`;
+    case 'chaos':       return `${pct(fx.missPct)} extra miss; ×${fx.mult} on hit`;
+    case 'root_chance': return `${pct(fx.chance)} mob skips its attack`;
+    case 'reflect':     return `${pct(fx.pct)} mob damage reflected back`;
+    case 'execute':     return `${pct(fx.chance)} instant kill below ${pct(fx.threshold)} HP`;
+    case 'lifesteal':   return `Heal ${pct(fx.pct)} of damage dealt`;
+    case 'soul_scale':  return `+${pct(fx.pct)} mob combat stats as flat damage`;
+    default:            return fx.type;
+  }
+}
+function showTooltip(content, x, y){
+  if (!content) return;
+  const el = $('gameTooltip');
+  el.innerHTML = content;
+  el.style.display = 'block';
+  _positionTooltip(el, x, y);
+}
+function hideTooltip(){ $('gameTooltip').style.display = 'none'; }
+function _positionTooltip(el, x, y){
+  const pad = 14, vw = window.innerWidth, vh = window.innerHeight;
+  let left = x + pad, top = y + pad;
+  const w = el.offsetWidth, h = el.offsetHeight;
+  if (left + w > vw - 8) left = x - w - pad;
+  if (top  + h > vh - 8) top  = y - h - pad;
+  el.style.left = left + 'px';
+  el.style.top  = top  + 'px';
 }
 
 function getCapeBonus(type, skillId){
@@ -6472,6 +6569,7 @@ function renderEquipSection(){
     } else {
       slotItemText = equipped ? (state.itemNames[equipped] || equipped) : 'Empty';
     }
+    div.dataset.tipid = equipped || '';
     div.innerHTML = `<span class="slot-label">${slot.label}</span>
                      <span class="slot-item${equipped ? '' : ' empty'}">${slotItemText}</span>`;
     if (equipped){
@@ -6669,7 +6767,7 @@ function renderItemsPanel(){
       }
       btns += `<button class="mini" onclick="drinkPotion('${k}')">Drink</button>${activeLabel}`;
     }
-    html += `<div class="inv-row">
+    html += `<div class="inv-row" data-tipid="${k}">
       <span>${name}</span>
       <span style="display:flex;align-items:center;gap:5px;">
         <b>${qty.toLocaleString()}</b>${btns}
@@ -6972,8 +7070,32 @@ $('debugToggle').onclick = () => {
 window.addEventListener('beforeunload', save);
 document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
 
+// Item tooltips — event delegation
+document.addEventListener('mouseover', e => {
+  const el = e.target.closest('[data-tipid]');
+  if (el) showTooltip(getItemTooltip(el.dataset.tipid), e.clientX, e.clientY);
+  else hideTooltip();
+});
+document.addEventListener('mousemove', e => {
+  const tt = $('gameTooltip');
+  if (tt.style.display !== 'none') _positionTooltip(tt, e.clientX, e.clientY);
+});
+let _tipTimer = null;
+document.addEventListener('touchstart', e => {
+  const el = e.target.closest('[data-tipid]');
+  if (!el) return;
+  _tipTimer = setTimeout(() => {
+    const t = e.touches[0];
+    showTooltip(getItemTooltip(el.dataset.tipid), t.clientX, t.clientY);
+  }, 500);
+}, {passive:true});
+document.addEventListener('touchend',  () => { clearTimeout(_tipTimer); hideTooltip(); });
+document.addEventListener('touchmove', () => { clearTimeout(_tipTimer); hideTooltip(); });
+
 init();
 </script>
+
+<div id="gameTooltip" class="game-tooltip"></div>
 
 <!-- Tutorial overlay -->
 <div id="tutorialOverlay" class="settings-overlay" onclick="if(event.target===this)closeTutorial()">
