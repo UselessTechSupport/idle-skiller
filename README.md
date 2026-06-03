@@ -139,7 +139,10 @@ When creating a new character, choose between **Normal** (death restores HP and 
 
 **Deferred mechanics:** PWA manifest + service worker for mobile install, Capacitor wrap for app stores
 
-**Bug fixes:** Clue scroll drops now correctly fire for all skills — thieving, agility, archaeology, prayer, fletching (headless arrows), and farming previously bypassed the bonus drop check due to early returns in the action completion path.
+**Bug fixes:**
+- Clue scroll drops now correctly fire for all skills — thieving, agility, archaeology, prayer, fletching (headless arrows), and farming previously bypassed the bonus drop check due to early returns in the action completion path.
+- Enemy HP bar now correctly depletes as the mob takes damage (was previously filling up instead).
+- XP is now correctly granted for all gathering and artisan skills — an undeclared variable in `completeAction` caused a silent crash before `grantXp` could run for any skill that produces an item. Also fixes the Gatherer's Band ring's 10% double-yield perk which was silently non-functional.
 
 ## Tech stack
 

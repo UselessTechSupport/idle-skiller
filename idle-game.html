@@ -3891,7 +3891,7 @@ function renderCombatPanel(){
     const a = getAction(state.current.skillId, state.current.actionId);
     if (a){
       actionPct = state.combat.mobMaxHp
-        ? (1 - state.combat.mobHp / state.combat.mobMaxHp) * 100 : 0;
+        ? (state.combat.mobHp / state.combat.mobMaxHp) * 100 : 0;
       doing = `Fighting: <b>${a.name}</b> <span style="color:#f87171;font-size:11px;">[${state.combat.mobHp}/${state.combat.mobMaxHp} HP]</span>`;
     }
   }
@@ -4863,7 +4863,7 @@ function completeAction(action, silent){
     grantItem(action.item, action.itemName, qty);
     if (MAGE_WEAPON_EFFECTS[action.item]) logCollectionDrop('infused_magic_gear', action.item, qty);
     // Gatherer's Band: 10% chance to double-yield from gathering skills
-    if (SKILL_BY_ID[skillId]?.type === 'gathering' && state.equipment?.ring === 'gatherers_band' && Math.random() < 0.10)
+    if (SKILL_BY_ID[state.current?.skillId]?.type === 'gathering' && state.equipment?.ring === 'gatherers_band' && Math.random() < 0.10)
       grantItem(action.item, action.itemName, qty);
   }
   // Abyssal Rod: 1% chance to upgrade the caught fish to the next tier
