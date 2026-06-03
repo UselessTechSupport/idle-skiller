@@ -1085,6 +1085,7 @@ const SELL_PRICES = {
   lesser_magic_potion:150,    magic_potion:400,    supreme_magic_potion:900,
   lesser_summoning_potion:150,summoning_potion:400, supreme_summoning_potion:900,
   lesser_prayer_potion:150,   prayer_potion:400,   supreme_prayer_potion:900,
+  chinchompa:400, red_chinchompa:700, black_chinchompa:1500,
   shortbow_u:50,     oak_shortbow_u:150,     willow_shortbow_u:300,     teak_shortbow_u:450,
   maple_shortbow_u:700, mahogany_shortbow_u:950, yew_shortbow_u:1800,   magic_shortbow_u:3500,
   elder_shortbow_u:6000, eternal_shortbow_u:10000,
@@ -2413,6 +2414,19 @@ const EQUIP_REQS = {
   ...Object.fromEntries(SKILLCAPES.filter(c => c.skillId).map(c => [c.id, {skill:c.skillId, level:99}])),
   goblin_crown:{skill:'defence', level:20},
   goblin_sword:{skill:'melee',   level:25},
+  shortbow:{skill:'ranged',level:1},        oak_shortbow:{skill:'ranged',level:20},
+  willow_shortbow:{skill:'ranged',level:30}, teak_shortbow:{skill:'ranged',level:40},
+  maple_shortbow:{skill:'ranged',level:50},  mahogany_shortbow:{skill:'ranged',level:55},
+  yew_shortbow:{skill:'ranged',level:65},    magic_shortbow:{skill:'ranged',level:75},
+  elder_shortbow:{skill:'ranged',level:85},  eternal_shortbow:{skill:'ranged',level:95},
+  longbow:{skill:'ranged',level:1},          oak_longbow:{skill:'ranged',level:20},
+  willow_longbow:{skill:'ranged',level:30},  teak_longbow:{skill:'ranged',level:40},
+  maple_longbow:{skill:'ranged',level:50},   mahogany_longbow:{skill:'ranged',level:55},
+  yew_longbow:{skill:'ranged',level:65},     magic_longbow:{skill:'ranged',level:75},
+  elder_longbow:{skill:'ranged',level:85},   eternal_longbow:{skill:'ranged',level:95},
+  chinchompa:{skill:'ranged',level:45},
+  red_chinchompa:{skill:'ranged',level:55},
+  black_chinchompa:{skill:'ranged',level:65},
 };
 
 const CONSTRUCTION_SHOP = [
@@ -2540,6 +2554,7 @@ const EQUIPMENT_SLOTS = [
   {id:'head',    label:'Head'},
   {id:'weapon',  label:'Weapon'},
   {id:'offhand', label:'Offhand'},
+  {id:'ammo',    label:'Ammo'},
   {id:'neck',    label:'Neck'},
   {id:'cape',   label:'Cape'},
   {id:'ring',   label:'Ring'},
@@ -2582,6 +2597,11 @@ const ITEM_STATS = {
   longbow:{range:12}, oak_longbow:{range:20}, willow_longbow:{range:30}, teak_longbow:{range:36},
   maple_longbow:{range:44}, mahogany_longbow:{range:50}, yew_longbow:{range:60}, magic_longbow:{range:74},
   elder_longbow:{range:86}, eternal_longbow:{range:98},
+  bronze_arrow:{range:1}, iron_arrow:{range:2}, steel_arrow:{range:4}, mithril_arrow:{range:7},
+  adamant_arrow:{range:10}, rune_arrow:{range:14}, dragon_arrow:{range:20},
+  chinchompa:     {range:6,  bleed:{dmg:2, ticks:3}},
+  red_chinchompa: {range:12, bleed:{dmg:4, ticks:4}},
+  black_chinchompa:{range:18, bleed:{dmg:6, ticks:5}},
   ice_gloves:{defence:25},
   warlord_helm:{defence:40, attack:10},
   harbinger_amulet:{attack:15, range:15, mage:15, defence:20, dropRate:0.05},
@@ -2651,6 +2671,9 @@ const EQUIP_SLOTS = {
   longbow:'weapon', oak_longbow:'weapon', willow_longbow:'weapon', teak_longbow:'weapon',
   maple_longbow:'weapon', mahogany_longbow:'weapon', yew_longbow:'weapon', magic_longbow:'weapon',
   elder_longbow:'weapon', eternal_longbow:'weapon',
+  bronze_arrow:'ammo', iron_arrow:'ammo', steel_arrow:'ammo', mithril_arrow:'ammo',
+  adamant_arrow:'ammo', rune_arrow:'ammo', dragon_arrow:'ammo',
+  chinchompa:'ammo', red_chinchompa:'ammo', black_chinchompa:'ammo',
   warlord_helm:'head', harbinger_amulet:'neck', ice_gloves:'gloves',
   ...Object.fromEntries(SKILLCAPES.map(c => [c.id, 'cape'])),
   ...Object.fromEntries(PETS.map(p => [p.id, 'pet'])),
@@ -2788,10 +2811,10 @@ function freshState(){
     current: null,          // { skillId, actionId }
     progress: 0,            // ticks done toward current action
     tools: {},              // { skillId: tierId }
-    equipment: { head:null, weapon:null, offhand:null, neck:null, cape:null, ring:null, body:null, gloves:null, legs:null, feet:null, pet:null },
+    equipment: { head:null, weapon:null, offhand:null, ammo:null, neck:null, cape:null, ring:null, body:null, gloves:null, legs:null, feet:null, pet:null },
     stats:     { attack:1, range:1, mage:1, defence:1, prayer:1, summoning:1, dropRate:0 },
     farming:   { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false },
-    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, attackTimer:0, kills:{}, potionBoosts:{} },
+    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, attackTimer:0, kills:{}, potionBoosts:{}, bleed:{dmg:0, ticks:0} },
     upgrades:       {},
     quests:         {},  // { questId: true } — completed quests
     autoOpenItems:  false,
@@ -3197,6 +3220,12 @@ function equipItem(itemId){
     }
   }
 
+  if (slot === 'ammo'){
+    state.equipment.ammo = itemId;
+    render();
+    return;
+  }
+
   const iStats = ITEM_STATS[itemId] || {};
   if (iStats.twoHanded && state.equipment.offhand){
     grantItem(state.equipment.offhand);
@@ -3219,6 +3248,7 @@ function equipItem(itemId){
 }
 
 function unequipItem(slot){
+  if (slot === 'ammo'){ state.equipment.ammo = null; render(); return; }
   const itemId = state.equipment[slot];
   if (!itemId) return;
   grantItem(itemId);
@@ -3314,10 +3344,31 @@ function combatTick(){
     state.combat.mobMaxHp = action.stats.hp;
     state.combat.attackTimer = 0;
   }
+  // Tick bleed each game tick
+  if ((state.combat.bleed?.ticks || 0) > 0){
+    state.combat.mobHp = Math.max(0, state.combat.mobHp - state.combat.bleed.dmg);
+    state.combat.bleed.ticks--;
+    if (state.combat.mobHp <= 0){
+      completeAction(action);
+      if (state.current){ state.combat.mobHp = action.stats.hp; state.combat.mobMaxHp = action.stats.hp; state.progress = 0; }
+      state.combat.bleed = {dmg:0, ticks:0};
+      return;
+    }
+  }
   const wStats = getWeaponStats();
   state.combat.attackTimer = (state.combat.attackTimer || 0) + 1;
   if (state.combat.attackTimer >= wStats.attackInterval){
     state.combat.attackTimer = 0;
+    // Ranged: consume one ammo per attack; stop if out
+    if (state.current.skillId === 'ranged'){
+      const ammoId = state.equipment.ammo;
+      if (!ammoId || (state.inventory[ammoId] || 0) <= 0){
+        log('🏹 Out of ammo! Load some arrows or chinchompas to continue ranging.');
+        state.current = null; state.progress = 0; render(); return;
+      }
+      state.inventory[ammoId]--;
+      if (state.inventory[ammoId] <= 0) delete state.inventory[ammoId];
+    }
     let playerDmg = calcPlayerDamage(state.current.skillId, action);
     if (playerDmg > 0) playerDmg = Math.max(1, Math.round(playerDmg * wStats.damageMult));
     const archMelee = getArchBonus('melee_dmg');
@@ -3327,6 +3378,13 @@ function combatTick(){
     const petDmg = getPetBonus(`${state.current.skillId}_dmg`, null);
     if (petDmg && playerDmg > 0) playerDmg = Math.max(1, Math.ceil(playerDmg * (1 + petDmg)));
     state.combat.mobHp = Math.max(0, state.combat.mobHp - playerDmg);
+    // Apply/refresh chinchompa bleed on hit (no stack — overwrites existing bleed)
+    const bleedStats = state.current.skillId === 'ranged' && state.equipment.ammo
+      ? ITEM_STATS[state.equipment.ammo]?.bleed
+      : null;
+    if (bleedStats && playerDmg > 0 && state.combat.mobHp > 0){
+      state.combat.bleed = { dmg: bleedStats.dmg, ticks: bleedStats.ticks };
+    }
   }
   const mobDmg = calcMobDamage(action);
   state.combat.hp = Math.max(0, state.combat.hp - mobDmg);
@@ -6173,10 +6231,15 @@ function renderEquipSection(){
     const div = document.createElement('div');
     div.className = 'equip-slot' + (slot.wide ? ' wide' : '');
     const equipped = state.equipment[slot.id];
+    let slotItemText;
+    if (slot.id === 'ammo' && equipped){
+      const cnt = state.inventory[equipped] || 0;
+      slotItemText = `${state.itemNames[equipped] || equipped} ×${cnt.toLocaleString()}`;
+    } else {
+      slotItemText = equipped ? (state.itemNames[equipped] || equipped) : 'Empty';
+    }
     div.innerHTML = `<span class="slot-label">${slot.label}</span>
-                     <span class="slot-item${equipped ? '' : ' empty'}">${
-                       equipped ? (state.itemNames[equipped] || equipped) : 'Empty'
-                     }</span>`;
+                     <span class="slot-item${equipped ? '' : ' empty'}">${slotItemText}</span>`;
     if (equipped){
       const uBtn = document.createElement('button');
       uBtn.className = 'mini';
@@ -6290,6 +6353,7 @@ function getItemCat(id){
   if (OPENABLE_ITEMS[id])                        return 'Openable';
   if (SUMMON_POUCH_IDS.has(id))                  return 'Summoning Pouches';
   if (id.endsWith('_charm'))                     return 'Summoning';
+  if (id.endsWith('_arrow') || id.endsWith('_bolt') || id.includes('chinchompa')) return 'Ammo';
   if (EQUIP_SLOTS[id])                           return 'Equipment';
   if (FOOD_HEALS[id] || id.endsWith('_potion'))  return 'Food & Potions';
   if (id.endsWith('_seed') || HERB_IDS.has(id))  return 'Seeds & Herbs';
@@ -6299,7 +6363,6 @@ function getItemCat(id){
   if (id.startsWith('raw_'))                     return 'Fish';
   if (id.startsWith('uncut_') || id.startsWith('cut_') || id.includes('dragonhide') || id.includes('leather') || id.endsWith('_fur') || id.endsWith('_hide')) return 'Gems & Hides';
   if (id.endsWith('_rune') || id.endsWith('_energy') || id.includes('_memory') || id === 'rune_essence' || id === 'pure_essence') return 'Runes & Energy';
-  if (id.endsWith('_arrow') || id.endsWith('_bolt') || id.includes('chinchompa'))  return 'Ammo';
   if (id.endsWith('_bones') || id === 'bones' || id === 'raw_bird_meat' || id === 'raw_rabbit' || id === 'larupia_fur' || id === 'kyatt_fur' || id === 'kebbit_fur') return 'Hunter';
   return 'Other';
 }
@@ -6471,6 +6534,8 @@ function init(){
   state.combat.hp = Math.min(state.combat.hp, state.combat.maxHp);
   if (!('weapon' in state.equipment))  state.equipment.weapon  = null;
   if (!('offhand' in state.equipment)) state.equipment.offhand = null;
+  if (!('ammo' in state.equipment))    state.equipment.ammo    = null;
+  if (!state.combat.bleed)             state.combat.bleed      = {dmg:0, ticks:0};
   if (state.combat.attackTimer == null) state.combat.attackTimer = 0;
   if (state.autoOpenItems == null) state.autoOpenItems = false;
   if (!state.archaeology) state.archaeology = { artifacts:{}, activePerks:{} };

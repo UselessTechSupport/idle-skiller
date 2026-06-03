@@ -51,7 +51,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Skill | Max Lv | Notes |
 |---|---|---|
 | Melee | 120 | Primary combat style; trains Attack + Constitution |
-| Ranged | 120 | Trains Ranged + Constitution |
+| Ranged | 120 | Trains Ranged + Constitution; requires ammo in Ammo slot — arrows (Bronze–Dragon, +1–20 range bonus, 1 consumed per attack) or chinchompas (lv45/55/65, bleed on hit — refreshes, does not stack) |
 | Magic | 120 | Trains Magic + Constitution |
 | Defence | 120 | Gains XP in Defensive mode |
 | Constitution | 99 | Starts at lv 10; gains XP on every kill (50% of action XP) |
@@ -116,7 +116,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - Mobile-first layout: header collapses to title row + scrollable button strip on narrow screens; larger touch targets; equipment grid single-column on mobile
 - Always-visible Farming, Slayer, Prayer, and Summoning sidebar panels (usable without navigating to the skill)
 - Inventory grouped by category — Openable, Equipment, Pets, Food & Potions, Seeds & Herbs, Summoning Pouches, Summoning, Ores & Bars, Logs, Fish, Gems & Hides, Runes & Energy, Ammo, Hunter, Currency, Other
-- Equipment panel with 11 slots (Head, Weapon, Offhand, Neck, Cape, Ring, Body, Gloves, Legs, Feet, Pet) and live stat totals
+- Equipment panel with 12 slots (Head, Weapon, Offhand, Ammo, Neck, Cape, Ring, Body, Gloves, Legs, Feet, Pet) and live stat totals
 - Prayer HUD in sidebar
 - Settings menu — Dark/Light theme, Compact mode, Hide locked actions, configurable log size, Replay Tutorial
 - **Tutorial** — opt-in at character creation (checkbox, on by default); 5-step overlay covering skills, actions, inventory, and next steps; skippable at any time; "First Steps" achievement fires on first completion or skip; replayable from Settings
