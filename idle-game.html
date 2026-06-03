@@ -1053,6 +1053,10 @@ const SHOP_BUY_ITEMS = [
   { id:'crimson_charm', name:'Crimson charm', icon:'🔴', desc:'High-tier Summoning ingredient — drops from lv 50+ mobs', cost:6000  },
   { id:'blue_charm',    name:'Blue charm',    icon:'🔵', desc:'Rare Summoning ingredient — drops from lv 75+ mobs',      cost:18000 },
   { id:'bowstring',     name:'Bowstring',     icon:'🧵', desc:'Used to string unstrung bows into finished weapons',       cost:5000  },
+  { id:'cloth',      name:'Cloth',      icon:'🧶', desc:'Woven fabric for basic mage robes — used in Crafting',      cost:3000  },
+  { id:'bark',       name:'Bark',       icon:'🪵', desc:'Sturdy bark strips for splitbark armour — used in Crafting', cost:8000  },
+  { id:'fine_cloth', name:'Fine cloth', icon:'🪡', desc:'High-quality cloth for splitbark armour — used in Crafting', cost:8000  },
+  { id:'suqah_hide', name:'Suqah hide', icon:'🦎', desc:'Thick suqah leather for lunar armour — used in Crafting',   cost:18000 },
 ];
 
 const SELL_PRICES = {
@@ -1076,6 +1080,9 @@ const SELL_PRICES = {
   gold_charm:100, green_charm:400, crimson_charm:1200, blue_charm:4000,
   green_dragonhide:300, blue_dragonhide:600, red_dragonhide:1000, black_dragonhide:1600, royal_dragonhide:2400,
   larupia_fur:80, kebbit_fur:120, kyatt_fur:250,
+  cloth_hat:1500, cloth_robe_top:3500, cloth_robe_bottom:3000,
+  splitbark_helm:6000, splitbark_top:16000, splitbark_bottom:10000,
+  lunar_helm:18000, lunar_torso:40000, lunar_legs:28000,
   air_rune:6, water_rune:6, earth_rune:6, fire_rune:6,
   mind_rune:10, chaos_rune:35, death_rune:70, blood_rune:130, soul_rune:200,
   cosmic_rune:20, nature_rune:40, law_rune:60,
@@ -2540,6 +2547,9 @@ const EQUIP_REQS = {
   stormwing_staff:{skill:'magic',level:70}, venomous_staff:{skill:'magic',level:80},
   tremor_wand:{skill:'magic',level:85},     venomous_scythe:{skill:'magic',level:90},
   sovereign_wand:{skill:'magic',level:95},
+  cloth_hat:{skill:'magic',level:20},      cloth_robe_top:{skill:'magic',level:20},     cloth_robe_bottom:{skill:'magic',level:20},
+  splitbark_helm:{skill:'magic',level:45}, splitbark_top:{skill:'magic',level:45},      splitbark_bottom:{skill:'magic',level:45},
+  lunar_helm:{skill:'magic',level:60},     lunar_torso:{skill:'magic',level:60},        lunar_legs:{skill:'magic',level:60},
 };
 
 const CONSTRUCTION_SHOP = [
