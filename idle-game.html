@@ -1440,13 +1440,13 @@ const ACTIONS = {
     {id:'craft_leather_chaps',     name:'Leather chaps',     label:'Leather chaps made',     levelReq:18, xp:27,    ticks:2, item:'leather_chaps',     itemName:'Leather chaps',     category:'Leather Armour', ingredients:[{item:'leather',count:2,name:'Leather'}]},
 
     // --- Hunter Leather Armour (kebbit/kyatt furs from Hunter) ---
-    {id:'craft_kebbit_vambs',  name:'Kebbit vambraces', label:'Hunter armour crafted', category:'Hunter Leather', levelReq:20, xp:28,  ticks:2, item:'kebbit_vambraces', itemName:'Kebbit vambraces', ingredients:[{item:'kebbit_fur', count:1, name:'Kebbit fur'}]},
-    {id:'craft_kebbit_cowl',   name:'Kebbit cowl',      label:'Hunter armour crafted', category:'Hunter Leather', levelReq:24, xp:35,  ticks:2, item:'kebbit_cowl',      itemName:'Kebbit cowl',      ingredients:[{item:'kebbit_fur', count:1, name:'Kebbit fur'}]},
-    {id:'craft_kebbit_chaps',  name:'Kebbit chaps',     label:'Hunter armour crafted', category:'Hunter Leather', levelReq:28, xp:48,  ticks:2, item:'kebbit_chaps',     itemName:'Kebbit chaps',     ingredients:[{item:'kebbit_fur', count:2, name:'Kebbit fur'}]},
-    {id:'craft_kebbit_body',   name:'Kebbit body',      label:'Hunter armour crafted', category:'Hunter Leather', levelReq:33, xp:65,  ticks:2, item:'kebbit_body',      itemName:'Kebbit body',      ingredients:[{item:'kebbit_fur', count:3, name:'Kebbit fur'}]},
-    {id:'craft_kyatt_vambs',   name:'Kyatt vambraces',  label:'Hunter armour crafted', category:'Hunter Leather', levelReq:45, xp:55,  ticks:2, item:'kyatt_vambraces',  itemName:'Kyatt vambraces',  ingredients:[{item:'kyatt_fur',  count:1, name:'Kyatt fur'}]},
-    {id:'craft_kyatt_chaps',   name:'Kyatt chaps',      label:'Hunter armour crafted', category:'Hunter Leather', levelReq:52, xp:78,  ticks:2, item:'kyatt_chaps',      itemName:'Kyatt chaps',      ingredients:[{item:'kyatt_fur',  count:2, name:'Kyatt fur'}]},
-    {id:'craft_kyatt_body',    name:'Kyatt body',       label:'Hunter armour crafted', category:'Hunter Leather', levelReq:58, xp:105, ticks:2, item:'kyatt_body',       itemName:'Kyatt body',       ingredients:[{item:'kyatt_fur',  count:3, name:'Kyatt fur'}]},
+    {id:'craft_kebbit_vambs',  name:'Swifttail vambraces',label:'Hunter armour crafted', category:'Hunter Leather', levelReq:20, xp:28,  ticks:2, item:'kebbit_vambraces', itemName:'Swifttail vambraces',ingredients:[{item:'kebbit_fur', count:1, name:'Swifttail fur'}]},
+    {id:'craft_kebbit_cowl',   name:'Swifttail cowl',   label:'Hunter armour crafted', category:'Hunter Leather', levelReq:24, xp:35,  ticks:2, item:'kebbit_cowl',      itemName:'Swifttail cowl',   ingredients:[{item:'kebbit_fur', count:1, name:'Swifttail fur'}]},
+    {id:'craft_kebbit_chaps',  name:'Swifttail chaps',  label:'Hunter armour crafted', category:'Hunter Leather', levelReq:28, xp:48,  ticks:2, item:'kebbit_chaps',     itemName:'Swifttail chaps',  ingredients:[{item:'kebbit_fur', count:2, name:'Swifttail fur'}]},
+    {id:'craft_kebbit_body',   name:'Swifttail body',   label:'Hunter armour crafted', category:'Hunter Leather', levelReq:33, xp:65,  ticks:2, item:'kebbit_body',      itemName:'Swifttail body',   ingredients:[{item:'kebbit_fur', count:3, name:'Swifttail fur'}]},
+    {id:'craft_kyatt_vambs',   name:'Jaguar vambraces', label:'Hunter armour crafted', category:'Hunter Leather', levelReq:45, xp:55,  ticks:2, item:'kyatt_vambraces',  itemName:'Jaguar vambraces', ingredients:[{item:'kyatt_fur',  count:1, name:'Jaguar fur'}]},
+    {id:'craft_kyatt_chaps',   name:'Jaguar chaps',     label:'Hunter armour crafted', category:'Hunter Leather', levelReq:52, xp:78,  ticks:2, item:'kyatt_chaps',      itemName:'Jaguar chaps',     ingredients:[{item:'kyatt_fur',  count:2, name:'Jaguar fur'}]},
+    {id:'craft_kyatt_body',    name:'Jaguar body',      label:'Hunter armour crafted', category:'Hunter Leather', levelReq:58, xp:105, ticks:2, item:'kyatt_body',       itemName:'Jaguar body',      ingredients:[{item:'kyatt_fur',  count:3, name:'Jaguar fur'}]},
 
     // --- Dragonhide Armour (hides from future combat) ---
     {id:'craft_green_dhide_vambs', name:"Green d'hide vambraces", label:"Green d'hide vambraces made", levelReq:57, xp:62,  ticks:3, item:'green_dhide_vambs', itemName:"Green d'hide vambraces", category:'Dragonhide Armour', ingredients:[{item:'green_dragonhide', count:1, name:'Green dragonhide'}]},
@@ -1643,8 +1643,8 @@ const ACTIONS = {
     {id:'copper_longtail',    name:'Copper longtail',      category:'Bird Snare',    levelReq:9,  xp:61,  ticks:6,  item:'raw_bird_meat',        itemName:'Raw bird meat'},
     {id:'tropical_wagtail',   name:'Tropical wagtail',     category:'Bird Snare',    levelReq:19, xp:95,  ticks:7,  item:'raw_bird_meat',        itemName:'Raw bird meat', count:2},
     // Deadfall Trap
-    {id:'wild_kebbit',        name:'Wild kebbit',          category:'Deadfall Trap', levelReq:7,  xp:48,  ticks:5,  item:'kebbit_fur',           itemName:'Kebbit fur'},
-    {id:'barb_tailed_kebbit', name:'Barb-tailed kebbit',   category:'Deadfall Trap', levelReq:37, xp:168, ticks:8,  item:'kebbit_fur',           itemName:'Kebbit fur',     count:2},
+    {id:'wild_kebbit',        name:'Wild swifttail',       category:'Deadfall Trap', levelReq:7,  xp:48,  ticks:5,  item:'kebbit_fur',           itemName:'Swifttail fur'},
+    {id:'barb_tailed_kebbit', name:'Barbed swifttail',     category:'Deadfall Trap', levelReq:37, xp:168, ticks:8,  item:'kebbit_fur',           itemName:'Swifttail fur',  count:2},
     // Box Trap
     {id:'ferret',             name:'Ferret',               category:'Box Trap',      levelReq:27, xp:115, ticks:6,  item:'raw_rabbit',           itemName:'Raw rabbit'},
     {id:'chinchompa',         name:'Chinchompa',           category:'Box Trap',      levelReq:53, xp:198, ticks:8,  item:'chinchompa',           itemName:'Chinchompa'},
@@ -1656,8 +1656,8 @@ const ACTIONS = {
     {id:'red_salamander',     name:'Red salamander',       category:'Net Trap',      levelReq:59, xp:272, ticks:11, item:'red_salamander',       itemName:'Red salamander'},
     {id:'black_salamander',   name:'Black salamander',     category:'Net Trap',      levelReq:67, xp:304, ticks:12, item:'black_salamander',     itemName:'Black salamander'},
     // Pitfall
-    {id:'larupia',            name:'Larupia',              category:'Pitfall',       levelReq:31, xp:98,  ticks:5,  item:'larupia_fur',          itemName:'Larupia fur'},
-    {id:'sabre_tooth_kyatt',  name:'Sabre-tooth kyatt',    category:'Pitfall',       levelReq:55, xp:300, ticks:9,  item:'kyatt_fur',            itemName:'Kyatt fur'},
+    {id:'larupia',            name:'Panther',               category:'Pitfall',       levelReq:31, xp:98,  ticks:5,  item:'larupia_fur',          itemName:'Panther pelt'},
+    {id:'sabre_tooth_kyatt',  name:'Sabre jaguar',          category:'Pitfall',       levelReq:55, xp:300, ticks:9,  item:'kyatt_fur',            itemName:'Jaguar fur'},
     // Impling Jar
     // Impling jars are obtained passively while training other hunter actions (see checkBonusDrop)
   ],
@@ -1957,7 +1957,7 @@ const ACTIONS = {
     {id:'void_stalker',      name:'Void Stalker',      category:'Slayer Monsters', levelReq:85, xp:900, ticks:19, slayerReq:85, stats:{hp:360, attack:70, defence:55},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:200,max:800, notable:false},
-             {item:'abyssal_whip', itemName:'Abyssal whip', chance:0.01, min:1,max:1, notable:true},
+             {item:'abyssal_whip', itemName:'Void Whip',    chance:0.01, min:1,max:1, notable:true},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.14, min:1,max:1, notable:false},
              {item:'green_charm',  itemName:'Green charm',  chance:0.05, min:1,max:1, notable:false},
              {item:'crimson_charm',itemName:'Crimson charm',chance:0.04, min:1,max:1, notable:true},
@@ -2112,7 +2112,7 @@ const TOOLS = {
     {id:'fishing_rod', name:'Fishing rod',         speedMult:1.00, reqLevel:1,  cost:[]},
     {id:'dragon_rod',  name:'Dragon fishing rod',  speedMult:0.75, reqLevel:60, cost:[{item:'krackens_beak',     name:"Kraken's Beak",     count:1}]},
     {id:'crystal_rod', name:'Crystal fishing rod', speedMult:0.60, reqLevel:1,  cost:[{item:'crystal_tool_seed', name:'Crystal tool seed', count:1}]},
-    {id:'abyssal_rod',  name:'Abyssal Rod',         speedMult:0.45, reqLevel:1,  cost:[{item:'map_to_the_deep',      name:'Map to the Deep',      count:1}]},
+    {id:'abyssal_rod',  name:'Deep Sea Rod',        speedMult:0.45, reqLevel:1,  cost:[{item:'map_to_the_deep',      name:'Map to the Deep',      count:1}]},
   ],
   thieving:[
     {id:'rusty_lockpick',  name:'Rusty lockpick',  speedMult:1.00, reqLevel:1,  cost:[], slipChance:0.30},
@@ -2169,18 +2169,18 @@ const SUMMONING_POUCHES = [
   // Familiars
   {id:'howl_pouch',            name:'Howl pouch',            icon:'🐺', category:'Familiars',       levelReq:1,  xp:4.8,   consumeXp:0.2, ticks:4, item:'howl_pouch',            itemName:'Howl pouch',            effectType:'speed_pct',     effectValue:0.03, affectedSkills:['woodcutting'],           effectLabel:'+3% Woodcutting speed',    ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'normal_logs',  count:1,name:'Logs'}]},
   {id:'dreadfowl_pouch',       name:'Dreadfowl pouch',       icon:'🐓', category:'Familiars',       levelReq:4,  xp:7.7,   consumeXp:0.4, ticks:4, item:'dreadfowl_pouch',       itemName:'Dreadfowl pouch',       effectType:'speed_pct',     effectValue:0.03, affectedSkills:['fishing'],               effectLabel:'+3% Fishing speed',        ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'raw_shrimps',  count:1,name:'Raw shrimps'}]},
-  {id:'bronze_minotaur_pouch', name:'Bronze minotaur pouch', icon:'🐂', category:'Familiars',       levelReq:8,  xp:14,    consumeXp:0.6, ticks:4, item:'bronze_minotaur_pouch', itemName:'Bronze minotaur pouch', effectType:'attack_pct',    effectValue:0.04, affectedSkills:['melee'],                 effectLabel:'+4% Melee accuracy',       ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'copper_ore',   count:1,name:'Copper ore'}]},
+  {id:'bronze_minotaur_pouch', name:'Bronze minotaur pouch', icon:'🐂', category:'Familiars',       levelReq:8,  xp:14,    consumeXp:0.6, ticks:4, item:'bronze_minotaur_pouch', itemName:'Bronze minotaur pouch', effectType:'attack_pct',    effectValue:0.04, affectedSkills:['melee'],                 effectLabel:'+4% Melee accuracy',       ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'bronze_bar',   count:1,name:'Bronze bar'}]},
   {id:'spirit_spider_pouch',   name:'Spirit spider pouch',   icon:'🕷', category:'Familiars',       levelReq:10, xp:14,    consumeXp:0.8, ticks:4, item:'spirit_spider_pouch',   itemName:'Spirit spider pouch',   effectType:'drop_rate_pct', effectValue:0.05, affectedSkills:[],                        effectLabel:'+5% Drop rate',            ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'bones',        count:1,name:'Bones'}]},
   {id:'granite_crab_pouch',    name:'Granite crab pouch',    icon:'🦀', category:'Familiars',       levelReq:16, xp:16.8,  consumeXp:1.2, ticks:4, item:'granite_crab_pouch',    itemName:'Granite crab pouch',    effectType:'xp_pct',        effectValue:0.04, affectedSkills:['mining'],                effectLabel:'+4% Mining XP',            ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'coal',         count:1,name:'Coal'}]},
   {id:'compost_mound_pouch',   name:'Compost mound pouch',   icon:'🪱', category:'Familiars',       levelReq:17, xp:19.6,  consumeXp:1.0, ticks:4, item:'compost_mound_pouch',   itemName:'Compost mound pouch',   effectType:'xp_pct',        effectValue:0.05, affectedSkills:['farming'],               effectLabel:'+5% Farming XP',           ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'ironwort',     count:1,name:'Ironwort'}]},
   {id:'spirit_mosquito_pouch', name:'Spirit mosquito pouch', icon:'🦟', category:'Familiars',       levelReq:17, xp:19.6,  consumeXp:1.0, ticks:4, item:'spirit_mosquito_pouch', itemName:'Spirit mosquito pouch', effectType:'hp_regen_mult',  effectValue:0.25, affectedSkills:[],                        effectLabel:'+25% HP regen rate',       ingredients:[{item:'gold_charm',   count:1,name:'Gold charm'},   {item:'raw_bird_meat',count:1,name:'Raw bird meat'}]},
-  {id:'spirit_scorpion_pouch', name:'Spirit scorpion pouch', icon:'🦂', category:'Familiars',       levelReq:26, xp:30,    consumeXp:1.5, ticks:4, item:'spirit_scorpion_pouch', itemName:'Spirit scorpion pouch', effectType:'attack_pct',    effectValue:0.06, affectedSkills:['melee'],                 effectLabel:'+6% Melee accuracy',       ingredients:[{item:'green_charm',  count:1,name:'Green charm'},  {item:'copper_ore',   count:1,name:'Copper ore'}]},
-  {id:'spirit_tz_kih_pouch',   name:'Spirit Bat pouch',      icon:'🦇', category:'Familiars',       levelReq:22, xp:25.4,  consumeXp:1.4, ticks:4, item:'spirit_tz_kih_pouch',   itemName:'Spirit Bat pouch',   effectType:'speed_pct',     effectValue:0.04, affectedSkills:null,                      effectLabel:'+4% all skilling speed',   ingredients:[{item:'green_charm',  count:1,name:'Green charm'},  {item:'raw_rabbit',   count:1,name:'Raw rabbit'}]},
+  {id:'spirit_scorpion_pouch', name:'Spirit scorpion pouch', icon:'🦂', category:'Familiars',       levelReq:26, xp:30,    consumeXp:1.5, ticks:4, item:'spirit_scorpion_pouch', itemName:'Spirit scorpion pouch', effectType:'attack_pct',    effectValue:0.06, affectedSkills:['melee'],                 effectLabel:'+6% Melee accuracy',       ingredients:[{item:'green_charm',  count:1,name:'Green charm'},  {item:'bones',        count:1,name:'Bones'}]},
+  {id:'spirit_tz_kih_pouch',   name:'Spirit Bat pouch',      icon:'🦇', category:'Familiars',       levelReq:22, xp:25.4,  consumeXp:1.4, ticks:4, item:'spirit_tz_kih_pouch',   itemName:'Spirit Bat pouch',   effectType:'speed_pct',     effectValue:0.04, affectedSkills:null,                      effectLabel:'+4% all skilling speed',   ingredients:[{item:'green_charm',  count:1,name:'Green charm'},  {item:'coal',         count:1,name:'Coal'}]},
   {id:'bull_ant_pouch',        name:'Bull ant pouch',        icon:'🐜', category:'Familiars',       levelReq:40, xp:46.2,  consumeXp:2.5, ticks:4, item:'bull_ant_pouch',        itemName:'Bull ant pouch',        effectType:'xp_pct',        effectValue:0.06, affectedSkills:null,                      effectLabel:'+6% all XP',               ingredients:[{item:'green_charm',  count:1,name:'Green charm'},  {item:'ironwort',     count:1,name:'Ironwort'}]},
-  {id:'spirit_kyatt_pouch',    name:'Spirit kyatt pouch',    icon:'🐆', category:'Familiars',       levelReq:57, xp:65.4,  consumeXp:3.2, ticks:4, item:'spirit_kyatt_pouch',    itemName:'Spirit kyatt pouch',    effectType:'drop_rate_pct', effectValue:0.08, affectedSkills:[],                        effectLabel:'+8% Drop rate',            ingredients:[{item:'green_charm',  count:1,name:'Green charm'},  {item:'big_bones',    count:1,name:'Big bones'}]},
-  {id:'abyssal_lurker_pouch',  name:'Abyssal lurker pouch',  icon:'👁', category:'Familiars',       levelReq:62, xp:75,    consumeXp:3.8, ticks:4, item:'abyssal_lurker_pouch',  itemName:'Abyssal lurker pouch',  effectType:'speed_pct',     effectValue:0.08, affectedSkills:['runecrafting'],          effectLabel:'+8% Runecrafting speed',   ingredients:[{item:'crimson_charm',count:1,name:'Crimson charm'},{item:'coal',         count:1,name:'Coal'}]},
+  {id:'spirit_kyatt_pouch',    name:'Spirit Jaguar pouch',   icon:'🐆', category:'Familiars',       levelReq:57, xp:65.4,  consumeXp:3.2, ticks:4, item:'spirit_kyatt_pouch',    itemName:'Spirit Jaguar pouch',   effectType:'drop_rate_pct', effectValue:0.08, affectedSkills:[],                        effectLabel:'+8% Drop rate',            ingredients:[{item:'green_charm',  count:1,name:'Green charm'},  {item:'big_bones',    count:1,name:'Big bones'}]},
+  {id:'abyssal_lurker_pouch',  name:'Void Lurker pouch',     icon:'👁', category:'Familiars',       levelReq:62, xp:75,    consumeXp:3.8, ticks:4, item:'abyssal_lurker_pouch',  itemName:'Void Lurker pouch',     effectType:'speed_pct',     effectValue:0.08, affectedSkills:['runecrafting'],          effectLabel:'+8% Runecrafting speed',   ingredients:[{item:'crimson_charm',count:1,name:'Crimson charm'},{item:'rune_essence', count:1,name:'Rune essence'}]},
   {id:'steel_titan_pouch',     name:'Steel titan pouch',     icon:'🤖', category:'Familiars',       levelReq:64, xp:83,    consumeXp:4.0, ticks:4, item:'steel_titan_pouch',     itemName:'Steel titan pouch',     effectType:'attack_pct',    effectValue:0.08, affectedSkills:['melee','ranged','magic'], effectLabel:'+8% combat accuracy',      ingredients:[{item:'crimson_charm',count:1,name:'Crimson charm'},{item:'steel_bar',    count:1,name:'Steel bar'}]},
-  {id:'spirit_dagannoth_pouch',name:'Spirit dagannoth pouch',icon:'🦈', category:'Familiars',       levelReq:74, xp:93.4,  consumeXp:4.5, ticks:4, item:'spirit_dagannoth_pouch',itemName:'Spirit dagannoth pouch',effectType:'xp_pct',        effectValue:0.08, affectedSkills:null,                      effectLabel:'+8% all XP',               ingredients:[{item:'crimson_charm',count:1,name:'Crimson charm'},{item:'big_bones',    count:1,name:'Big bones'}]},
+  {id:'spirit_dagannoth_pouch',name:'Spirit Shark pouch',    icon:'🦈', category:'Familiars',       levelReq:74, xp:93.4,  consumeXp:4.5, ticks:4, item:'spirit_dagannoth_pouch',itemName:'Spirit Shark pouch',    effectType:'xp_pct',        effectValue:0.08, affectedSkills:null,                      effectLabel:'+8% all XP',               ingredients:[{item:'crimson_charm',count:1,name:'Crimson charm'},{item:'raw_shark',    count:1,name:'Raw shark'}]},
   // Undead Familiars (lv 80+)
   {id:'revenant_goblin_pouch', name:'Revenant goblin pouch', icon:'💀', category:'Undead Familiars',levelReq:80, xp:102.4, consumeXp:5.0, ticks:4, item:'revenant_goblin_pouch', itemName:'Revenant goblin pouch', effectType:'drop_rate_pct', effectValue:0.12, affectedSkills:[],                        effectLabel:'+12% Drop rate',           ingredients:[{item:'blue_charm',   count:1,name:'Blue charm'},   {item:'bones',        count:1,name:'Bones'}]},
   {id:'revenant_imp_pouch',    name:'Revenant imp pouch',    icon:'👿', category:'Undead Familiars',levelReq:84, xp:109.6, consumeXp:5.5, ticks:4, item:'revenant_imp_pouch',    itemName:'Revenant imp pouch',    effectType:'hp_regen_mult',  effectValue:0.50, affectedSkills:[],                        effectLabel:'+50% HP regen rate',       ingredients:[{item:'blue_charm',   count:1,name:'Blue charm'},   {item:'big_bones',    count:1,name:'Big bones'}]},
@@ -2304,7 +2304,7 @@ const COLLECTION_LOG_SOURCES = [
   ]},
   // Combat
   { id:'mob_void_stalker',  name:'Void Stalker',         category:'Combat', items:[
-    {id:'abyssal_whip', name:'Abyssal whip', icon:'⚔️'},
+    {id:'abyssal_whip', name:'Void Whip',    icon:'⚔️'},
   ]},
   { id:'mob_ice_warrior',  name:'Ice Warrior',  category:'Combat', items:[{id:'ice_gloves',    name:'Ice gloves',    icon:'🧤'}]},
   { id:'mob_vampire',      name:'Vampire',      category:'Combat', items:[{id:'vampire_dust',  name:'Vampire dust',  icon:'🧪'}]},
@@ -2503,7 +2503,7 @@ const ACHIEVEMENTS = [
   // Special / Collection
   {id:'got_hydrix',    name:'Hydrix Hunter',     desc:'Obtain an uncut hydrix',                   icon:'🟣', category:'Special', checkFn:()=>((state.collectionLog?.geode_metamorphic?.uncut_hydrix||0)+(state.collectionLog?.jar_dragon?.uncut_hydrix||0))>0},
   {id:'got_tavia_map', name:'Treasure Hunter',   desc:'Find the Map to the Deep',                    icon:'🗺️', category:'Special', checkFn:()=>(state.collectionLog?.fishing_bonus?.map_to_the_deep||0)>0},
-  {id:'got_whip',      name:'Void Hunter',        desc:'Obtain an Abyssal whip',                  icon:'⚔️', category:'Special', checkFn:()=>(state.collectionLog?.mob_void_stalker?.abyssal_whip||0)>0},
+  {id:'got_whip',      name:'Void Hunter',        desc:'Obtain a Void Whip',                      icon:'⚔️', category:'Special', checkFn:()=>(state.collectionLog?.mob_void_stalker?.abyssal_whip||0)>0},
   {id:'got_ancient',     name:'Darkness Conquered',      desc:'Obtain an Ancient platebody',                icon:'🛡️', category:'Special', checkFn:()=>(state.collectionLog?.boss_harbinger?.ancient_platebody||0)>0, lockFn:()=>!state.slayer.unlocks?.boss_tasks},
   {id:'all_boss_log',  name:'Boss Logger',        desc:'Log an item from every boss',             icon:'📖', category:'Special', checkFn:()=>['boss_burrower','boss_void_dragon','boss_deep_kings','boss_solara','boss_karg','boss_harbinger','boss_ancient_lich'].every(s=>Object.keys(state.collectionLog?.[s]||{}).length>0), lockFn:()=>!state.slayer.unlocks?.boss_tasks},
   {id:'arch_3_perks',  name:'Perk Collector',     desc:'Have 3 archaeology perks active',         icon:'🏺', category:'Special', checkFn:()=>Object.keys(state.archaeology?.activePerks||{}).length>=3},
@@ -4863,7 +4863,7 @@ function completeAction(action, silent){
       const upgrade = fishActions[idx + 1];
       state.inventory[action.item]--;
       grantItem(upgrade.item, upgrade.itemName);
-      if (!silent) log(`✨ Abyssal Rod pulses — you caught a ${upgrade.itemName}!`);
+      if (!silent) log(`✨ Deep Sea Rod pulses — you caught a ${upgrade.itemName}!`);
     }
   }
   // Thieving: process drops table + agility extra-loot bonus
@@ -6835,7 +6835,7 @@ function getItemCat(id){
   if (id.endsWith('_logs'))                      return 'Logs';
   if (id.startsWith('raw_'))                     return 'Fish';
   if (id.startsWith('uncut_') || id.startsWith('cut_') || id.includes('dragonhide') || id.includes('leather') || id.endsWith('_fur') || id.endsWith('_hide')) return 'Gems & Hides';
-  if (id.endsWith('_bones') || id === 'bones' || id === 'raw_bird_meat' || id === 'raw_rabbit' || id === 'larupia_fur' || id === 'kyatt_fur' || id === 'kebbit_fur') return 'Hunter';
+  if (id.endsWith('_bones') || id === 'bones' || id === 'raw_bird_meat' || id === 'raw_rabbit' || id === 'larupia_fur' || id === 'kyatt_fur' || id === 'kebbit_fur' || id === 'panther_pelt') return 'Hunter';
   return 'Other';
 }
 
@@ -7032,8 +7032,25 @@ function init(){
   if (!state.slayer) state.slayer = { points:0, task:null, unlocks:{}, totalTasksDone:0 };
   if (state.slayer.autoTask         === undefined) state.slayer.autoTask         = false;
   if (state.slayer.autoTaskMasterId === undefined) state.slayer.autoTaskMasterId = 'turael';
-  if (state.itemNames?.['spirit_tz_kih_pouch'] === 'Spirit Tz-kih pouch')
-    state.itemNames['spirit_tz_kih_pouch'] = 'Spirit Bat pouch';
+  const _nameRenames = {
+    'spirit_tz_kih_pouch':  'Spirit Bat pouch',
+    'spirit_dagannoth_pouch':'Spirit Shark pouch',
+    'spirit_kyatt_pouch':   'Spirit Jaguar pouch',
+    'abyssal_lurker_pouch': 'Void Lurker pouch',
+    'abyssal_whip':         'Void Whip',
+    'kebbit_fur':           'Swifttail fur',
+    'larupia_fur':          'Panther pelt',
+    'kyatt_fur':            'Jaguar fur',
+    'kebbit_vambraces':     'Swifttail vambraces',
+    'kebbit_cowl':          'Swifttail cowl',
+    'kebbit_chaps':         'Swifttail chaps',
+    'kebbit_body':          'Swifttail body',
+    'kyatt_vambraces':      'Jaguar vambraces',
+    'kyatt_chaps':          'Jaguar chaps',
+    'kyatt_body':           'Jaguar body',
+  };
+  if (state.itemNames) for (const [id, newName] of Object.entries(_nameRenames))
+    if (state.itemNames[id]) state.itemNames[id] = newName;
   if (!state.slayer.unlocks) state.slayer.unlocks = {};
   if (state.slayer.totalTasksDone === undefined) state.slayer.totalTasksDone = 0;
   if (!state.settings) state.settings = { theme:'dark', compactMode:false, hideLocked:false, logLimit:60 };
