@@ -1043,6 +1043,7 @@ const SLAYER_SHOP = [
   { id:'skip_task',    name:'Skip Task',        cost:30,  type:'consumable', desc:'Cancel your current task, no penalty' },
   { id:'boss_tasks',   name:'Boss Task Unlock', cost:200, type:'permanent',  desc:'Duroc can assign boss monsters' },
   { id:'slayer_boost', name:'Slayer Boost',     cost:300, type:'permanent',  desc:'+10% Slayer XP from task kills' },
+  { id:'auto_task',    name:'Auto-Task',        cost:350, type:'permanent',  desc:'Automatically request a new task on completion — configure master in the Slayer panel' },
   { id:'task_extend',  name:'Extended Tasks',   cost:400, type:'permanent',  desc:'Tasks have 50% more kills (more points)' },
   { id:'point_bonus',  name:'Point Mastery',    cost:600, type:'permanent',  desc:'+5 bonus points per task completion' },
 ];
@@ -2506,7 +2507,7 @@ const ACHIEVEMENTS = [
   {id:'got_ancient',     name:'Darkness Conquered',      desc:'Obtain an Ancient platebody',                icon:'🛡️', category:'Special', checkFn:()=>(state.collectionLog?.boss_harbinger?.ancient_platebody||0)>0, lockFn:()=>!state.slayer.unlocks?.boss_tasks},
   {id:'all_boss_log',  name:'Boss Logger',        desc:'Log an item from every boss',             icon:'📖', category:'Special', checkFn:()=>['boss_burrower','boss_void_dragon','boss_deep_kings','boss_solara','boss_karg','boss_harbinger','boss_ancient_lich'].every(s=>Object.keys(state.collectionLog?.[s]||{}).length>0), lockFn:()=>!state.slayer.unlocks?.boss_tasks},
   {id:'arch_3_perks',  name:'Perk Collector',     desc:'Have 3 archaeology perks active',         icon:'🏺', category:'Special', checkFn:()=>Object.keys(state.archaeology?.activePerks||{}).length>=3},
-  {id:'slay_shop_all', name:'Points Well Spent',  desc:'Purchase all Slayer shop items',          icon:'🏪', category:'Special', checkFn:()=>['boss_tasks','slayer_boost','task_extend','point_bonus'].every(k=>!!state.slayer.unlocks?.[k])},
+  {id:'slay_shop_all', name:'Points Well Spent',  desc:'Purchase all Slayer shop items',          icon:'🏪', category:'Special', checkFn:()=>['boss_tasks','slayer_boost','auto_task','task_extend','point_bonus'].every(k=>!!state.slayer.unlocks?.[k])},
   {id:'goblin_diplomacy_done', name:'Diplomat', desc:'Complete the Goblin Diplomacy quest', icon:'📜', category:'Special', checkFn:()=>!!state.quests?.goblin_diplomacy},
   {id:'got_crystal',   name:'Crystal Gifts',      desc:'Find a crystal tool seed on Crystal course',icon:'💠', category:'Special', checkFn:()=>(state.collectionLog?.agility_crystal?.crystal_tool_seed||0)>0, lockFn:()=>!state.quests?.lost_city},
   {id:'tutorial_done', name:'First Steps',        desc:'Complete or skip the tutorial',              icon:'📖', category:'Special', checkFn:()=>!!state.tutorial?.done},
@@ -2978,7 +2979,7 @@ function freshState(){
     uiCollapsed:    {},  // { sectionId: true } — collapsed UI sections
     settings:       { theme:'dark', compactMode:false, hideLocked:false, logLimit:60 },
     archaeology:    { artifacts:{}, activePerks:{} },
-    slayer:         { points:0, task:null, unlocks:{}, totalTasksDone:0 },
+    slayer:         { points:0, task:null, unlocks:{}, totalTasksDone:0, autoTask:false, autoTaskMasterId:'turael' },
     batch:          { limit:0, done:0 },
     summoning:      { active:null, autoRenew:true },
     prayer:         { points:0, maxPoints:1, active:{}, drainCounter:0, lastRegen:0 },
@@ -4488,37 +4489,42 @@ function renderSlayerSection(){
     el.appendChild(card);
   });
 
-  // Slayer Shop
-  const shopHdr = document.createElement('div');
-  shopHdr.className = 'action-category-header';
-  shopHdr.textContent = `Slayer Shop — ${state.slayer?.points || 0} pts`;
-  el.appendChild(shopHdr);
+  // Auto-task row (shown when unlocked)
+  if (state.slayer.unlocks?.auto_task){
+    const atHdr = document.createElement('div');
+    atHdr.className = 'action-category-header';
+    atHdr.textContent = 'Auto-Task';
+    el.appendChild(atHdr);
+    const atRow = document.createElement('div');
+    atRow.style.cssText = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:6px 0;';
+    const togBtn = document.createElement('button');
+    togBtn.className = 'mini';
+    if (state.slayer.autoTask) togBtn.style.cssText = 'background:var(--accent2);border-color:var(--accent);font-weight:600;';
+    togBtn.textContent = state.slayer.autoTask ? 'ON' : 'OFF';
+    togBtn.onclick = () => { state.slayer.autoTask = !state.slayer.autoTask; render(); };
+    atRow.appendChild(togBtn);
+    const sel = document.createElement('select');
+    sel.style.cssText = 'background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:4px;padding:2px 6px;font-size:12px;';
+    SLAYER_MASTERS.filter(m => slayerLv >= m.levelReq).forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.id; opt.textContent = m.name;
+      if (m.id === (state.slayer.autoTaskMasterId || 'turael')) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    sel.onchange = () => { state.slayer.autoTaskMasterId = sel.value; };
+    atRow.appendChild(sel);
+    el.appendChild(atRow);
+  }
 
-  SLAYER_SHOP.forEach(item => {
-    const owned       = item.type === 'permanent' && !!(state.slayer.unlocks?.[item.id]);
-    const canAffordIt = (state.slayer?.points || 0) >= item.cost;
-    const isSkip      = item.id === 'skip_task';
-    if (isSkip && !task) return;
-    const card = document.createElement('div');
-    card.className = 'upgrade-tier' + (owned ? ' equipped' : '');
-    card.innerHTML = `<div class="tier-left">
-      <span>${item.name}</span>
-      <span class="tier-speed">${item.desc}</span>
-      <span class="tier-cost">${item.cost} pts</span>
-    </div>`;
-    const btn = document.createElement('button');
-    btn.className = 'mini';
-    if (owned){
-      btn.textContent = '✓ Owned';
-      btn.disabled = true;
-    } else {
-      btn.textContent = canAffordIt ? (isSkip ? 'Skip task' : 'Buy') : `Need ${item.cost} pts`;
-      btn.disabled = !canAffordIt;
-      btn.onclick = () => buySlayerUpgrade(item.id);
-    }
-    card.appendChild(btn);
-    el.appendChild(card);
-  });
+  // Open Shop button
+  const shopLinkRow = document.createElement('div');
+  shopLinkRow.style.cssText = 'margin-top:10px;';
+  const shopLinkBtn = document.createElement('button');
+  shopLinkBtn.className = 'mini';
+  shopLinkBtn.textContent = `🏪 Slayer Shop (${state.slayer?.points || 0} pts)`;
+  shopLinkBtn.onclick = () => { setShopTab('slayer'); openShop(); };
+  shopLinkRow.appendChild(shopLinkBtn);
+  el.appendChild(shopLinkRow);
 }
 
 function calcFloorSecs(action){
@@ -4966,8 +4972,10 @@ function completeAction(action, silent){
         state.slayer.totalTasksDone++;
         const bonusXp = Math.floor(state.slayer.task.target * action.xp * 0.5);
         grantXp('slayer', bonusXp, silent);
-        if (!silent) log(`✅ Slayer task complete! +${pts} points — visit a master for a new task.`);
+        const _autoTask = state.slayer.unlocks?.auto_task && state.slayer.autoTask;
+        if (!silent) log(`✅ Slayer task complete! +${pts} points${_autoTask ? '' : ' — visit a master for a new task.'}`);
         state.slayer.task = null;
+        if (_autoTask) assignSlayerTask(state.slayer.autoTaskMasterId || 'turael');
       }
     }
     return;
@@ -5283,7 +5291,7 @@ function renderShop(){
   el.appendChild(bal);
   const tabs = document.createElement('div');
   tabs.style.cssText = 'display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:10px;';
-  for (const [key, label] of [['buy','🛒 Buy'],['sell','💰 Sell'],['upgrades','⚒️ Upgrades'],['delving','🗝️ Dungeoneering'],['construction','🏗️ Construction']]){
+  for (const [key, label] of [['buy','🛒 Buy'],['sell','💰 Sell'],['upgrades','⚒️ Upgrades'],['delving','🗝️ Dungeoneering'],['construction','🏗️ Construction'],['slayer','🗡️ Slayer']]){
     const b = document.createElement('button');
     b.className = 'mini';
     if (shopTab === key) b.style.cssText = 'background:var(--accent2);color:var(--text);border-color:var(--accent);font-weight:600;';
@@ -5516,6 +5524,57 @@ function renderShop(){
       if (owned)    { btn.textContent = '✓ Built'; btn.disabled = true; }
       else          { btn.textContent = canBuy ? 'Build' : `Need ${(item.cost-have).toLocaleString()} more`; btn.disabled = !canBuy; btn.onclick = () => buyConstructionUpgrade(item.id); }
       card.appendChild(btn); el.appendChild(card);
+    });
+  }
+  if (shopTab === 'slayer'){
+    const slayerLv = levelForXp(state.skills.slayer?.xp || 0);
+    const ptsHdr = document.createElement('div');
+    ptsHdr.style.cssText = 'font-size:15px;font-weight:600;margin-bottom:12px;';
+    ptsHdr.innerHTML = `🗡️ <span style="color:var(--accent)">${(state.slayer?.points || 0).toLocaleString()}</span> Slayer points`;
+    el.appendChild(ptsHdr);
+    const task = state.slayer?.task;
+    SLAYER_SHOP.forEach(item => {
+      const owned       = item.type === 'permanent' && !!(state.slayer?.unlocks?.[item.id]);
+      const canAffordIt = (state.slayer?.points || 0) >= item.cost;
+      const isSkip      = item.id === 'skip_task';
+      if (isSkip && !task) return;
+      const card = document.createElement('div');
+      card.className = 'upgrade-tier' + (owned ? ' equipped' : '');
+      card.innerHTML = `<div class="tier-left"><span>${item.name}</span><span class="tier-speed">${item.desc}</span><span class="tier-cost">${item.cost} pts</span></div>`;
+      const btn = document.createElement('button');
+      btn.className = 'mini';
+      if (owned){
+        btn.textContent = '✓ Owned'; btn.disabled = true;
+      } else {
+        btn.textContent = canAffordIt ? (isSkip ? 'Skip task' : 'Buy') : `Need ${item.cost} pts`;
+        btn.disabled = !canAffordIt;
+        btn.onclick = () => { buySlayerUpgrade(item.id); renderShop(); };
+      }
+      card.appendChild(btn); el.appendChild(card);
+      // Auto-task controls appear directly below the auto_task card when owned
+      if (item.id === 'auto_task' && owned){
+        const atRow = document.createElement('div');
+        atRow.style.cssText = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:6px 8px 10px;';
+        const togBtn = document.createElement('button');
+        togBtn.className = 'mini';
+        if (state.slayer.autoTask) togBtn.style.cssText = 'background:var(--accent2);border-color:var(--accent);font-weight:600;';
+        togBtn.textContent = state.slayer.autoTask ? 'ON' : 'OFF';
+        togBtn.onclick = () => { state.slayer.autoTask = !state.slayer.autoTask; renderShop(); };
+        const lbl = document.createElement('span');
+        lbl.style.cssText = 'font-size:12px;color:var(--dim);';
+        lbl.textContent = 'Auto-task:';
+        const sel = document.createElement('select');
+        sel.style.cssText = 'background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:4px;padding:2px 6px;font-size:12px;';
+        SLAYER_MASTERS.filter(m => slayerLv >= m.levelReq).forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m.id; opt.textContent = m.name;
+          if (m.id === (state.slayer.autoTaskMasterId || 'turael')) opt.selected = true;
+          sel.appendChild(opt);
+        });
+        sel.onchange = () => { state.slayer.autoTaskMasterId = sel.value; };
+        atRow.appendChild(lbl); atRow.appendChild(togBtn); atRow.appendChild(sel);
+        el.appendChild(atRow);
+      }
     });
   }
 }
@@ -6963,6 +7022,8 @@ function init(){
     if ((state.inventory[_pid] || 0) > 0) activateSummon(_pid);
   }
   if (!state.slayer) state.slayer = { points:0, task:null, unlocks:{}, totalTasksDone:0 };
+  if (state.slayer.autoTask         === undefined) state.slayer.autoTask         = false;
+  if (state.slayer.autoTaskMasterId === undefined) state.slayer.autoTaskMasterId = 'turael';
   if (!state.slayer.unlocks) state.slayer.unlocks = {};
   if (state.slayer.totalTasksDone === undefined) state.slayer.totalTasksDone = 0;
   if (!state.settings) state.settings = { theme:'dark', compactMode:false, hideLocked:false, logLimit:60 };

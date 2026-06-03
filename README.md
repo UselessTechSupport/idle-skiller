@@ -71,7 +71,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 |---|---|---|---|
 | Agility | 99 | 7 courses (Verdant Trail → Crystal) | Scaled XP; Danger Trail drops PK coins; Crystal course requires quest + 70 Thieving; bonuses to Thieving pick/lock and Runecrafting speed |
 | Thieving | 99 | 19 actions | Pickpocket (9 NPCs, catch/stun mechanic) + Locks (10 chests); seeds, gems, and coins from drops; agility gives extra loot chance |
-| Slayer | 120 | 6 masters (Aldric → Duroc) | Task assignment system; 2–30 pts/task; kill-tracking per mob; task completion bonus XP; Points Shop (5 unlocks incl. boss tasks, XP boost, extended tasks) |
+| Slayer | 120 | 6 masters (Aldric → Duroc) | Task assignment system; 2–30 pts/task; kill-tracking per mob; task completion bonus XP; Points Shop in Store menu (6 unlocks: boss tasks, XP boost, **Auto-Task** 350pts, extended tasks, point mastery, skip task); Auto-Task automatically assigns from your chosen master on completion |
 | Dungeoneering | 120 | 3 floor types | Time-based floors; earns tokens; token shop: 7 unlocks — Swift Passage (floors 10% faster), Token Surplus (+15% tokens), Sage's Tome (+10% DG XP), Bonecrusher (auto Prayer XP from bones; toggleable), Auto-Eat, Charming Imp (+10% charm drops), Scroll of Life (25% seed preservation) |
 | Archaeology | 120 | 6 dig sites, 18 artefacts | Artefact restoration grants permanent perks (up to 3 active); perks include XP%, speed%, stat boosts, HP regen |
 
