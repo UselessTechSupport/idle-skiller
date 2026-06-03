@@ -41,7 +41,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Firemaking | 110 | 10 log tiers | Consumes logs for XP only; 15% fire spirit QTE event — catch it for an openable spirit with herb seeds, fire runes, and the rare **Boots of Ash** (feet slot, 3% chance to save a log per burn) |
 | Cooking | 99 | 16 fish | Burn chance 20% → 0% over 10 levels above req; halved by Cooking Range upgrade |
 | Fletching | 110 | 68 actions | Headless arrows, unstrung short/long bows, crossbow stocks, arrow assembly (Bronze–Dragon), stringing (10 shortbow + 10 longbow tiers), crossbow stringing (10 tiers; all require bowstring from shop); splinter mechanic (20% → 0%); dragon arrowheads drop from drakes |
-| Crafting | 110 | 60 actions | Gem cutting (7), jewellery (rings + amulets), Leather Armour, Hunter Leather (kebbit + kyatt), Dragonhide (5 tiers), Mage Armour (3 tiers); batch crafting |
+| Crafting | 110 | 62 actions | Gem cutting (7), jewellery (8 rings + 8 amulets + 2 silver slayer rings), Leather Armour, Hunter Leather (kebbit + kyatt), Dragonhide (5 tiers), Mage Armour (3 tiers); batch crafting; all jewelry has sell prices and unique perks (see tooltips) |
 | Herblore | 120 | 18 actions | 6 potion types × 3 tiers (Lesser / Normal / Supreme); herbs from Farming; drink from inventory — attack/defence/ranging/magic potions give +5/10/15% combat boost for 5 min; prayer potions restore 25/50/100% of prayer points; summoning potions extend familiar by 2/5/10 min |
 | Runecrafting | 110 | 11 rune altars (Air → Soul) | Agility bonus speeds up crafting; +5 coming-soon infusion actions visible at lv 90+ |
 | Construction | 99 | 10 plank types + 8 permanent upgrades | Upgrades unlock in-game buildings: Sawmill, Furnace, Cooking Range, Herb Patch, Study, Workshop, Manor, Altar |
@@ -111,12 +111,14 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - Tool upgrade shop, Construction upgrades, Dungeoneering token shop — all consolidated inside the 🏪 Shop overlay
 - Slayer points shop — 5 permanent unlocks
 - Archaeology perk system — up to 3 active perks from artefact restoration
+- **Jewelry perk system** — all 18 craftable rings and amulets have unique passive perks (XP boosts, rune save, farm speed, HP regen, prayer drain, dodge, bone XP, slayer kill modifiers); two silver slayer rings (Ring of Haste: 25% double-kill, Ring of Endurance: 25% zero-kill)
 
 **UI / QoL**
 - Mobile-first layout: header collapses to title row + scrollable button strip on narrow screens; larger touch targets; equipment grid single-column on mobile
 - Always-visible Farming, Slayer, Prayer, and Summoning sidebar panels (usable without navigating to the skill)
 - Inventory grouped by category — Openable, Equipment, Pets, Food & Potions, Seeds & Herbs, Summoning Pouches, Summoning, Ores & Bars, Logs, Fish, Gems & Hides, Runes & Energy, Ammo, Hunter, Currency, Other
 - Equipment panel with 12 slots (Head, Weapon, Offhand, Ammo, Neck, Cape, Ring, Body, Gloves, Legs, Feet, Pet) and live stat totals
+- **Item tooltips** — hover any inventory item or equipped slot to see stats, perks, spell school, heal amount, and equip requirements; mobile long-press (500ms) triggers the same tooltip
 - Prayer HUD in sidebar
 - Settings menu — Dark/Light theme, Compact mode, Hide locked actions, configurable log size, Replay Tutorial
 - **Tutorial** — opt-in at character creation (checkbox, on by default); 5-step overlay covering skills, actions, inventory, and next steps; skippable at any time; "First Steps" achievement fires on first completion or skip; replayable from Settings
