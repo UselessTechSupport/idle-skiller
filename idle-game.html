@@ -1114,7 +1114,7 @@ const SELL_PRICES = {
   clue_scroll_elite:200000, clue_scroll_master:500000,
   clue_autocomplete_easy:15000, clue_autocomplete_medium:50000, clue_autocomplete_hard:120000,
   clue_autocomplete_elite:350000, clue_autocomplete_master:800000,
-  goblin_crown:15000, goblin_sword:25000,
+  goblin_crown:15000, goblin_sword:25000, jaguar_tooth:3000,
   stormwing_staff:80000, venomous_staff:120000, tremor_wand:180000,
   venomous_scythe:350000, sovereign_wand:600000,
   amulet_of_skill:500000, gatherers_band:400000, artisan_ring:400000,
@@ -2244,6 +2244,7 @@ const COLLECTION_LOG_SOURCES = [
     {id:'nature_impling_jar',   name:'Nature impling jar',   icon:'🦋'},
     {id:'dragon_impling_jar',   name:'Dragon impling jar',   icon:'🦋'},
     {id:'kingly_impling_jar',   name:'Kingly impling jar',   icon:'🦋'},
+    {id:'jaguar_tooth',         name:'Sabre jaguar tooth',   icon:'🦷'},
   ]},
   { id:'jar_baby',     name:'Baby Impling Jar',     category:'Hunter', items:[
     {id:'coins',           name:'Coins',           icon:'🪙'},
@@ -2520,6 +2521,7 @@ const EQUIP_REQS = {
   ])),
   abyssal_whip:    {skill:'melee', level:70},
   celestial_sword: {skill:'melee', level:65},
+  jaguar_tooth:    {skill:'melee', level:45},
   ...Object.fromEntries(SKILLCAPES.filter(c => c.skillId).map(c => [c.id, {skill:c.skillId, level:99}])),
   goblin_crown:{skill:'defence', level:20},
   goblin_sword:{skill:'melee',   level:25},
@@ -2704,6 +2706,7 @@ const EQUIPMENT_SLOTS = [
 const ITEM_STATS = {
   comp_cape:{ attack:80, range:80, mage:80, defence:120 },
   abyssal_whip:{ attack:82 }, celestial_sword:{ attack:75 },
+  jaguar_tooth:{ attack:40, attackInterval:2, damageMult:0.70, accuracyPenalty:0.30 },
   ancient_platebody:{ attack:8, defence:95 }, warlord_chestplate:{ attack:6, defence:80 },
   berserker_ring:{ attack:8, defence:4 }, void_drake_head:{ defence:5 },
   leather_cowl:{ defence:3 }, leather_gloves:{ defence:2 }, leather_boots:{ defence:3 },
@@ -2787,7 +2790,7 @@ const ITEM_STATS = {
 };
 
 const EQUIP_SLOTS = {
-  abyssal_whip:'weapon', celestial_sword:'weapon',
+  abyssal_whip:'weapon', celestial_sword:'weapon', jaguar_tooth:'weapon',
   swamp_lizard:'weapon', orange_salamander:'weapon', red_salamander:'weapon', black_salamander:'weapon',
   void_drake_head:'head', leather_cowl:'head', kebbit_cowl:'head', cloth_hat:'head', splitbark_helm:'head', lunar_helm:'head',
   ancient_platebody:'body', warlord_chestplate:'body',
@@ -3223,6 +3226,8 @@ function getItemTooltip(itemId){
       lines.push(`<span class="tip-line">⏱ Attack speed: ${st.attackInterval} ticks</span>`);
     if (st.damageMult && st.damageMult !== 1.0)
       lines.push(`<span class="tip-line">💥 Damage: ×${st.damageMult}</span>`);
+    if (st.accuracyPenalty)
+      lines.push(`<span class="tip-line">🌀 Miss chance: +${Math.round(st.accuracyPenalty*100)}% (slippery grip)</span>`);
     if (st.bleed)
       lines.push(`<span class="tip-perk">🩸 Bleed: ${st.bleed.dmg} dmg × ${st.bleed.ticks} ticks on hit</span>`);
     if (st.twoHanded)
@@ -3700,6 +3705,8 @@ function combatTick(){
       && Math.random() < 0.15;
     let playerDmg = calcPlayerDamage(state.current.skillId, action, piercesArmour);
     if (playerDmg > 0) playerDmg = Math.max(1, Math.round(playerDmg * wStats.damageMult));
+    const _aPenalty = state.equipment?.weapon ? ITEM_STATS[state.equipment.weapon]?.accuracyPenalty : 0;
+    if (playerDmg > 0 && _aPenalty && Math.random() < _aPenalty) playerDmg = 0;
     const archMelee = getArchBonus('melee_dmg');
     if (archMelee && playerDmg > 0) playerDmg = Math.max(1, Math.round(playerDmg * (1 + archMelee)));
     const capeDmg = getCapeBonus(`${state.current.skillId}_dmg`, null);
@@ -5092,6 +5099,12 @@ function checkBonusDrop(skillId, action){
     grantItem(jar, jarName);
     logCollectionDrop('hunter_bonus', jar, 1);
     log(`🦋 An impling flutters by — you catch it! (${jarName})`);
+  }
+  // Sabre jaguar tooth: 1/1000 rare drop from Sabre jaguar pitfall
+  if (skillId === 'hunter' && action.id === 'sabre_tooth_kyatt' && Math.random() < 0.001){
+    grantItem('jaguar_tooth', 'Sabre jaguar tooth');
+    logCollectionDrop('hunter_bonus', 'jaguar_tooth', 1);
+    log(`🦷 The sabre jaguar drops a tooth! (Sabre jaguar tooth)`);
   }
 
   // Skilling pets — 1/5000 per action (0.0002); only if not already owned/equipped
