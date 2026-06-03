@@ -1056,7 +1056,7 @@ const SELL_PRICES = {
   radiant_energy:180, luminous_energy:240, incandescent_energy:320,
   birds_nest_seeds:600, birds_nest_ring:900,
   birds_nest_egg_red:250, birds_nest_egg_blue:250, birds_nest_egg_green:250,
-  mole_skin:6000, void_drake_head:30000, berserker_ring:60000,
+  mole_skin:6000, void_drake_head:30000, berserker_ring:60000, boots_of_ash:25000,
   celestial_sword:100000, warlord_chestplate:150000, ancient_platebody:600000,
   abyssal_whip:40000, crystal_tool_seed:80000,
   raw_bird_meat:20, raw_rabbit:30,
@@ -2140,6 +2140,13 @@ const COLLECTION_LOG_SOURCES = [
     {id:'birds_nest_egg_blue', name:"Bird's nest (blue egg)", icon:'🥚'},
     {id:'birds_nest_egg_green',name:"Bird's nest (grn egg)",  icon:'🥚'},
   ]},
+  { id:'firemaking_spirit', name:'Fire Spirit', category:'Woodcutting', items:[
+    {id:'boots_of_ash',     name:'Boots of Ash',     icon:'🥾'},
+    {id:'crimsonherb_seed', name:'Crimsonherb seed', icon:'🌿'},
+    {id:'veilmoss_seed',    name:'Veilmoss seed',    icon:'🌿'},
+    {id:'duskroot_seed',    name:'Duskroot seed',    icon:'🌿'},
+    {id:'goldbloom_seed',   name:'Goldbloom seed',   icon:'🌿'},
+  ]},
   // Mining
   { id:'geode_sedimentary', name:'Sedimentary Geode', category:'Mining', items:[
     {id:'uncut_sapphire', name:'Uncut sapphire',     icon:'💎'},
@@ -2321,6 +2328,7 @@ const OPENABLE_CLOG_SOURCE = {
   metamorphic_geode:'geode_metamorphic',
   baby_impling_jar:'jar_baby', eclectic_impling_jar:'jar_eclectic', dragon_impling_jar:'jar_dragon',
   earth_impling_jar:'jar_earth', nature_impling_jar:'jar_nature', kingly_impling_jar:'jar_kingly',
+  fire_spirit:'firemaking_spirit',
 };
 // Collection log source ID → combat.kills key (for displaying kill counts)
 const CLOG_KILL_SOURCE = {
@@ -2337,6 +2345,7 @@ const CLOG_OPEN_SOURCE = {
   jar_earth:'earth_impling_jar', jar_eclectic:'eclectic_impling_jar',
   jar_nature:'nature_impling_jar', jar_dragon:'dragon_impling_jar',
   jar_kingly:'kingly_impling_jar',
+  firemaking_spirit:'fire_spirit',
 };
 const CHARM_IDS = new Set(['gold_charm','green_charm','crimson_charm','blue_charm']);
 
@@ -2589,6 +2598,18 @@ const OPENABLE_ITEMS = {
     {id:'uncut_onyx',       name:'Uncut onyx',       weight:2},
     {id:'uncut_hydrix',     name:'Uncut hydrix',     weight:1},
   ]},
+  fire_spirit:{rewards:[
+    {id:'ironwort_seed',    name:'Ironwort seed',    weight:22, count:5},
+    {id:'shimmerleaf_seed', name:'Shimmerleaf seed', weight:18, count:3},
+    {id:'thornweed_seed',   name:'Thornweed seed',   weight:14, count:2},
+    {id:'fire_rune',        name:'Fire rune',        weight:12, count:15},
+    {id:'goldbloom_seed',   name:'Goldbloom seed',   weight:10, count:2},
+    {id:'duskroot_seed',    name:'Duskroot seed',    weight:8,  count:1},
+    {id:'veilmoss_seed',    name:'Veilmoss seed',    weight:6,  count:1},
+    {id:'coins',            name:'Coins',            weight:5,  count:2000},
+    {id:'crimsonherb_seed', name:'Crimsonherb seed', weight:4,  count:1},
+    {id:'boots_of_ash',     name:'Boots of Ash',     weight:1,  count:1},
+  ]},
 };
 
 const EQUIPMENT_SLOTS = [
@@ -2612,6 +2633,7 @@ const ITEM_STATS = {
   ancient_platebody:{ attack:8, defence:95 }, warlord_chestplate:{ attack:6, defence:80 },
   berserker_ring:{ attack:8, defence:4 }, void_drake_head:{ defence:5 },
   leather_cowl:{ defence:3 }, leather_gloves:{ defence:2 }, leather_boots:{ defence:3 },
+  boots_of_ash:{ defence:10 },
   leather_vambraces:{ defence:4 }, leather_body:{ defence:8 }, leather_chaps:{ defence:6 },
   swamp_lizard:{ attack:25, range:20 }, orange_salamander:{ attack:40, range:35 },
   red_salamander:{ attack:55, range:50 }, black_salamander:{ attack:70, range:65 },
@@ -2700,7 +2722,7 @@ const EQUIP_SLOTS = {
   kebbit_vambraces:'gloves', kyatt_vambraces:'gloves',
   green_dhide_vambs:'gloves', blue_dhide_vambs:'gloves',
   black_dhide_vambs:'gloves', red_dhide_vambs:'gloves', royal_dhide_vambs:'gloves',
-  leather_boots:'feet',
+  leather_boots:'feet', boots_of_ash:'feet',
   ...Object.fromEntries(
     METAL_TIERS.flatMap(t => ARMOUR_PIECES.map(p => [`${t.id}${p.suffix}`, p.slot]))
   ),
@@ -3194,8 +3216,10 @@ function canAfford(action){
 function consumeIngredients(action){
   if (!action.ingredients) return;
   const hasSaving = state.equipment?.ring === 'artisan_ring';
+  const hasAshBoots = state.current?.skillId === 'firemaking' && state.equipment?.feet === 'boots_of_ash';
   for (const ing of action.ingredients){
     if (hasSaving && Math.random() < 0.08) continue;
+    if (hasAshBoots && Math.random() < 0.03) continue;
     state.inventory[ing.item] -= ing.count;
   }
 }
