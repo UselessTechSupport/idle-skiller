@@ -40,7 +40,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Smithing | 110 | 11 bar types (Bronze → Primal) + generated armour/weapons + 6 arrowhead tiers | Consumes ores; bars feed tool upgrades and arrowhead smithing (1 bar → 15 arrowheads, Bronze–Rune); batch crafting (×1 ×5 ×? ×100) |
 | Firemaking | 110 | 10 log tiers | Consumes logs for XP only; 15% fire spirit bonus event |
 | Cooking | 99 | 16 fish | Burn chance 20% → 0% over 10 levels above req; halved by Cooking Range upgrade |
-| Fletching | 110 | 58 actions | Headless arrows, unstrung short/long bows, crossbows, arrow assembly (Bronze–Dragon), stringing (10 shortbow + 10 longbow tiers; requires bowstring from shop); splinter mechanic (20% → 0%); dragon arrowheads drop from drakes |
+| Fletching | 110 | 68 actions | Headless arrows, unstrung short/long bows, crossbow stocks, arrow assembly (Bronze–Dragon), stringing (10 shortbow + 10 longbow tiers), crossbow stringing (10 tiers; all require bowstring from shop); splinter mechanic (20% → 0%); dragon arrowheads drop from drakes |
 | Crafting | 110 | 60 actions | Gem cutting (7), jewellery (rings + amulets), Leather Armour, Hunter Leather (kebbit + kyatt), Dragonhide (5 tiers), Mage Armour (3 tiers); batch crafting |
 | Herblore | 120 | 18 actions | 6 potion types × 3 tiers (Lesser / Normal / Supreme); herbs from Farming; drink from inventory — attack/defence/ranging/magic potions give +5/10/15% combat boost for 5 min; prayer potions restore 25/50/100% of prayer points; summoning potions extend familiar by 2/5/10 min |
 | Runecrafting | 110 | 11 rune altars (Air → Soul) | Agility bonus speeds up crafting; +5 coming-soon infusion actions visible at lv 90+ |
@@ -50,8 +50,8 @@ When creating a new character, choose between **Normal** (death restores HP and 
 
 | Skill | Max Lv | Notes |
 |---|---|---|
-| Melee | 120 | Primary combat style; trains Attack + Constitution |
-| Ranged | 120 | Trains Ranged + Constitution; requires ammo in Ammo slot — arrows (Bronze–Dragon, +1–20 range bonus, 1 consumed per attack) or chinchompas (lv45/55/65, bleed on hit — refreshes, does not stack) |
+| Melee | 120 | Primary combat style; trains Attack + Constitution; weapon type matters — lightsword (3-tick, 0.7×, 8% bonus hit), broadsword (4-tick, 1.0×, baseline), 2H sword (5-tick, 1.4×, 10% crushing stun) |
+| Ranged | 120 | Trains Ranged + Constitution; requires ammo in Ammo slot — arrows (Bronze–Dragon, +1–20 range bonus, 1 consumed per attack) or chinchompas (lv45/55/65, bleed on hit — refreshes, does not stack); shortbow (3-tick, fast) vs longbow (4-tick, 1.2× damage) vs crossbow (4-tick, 1-handed, 15% armour pierce) |
 | Magic | 120 | Trains Magic + Constitution; requires a rune loaded in the Ammo slot — each rune defines a spell school with a unique effect: Air (5% bonus hit), Water (5% mob atk reduction), Earth (15% mob dmg reduction), Fire (burn DoT), Mind (20% mob dmg reduction), Cosmic (25% crit ×2), Chaos (40% miss + ×2.5 on hit), Nature (25% root), Law (15% reflect), Death (5% execute at <25% HP), Blood (25% lifesteal), Soul (+20% mob combat stats as flat dmg); Magic cape saves 85% of rune casts |
 | Defence | 120 | Gains XP in Defensive mode |
 | Constitution | 99 | Starts at lv 10; gains XP on every kill (50% of action XP) |
