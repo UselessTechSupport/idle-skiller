@@ -3856,6 +3856,7 @@ function harvestCrop(){
   grantItem(state.farming.herb, state.farming.herbName, qty);
   grantXp('farming', xp);
   log(`Harvested ${qty} ${state.farming.herbName}. (+${xp} xp)`);
+  checkBonusDrop('farming', {levelReq: seed?.levelReq || 1});
   // Farming pet: 1/5000 per harvest
   if ((state.inventory['pet_herb_sprite'] || 0) === 0 && state.equipment?.pet !== 'pet_herb_sprite' && Math.random() < 0.0002){
     grantItem('pet_herb_sprite', 'Herb Sprite', 1);
@@ -4775,6 +4776,7 @@ function completeAction(action, silent){
     }
     grantItem('headless_arrow', 'Headless arrow', tier.count);
     grantXp('fletching', tier.xp, silent);
+    if (!silent) checkBonusDrop(state.current?.skillId, action);
     return;
   }
   // Prayer: auto-select best bone from inventory
@@ -4796,6 +4798,7 @@ function completeAction(action, silent){
       $('pkTimer').textContent = '15';
       log(`⚔️ A PKer spotted you at the altar! You have 15s to roll.`);
     }
+    if (!silent) checkBonusDrop(state.current?.skillId, action);
     return;
   }
   // Archaeology: pick random artifact from site, track collection, grant XP
@@ -4808,6 +4811,7 @@ function completeAction(action, silent){
     if (prev >= artifact.needed){
       grantXp('archaeology', artifact.xp * 1.1, silent);
       if (!silent) log(`🏺 Extra ${artifact.name} — +10% XP`);
+      if (!silent) checkBonusDrop(state.current?.skillId, action);
       return;
     }
     // Progressive success chance: 75% at 0/needed → 25% at (needed-1)/needed
@@ -4830,6 +4834,7 @@ function completeAction(action, silent){
       }
     }
     grantXp('archaeology', artifact.xp, silent);
+    if (!silent) checkBonusDrop(state.current?.skillId, action);
     return;
   }
   // Failure mechanics (cooking burn, fletching splinter, divination transmute fail)
@@ -4893,6 +4898,7 @@ function completeAction(action, silent){
       if (!silent) log('✨ Agility — extra loot!');
     }
     grantXp('thieving', action.xp, silent);
+    if (!silent) checkBonusDrop(state.current?.skillId, action);
     return;
   }
   // Agility: scaled XP for wilderness, coin reward per lap, crystal seed for Crystal course, PKer encounter trigger
@@ -4917,6 +4923,7 @@ function completeAction(action, silent){
       if (!silent) log(`💎 Found a crystal tool seed on the Crystal course!`);
     }
     grantXp('agility', xp, silent);
+    if (!silent) checkBonusDrop(state.current?.skillId, action);
     return;
   }
   // Combat: multi-skill XP distribution + loot drops

@@ -139,6 +139,8 @@ When creating a new character, choose between **Normal** (death restores HP and 
 
 **Deferred mechanics:** PWA manifest + service worker for mobile install, Capacitor wrap for app stores
 
+**Bug fixes:** Clue scroll drops now correctly fire for all skills — thieving, agility, archaeology, prayer, fletching (headless arrows), and farming previously bypassed the bonus drop check due to early returns in the action completion path.
+
 ## Tech stack
 
 Plain HTML + CSS + JavaScript. Single file (~7,000 lines), no dependencies, no build step.
