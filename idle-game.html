@@ -1107,6 +1107,8 @@ const SELL_PRICES = {
   clue_autocomplete_easy:15000, clue_autocomplete_medium:50000, clue_autocomplete_hard:120000,
   clue_autocomplete_elite:350000, clue_autocomplete_master:800000,
   goblin_crown:15000, goblin_sword:25000,
+  stormwing_staff:80000, venomous_staff:120000, tremor_wand:180000,
+  venomous_scythe:350000, sovereign_wand:600000,
   amulet_of_skill:500000, gatherers_band:400000, artisan_ring:400000,
   spirit_catcher:800000, combat_pendant:600000, adventurers_amulet:2000000, masters_ring:1500000,
   woodcutting_cape:49500, mining_cape:49500, fishing_cape:49500, farming_cape:49500,
@@ -1712,12 +1714,22 @@ const ACTIONS = {
     {id:'craft_soul',   name:'Craft soul runes',   label:'Runes crafted', category:'Rune Crafting',
      levelReq:90, xp:300, ticks:18, item:'soul_rune',   itemName:'Soul rune',   count:1,
      ingredients:[{item:'rune_essence', count:6, name:'Rune essence'}]},
-    // --- Infuse Magic Gear (Coming Soon: lv90-110) ---
-    {id:'infuse_stormwing_staff',  name:'Infuse Stormwing staff',  levelReq:90,  xp:0, ticks:1, comingSoon:true},
-    {id:'infuse_venomous_staff',   name:'Infuse Venomous staff',   levelReq:95,  xp:0, ticks:1, comingSoon:true},
-    {id:'infuse_tremor_wand',      name:'Infuse Tremor wand',      levelReq:100, xp:0, ticks:1, comingSoon:true},
-    {id:'infuse_venomous_scythe',  name:'Infuse Venomous scythe',  levelReq:105, xp:0, ticks:1, comingSoon:true},
-    {id:'infuse_sovereign_wand',   name:'Infuse Sovereign wand',   levelReq:110, xp:0, ticks:1, comingSoon:true},
+    // --- Infuse Magic Gear (lv90-110) ---
+    {id:'infuse_stormwing_staff', name:'Infuse Stormwing staff', label:'Staves infused', category:'Infuse Magic Gear',
+     levelReq:90,  xp:500,  ticks:20, item:'stormwing_staff', itemName:'Stormwing staff',
+     ingredients:[{item:'rune_essence',count:100,name:'Rune essence'},{item:'air_rune',count:400,name:'Air rune'},{item:'soul_rune',count:40,name:'Soul rune'}]},
+    {id:'infuse_venomous_staff',  name:'Infuse Venomous staff',  label:'Staves infused', category:'Infuse Magic Gear',
+     levelReq:95,  xp:700,  ticks:22, item:'venomous_staff',  itemName:'Venomous staff',
+     ingredients:[{item:'rune_essence',count:150,name:'Rune essence'},{item:'nature_rune',count:200,name:'Nature rune'},{item:'death_rune',count:40,name:'Death rune'},{item:'cut_dragonstone',count:1,name:'Dragonstone'}]},
+    {id:'infuse_tremor_wand',     name:'Infuse Tremor wand',     label:'Wands infused',  category:'Infuse Magic Gear',
+     levelReq:100, xp:900,  ticks:25, item:'tremor_wand',     itemName:'Tremor wand',
+     ingredients:[{item:'rune_essence',count:200,name:'Rune essence'},{item:'earth_rune',count:200,name:'Earth rune'},{item:'soul_rune',count:50,name:'Soul rune'},{item:'cut_onyx',count:1,name:'Onyx'}]},
+    {id:'infuse_venomous_scythe', name:'Infuse Venomous scythe', label:'Scythes infused',category:'Infuse Magic Gear',
+     levelReq:105, xp:1200, ticks:28, item:'venomous_scythe', itemName:'Venomous scythe',
+     ingredients:[{item:'rune_essence',count:300,name:'Rune essence'},{item:'death_rune',count:200,name:'Death rune'},{item:'blood_rune',count:100,name:'Blood rune'},{item:'void_scale',count:1,name:'Void scale'},{item:'cut_hydrix',count:1,name:'Hydrix'}]},
+    {id:'infuse_sovereign_wand',  name:'Infuse Sovereign wand',  label:'Wands infused',  category:'Infuse Magic Gear',
+     levelReq:110, xp:1500, ticks:30, item:'sovereign_wand',  itemName:'Sovereign wand',
+     ingredients:[{item:'rune_essence',count:400,name:'Rune essence'},{item:'soul_rune',count:200,name:'Soul rune'},{item:'blood_rune',count:100,name:'Blood rune'},{item:'cut_hydrix',count:2,name:'Hydrix'}]},
   ],
   construction:[
     {id:'make_plank',          name:'Make plank',          label:'Planks made', levelReq:1,  xp:29,  ticks:4,  item:'plank',          itemName:'Plank',          ingredients:[{item:'normal_logs',        count:1, name:'Logs'}]},
@@ -2300,6 +2312,14 @@ const COLLECTION_LOG_SOURCES = [
   { id:'boss_karg',   name:'General Karg',     category:'Bosses', items:[{id:'warlord_chestplate', name:'Warlord chestplate',  icon:'🛡️'},{id:'warlord_helm', name:'Warlord helm', icon:'🪖'}]},
   { id:'boss_harbinger',        name:'The Harbinger',                  category:'Bosses', items:[{id:'ancient_platebody',   name:'Ancient platebody',    icon:'🛡️'},{id:'harbinger_amulet', name:'Harbinger amulet', icon:'💀'}]},
   { id:'boss_ancient_lich',name:'Ancient Lich', category:'Bosses', items:[{id:'ancient_scroll',name:'Ancient scroll',icon:'📜'}]},
+  // Infused Magic Gear
+  { id:'infused_magic_gear', name:'Infused Magic Gear', category:'Runecrafting', items:[
+    {id:'stormwing_staff',  name:'Stormwing staff',  icon:'🌩️'},
+    {id:'venomous_staff',   name:'Venomous staff',   icon:'🐍'},
+    {id:'tremor_wand',      name:'Tremor wand',      icon:'🌍'},
+    {id:'venomous_scythe',  name:'Venomous scythe',  icon:'⚔️'},
+    {id:'sovereign_wand',   name:'Sovereign wand',   icon:'👑'},
+  ]},
   // Pets
   { id:'skilling_pets', name:'Skilling Pets', category:'Pets', items:[
     {id:'pet_beaver',       name:'Beaver',        icon:'🦫'}, {id:'pet_rock_golem',   name:'Rock Golem',    icon:'🪨'},
@@ -2517,6 +2537,9 @@ const EQUIP_REQS = {
   chaos_rune:{skill:'magic',level:35},  nature_rune:{skill:'magic',level:44},
   law_rune:{skill:'magic',level:54},    death_rune:{skill:'magic',level:65},
   blood_rune:{skill:'magic',level:77},  soul_rune:{skill:'magic',level:90},
+  stormwing_staff:{skill:'magic',level:70}, venomous_staff:{skill:'magic',level:80},
+  tremor_wand:{skill:'magic',level:85},     venomous_scythe:{skill:'magic',level:90},
+  sovereign_wand:{skill:'magic',level:95},
 };
 
 const CONSTRUCTION_SHOP = [
@@ -2719,6 +2742,11 @@ const ITEM_STATS = {
   adventurers_amulet:{dropRate:5},
   goblin_crown:{attack:8, defence:25},
   goblin_sword:{attack:50, attackInterval:4, damageMult:1.0},
+  stormwing_staff:{mage:45},
+  venomous_staff:{mage:55},
+  tremor_wand:{mage:65},
+  venomous_scythe:{mage:72, attack:20, twoHanded:true},
+  sovereign_wand:{mage:88},
   ...Object.fromEntries(
     METAL_TIERS.flatMap(t => ARMOUR_PIECES.map(p => {
       const def = Math.max(1, Math.round(t.defBase * p.statMult));
@@ -2797,6 +2825,8 @@ const EQUIP_SLOTS = {
   amulet_of_skill:'neck', spirit_catcher:'neck', combat_pendant:'neck', adventurers_amulet:'neck',
   gatherers_band:'ring', artisan_ring:'ring', masters_ring:'ring',
   goblin_crown:'head', goblin_sword:'weapon',
+  stormwing_staff:'weapon', venomous_staff:'weapon', tremor_wand:'weapon',
+  venomous_scythe:'weapon', sovereign_wand:'weapon',
 };
 
 const DG_SHOP = [
@@ -3187,6 +3217,8 @@ function getItemTooltip(itemId){
     if (st.twoHanded)
       lines.push(`<span class="tip-line">⚠ Two-handed</span>`);
   }
+  const mwfx = _getMageEffectForItem(itemId);
+  if (mwfx) lines.push(`<span class="tip-perk">✨ ${_describeMageEffect(mwfx)}</span>`);
   const jp = JEWELRY_PERKS[itemId];
   if (jp) lines.push(`<span class="tip-perk">✨ ${_describePerk(jp)}</span>`);
   const sp = RUNE_SPELLS[itemId];
@@ -3423,6 +3455,24 @@ function getWeaponEffect(){
   if (w.endsWith('_lightsword')) return {type:'bonus_hit', chance:0.08};
   if (w.endsWith('_2h_sword'))   return {type:'stun',      chance:0.10};
   return null;
+}
+
+const MAGE_WEAPON_EFFECTS = {
+  stormwing_staff: {type:'bonus_hit', chance:0.10},
+  venomous_staff:  {type:'poison',    chance:0.06, dmg:3, ticks:5},
+  tremor_wand:     {type:'lifesteal', pct:0.20},
+  venomous_scythe: {type:'bonus_hit', chance:0.08},
+  sovereign_wand:  {type:'bonus_hit', chance:0.15},
+};
+function getMageWeaponEffect(){ return MAGE_WEAPON_EFFECTS[state.equipment?.weapon] || null; }
+function _getMageEffectForItem(id){ return MAGE_WEAPON_EFFECTS[id] || null; }
+function _describeMageEffect(fx){
+  if (!fx) return '';
+  const pct = v => Math.round(v * 100) + '%';
+  if (fx.type === 'bonus_hit') return `${pct(fx.chance)} chance to strike again`;
+  if (fx.type === 'poison')    return `${pct(fx.chance)} chance: venom (${fx.dmg} dmg × ${fx.ticks} ticks)`;
+  if (fx.type === 'lifesteal') return `Leech: heal ${pct(fx.pct)} of damage dealt per hit`;
+  return fx.type;
 }
 
 function equipItem(itemId){
@@ -3692,6 +3742,16 @@ function combatTick(){
     if (wEffect?.type === 'stun' && Math.random() < wEffect.chance){
       state.combat.stunNextMobAttack = true;
     }
+    // Magic weapon proc effects
+    const mwEffect = state.current.skillId === 'magic' && playerDmg > 0 ? getMageWeaponEffect() : null;
+    if (mwEffect?.type === 'bonus_hit' && Math.random() < mwEffect.chance){
+      const bonus = calcPlayerDamage(state.current.skillId, action);
+      if (bonus > 0) state.combat.mobHp = Math.max(0, state.combat.mobHp - bonus);
+    }
+    if (mwEffect?.type === 'poison' && Math.random() < mwEffect.chance && state.combat.mobHp > 0)
+      state.combat.burn = { dmg: mwEffect.dmg, ticks: mwEffect.ticks };
+    if (mwEffect?.type === 'lifesteal')
+      state.combat.hp = Math.min(state.combat.maxHp, state.combat.hp + Math.max(1, Math.floor(playerDmg * mwEffect.pct)));
   }
   // Mob damage with spell effects applied
   let mobDmg = calcMobDamage(action);
@@ -4773,6 +4833,7 @@ function completeAction(action, silent){
     if (state.current?.skillId === 'divination' && !action.transmute && action.item.endsWith('_energy'))
       qty = Math.floor(Math.random() * 5) + 1;
     grantItem(action.item, action.itemName, qty);
+    if (MAGE_WEAPON_EFFECTS[action.item]) logCollectionDrop('infused_magic_gear', action.item, qty);
     // Gatherer's Band: 10% chance to double-yield from gathering skills
     if (SKILL_BY_ID[skillId]?.type === 'gathering' && state.equipment?.ring === 'gatherers_band' && Math.random() < 0.10)
       grantItem(action.item, action.itemName, qty);
@@ -6156,7 +6217,7 @@ function renderActiveSkill(){
     rcDiv.className = 'dg-bonus';
     const agilLevel = levelForXp(state.skills.agility.xp);
     const rcBonus = Math.round(agilLevel / 99 * 25);
-    rcDiv.innerHTML = `Agility bonus: <b>+${rcBonus}%</b> speed · Mine rune essence in Mining · Runes used for spells (coming soon)`;
+    rcDiv.innerHTML = `Agility bonus: <b>+${rcBonus}%</b> speed · Mine rune essence in Mining · Runes power magic spells · Infuse magic gear at lv 90–110`;
     list.appendChild(rcDiv);
   }
   if (s.id === 'summoning'){
