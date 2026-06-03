@@ -4730,6 +4730,7 @@ function applyOffline(){
 
 /* ---------- 7. ACTIONS ---------- */
 function completeAction(action, silent){
+  const skillId = state.current?.skillId;
   // consume ingredients (smithing and future crafting skills)
   if (action.ingredients){
     const missing = canAfford(action);
@@ -4737,7 +4738,7 @@ function completeAction(action, silent){
     consumeIngredients(action);
   }
   // Pickpocket: chance to get caught → stun, no loot/xp this tick
-  if (state.current?.skillId === 'thieving' && action.catchChance && !action.lock){
+  if (skillId === 'thieving' && action.catchChance && !action.lock){
     const level    = levelForXp(state.skills.thieving.xp);
     const zeroAt   = action.catchZeroAt || 10;
     const noCatchAt = action.levelReq + zeroAt;
@@ -4751,7 +4752,7 @@ function completeAction(action, silent){
     }
   }
   // Lockpick slip: rusty lockpick can slip on locks (no loot, no stun)
-  if (state.current?.skillId === 'thieving' && action.lock){
+  if (skillId === 'thieving' && action.lock){
     const tier = (TOOLS.thieving || []).find(t => t.id === (state.tools?.thieving || 'rusty_lockpick'));
     if (tier?.slipChance && Math.random() < tier.slipChance){
       if (!silent) log('🔒 The lockpick slips — no reward this time.');
@@ -4776,7 +4777,7 @@ function completeAction(action, silent){
     }
     grantItem('headless_arrow', 'Headless arrow', tier.count);
     grantXp('fletching', tier.xp, silent);
-    if (!silent) checkBonusDrop(state.current?.skillId, action);
+    if (!silent) checkBonusDrop(skillId, action);
     return;
   }
   // Prayer: auto-select best bone from inventory
@@ -4798,11 +4799,11 @@ function completeAction(action, silent){
       $('pkTimer').textContent = '15';
       log(`⚔️ A PKer spotted you at the altar! You have 15s to roll.`);
     }
-    if (!silent) checkBonusDrop(state.current?.skillId, action);
+    if (!silent) checkBonusDrop(skillId, action);
     return;
   }
   // Archaeology: pick random artifact from site, track collection, grant XP
-  if (state.current?.skillId === 'archaeology'){
+  if (skillId === 'archaeology'){
     const siteArtifacts = ARCH_ARTIFACTS.filter(a => a.siteId === action.id);
     if (!siteArtifacts.length){ state.current = null; state.progress = 0; return; }
     const artifact = siteArtifacts[Math.floor(Math.random() * siteArtifacts.length)];
@@ -4811,7 +4812,7 @@ function completeAction(action, silent){
     if (prev >= artifact.needed){
       grantXp('archaeology', artifact.xp * 1.1, silent);
       if (!silent) log(`🏺 Extra ${artifact.name} — +10% XP`);
-      if (!silent) checkBonusDrop(state.current?.skillId, action);
+      if (!silent) checkBonusDrop(skillId, action);
       return;
     }
     // Progressive success chance: 75% at 0/needed → 25% at (needed-1)/needed
@@ -4834,20 +4835,20 @@ function completeAction(action, silent){
       }
     }
     grantXp('archaeology', artifact.xp, silent);
-    if (!silent) checkBonusDrop(state.current?.skillId, action);
+    if (!silent) checkBonusDrop(skillId, action);
     return;
   }
   // Failure mechanics (cooking burn, fletching splinter, divination transmute fail)
-  const failDef = FAIL_MECHANICS[state.current?.skillId];
+  const failDef = FAIL_MECHANICS[skillId];
   if (failDef && failDef.trigger(action)){
-    const level = levelForXp(state.skills[state.current.skillId].xp);
+    const level = levelForXp(state.skills[skillId].xp);
     let chance = failDef.chance;
     if (!failDef.flat){
       const noBadAt = action.levelReq + failDef.zeroAt;
       chance = Math.max(0, (noBadAt - level) / failDef.zeroAt * chance);
     }
     if (failDef.halvingItem && (state.inventory[failDef.halvingItem] || 0) > 0) chance *= 0.5;
-    if (state.current?.skillId === 'cooking' && state.upgrades?.cooking_range) chance *= 0.5;
+    if (skillId === 'cooking' && state.upgrades?.cooking_range) chance *= 0.5;
     if (Math.random() < chance){
       const qty = failDef.qtyFn ? failDef.qtyFn(action) : 1;
       grantItem(failDef.product, failDef.productName, qty);
@@ -4858,16 +4859,16 @@ function completeAction(action, silent){
   // give item (null for consume-only skills like Firemaking)
   if (action.item){
     let qty = action.count || 1;
-    if (state.current?.skillId === 'divination' && !action.transmute && action.item.endsWith('_energy'))
+    if (skillId === 'divination' && !action.transmute && action.item.endsWith('_energy'))
       qty = Math.floor(Math.random() * 5) + 1;
     grantItem(action.item, action.itemName, qty);
     if (MAGE_WEAPON_EFFECTS[action.item]) logCollectionDrop('infused_magic_gear', action.item, qty);
     // Gatherer's Band: 10% chance to double-yield from gathering skills
-    if (SKILL_BY_ID[state.current?.skillId]?.type === 'gathering' && state.equipment?.ring === 'gatherers_band' && Math.random() < 0.10)
+    if (SKILL_BY_ID[skillId]?.type === 'gathering' && state.equipment?.ring === 'gatherers_band' && Math.random() < 0.10)
       grantItem(action.item, action.itemName, qty);
   }
   // Abyssal Rod: 1% chance to upgrade the caught fish to the next tier
-  if (action.item && state.current?.skillId === 'fishing' &&
+  if (action.item && skillId === 'fishing' &&
       state.tools?.fishing === 'abyssal_rod' && Math.random() < 0.01){
     const fishActions = ACTIONS.fishing;
     const idx = fishActions.findIndex(a => a.id === state.current.actionId);
@@ -4879,7 +4880,7 @@ function completeAction(action, silent){
     }
   }
   // Thieving: process drops table + agility extra-loot bonus
-  if (state.current?.skillId === 'thieving'){
+  if (skillId === 'thieving'){
     for (const drop of (action.drops || [])){
       if (Math.random() < drop.chance){
         const qty = (drop.min||1) + Math.floor(Math.random() * ((drop.max||1)-(drop.min||1)+1));
@@ -4898,11 +4899,11 @@ function completeAction(action, silent){
       if (!silent) log('✨ Agility — extra loot!');
     }
     grantXp('thieving', action.xp, silent);
-    if (!silent) checkBonusDrop(state.current?.skillId, action);
+    if (!silent) checkBonusDrop(skillId, action);
     return;
   }
   // Agility: scaled XP for wilderness, coin reward per lap, crystal seed for Crystal course, PKer encounter trigger
-  if (state.current?.skillId === 'agility'){
+  if (skillId === 'agility'){
     const agilLevel = levelForXp(state.skills.agility.xp);
     const xp = action.xpBase != null
       ? action.xpBase + agilLevel * (action.xpPerLevel || 0)
@@ -4923,12 +4924,12 @@ function completeAction(action, silent){
       if (!silent) log(`💎 Found a crystal tool seed on the Crystal course!`);
     }
     grantXp('agility', xp, silent);
-    if (!silent) checkBonusDrop(state.current?.skillId, action);
+    if (!silent) checkBonusDrop(skillId, action);
     return;
   }
   // Combat: multi-skill XP distribution + loot drops
-  if (state.current?.skillId && COMBAT_SKILL_IDS.has(state.current.skillId)){
-    const styleId = state.current.skillId;
+  if (skillId && COMBAT_SKILL_IDS.has(skillId)){
+    const styleId = skillId;
     const base    = action.xp;
     const xpGrants = [
       [styleId,        state.combat.defensive ? base * 0.5 : base],
@@ -4956,7 +4957,7 @@ function completeAction(action, silent){
         if (!silent && drop.notable) log(`+${qty} ${drop.itemName}`);
       }
     }
-    if (!silent) checkBonusDrop(state.current?.skillId, action);
+    if (!silent) checkBonusDrop(skillId, action);
     // Goblin Diplomatic Note — 1/100 from goblins; guaranteed at 1000kc
     if (action.id === 'goblin' && !(state.inventory['goblin_diplomatic_note'] || 0) && !state.quests?.goblin_diplomacy){
       const kc = state.combat.kills['goblin'] || 0;
@@ -5003,11 +5004,11 @@ function completeAction(action, silent){
     return;
   }
   // give xp + check level up
-  const _xpAmt = (state.current.skillId === 'dungeoneering' && state.upgrades?.dg_xp_boost)
+  const _xpAmt = (skillId === 'dungeoneering' && state.upgrades?.dg_xp_boost)
     ? Math.floor(action.xp * 1.1) : action.xp;
-  grantXp(state.current.skillId, _xpAmt, silent);
+  grantXp(skillId, _xpAmt, silent);
   // Award DG tokens on floor completion; refresh cached values for next loop
-  if (state.current?.skillId === 'dungeoneering' && !silent){
+  if (skillId === 'dungeoneering' && !silent){
     const dgLevel = levelForXp(state.skills['dungeoneering'].xp);
     const tokens  = Math.max(1, Math.floor(dgLevel * action.tokenMult * (1 + getCapeBonus('dg_token_pct', null) + getPetBonus('dg_token_pct', null) + (state.upgrades?.token_surplus ? 0.15 : 0))));
     grantItem('dg_tokens', 'Dungeoneering tokens', tokens);
@@ -5029,7 +5030,7 @@ function completeAction(action, silent){
       return;
     }
   }
-  if (!silent) checkBonusDrop(state.current?.skillId, action);
+  if (!silent) checkBonusDrop(skillId, action);
 }
 
 function checkBonusDrop(skillId, action){
