@@ -650,8 +650,8 @@ const SKILLCAPES = [
   {id:'melee_cape',       name:'Melee cape',       icon:'⚔️', skillId:'melee',       cost:99000, perkType:'melee_dmg',    perkValue:0.05, perkLabel:'+5% Melee damage'},
   {id:'defence_cape',     name:'Defence cape',     icon:'🛡️', skillId:'defence',     cost:99000, perkType:'defence_flat', perkValue:10,   perkLabel:'+10 Defence bonus'},
   {id:'constitution_cape',name:'Constitution cape',icon:'❤️', skillId:'constitution',cost:99000, perkType:'hp_regen_mult',perkValue:0.15, perkLabel:'+15% HP regen rate'},
-  {id:'ranged_cape',      name:'Ranged cape',      icon:'🏹', skillId:'ranged',      cost:99000, perkType:'ranged_dmg',   perkValue:0.05, perkLabel:'+5% Ranged damage'},
-  {id:'magic_cape',       name:'Magic cape',       icon:'🪄', skillId:'magic',       cost:99000, perkType:'magic_dmg',    perkValue:0.05, perkLabel:'+5% Magic damage'},
+  {id:'ranged_cape',      name:'Ranged cape',      icon:'🏹', skillId:'ranged',      cost:99000, perkType:'ammo_save',    perkValue:0.85, perkLabel:'85% chance to save ammo'},
+  {id:'magic_cape',       name:'Magic cape',       icon:'🪄', skillId:'magic',       cost:99000, perkType:'rune_save',    perkValue:0.85, perkLabel:'85% chance to save runes'},
   {id:'prayer_cape',      name:'Prayer cape',      icon:'🙏', skillId:'prayer',      cost:99000, perkType:'prayer_drain', perkValue:0.15, perkLabel:'-15% Prayer drain rate'},
   {id:'summoning_cape',   name:'Summoning cape',   icon:'🧿', skillId:'summoning',   cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Summoning XP'},
   {id:'agility_cape',     name:'Agility cape',     icon:'🏃', skillId:'agility',     cost:99000, perkType:'speed_pct',    perkValue:0.10, perkLabel:'10% faster Agility'},
@@ -3366,8 +3366,11 @@ function combatTick(){
         log('🏹 Out of ammo! Load some arrows or chinchompas to continue ranging.');
         state.current = null; state.progress = 0; render(); return;
       }
-      state.inventory[ammoId]--;
-      if (state.inventory[ammoId] <= 0) delete state.inventory[ammoId];
+      const ammoSave = getCapeBonus('ammo_save', null);
+      if (!ammoSave || Math.random() >= ammoSave){
+        state.inventory[ammoId]--;
+        if (state.inventory[ammoId] <= 0) delete state.inventory[ammoId];
+      }
     }
     let playerDmg = calcPlayerDamage(state.current.skillId, action);
     if (playerDmg > 0) playerDmg = Math.max(1, Math.round(playerDmg * wStats.damageMult));
