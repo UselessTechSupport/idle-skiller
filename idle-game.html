@@ -4975,7 +4975,15 @@ function completeAction(action, silent){
         const _autoTask = state.slayer.unlocks?.auto_task && state.slayer.autoTask;
         if (!silent) log(`✅ Slayer task complete! +${pts} points${_autoTask ? '' : ' — visit a master for a new task.'}`);
         state.slayer.task = null;
-        if (_autoTask) assignSlayerTask(state.slayer.autoTaskMasterId || 'turael');
+        if (_autoTask){
+          const _slayerLv = levelForXp(state.skills.slayer?.xp || 0);
+          const _storedId = state.slayer.autoTaskMasterId || 'turael';
+          const _stored   = SLAYER_MASTERS.find(m => m.id === _storedId);
+          const _masterId = (_stored && _slayerLv >= _stored.levelReq)
+            ? _storedId
+            : ([...SLAYER_MASTERS].reverse().find(m => _slayerLv >= m.levelReq)?.id || 'turael');
+          assignSlayerTask(_masterId);
+        }
       }
     }
     return;
