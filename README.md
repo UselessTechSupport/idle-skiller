@@ -135,7 +135,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - All bosses: respective boss pet (1/500–1/1000 per kill)
 - Drakes (Emerald/Azure/Obsidian): dragon arrowheads (30–50% chance, 3–15 qty; used for dragon arrow assembly in Fletching)
 
-**Deferred mechanics:** Rune usage for Magic combat, PWA manifest + service worker for mobile install, Capacitor wrap for app stores
+**Deferred mechanics:** Runecrafting infusion actions (5 lv90+ spells, visible as coming-soon placeholders), PWA manifest + service worker for mobile install, Capacitor wrap for app stores
 
 ## Tech stack
 

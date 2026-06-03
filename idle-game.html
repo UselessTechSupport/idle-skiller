@@ -3412,6 +3412,7 @@ function combatTick(){
       completeAction(action);
       if (state.current){ state.combat.mobHp = action.stats.hp; state.combat.mobMaxHp = action.stats.hp; state.progress = 0; }
       state.combat.bleed = {dmg:0, ticks:0};
+      state.combat.stunNextMobAttack = false;
       return;
     }
   }
@@ -3423,6 +3424,7 @@ function combatTick(){
       completeAction(action);
       if (state.current){ state.combat.mobHp = action.stats.hp; state.combat.mobMaxHp = action.stats.hp; state.progress = 0; }
       state.combat.burn = {dmg:0, ticks:0};
+      state.combat.stunNextMobAttack = false;
       return;
     }
   }
@@ -3488,7 +3490,7 @@ function combatTick(){
           playerDmg = state.combat.mobHp;
       if (fx.type === 'soul_scale' && playerDmg > 0){
         const ms = action.stats || {};
-        const total = (ms.attack||0) + (ms.defence||0) + (ms.mage||0) + (ms.magic||0) + (ms.range||0);
+        const total = (ms.attack||0) + (ms.defence||0) + (ms.mage||0) + (ms.range||0);
         playerDmg += Math.max(0, Math.floor(total * fx.pct));
       }
     }
@@ -3533,7 +3535,7 @@ function combatTick(){
       mobDmg = Math.floor(mobDmg * (1 - fx.pct));
     if (fx.type === 'root_chance' && Math.random() < fx.chance)
       mobDmg = 0;
-    if (fx.type === 'reflect' && mobDmg > 0){
+    if (fx.type === 'reflect' && mobDmg > 0 && state.combat.mobHp > 0){
       const reflected = Math.max(1, Math.floor(mobDmg * fx.pct));
       state.combat.mobHp = Math.max(0, state.combat.mobHp - reflected);
     }
@@ -3569,6 +3571,7 @@ function combatTick(){
   }
   if (state.combat.mobHp <= 0){
     completeAction(action);
+    state.combat.stunNextMobAttack = false;
     if (state.current){
       state.combat.mobHp    = action.stats.hp;
       state.combat.mobMaxHp = action.stats.hp;
@@ -6506,6 +6509,7 @@ function getItemCat(id){
   if (id.endsWith('_charm'))                     return 'Summoning';
   if (id.endsWith('_arrow') || id.endsWith('_bolt') || id.includes('chinchompa')) return 'Ammo';
   if (id.endsWith('_rune') || id.endsWith('_energy') || id.includes('_memory') || id === 'rune_essence' || id === 'pure_essence') return 'Runes & Energy';
+  if (id.endsWith('bow_u'))                      return 'Equipment';
   if (EQUIP_SLOTS[id])                           return 'Equipment';
   if (FOOD_HEALS[id] || id.endsWith('_potion'))  return 'Food & Potions';
   if (id.endsWith('_seed') || HERB_IDS.has(id))  return 'Seeds & Herbs';
