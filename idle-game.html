@@ -3217,11 +3217,12 @@ function getItemTooltip(itemId){
   const lines = [];
   const st = ITEM_STATS[itemId];
   if (st){
-    if (st.attack)   lines.push(`<span class="tip-line">⚔️ Attack: +${st.attack}</span>`);
-    if (st.range)    lines.push(`<span class="tip-line">🏹 Range: +${st.range}</span>`);
-    if (st.mage)     lines.push(`<span class="tip-line">🔮 Magic: +${st.mage}</span>`);
-    if (st.defence)  lines.push(`<span class="tip-line">🛡️ Defence: +${st.defence}</span>`);
-    if (st.dropRate) lines.push(`<span class="tip-line">🍀 Drop rate: +${st.dropRate}%</span>`);
+    const _s = v => (v > 0 ? '+' : '') + v;
+    if (st.attack)   lines.push(`<span class="tip-line">⚔️ Attack: ${_s(st.attack)}</span>`);
+    if (st.range)    lines.push(`<span class="tip-line">🏹 Range: ${_s(st.range)}</span>`);
+    if (st.mage)     lines.push(`<span class="tip-line">🔮 Magic: ${_s(st.mage)}</span>`);
+    if (st.defence)  lines.push(`<span class="tip-line">🛡️ Defence: ${_s(st.defence)}</span>`);
+    if (st.dropRate) lines.push(`<span class="tip-line">🍀 Drop rate: ${_s(st.dropRate)}%</span>`);
     if (st.attackInterval && st.attackInterval !== 4)
       lines.push(`<span class="tip-line">⏱ Attack speed: ${st.attackInterval} ticks</span>`);
     if (st.damageMult && st.damageMult !== 1.0)
