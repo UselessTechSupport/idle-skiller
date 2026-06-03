@@ -701,6 +701,24 @@ const PETS = [
   {id:'pet_void_spawn',    name:'Void Spawn',     icon:'🌌', skillId:null,           perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% all XP'},
 ];
 
+const JEWELRY_PERKS = {
+  gold_amulet:        {type:'xp_pct',            skillId:null,         value:0.02},
+  sapphire_amulet:    {type:'rune_save',                               value:0.05},
+  emerald_amulet:     {type:'farm_speed',                              value:0.10},
+  ruby_amulet:        {type:'hp_regen_mult',                           value:0.20},
+  diamond_amulet:     {type:'prayer_drain',                            value:0.05},
+  dragonstone_amulet: {type:'xp_pct',            skillId:null,         value:0.03},
+  onyx_amulet:        {type:'dodge',                                   value:0.05},
+  hydrix_amulet:      {type:'xp_pct',            skillId:null,         value:0.05},
+  ring_of_haste:      {type:'slayer_double_kill',                      value:0.25},
+  ring_of_endurance:  {type:'slayer_zero_kill',                        value:0.25},
+  ruby_ring:          {type:'speed_pct',         skillId:'firemaking', value:0.05},
+  diamond_ring:       {type:'prayer_drain',                            value:0.10},
+  dragonstone_ring:   {type:'bone_xp',                                 value:0.10},
+  onyx_ring:          {type:'xp_pct',            skillId:'slayer',     value:0.05},
+  hydrix_ring:        {type:'xp_pct',            skillId:null,         value:0.03},
+};
+
 const CLUE_TIERS = [
   {id:'easy',   name:'Easy',   icon:'📜', color:'#4ade80', minLevel:1},
   {id:'medium', name:'Medium', icon:'📜', color:'#60a5fa', minLevel:40},
@@ -1057,6 +1075,16 @@ const SELL_PRICES = {
   birds_nest_seeds:600, birds_nest_ring:900,
   birds_nest_egg_red:250, birds_nest_egg_blue:250, birds_nest_egg_green:250,
   mole_skin:6000, void_drake_head:30000, berserker_ring:60000, boots_of_ash:25000,
+  ring_of_haste:2000, ring_of_endurance:3000,
+  gold_ring:30,       gold_amulet:50,
+  sapphire_ring:200,  sapphire_amulet:300,
+  emerald_ring:350,   emerald_amulet:500,
+  ruby_ring:700,      ruby_amulet:1000,
+  diamond_ring:1500,  diamond_amulet:2000,
+  dragonstone_ring:5000, dragonstone_amulet:8000,
+  onyx_ring:20000,    onyx_amulet:30000,
+  hydrix_ring:200000, hydrix_amulet:300000,
+  harbinger_amulet:50000,
   celestial_sword:100000, warlord_chestplate:150000, ancient_platebody:600000,
   abyssal_whip:40000, crystal_tool_seed:80000,
   raw_bird_meat:20, raw_rabbit:30,
@@ -1380,6 +1408,8 @@ const ACTIONS = {
     {id:'craft_onyx_amulet',        name:'Onyx amulet',        label:'Onyx amulets made',        levelReq:90,  xp:165, ticks:2, item:'onyx_amulet',        itemName:'Onyx amulet',        category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'onyx',        count:1,name:'Onyx'}]},
     {id:'craft_hydrix_ring',        name:'Hydrix ring',        label:'Hydrix rings made',        levelReq:79,  xp:130, ticks:2, item:'hydrix_ring',        itemName:'Hydrix ring',        category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'hydrix',      count:1,name:'Hydrix'}]},
     {id:'craft_hydrix_amulet',      name:'Hydrix amulet',      label:'Hydrix amulets made',      levelReq:100, xp:180, ticks:2, item:'hydrix_amulet',      itemName:'Hydrix amulet',      category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'hydrix',      count:1,name:'Hydrix'}]},
+    {id:'craft_ring_of_haste',     name:'Ring of Haste',      label:'Rings of Haste crafted',     levelReq:30,  xp:65,  ticks:2, item:'ring_of_haste',     itemName:'Ring of Haste',     category:'Jewellery', ingredients:[{item:'silver_bar',count:1,name:'Silver bar'},{item:'sapphire',count:1,name:'Sapphire'}]},
+    {id:'craft_ring_of_endurance', name:'Ring of Endurance',  label:'Rings of Endurance crafted', levelReq:38,  xp:80,  ticks:2, item:'ring_of_endurance', itemName:'Ring of Endurance', category:'Jewellery', ingredients:[{item:'silver_bar',count:1,name:'Silver bar'},{item:'ruby',    count:1,name:'Ruby'}]},
 
     // --- Leather Armour (leather from future combat/hunter) ---
     {id:'craft_leather_gloves',    name:'Leather gloves',    label:'Leather gloves made',    levelReq:1,  xp:13.8,  ticks:2, item:'leather_gloves',    itemName:'Leather gloves',    category:'Leather Armour', ingredients:[{item:'leather',count:1,name:'Leather'}]},
@@ -2634,6 +2664,8 @@ const ITEM_STATS = {
   berserker_ring:{ attack:8, defence:4 }, void_drake_head:{ defence:5 },
   leather_cowl:{ defence:3 }, leather_gloves:{ defence:2 }, leather_boots:{ defence:3 },
   boots_of_ash:{ defence:10 },
+  gold_ring:{defence:2}, sapphire_ring:{mage:5,defence:2}, emerald_ring:{range:5,defence:3},
+  gold_amulet:{defence:2}, ring_of_endurance:{defence:5},
   leather_vambraces:{ defence:4 }, leather_body:{ defence:8 }, leather_chaps:{ defence:6 },
   swamp_lizard:{ attack:25, range:20 }, orange_salamander:{ attack:40, range:35 },
   red_salamander:{ attack:55, range:50 }, black_salamander:{ attack:70, range:65 },
@@ -2729,7 +2761,8 @@ const EQUIP_SLOTS = {
   ...Object.fromEntries(
     METAL_TIERS.flatMap(t => WEAPON_PIECES.map(w => [`${t.id}${w.suffix}`, w.slot]))
   ),
-  berserker_ring:'ring', sapphire_ring:'ring', emerald_ring:'ring', ruby_ring:'ring',
+  berserker_ring:'ring', ring_of_haste:'ring', ring_of_endurance:'ring',
+  sapphire_ring:'ring', emerald_ring:'ring', ruby_ring:'ring',
   diamond_ring:'ring', dragonstone_ring:'ring', onyx_ring:'ring', hydrix_ring:'ring', gold_ring:'ring',
   sapphire_amulet:'neck', emerald_amulet:'neck', ruby_amulet:'neck', diamond_amulet:'neck',
   dragonstone_amulet:'neck', onyx_amulet:'neck', hydrix_amulet:'neck', gold_amulet:'neck',
@@ -2955,6 +2988,8 @@ function grantXp(skillId, xp, silent=false){
   if (capeXp) xp *= (1 + capeXp);
   const petXp = getPetBonus('xp_pct', skillId);
   if (petXp) xp *= (1 + petXp);
+  const jwlXp = getJewelryBonus('xp_pct', skillId);
+  if (jwlXp) xp *= (1 + jwlXp);
   const neck = state.equipment?.neck, ring = state.equipment?.ring;
   if (neck === 'amulet_of_skill' && !COMBAT_SKILL_IDS.has(skillId)) xp *= 1.05;
   if (neck === 'combat_pendant'  && COMBAT_SKILL_IDS.has(skillId))  xp *= 1.07;
@@ -3134,6 +3169,19 @@ function getCapeBonus(type, skillId){
   if (!cape || cape.perkType !== type) return 0;
   if (skillId != null && cape.skillId !== skillId) return 0;
   return cape.perkValue;
+}
+
+function getJewelryBonus(type, skillId){
+  let total = 0;
+  for (const slot of ['ring','neck']){
+    const id = state.equipment?.[slot];
+    if (!id) continue;
+    const p = JEWELRY_PERKS[id];
+    if (!p || p.type !== type) continue;
+    if (skillId != null && p.skillId != null && p.skillId !== skillId) continue;
+    total += p.value;
+  }
+  return total;
 }
 
 function getPetBonus(type, skillId){
@@ -3480,7 +3528,7 @@ function combatTick(){
         log('🔮 Out of runes! Restock to continue casting.');
         state.current = null; state.progress = 0; render(); return;
       }
-      const runeSave = getCapeBonus('rune_save', null);
+      const runeSave = getCapeBonus('rune_save', null) + getJewelryBonus('rune_save', null);
       if (!runeSave || Math.random() >= runeSave){
         state.inventory[runeId]--;
         if (state.inventory[runeId] <= 0) delete state.inventory[runeId];
@@ -3564,6 +3612,8 @@ function combatTick(){
       state.combat.mobHp = Math.max(0, state.combat.mobHp - reflected);
     }
   }
+  const _dodgeChance = getJewelryBonus('dodge', null);
+  if (_dodgeChance > 0 && Math.random() < _dodgeChance) mobDmg = 0;
   state.combat.hp = Math.max(0, state.combat.hp - mobDmg);
   // Auto-eat: fire before death check so food can save the player
   if (state.upgrades?.auto_eat && state.combat.foodQueue.length > 0){
@@ -3964,7 +4014,7 @@ function renderFarmTab(){
     el.appendChild(plantRow);
   } else {
     const elapsed   = Date.now() - f.plantedAt;
-    const growMs    = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming')) * (1 - getPetBonus('farm_speed','farming'));
+    const growMs    = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming')) * (1 - getPetBonus('farm_speed','farming')) * (1 - getJewelryBonus('farm_speed', null));
     const pct       = Math.min(100, Math.floor(elapsed / growMs * 100));
     const remaining = Math.max(0, Math.ceil((f.plantedAt + growMs - Date.now()) / 1000));
     const mins = Math.floor(remaining / 60);
@@ -4069,7 +4119,7 @@ function renderFarmSection(){
     el.appendChild(plantRow);
   } else {
     const elapsed = Date.now() - f.plantedAt;
-    const growMs  = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming')) * (1 - getPetBonus('farm_speed','farming'));
+    const growMs  = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming')) * (1 - getPetBonus('farm_speed','farming')) * (1 - getJewelryBonus('farm_speed', null));
     const pct     = Math.min(100, Math.floor(elapsed / growMs * 100));
     const remaining = Math.max(0, Math.ceil((f.plantedAt + growMs - Date.now()) / 1000));
     const mins = Math.floor(remaining / 60);
@@ -4317,21 +4367,22 @@ function getCurrentEffTicks(action){
   const sumSpeed  = getSummonBonusForSkill('speed_pct', state.current?.skillId);
   const capeSpeed = getCapeBonus('speed_pct', state.current?.skillId);
   const petSpeed  = getPetBonus('speed_pct', state.current?.skillId);
+  const jwlSpeed  = getJewelryBonus('speed_pct', state.current?.skillId);
   if (state.current?.skillId === 'thieving'){
     const agilLevel = effLvl('agility');
     if (action.lock){
       const toolMult = getToolSpeedMult('thieving');
       const agilMult = 1 - (agilLevel / 99 * 0.30);
-      return Math.max(1, Math.ceil(base * toolMult * agilMult * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed)));
+      return Math.max(1, Math.ceil(base * toolMult * agilMult * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - jwlSpeed)));
     }
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20)) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed)));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20)) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - jwlSpeed)));
   }
   if (state.current?.skillId === 'runecrafting'){
     const agilLevel = effLvl('agility');
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed)));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - jwlSpeed)));
   }
   const archSpeed = getArchBonus(`speed_${state.current.skillId}`);
-  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId) * getConstructionMult(state.current.skillId) * (1 - archSpeed) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed)));
+  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId) * getConstructionMult(state.current.skillId) * (1 - archSpeed) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - jwlSpeed)));
 }
 
 function getConstructionMult(skillId){
@@ -4406,7 +4457,7 @@ function tick(){
   // Passive HP regen — 1% maxHp every 10s
   if (state.combat.maxHp && state.combat.hp < state.combat.maxHp){
     const now = Date.now();
-    if (now - (state.combat.lastRegen || 0) >= 30000 / (1 + getArchBonus('hp_regen') + getSummonBonus('hp_regen_mult') + getCapeBonus('hp_regen_mult', null) + getPetBonus('hp_regen_mult', null))){
+    if (now - (state.combat.lastRegen || 0) >= 30000 / (1 + getArchBonus('hp_regen') + getSummonBonus('hp_regen_mult') + getCapeBonus('hp_regen_mult', null) + getPetBonus('hp_regen_mult', null) + getJewelryBonus('hp_regen_mult', null))){
       state.combat.hp = Math.min(state.combat.maxHp, state.combat.hp + 1);
       state.combat.lastRegen = now;
     }
@@ -4420,7 +4471,7 @@ function tick(){
     }, 0);
     if (totalDrain > 0){
       const pBonus = Math.max(1, state.stats.prayer || 1);
-      const prayerDrainReduction = getCapeBonus('prayer_drain', null) + getPetBonus('prayer_drain', null);
+      const prayerDrainReduction = getCapeBonus('prayer_drain', null) + getPetBonus('prayer_drain', null) + getJewelryBonus('prayer_drain', null);
       const threshold = Math.max(1, Math.round(10 / totalDrain * (1 + pBonus / 30) / Math.max(0.01, 1 - prayerDrainReduction)));
       state.prayer.drainCounter = (state.prayer.drainCounter || 0) + 1;
       if (state.prayer.drainCounter >= threshold){
@@ -4457,7 +4508,7 @@ function tick(){
   }
   // Farming: detect crop becoming ready and log once
   if (state.farming?.seed && !state.farming.ready) {
-    const growMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming')) * (1 - getPetBonus('farm_speed','farming'));
+    const growMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming')) * (1 - getPetBonus('farm_speed','farming')) * (1 - getJewelryBonus('farm_speed', null));
     if (Date.now() >= state.farming.plantedAt + growMs) {
       state.farming.ready = true;
       log(`Your ${state.farming.seedName} are ready to harvest!`);
@@ -4556,7 +4607,7 @@ function completeAction(action, silent){
     if (!bone){ if (!silent) log('Out of bones — stopped.'); state.current = null; state.progress = 0; return; }
     state.inventory[bone.item]--;
     if (state.inventory[bone.item] <= 0) delete state.inventory[bone.item];
-    grantXp('prayer', bone.xpBase * (action.altarMult || 1), silent);
+    grantXp('prayer', bone.xpBase * (action.altarMult || 1) * (1 + getJewelryBonus('bone_xp', null)), silent);
     if (action.wilderness && !silent && !wildernessEncounter && Math.random() < 0.12){
       const prayLevel = levelForXp(state.skills.prayer.xp);
       const coins = (action.pkCoinBase || 80) + prayLevel * (action.pkCoinPerLevel || 12);
@@ -4710,7 +4761,7 @@ function completeAction(action, silent){
         grantItem(drop.item, drop.itemName, qty);
         if (state.upgrades?.bonecrusher && state.upgrades?.bonecrusher_on){
           const _bone = BONE_TIERS.find(b => b.item === drop.item);
-          if (_bone) grantXp('prayer', _bone.xpBase * 0.5 * qty, silent);
+          if (_bone) grantXp('prayer', _bone.xpBase * 0.5 * qty * (1 + getJewelryBonus('bone_xp', null)), silent);
         }
         if (drop.notable && _clogSrc) logCollectionDrop(_clogSrc, drop.item, qty);
         if (drop.notable) logCollectionDrop('boss_pets', drop.item, qty);
@@ -4735,7 +4786,12 @@ function completeAction(action, silent){
     if (state.slayer?.task?.mobId === action.id){
       const boost = state.slayer.unlocks?.slayer_boost ? 1.1 : 1.0;
       grantXp('slayer', action.xp * boost, silent);
-      state.slayer.task.count++;
+      let _killCount = 1;
+      const _doubleChance = getJewelryBonus('slayer_double_kill', null);
+      const _skipChance   = getJewelryBonus('slayer_zero_kill',   null);
+      if (_doubleChance > 0 && Math.random() < _doubleChance) _killCount = 2;
+      if (_skipChance   > 0 && Math.random() < _skipChance)   _killCount = 0;
+      state.slayer.task.count += _killCount;
       if (state.slayer.task.count >= state.slayer.task.target){
         const pts = state.slayer.task.pointsReward + (state.slayer.unlocks?.point_bonus ? 5 : 0);
         state.slayer.points += pts;
@@ -6623,7 +6679,7 @@ function renderItemsPanel(){
 
   // Inline farm status
   if (state.farming?.seed){
-    const growMs  = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming')) * (1 - getPetBonus('farm_speed','farming'));
+    const growMs  = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming')) * (1 - getPetBonus('farm_speed','farming')) * (1 - getJewelryBonus('farm_speed', null));
     const elapsed = Date.now() - state.farming.plantedAt;
     const pct     = Math.min(100, Math.round(elapsed / growMs * 100));
     html += `<div style="margin-top:10px;border-top:1px solid var(--line);padding-top:8px;">
@@ -6772,7 +6828,7 @@ function init(){
   if (state.prayer.drainCounter == null)         state.prayer.drainCounter = 0;
 
   // Farming: mark ready if crop matured while offline (timestamps survive saves)
-  const _offlineGrowMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming')) * (1 - getPetBonus('farm_speed','farming'));
+  const _offlineGrowMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1) * (1 - getCapeBonus('farm_speed','farming')) * (1 - getPetBonus('farm_speed','farming')) * (1 - getJewelryBonus('farm_speed', null));
   if (state.farming?.seed && !state.farming.ready &&
       Date.now() >= state.farming.plantedAt + _offlineGrowMs) {
     state.farming.ready = true;
