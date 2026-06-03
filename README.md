@@ -40,7 +40,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Smithing | 110 | 11 bar types (Bronze → Primal) + generated armour/weapons + 6 arrowhead tiers | Consumes ores; bars feed tool upgrades and arrowhead smithing (1 bar → 15 arrowheads, Bronze–Rune); batch crafting (×1 ×5 ×? ×100) |
 | Firemaking | 110 | 10 log tiers | Consumes logs for XP only; 15% fire spirit bonus event |
 | Cooking | 99 | 16 fish | Burn chance 20% → 0% over 10 levels above req; halved by Cooking Range upgrade |
-| Fletching | 110 | 38 actions | Headless arrows, unstrung short/long bows, crossbows, arrow assembly (Bronze–Dragon); splinter mechanic (20% → 0%); dragon arrowheads drop from drakes |
+| Fletching | 110 | 58 actions | Headless arrows, unstrung short/long bows, crossbows, arrow assembly (Bronze–Dragon), stringing (10 shortbow + 10 longbow tiers; requires bowstring from shop); splinter mechanic (20% → 0%); dragon arrowheads drop from drakes |
 | Crafting | 110 | 60 actions | Gem cutting (7), jewellery (rings + amulets), Leather Armour, Hunter Leather (kebbit + kyatt), Dragonhide (5 tiers), Mage Armour (3 tiers); batch crafting |
 | Herblore | 120 | 18 actions | 6 potion types × 3 tiers (Lesser / Normal / Supreme); herbs from Farming; drink from inventory — attack/defence/ranging/magic potions give +5/10/15% combat boost for 5 min; prayer potions restore 25/50/100% of prayer points; summoning potions extend familiar by 2/5/10 min |
 | Runecrafting | 110 | 11 rune altars (Air → Soul) | Agility bonus speeds up crafting; +5 coming-soon infusion actions visible at lv 90+ |
@@ -135,7 +135,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - All bosses: respective boss pet (1/500–1/1000 per kill)
 - Drakes (Emerald/Azure/Obsidian): dragon arrowheads (30–50% chance, 3–15 qty; used for dragon arrow assembly in Fletching)
 
-**Deferred mechanics:** Fletching stringing (bowstring + unstrung → strung bow), Smithing arrowheads (enables arrow assembly), rune usage for Magic combat, PWA manifest + service worker for mobile install, Capacitor wrap for app stores
+**Deferred mechanics:** Rune usage for Magic combat, PWA manifest + service worker for mobile install, Capacitor wrap for app stores
 
 ## Tech stack
 
