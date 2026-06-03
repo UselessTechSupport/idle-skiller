@@ -5754,7 +5754,7 @@ function startAction(skillId, actionId, batchLimit = 0){
   if (state.hardcore && state.dead){ log('This character has died — create a new character to keep playing.'); return; }
   const action = getAction(skillId, actionId);
   if (!action) return;
-  if (levelForXp(state.skills[skillId].xp) < action.levelReq) return; // locked
+  if (!COMBAT_SKILL_IDS.has(skillId) && levelForXp(state.skills[skillId].xp) < action.levelReq) return; // locked
   if (action.slayerReq && levelForXp(state.skills.slayer?.xp || 0) < action.slayerReq){
     log(`You need Slayer lv ${action.slayerReq} to fight ${action.name}.`); return;
   }
