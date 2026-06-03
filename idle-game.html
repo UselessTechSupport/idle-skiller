@@ -5539,6 +5539,7 @@ function renderCollectionLog(){
         const cnt = srcLog[item.id] || 0;
         const tile = document.createElement('div');
         tile.className = 'clog-item' + (cnt > 0 ? ' found' : ' unfound');
+        tile.dataset.tipid = item.id;
         tile.innerHTML = `<div class="clog-item-icon">${item.icon || '❓'}</div><span class="clog-item-name">${item.name}</span>${cnt > 0 ? `<span class="clog-item-count">${cnt >= 1000 ? (cnt/1000).toFixed(1)+'k' : cnt}×</span>` : ''}`;
         itemsDiv.appendChild(tile);
       }
