@@ -29,7 +29,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Woodcutting | 110 | 13 trees (Tree → Eternal magic) | Tool upgrades (bronze axe → T100); bird's nest bonus drops |
 | Mining | 110 | 13 rocks (Copper → Primal + Rune essence) | Tool upgrades (bronze pickaxe → T100); geode bonus drops |
 | Fishing | 99 | 16 fish (Shrimps → Sailfish) | Tool upgrades (rod → Abyssal Rod); Kraken's Beak (capped at 1; blocked once Dragon Rod built) + Map to the Deep rare drops |
-| Farming | 120 | 7 herb seeds | Background skill — grows in 5 min while you train anything else; harvest 3–15 herbs; auto-replant toggle; XP = seed tier (150–2000) × herbs harvested, so level directly drives XP earned per plant; speed up with Herb Patch upgrade |
+| Farming | 120 | 7 herb seeds + 6 tree seeds | Background skill — two independent patches (herb + tree); herb patch grows in 5 min, harvest 3–15 herbs; tree patch grows in 1–12 hours (acorn → elder, Farming lv 15–90 required), harvest 3–15 logs; auto-replant toggle on both; XP = seed tier × qty harvested; speed up herb patch with Herb Patch upgrade |
 | Hunter | 99 | 15 actions | Bird Snare (raw bird meat), Deadfall (swifttail fur → Hunter Leather via Crafting), Box Trap (chinchompas), Net Trap (salamander weapons), Pitfall (panther pelt / jaguar fur); **passive impling spawns** (1% per trap action, tier scales with hunter level — Baby lv17, Earth lv36, Eclectic lv50, Nature lv62, Dragon lv83, Kingly lv91); all 6 jar types openable for loot; **Sabre jaguar tooth** (1/1000 from Sabre jaguar pitfall — unique 2-tick melee weapon with 30% extra miss chance) |
 | Divination | 99 | 10 wisps + 54 transmutations | Gathers energy; transmutes logs/ores/fish/gems up one tier; 10% breakdown chance → divine dust |
 

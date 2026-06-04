@@ -942,6 +942,14 @@ const SEEDS = [
   {id:'crimsonherb_seed', name:'Crimsonherb seed',   herb:'crimsonherb', herbName:'Crimsonherb', xp:2000},
 ];
 const HERB_IDS = new Set(SEEDS.map(s => s.herb));
+const TREE_SEEDS = [
+  {id:'acorn',       name:'Acorn',       tree:'oak_logs',    treeName:'Oak logs',    xp:80,  levelReq:15, growMs: 1*60*60*1000},
+  {id:'willow_seed', name:'Willow seed', tree:'willow_logs', treeName:'Willow logs', xp:150, levelReq:30, growMs: 2*60*60*1000},
+  {id:'maple_seed',  name:'Maple seed',  tree:'maple_logs',  treeName:'Maple logs',  xp:250, levelReq:45, growMs: 4*60*60*1000},
+  {id:'yew_seed',    name:'Yew seed',    tree:'yew_logs',    treeName:'Yew logs',    xp:400, levelReq:60, growMs: 6*60*60*1000},
+  {id:'magic_seed',  name:'Magic seed',  tree:'magic_logs',  treeName:'Magic logs',  xp:600, levelReq:75, growMs: 9*60*60*1000},
+  {id:'elder_seed',  name:'Elder seed',  tree:'elder_logs',  treeName:'Elder logs',  xp:900, levelReq:90, growMs:12*60*60*1000},
+];
 const AUTOSAVE_MS = 10000;            // autosave every 10s
 const SAVE_KEY        = 'idleSkillerSave_v1';
 const CHARS_KEY       = 'idleSkillerChars';
@@ -3035,7 +3043,8 @@ function freshState(){
     tools: {},              // { skillId: tierId }
     equipment: { head:null, weapon:null, offhand:null, ammo:null, neck:null, cape:null, ring:null, body:null, gloves:null, legs:null, feet:null, pet:null },
     stats:     { attack:1, range:1, mage:1, defence:1, prayer:1, summoning:1, dropRate:0 },
-    farming:   { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false, readyAt:null },
+    farming:      { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false, readyAt:null },
+    tree_farming: { seed:null, seedName:null, tree:null, treeName:null, plantedAt:null, ready:false, autoReplant:false, readyAt:null },
     combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, attackTimer:0, kills:{}, potionBoosts:{}, bleed:{dmg:0, ticks:0}, burn:{dmg:0, ticks:0}, stunNextMobAttack:false },
     upgrades:       {},
     quests:         {},  // { questId: true } — completed quests
@@ -3933,6 +3942,36 @@ function harvestCrop(){
   else render();
 }
 
+function plantTree(seedId){
+  const ts = TREE_SEEDS.find(t => t.id === seedId);
+  if (!ts || (state.inventory[seedId] || 0) < 1) return;
+  const farmLevel = levelForXp(state.skills.farming.xp);
+  if (farmLevel < ts.levelReq){ log(`Need Farming level ${ts.levelReq} to plant ${ts.name}.`); return; }
+  if (state.tree_farming.seed){ log('Already have a tree growing.'); return; }
+  if (!(state.upgrades?.scroll_of_life && Math.random() < 0.25)) state.inventory[seedId]--;
+  Object.assign(state.tree_farming, { seed:seedId, seedName:ts.name, tree:ts.tree, treeName:ts.treeName, plantedAt:Date.now(), ready:false, readyAt:null });
+  log(`Planted ${ts.name}.`);
+  render();
+}
+
+function harvestTree(){
+  if (!state.tree_farming.seed || !state.tree_farming.ready) return;
+  const ts = TREE_SEEDS.find(t => t.id === state.tree_farming.seed);
+  const farmLevel = levelForXp(state.skills.farming.xp);
+  const minY = Math.max(3, 3 + Math.floor(farmLevel / 20));
+  const maxY = Math.min(15, 7 + Math.floor(farmLevel / 10));
+  const qty  = minY + Math.floor(Math.random() * (maxY - minY + 1));
+  const xpBase   = ts ? ts.xp : 100;
+  const xpGained = xpBase * qty;
+  grantItem(state.tree_farming.tree, state.tree_farming.treeName, qty);
+  grantXp('farming', xpGained);
+  log(`Chopped ${qty} ${state.tree_farming.treeName}. (+${xpGained} xp)`);
+  const treeSeedId = state.tree_farming.seed;
+  Object.assign(state.tree_farming, { seed:null, seedName:null, tree:null, treeName:null, plantedAt:null, ready:false, readyAt:null });
+  if (state.tree_farming.autoReplant && (state.inventory[treeSeedId] || 0) > 0) plantTree(treeSeedId);
+  else render();
+}
+
 function renderCombatPanel(){
   const styleId = state.combat.style;
   const sk  = state.skills[styleId];
@@ -4292,6 +4331,77 @@ function renderFarmTab(){
       ${f.autoReplant ? 'ON' : 'OFF'}
     </button>`;
   el.appendChild(tog);
+
+  // Tree patch
+  const treeHdrT = document.createElement('div');
+  treeHdrT.style.cssText = 'font-size:11px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;padding:10px 0 4px;border-top:1px solid var(--line);margin-top:8px;';
+  treeHdrT.textContent = 'Tree Patch';
+  el.appendChild(treeHdrT);
+  const tfT = state.tree_farming || {};
+  if (!tfT.seed) {
+    const farmLvlT = levelForXp(state.skills.farming?.xp || 0);
+    const availTreesT = TREE_SEEDS.filter(t => (state.inventory[t.id] || 0) > 0);
+    const plantRowT = document.createElement('div');
+    plantRowT.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:8px;';
+    const selT = document.createElement('select');
+    selT.id = 'treeSeedDropdownTab';
+    selT.style.cssText = 'flex:1;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font-size:13px;';
+    if (availTreesT.length === 0) {
+      const opt = document.createElement('option'); opt.textContent = 'No tree seeds'; opt.disabled = true; selT.appendChild(opt);
+    } else {
+      TREE_SEEDS.forEach(t => {
+        if ((state.inventory[t.id] || 0) === 0) return;
+        const opt = document.createElement('option');
+        opt.value = t.id;
+        const locked = farmLvlT < t.levelReq;
+        opt.textContent = `${t.name} ×${state.inventory[t.id]}${locked ? ` (Lv ${t.levelReq})` : ''}`;
+        opt.disabled = locked;
+        selT.appendChild(opt);
+      });
+    }
+    const plantBtnT = document.createElement('button');
+    plantBtnT.className = 'mini';
+    plantBtnT.textContent = 'Plant';
+    plantBtnT.disabled = availTreesT.length === 0;
+    plantBtnT.onclick = () => { const d = $('treeSeedDropdownTab'); if (d) plantTree(d.value); };
+    plantRowT.appendChild(selT); plantRowT.appendChild(plantBtnT);
+    el.appendChild(plantRowT);
+  } else {
+    const _tsT = TREE_SEEDS.find(t => t.id === tfT.seed);
+    const elapsed2T = Date.now() - tfT.plantedAt;
+    const growMs2T  = _tsT ? _tsT.growMs : 3600000;
+    const pct2T     = Math.min(100, Math.floor(elapsed2T / growMs2T * 100));
+    const rem2T     = Math.max(0, Math.ceil((tfT.plantedAt + growMs2T - Date.now()) / 1000));
+    const nm2T = document.createElement('div');
+    nm2T.style.cssText = 'font-weight:bold;margin-bottom:8px;';
+    nm2T.textContent = tfT.ready ? `${tfT.seedName} — READY!` : `${tfT.seedName} growing...`;
+    el.appendChild(nm2T);
+    if (!tfT.ready) {
+      const bw2T = document.createElement('div');
+      bw2T.style.cssText = 'background:#333;border-radius:4px;height:12px;margin-bottom:6px;overflow:hidden;';
+      const b2T = document.createElement('div'); b2T.style.cssText = `background:var(--fill-green);height:100%;width:${pct2T}%;`;
+      bw2T.appendChild(b2T); el.appendChild(bw2T);
+      const td2T = document.createElement('div');
+      td2T.style.cssText = 'color:var(--dim);font-size:0.85em;margin-bottom:10px;';
+      const hrs2T = Math.floor(rem2T/3600), mins2T = Math.floor((rem2T%3600)/60), secs2T = rem2T%60;
+      td2T.textContent = hrs2T > 0 ? `${hrs2T}h ${mins2T}m remaining` : `${mins2T}m ${secs2T<10?'0':''}${secs2T}s remaining`;
+      el.appendChild(td2T);
+    } else {
+      const hb2T = document.createElement('button');
+      hb2T.className = 'mini';
+      hb2T.style.cssText = 'background:var(--fill-green);color:#000;margin-bottom:10px;';
+      hb2T.textContent = 'Chop';
+      hb2T.onclick = harvestTree;
+      el.appendChild(hb2T);
+    }
+  }
+  const tog2T = document.createElement('div');
+  tog2T.style.cssText = 'display:flex;align-items:center;gap:8px;margin-top:8px;';
+  tog2T.innerHTML = `<span style="color:var(--dim);font-size:13px;">Tree auto-replant:</span>
+    <button class="mini" onclick="state.tree_farming.autoReplant=!state.tree_farming.autoReplant;render()">
+      ${tfT.autoReplant ? 'ON' : 'OFF'}
+    </button>`;
+  el.appendChild(tog2T);
 }
 
 function renderFarmSection(){
@@ -4412,6 +4522,77 @@ function renderFarmSection(){
       </button>`;
     el.appendChild(ahTog);
   }
+
+  // Tree patch
+  const treeHdr = document.createElement('div');
+  treeHdr.style.cssText = 'font-size:11px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;padding:10px 0 4px;border-top:1px solid var(--line);margin-top:8px;';
+  treeHdr.textContent = 'Tree Patch';
+  el.appendChild(treeHdr);
+  const tf = state.tree_farming || {};
+  if (!tf.seed) {
+    const farmLvl2 = levelForXp(state.skills.farming?.xp || 0);
+    const availTrees = TREE_SEEDS.filter(t => (state.inventory[t.id] || 0) > 0);
+    const plantRow2 = document.createElement('div');
+    plantRow2.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:8px;';
+    const sel2 = document.createElement('select');
+    sel2.id = 'treeSeedDropdown';
+    sel2.style.cssText = 'flex:1;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font-size:13px;';
+    if (availTrees.length === 0) {
+      const opt = document.createElement('option'); opt.textContent = 'No tree seeds'; opt.disabled = true; sel2.appendChild(opt);
+    } else {
+      TREE_SEEDS.forEach(t => {
+        if ((state.inventory[t.id] || 0) === 0) return;
+        const opt = document.createElement('option');
+        opt.value = t.id;
+        const locked = farmLvl2 < t.levelReq;
+        opt.textContent = `${t.name} ×${state.inventory[t.id]}${locked ? ` (Lv ${t.levelReq})` : ''}`;
+        opt.disabled = locked;
+        sel2.appendChild(opt);
+      });
+    }
+    const plantBtn2 = document.createElement('button');
+    plantBtn2.className = 'mini';
+    plantBtn2.textContent = 'Plant';
+    plantBtn2.disabled = availTrees.length === 0;
+    plantBtn2.onclick = () => { const d = $('treeSeedDropdown'); if (d) plantTree(d.value); };
+    plantRow2.appendChild(sel2); plantRow2.appendChild(plantBtn2);
+    el.appendChild(plantRow2);
+  } else {
+    const _ts2 = TREE_SEEDS.find(t => t.id === tf.seed);
+    const elapsed2 = Date.now() - tf.plantedAt;
+    const growMs2  = _ts2 ? _ts2.growMs : 3600000;
+    const pct2     = Math.min(100, Math.floor(elapsed2 / growMs2 * 100));
+    const rem2     = Math.max(0, Math.ceil((tf.plantedAt + growMs2 - Date.now()) / 1000));
+    const nm2 = document.createElement('div');
+    nm2.style.cssText = 'font-weight:bold;margin-bottom:8px;';
+    nm2.textContent = tf.ready ? `${tf.seedName} — READY!` : `${tf.seedName} growing...`;
+    el.appendChild(nm2);
+    if (!tf.ready) {
+      const bw2 = document.createElement('div');
+      bw2.style.cssText = 'background:#333;border-radius:4px;height:10px;margin-bottom:6px;overflow:hidden;';
+      const b2 = document.createElement('div'); b2.style.cssText = `background:var(--fill-green);height:100%;width:${pct2}%;`;
+      bw2.appendChild(b2); el.appendChild(bw2);
+      const td2 = document.createElement('div');
+      td2.style.cssText = 'color:var(--dim);font-size:12px;margin-bottom:10px;';
+      const hrs2 = Math.floor(rem2/3600), mins2 = Math.floor((rem2%3600)/60), secs2 = rem2%60;
+      td2.textContent = hrs2 > 0 ? `${hrs2}h ${mins2}m remaining` : `${mins2}m ${secs2<10?'0':''}${secs2}s remaining`;
+      el.appendChild(td2);
+    } else {
+      const hb2 = document.createElement('button');
+      hb2.className = 'mini';
+      hb2.style.cssText = 'background:var(--fill-green);color:#000;margin-bottom:10px;';
+      hb2.textContent = 'Chop';
+      hb2.onclick = harvestTree;
+      el.appendChild(hb2);
+    }
+  }
+  const tog2 = document.createElement('div');
+  tog2.style.cssText = 'display:flex;align-items:center;gap:8px;margin-top:4px;';
+  tog2.innerHTML = `<span style="color:var(--dim);font-size:13px;">Tree auto-replant:</span>
+    <button class="mini" onclick="state.tree_farming.autoReplant=!state.tree_farming.autoReplant;render()">
+      ${tf.autoReplant ? 'ON' : 'OFF'}
+    </button>`;
+  el.appendChild(tog2);
 }
 
 function renderClueSection(){
@@ -4777,6 +4958,14 @@ function tick(){
   if (state.farming?.ready && state.upgrades?.auto_harvest && state.upgrades?.auto_harvest_on &&
       state.farming.readyAt && Date.now() >= state.farming.readyAt + 300_000) {
     harvestCrop();
+  }
+  if (state.tree_farming?.seed && !state.tree_farming.ready) {
+    const _ts = TREE_SEEDS.find(t => t.id === state.tree_farming.seed);
+    if (_ts && Date.now() >= state.tree_farming.plantedAt + _ts.growMs) {
+      state.tree_farming.ready = true;
+      if (!state.tree_farming.readyAt) state.tree_farming.readyAt = Date.now();
+      log(`Your ${state.tree_farming.seedName} is ready to chop!`);
+    }
   }
   if (state.autoOpenItems) processAutoOpen();
   render();
@@ -7249,6 +7438,15 @@ function init(){
   if (state.farming?.ready && state.upgrades?.auto_harvest && state.upgrades?.auto_harvest_on &&
       state.farming.readyAt && Date.now() >= state.farming.readyAt + 300_000) {
     harvestCrop();
+  }
+  // Tree farming: mark ready if matured while offline
+  if (!state.tree_farming) state.tree_farming = { seed:null, seedName:null, tree:null, treeName:null, plantedAt:null, ready:false, autoReplant:false, readyAt:null };
+  if (state.tree_farming.seed && !state.tree_farming.ready) {
+    const _tts = TREE_SEEDS.find(t => t.id === state.tree_farming.seed);
+    if (_tts && Date.now() >= state.tree_farming.plantedAt + _tts.growMs) {
+      state.tree_farming.ready = true;
+      if (!state.tree_farming.readyAt) state.tree_farming.readyAt = state.tree_farming.plantedAt + _tts.growMs;
+    }
   }
   // Copyright rename migration — old RS-specific IDs → new names
   const _itemRenames = { bandos_chestplate:'warlord_chestplate', saradomin_sword:'celestial_sword',
