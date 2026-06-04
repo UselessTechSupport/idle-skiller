@@ -5237,7 +5237,7 @@ function renderTutorial(){
     </div>`;
 }
 
-function openAchievements(){ $('achievementsOverlay').classList.add('open'); renderAchievements(); }
+function openAchievements(){ $('achievementsOverlay').classList.add('open'); checkAchievements(); renderAchievements(); }
 function closeAchievements(){ $('achievementsOverlay').classList.remove('open'); }
 function setAchFilter(f){ achFilter = f; renderAchievements(); }
 function openCollectionLog(){ $('collectionLogOverlay').classList.add('open'); renderCollectionLog(); }
@@ -5636,7 +5636,7 @@ function renderAchievements(){
   for (const cat of cats){
     const catAchs = ACHIEVEMENTS.filter(a => a.category === cat);
     let visible = catAchs;
-    if (achFilter === 'hide_completed') visible = visible.filter(a => !state.achievements[a.id]);
+    if (achFilter === 'hide_completed') visible = visible.filter(a => !(state.achievements||{})[a.id]);
     if (achFilter === 'hide_locked') visible = visible.filter(a => !a.lockFn?.());
     if (!visible.length) continue;
     const hdr = document.createElement('div');
