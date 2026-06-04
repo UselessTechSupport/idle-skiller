@@ -86,6 +86,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 **Core**
 - 0.6s game tick
 - XP curve: level 2 = 83 XP, level 99 ≈ 13M, level 120 supported
+- Training rates scale steeply: ~30–60k XP/hr at level 1, ~200k at level 50, ~600k at level 90+, ~700–900k at level 99–110; applies across all actively trained skills
 - Autosave every 10 seconds (localStorage + in-memory fallback for sandboxed environments)
 - Offline progress — calculates up to 12h of gains on load; "while you were away" popup
 
