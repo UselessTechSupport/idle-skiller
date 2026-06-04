@@ -6991,7 +6991,7 @@ function showOffline(result){
   const timeStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
   $('offlineBody').innerHTML =
     `<p>You were away for <b>${timeStr}</b>.</p>
-     <ul><li>${result.completed.toLocaleString()} × ${result.action.label || result.action.itemName}</li>
+     <ul><li>${result.completed.toLocaleString()} × ${result.action.itemName || result.action.name || result.action.label}</li>
      <li>${Math.floor(result.completed * result.action.xp).toLocaleString()} xp</li></ul>`;
   $('offlineModal').classList.add('show');
 }
