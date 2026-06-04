@@ -879,13 +879,13 @@ const COMBAT_SKILL_IDS = new Set(
 );
 
 const SEEDS = [
-  {id:'ironwort_seed',    name:'Ironwort seed',      herb:'ironwort',    herbName:'Ironwort',    levelReq:1,  xp:150},
-  {id:'shimmerleaf_seed',      name:'Shimmerleaf seed',   herb:'shimmerleaf', herbName:'Shimmerleaf', levelReq:25, xp:300},
-  {id:'thornweed_seed',  name:'Thornweed seed',     herb:'thornweed',  herbName:'Thornweed',   levelReq:40, xp:500},
-  {id:'goldbloom_seed',   name:'Goldbloom seed',     herb:'goldbloom',   herbName:'Goldbloom',   levelReq:55, xp:750},
-  {id:'duskroot_seed',   name:'Duskroot seed',      herb:'duskroot',   herbName:'Duskroot',    levelReq:70, xp:1050},
-  {id:'veilmoss_seed', name:'Veilmoss seed',      herb:'veilmoss', herbName:'Veilmoss',    levelReq:85, xp:1400},
-  {id:'crimsonherb_seed',     name:'Crimsonherb seed',   herb:'crimsonherb',     herbName:'Crimsonherb', levelReq:99, xp:2000},
+  {id:'ironwort_seed',    name:'Ironwort seed',      herb:'ironwort',    herbName:'Ironwort',    xp:150},
+  {id:'shimmerleaf_seed', name:'Shimmerleaf seed',   herb:'shimmerleaf', herbName:'Shimmerleaf', xp:300},
+  {id:'thornweed_seed',   name:'Thornweed seed',     herb:'thornweed',   herbName:'Thornweed',   xp:500},
+  {id:'goldbloom_seed',   name:'Goldbloom seed',     herb:'goldbloom',   herbName:'Goldbloom',   xp:750},
+  {id:'duskroot_seed',    name:'Duskroot seed',      herb:'duskroot',    herbName:'Duskroot',    xp:1050},
+  {id:'veilmoss_seed',    name:'Veilmoss seed',      herb:'veilmoss',    herbName:'Veilmoss',    xp:1400},
+  {id:'crimsonherb_seed', name:'Crimsonherb seed',   herb:'crimsonherb', herbName:'Crimsonherb', xp:2000},
 ];
 const HERB_IDS = new Set(SEEDS.map(s => s.herb));
 const AUTOSAVE_MS = 10000;            // autosave every 10s
@@ -3853,11 +3853,12 @@ function harvestCrop(){
   const minY = Math.max(3, 3 + Math.floor(farmLevel / 20));
   const maxY = Math.min(15, 7 + Math.floor(farmLevel / 10));
   const qty  = minY + Math.floor(Math.random() * (maxY - minY + 1));
-  const xp   = seed ? seed.xp : Math.floor(30 + farmLevel * 1.5);
+  const xpBase   = seed ? seed.xp : Math.floor(30 + farmLevel * 1.5);
+  const xpGained = xpBase * qty;
   grantItem(state.farming.herb, state.farming.herbName, qty);
-  grantXp('farming', xp);
-  log(`Harvested ${qty} ${state.farming.herbName}. (+${xp} xp)`);
-  checkBonusDrop('farming', {levelReq: seed?.levelReq || 1});
+  grantXp('farming', xpGained);
+  log(`Harvested ${qty} ${state.farming.herbName}. (+${xpGained} xp)`);
+  checkBonusDrop('farming', {levelReq: farmLevel});
   // Farming pet: 1/5000 per harvest
   if ((state.inventory['pet_herb_sprite'] || 0) === 0 && state.equipment?.pet !== 'pet_herb_sprite' && Math.random() < 0.0002){
     grantItem('pet_herb_sprite', 'Herb Sprite', 1);
@@ -4146,7 +4147,6 @@ function renderCombatPanel(){
 
 function renderFarmTab(){
   const el = $('invPanel') || { innerHTML:'' };
-  const farmLvl = levelForXp(state.skills.farming?.xp || 0);
   const prevSeed = document.getElementById('seedDropdown')?.value;
   el.innerHTML = '';
   const f = state.farming;
@@ -4173,9 +4173,7 @@ function renderFarmTab(){
       available.forEach(s => {
         const opt = document.createElement('option');
         opt.value = s.id;
-        const lvlTag = s.levelReq > 1 ? ` (lv${s.levelReq})` : '';
-        opt.textContent = `${s.name}${lvlTag} ×${state.inventory[s.id]}`;
-        if (farmLvl < s.levelReq) opt.style.color = 'var(--dim)';
+        opt.textContent = `${s.name} ×${state.inventory[s.id]}`;
         sel.appendChild(opt);
       });
       if (prevSeed && available.some(s => s.id === prevSeed)) sel.value = prevSeed;
@@ -4277,10 +4275,7 @@ function renderFarmSection(){
       available.forEach(s => {
         const opt = document.createElement('option');
         opt.value = s.id;
-        const lvlTag = s.levelReq > 1 ? ` (lv${s.levelReq})` : '';
-        const canPlant = farmLvl >= s.levelReq;
-        opt.textContent = `${s.name}${lvlTag} ×${state.inventory[s.id]}`;
-        if (!canPlant) opt.style.color = 'var(--dim)';
+        opt.textContent = `${s.name} ×${state.inventory[s.id]}`;
         sel.appendChild(opt);
       });
       if (prevSeed && available.some(s => s.id === prevSeed)) sel.value = prevSeed;
