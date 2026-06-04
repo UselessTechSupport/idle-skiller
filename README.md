@@ -121,7 +121,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - Equipment panel with 12 slots (Head, Weapon, Offhand, Ammo, Neck, Cape, Ring, Body, Gloves, Legs, Feet, Pet) and live stat totals
 - **Item tooltips** — hover any inventory item or equipped slot to see stats, perks, spell school, heal amount, and equip requirements; mobile long-press (500ms) triggers the same tooltip
 - Prayer HUD in sidebar
-- Settings menu — 6 colour themes (Dark, Light, Ocean, Forest, Dusk, Lavender), Compact mode, Hide locked actions, configurable log size, Replay Tutorial
+- Settings menu — 9 colour themes in a 3×3 grid (Dark, Light, Ocean, Dusk, Lavender, Crimson, Midnight, Sunset, Slate), Compact mode, Hide locked actions, configurable log size, Replay Tutorial, Debug Tools access
 - **Tutorial** — opt-in at character creation (checkbox, on by default); 5-step overlay covering skills, actions, inventory, and next steps; skippable at any time; "First Steps" achievement fires on first completion or skip; replayable from Settings
 - Stop button always visible next to action progress bar
 - **Achievement system** — 79 achievements across Skills, Total Level, Combat, Slayer, and Special categories; filter by All / Hide Completed / Hide Locked; locked achievements require prerequisites (slayer unlocks, quest completion, etc.)

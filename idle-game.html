@@ -29,13 +29,6 @@
     --locked:#1a2d45; --bar:#1e3a5f;
     --fill-green:#38bdf8; --fill-purple:#a78bfa;
   }
-  body.forest-mode{
-    --bg:#0d1a0f; --panel:#152116; --panel2:#1a2b1c;
-    --line:#2d4a2f; --text:#d4edda; --dim:#7aa87d;
-    --accent:#4ade80; --accent2:#14532d;
-    --locked:#263b28; --bar:#2d4a2f;
-    --fill-green:#4ade80; --fill-purple:#c084fc;
-  }
   body.dusk-mode{
     --bg:#1a1205; --panel:#251a08; --panel2:#2e200d;
     --line:#4a3018; --text:#fde8c8; --dim:#c49a6c;
@@ -49,6 +42,34 @@
     --accent:#c084fc; --accent2:#5b21b6;
     --locked:#352e55; --bar:#4a4070;
     --fill-green:#d8b4fe; --fill-purple:#f0abfc;
+  }
+  body.crimson-mode{
+    --bg:#1a0808; --panel:#260e0e; --panel2:#301414;
+    --line:#4d1c1c; --text:#ffe8e8; --dim:#c47a7a;
+    --accent:#f87171; --accent2:#7f1d1d;
+    --locked:#3d1616; --bar:#4d1c1c;
+    --fill-green:#fca5a5; --fill-purple:#d8b4fe;
+  }
+  body.midnight-mode{
+    --bg:#080c14; --panel:#0e1422; --panel2:#141c2e;
+    --line:#1e2d4a; --text:#e0f0ff; --dim:#6b8db8;
+    --accent:#60a5fa; --accent2:#1e3a5f;
+    --locked:#141c2e; --bar:#1e2d4a;
+    --fill-green:#60a5fa; --fill-purple:#a78bfa;
+  }
+  body.sunset-mode{
+    --bg:#1c0f14; --panel:#2a1520; --panel2:#341a29;
+    --line:#5c2a3d; --text:#ffe4ee; --dim:#c48095;
+    --accent:#fb7185; --accent2:#881337;
+    --locked:#3d1a2a; --bar:#5c2a3d;
+    --fill-green:#fda4af; --fill-purple:#e879f9;
+  }
+  body.slate-mode{
+    --bg:#0f1318; --panel:#181e26; --panel2:#1e2632;
+    --line:#2e3a4a; --text:#d4dce8; --dim:#7a8fa8;
+    --accent:#94a3b8; --accent2:#334155;
+    --locked:#1e2632; --bar:#2e3a4a;
+    --fill-green:#94a3b8; --fill-purple:#a78bfa;
   }
   /* Light mode targeted overrides for hardcoded colours */
   body.light-mode .action-btn.selected{ background:var(--accent2); border-color:var(--accent); }
@@ -106,8 +127,8 @@
   .settings-row-left{ flex:1; }
   .settings-row-left label{ font-size:14px; display:block; }
   .settings-row-left .sdesc{ font-size:12px; color:var(--dim); margin-top:2px; }
-  .theme-btns{ display:flex; gap:6px; flex-wrap:wrap; }
-  .theme-btns button{ padding:4px 10px; font-size:12px; }
+  .theme-btns{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+  .theme-btns button{ width:100%; text-align:center; padding:6px 4px; font-size:12px; }
   *{box-sizing:border-box;}
   body{
     margin:0; background:var(--bg); color:var(--text);
@@ -375,8 +396,7 @@
     <button class="mini" onclick="openAchievements()">🏆 Achievements</button>
     <button class="mini" onclick="openCollectionLog()">📖 Log</button>
     <button class="mini" onclick="openSettings()">⚙️ Settings</button>
-    <button class="mini" id="debugToggle" style="color:#f97316;border-color:#c2410c;">🐛 Debug</button>
-  </div>
+      </div>
 </header>
 
 <nav class="mobile-nav">
@@ -5871,7 +5891,7 @@ function log(msg){
 /* ---- Settings ---- */
 function applySettings(){
   const s = state.settings || {};
-  ['light-mode','ocean-mode','forest-mode','dusk-mode','lavender-mode'].forEach(c => document.body.classList.remove(c));
+  ['light-mode','ocean-mode','dusk-mode','lavender-mode','crimson-mode','midnight-mode','sunset-mode','slate-mode'].forEach(c => document.body.classList.remove(c));
   if (s.theme && s.theme !== 'dark') document.body.classList.add(s.theme + '-mode');
   document.body.classList.toggle('compact-mode', !!s.compactMode);
 }
@@ -6065,9 +6085,12 @@ function renderSettings(){
     {id:'dark',     label:'🌙 Dark'},
     {id:'light',    label:'☀️ Light'},
     {id:'ocean',    label:'🌊 Ocean'},
-    {id:'forest',   label:'🌿 Forest'},
     {id:'dusk',     label:'🌅 Dusk'},
     {id:'lavender', label:'🪻 Lavender'},
+    {id:'crimson',  label:'🔴 Crimson'},
+    {id:'midnight', label:'🌌 Midnight'},
+    {id:'sunset',   label:'🌸 Sunset'},
+    {id:'slate',    label:'🪨 Slate'},
   ];
   const themeDiv = document.createElement('div');
   themeDiv.className = 'theme-btns';
@@ -6119,6 +6142,18 @@ function renderSettings(){
   tutBtn.textContent = '📖 Replay Tutorial';
   tutBtn.onclick = () => { closeSettings(); openTutorial(); };
   row(tutGrp, 'Tutorial', 'Walk through the basics again', tutBtn);
+
+  const dbgGrp = group('Debug');
+  const dbgBtn = document.createElement('button');
+  dbgBtn.className = 'mini';
+  dbgBtn.style.cssText = 'color:#f97316;border-color:#c2410c;';
+  dbgBtn.textContent = '🐛 Open Debug Tools';
+  dbgBtn.onclick = () => {
+    closeSettings();
+    const p = $('debugPanel');
+    p.style.display = p.style.display === 'none' ? 'block' : 'none';
+  };
+  row(dbgGrp, 'Debug', 'Toggle the debug tools panel', dbgBtn);
 }
 
 function render(){
@@ -7337,11 +7372,6 @@ function debugSetLevel(){
 $('debugSkillSel').innerHTML = SKILL_ROADMAP.map(
   s => `<option value="${s.id}">${s.name}</option>`
 ).join('');
-$('debugToggle').onclick = () => {
-  const p = $('debugPanel');
-  p.style.display = p.style.display === 'none' ? 'block' : 'none';
-};
-
 // save when leaving / backgrounding (important on mobile)
 window.addEventListener('beforeunload', save);
 document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
