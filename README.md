@@ -29,7 +29,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Woodcutting | 110 | 13 trees (Tree → Eternal magic) | Tool upgrades (bronze axe → T100); bird's nest bonus drops |
 | Mining | 110 | 13 rocks (Copper → Primal + Rune essence) | Tool upgrades (bronze pickaxe → T100); geode bonus drops |
 | Fishing | 99 | 16 fish (Shrimps → Sailfish) | Tool upgrades (rod → Abyssal Rod); Kraken's Beak (capped at 1; blocked once Dragon Rod built) + Map to the Deep rare drops |
-| Farming | 120 | 7 herb seeds | Background skill — grows in 5 min while you train anything else; harvest 3–15 herbs; auto-replant toggle; XP scales by seed tier (150–2000 per harvest); speed up with Herb Patch upgrade |
+| Farming | 120 | 7 herb seeds | Background skill — grows in 5 min while you train anything else; harvest 3–15 herbs; auto-replant toggle; XP = seed tier (150–2000) × herbs harvested, so level directly drives XP earned per plant; speed up with Herb Patch upgrade |
 | Hunter | 99 | 15 actions | Bird Snare (raw bird meat), Deadfall (swifttail fur → Hunter Leather via Crafting), Box Trap (chinchompas), Net Trap (salamander weapons), Pitfall (panther pelt / jaguar fur); **passive impling spawns** (1% per trap action, tier scales with hunter level — Baby lv17, Earth lv36, Eclectic lv50, Nature lv62, Dragon lv83, Kingly lv91); all 6 jar types openable for loot; **Sabre jaguar tooth** (1/1000 from Sabre jaguar pitfall — unique 2-tick melee weapon with 30% extra miss chance) |
 | Divination | 99 | 10 wisps + 54 transmutations | Gathers energy; transmutes logs/ores/fish/gems up one tier; 10% breakdown chance → divine dust |
 
@@ -73,7 +73,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Thieving | 99 | 19 actions | Pickpocket (9 NPCs, catch/stun mechanic) + Locks (10 chests); seeds, gems, and coins from drops; agility gives extra loot chance |
 | Slayer | 120 | 6 masters (Aldric → Duroc) | Task assignment system; 2–30 pts/task; kill-tracking per mob; task completion bonus XP; Points Shop in Store menu (6 unlocks: boss tasks, XP boost, **Auto-Task** 350pts, extended tasks, point mastery, skip task); Auto-Task automatically assigns from your chosen master on completion |
 | Dungeoneering | 120 | 3 floor types | Time-based floors; earns tokens; token shop: 7 unlocks — Swift Passage (floors 10% faster), Token Surplus (+15% tokens), Sage's Tome (+10% DG XP), Bonecrusher (auto Prayer XP from bones; toggleable), Auto-Eat, Charming Imp (+10% charm drops), Scroll of Life (25% seed preservation) |
-| Archaeology | 120 | 6 dig sites, 18 artefacts | Artefact restoration grants permanent perks (up to 3 active); perks include XP%, speed%, stat boosts, HP regen |
+| Archaeology | 120 | 6 dig sites, 18 artefacts | Each tick has a chance to find an artefact early (chance increases at higher-level sites); artefacts grant XP on discovery (1,200–22,000 depending on tier); collecting the full set of an artefact unlocks a permanent passive perk (up to 3 active); perks include XP%, speed%, stat boosts, HP regen |
 
 #### Combat (continued)
 
@@ -86,7 +86,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 **Core**
 - 0.6s game tick
 - XP curve: level 2 = 83 XP, level 99 ≈ 13M, level 120 supported
-- Training rates scale steeply: ~30–60k XP/hr at level 1, ~200k at level 50, ~600k at level 90+, ~700–900k at level 99–110; applies across all actively trained skills
+- Training rates scale steeply: ~30–60k XP/hr at level 1, ~200k at level 50, ~600k at level 90+, ~700–900k at level 99–110; applies across all 26 skills including combat (per combat style), summoning, construction, and archaeology
 - Autosave every 10 seconds (localStorage + in-memory fallback for sandboxed environments)
 - Offline progress — calculates up to 12h of gains on load; "while you were away" popup
 
