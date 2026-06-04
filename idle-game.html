@@ -1049,15 +1049,15 @@ const SLAYER_SHOP = [
 ];
 
 const SHOP_BUY_ITEMS = [
-  { id:'gold_charm',    name:'Gold charm',    icon:'🟡', desc:'Basic Summoning ingredient — drops from all mobs',        cost:500   },
-  { id:'green_charm',   name:'Green charm',   icon:'🟢', desc:'Mid-tier Summoning ingredient — drops from lv 20+ mobs',  cost:2000  },
-  { id:'crimson_charm', name:'Crimson charm', icon:'🔴', desc:'High-tier Summoning ingredient — drops from lv 50+ mobs', cost:6000  },
-  { id:'blue_charm',    name:'Blue charm',    icon:'🔵', desc:'Rare Summoning ingredient — drops from lv 75+ mobs',      cost:18000 },
-  { id:'bowstring',     name:'Bowstring',     icon:'🧵', desc:'Used to string unstrung bows into finished weapons',       cost:5000  },
-  { id:'cloth',      name:'Cloth',      icon:'🧶', desc:'Woven fabric for basic mage robes — used in Crafting',      cost:3000  },
-  { id:'bark',       name:'Bark',       icon:'🪵', desc:'Sturdy bark strips for splitbark armour — used in Crafting', cost:8000  },
-  { id:'fine_cloth', name:'Fine cloth', icon:'🪡', desc:'High-quality cloth for splitbark armour — used in Crafting', cost:8000  },
-  { id:'suqah_hide', name:'Suqah hide', icon:'🦎', desc:'Thick suqah leather for lunar armour — used in Crafting',   cost:18000 },
+  { id:'gold_charm',    name:'Gold charm',    icon:'🟡', category:'Summoning',          desc:'Basic Summoning ingredient — drops from all mobs',        cost:500   },
+  { id:'green_charm',   name:'Green charm',   icon:'🟢', category:'Summoning',          desc:'Mid-tier Summoning ingredient — drops from lv 20+ mobs',  cost:2000  },
+  { id:'crimson_charm', name:'Crimson charm', icon:'🔴', category:'Summoning',          desc:'High-tier Summoning ingredient — drops from lv 50+ mobs', cost:6000  },
+  { id:'blue_charm',    name:'Blue charm',    icon:'🔵', category:'Summoning',          desc:'Rare Summoning ingredient — drops from lv 75+ mobs',      cost:18000 },
+  { id:'bowstring',     name:'Bowstring',     icon:'🧵', category:'Crafting Materials', desc:'Used to string unstrung bows into finished weapons',       cost:5000  },
+  { id:'cloth',      name:'Cloth',      icon:'🧶', category:'Crafting Materials', desc:'Woven fabric for basic mage robes — used in Crafting',      cost:3000  },
+  { id:'bark',       name:'Bark',       icon:'🪵', category:'Crafting Materials', desc:'Sturdy bark strips for splitbark armour — used in Crafting', cost:8000  },
+  { id:'fine_cloth', name:'Fine cloth', icon:'🪡', category:'Crafting Materials', desc:'High-quality cloth for splitbark armour — used in Crafting', cost:8000  },
+  { id:'suqah_hide', name:'Suqah hide', icon:'🦎', category:'Crafting Materials', desc:'Thick suqah leather for lunar armour — used in Crafting',   cost:18000 },
 ];
 
 const SELL_PRICES = {
@@ -5327,11 +5327,16 @@ function renderShop(){
   }
   el.appendChild(tabs);
   if (shopTab === 'buy'){
-    const hdr = document.createElement('div');
-    hdr.className = 'ach-cat-hdr';
-    hdr.textContent = 'Summoning';
-    el.appendChild(hdr);
+    let lastBuyCat = null;
     for (const item of SHOP_BUY_ITEMS){
+      if (item.category !== lastBuyCat){
+        const hdr = document.createElement('div');
+        hdr.className = 'ach-cat-hdr';
+        if (lastBuyCat !== null) hdr.style.marginTop = '14px';
+        hdr.textContent = item.category;
+        el.appendChild(hdr);
+        lastBuyCat = item.category;
+      }
       const inInv = state.inventory[item.id] || 0;
       const canBuy1  = coins >= item.cost;
       const canBuy10 = coins >= item.cost * 10;
