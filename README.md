@@ -133,7 +133,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 
 **Bonus drops**
 - Woodcutting: bird's nests (1%, 4 variants)
-- Mining: geodes (5%, 3 tiers up to metamorphic with 1-in-99k hydrix)
+- Mining: geodes (5%, 3 tiers up to metamorphic with 1-in-99k hydrix); most common drop is rune essence (25–50 / 50–150 / 150–500 per tier)
 - Fishing: Kraken's Beak (1% lv60+), Map to the Deep (1-in-100k lv85+)
 - Firemaking: fire spirit QTE event (15% per burn); spirit is openable for herb seeds, fire runes ×15, coins, or rare Boots of Ash (~1 in 100)
 - Hunter: passive impling jar (1% per trap action, tier by hunter level; 6 tiers from Baby to Kingly)

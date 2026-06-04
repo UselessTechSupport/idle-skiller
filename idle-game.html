@@ -2263,18 +2263,21 @@ const COLLECTION_LOG_SOURCES = [
   ]},
   // Mining
   { id:'geode_sedimentary', name:'Sedimentary Geode', category:'Mining', items:[
+    {id:'rune_essence',   name:'Rune essence',       icon:'🪨'},
     {id:'uncut_sapphire', name:'Uncut sapphire',     icon:'💎'},
     {id:'uncut_emerald',  name:'Uncut emerald',      icon:'💚'},
     {id:'uncut_ruby',     name:'Uncut ruby',         icon:'❤️'},
     {id:'uncut_diamond',  name:'Uncut diamond',      icon:'🔷'},
   ]},
   { id:'geode_igneous', name:'Igneous Geode', category:'Mining', items:[
+    {id:'rune_essence',      name:'Rune essence',      icon:'🪨'},
     {id:'uncut_ruby',        name:'Uncut ruby',        icon:'❤️'},
     {id:'uncut_diamond',     name:'Uncut diamond',     icon:'🔷'},
     {id:'uncut_dragonstone', name:'Uncut dragonstone', icon:'🔵'},
     {id:'uncut_onyx',        name:'Uncut onyx',        icon:'⚫'},
   ]},
   { id:'geode_metamorphic', name:'Metamorphic Geode', category:'Mining', items:[
+    {id:'rune_essence',       name:'Rune essence',       icon:'🪨'},
     {id:'uncut_dragonstone',  name:'Uncut dragonstone',  icon:'🔵'},
     {id:'uncut_onyx',         name:'Uncut onyx',         icon:'⚫'},
     {id:'coins',              name:'Coins (50k)',         icon:'🪙'},
@@ -2630,18 +2633,21 @@ function getAction(skillId, actionId){
 /* Openable items — weighted reward tables */
 const OPENABLE_ITEMS = {
   sedimentary_geode:{rewards:[
+    {id:'rune_essence',      name:'Rune essence',      weight:60, minCount:25,  maxCount:50},
     {id:'uncut_sapphire',    name:'Uncut sapphire',    weight:50},
     {id:'uncut_emerald',     name:'Uncut emerald',     weight:30},
     {id:'uncut_ruby',        name:'Uncut ruby',        weight:15},
     {id:'uncut_diamond',     name:'Uncut diamond',     weight:5},
   ]},
   igneous_geode:{rewards:[
+    {id:'rune_essence',      name:'Rune essence',      weight:50, minCount:50,  maxCount:150},
     {id:'uncut_ruby',        name:'Uncut ruby',        weight:40},
     {id:'uncut_diamond',     name:'Uncut diamond',     weight:30},
     {id:'uncut_dragonstone', name:'Uncut dragonstone', weight:25},
     {id:'uncut_onyx',        name:'Uncut onyx',        weight:5},
   ]},
   metamorphic_geode:{rewards:[
+    {id:'rune_essence',       name:'Rune essence',       weight:50000, minCount:150, maxCount:500},
     {id:'uncut_dragonstone',  name:'Uncut dragonstone',  weight:40000},
     {id:'uncut_onyx',         name:'Uncut onyx',         weight:35000},
     {id:'coins',              name:'Coins',              weight:20000, count:50000},
@@ -5801,7 +5807,9 @@ function openItem(itemId){
   let reward;
   for (const r of entry.rewards){ roll -= r.weight; if (roll <= 0){ reward = r; break; } }
   reward = reward || entry.rewards[entry.rewards.length - 1];
-  const qty = reward.count || 1;
+  const qty = reward.minCount != null
+    ? reward.minCount + Math.floor(Math.random() * (reward.maxCount - reward.minCount + 1))
+    : (reward.count || 1);
   grantItem(reward.id, reward.name, qty);
   const _openClogSrc = OPENABLE_CLOG_SOURCE[itemId];
   if (_openClogSrc) logCollectionDrop(_openClogSrc, reward.id, qty);
