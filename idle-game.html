@@ -2992,6 +2992,7 @@ function freshState(){
     summoning:      { active:null, autoRenew:true },
     prayer:         { points:0, maxPoints:1, active:{}, drainCounter:0, lastRegen:0 },
     achievements:    {},
+    skillTabs:       {},
     collectionLog:   {},
     tutorial:        { done: false },
     openCounts:      {},
@@ -6348,10 +6349,32 @@ function renderActiveSkill(){
     }
   }
   const hideLocked = !!(state.settings?.hideLocked);
-  const visibleActions = hideLocked ? actions.filter(a => lvl >= a.levelReq) : actions;
+  let visibleActions = hideLocked ? actions.filter(a => lvl >= a.levelReq) : actions;
+
+  // Sub-tabs for skills with multiple categories
+  const cats = [...new Set(actions.map(a => a.category).filter(Boolean))];
+  if (cats.length >= 2){
+    state.skillTabs = state.skillTabs || {};
+    const activeTab = (state.skillTabs[s.id] && cats.includes(state.skillTabs[s.id]))
+      ? state.skillTabs[s.id] : cats[0];
+    state.skillTabs[s.id] = activeTab;
+    const tabBar = document.createElement('div');
+    tabBar.className = 'tab-bar';
+    tabBar.style.marginBottom = '10px';
+    cats.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'tab-btn' + (activeTab === cat ? ' active' : '');
+      btn.textContent = cat;
+      btn.onclick = () => { state.skillTabs[s.id] = cat; render(); };
+      tabBar.appendChild(btn);
+    });
+    list.appendChild(tabBar);
+    visibleActions = visibleActions.filter(a => a.category === activeTab);
+  }
+
   let lastCat = null;
   visibleActions.forEach(a => {
-    if (a.category && a.category !== lastCat){
+    if (cats.length < 2 && a.category && a.category !== lastCat){
       lastCat = a.category;
       const hdr = document.createElement('div');
       hdr.className = 'action-category-header';

@@ -129,6 +129,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - **Collection Log** — 34 drop sources across 6 categories (Woodcutting, Mining, Fishing, Agility, Hunter, Combat, Bosses, Pets, Clue Scrolls); tracks per-item obtain counts; unobtained items shown greyed; global and per-source progress counters; kill count shown per boss/mob source, opened count per geode/jar/spirit source, completion count per clue tier
 - **Smithing tab** grouped into 4 broad sections (Bars / Armour / Weapons / Other) instead of a separate header per metal tier
 - **Combat style/subtab buttons** (Melee / Range / Mage, Mobs / Slayer / Bosses / Quests) now styled consistently with the rest of the UI — active state highlighted in green
+- **Skill sub-tabs** — multi-category skills (Smithing, Crafting, Fletching, Divination, Hunter, Herblore, Thieving, Runecrafting) now show a tab bar at the top of the action list; clicking a tab shows only that category's actions instead of one long scrollable list
 
 **Bonus drops**
 - Woodcutting: bird's nests (1%, 4 variants)
