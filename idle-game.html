@@ -22,6 +22,34 @@
     --locked:#d5d9e0; --bar:#d0d5e0;
     --fill-green:#16a34a; --fill-purple:#7c3aed;
   }
+  body.ocean-mode{
+    --bg:#0d1b2a; --panel:#152338; --panel2:#1a2d45;
+    --line:#1e3a5f; --text:#e0ecff; --dim:#7bafd4;
+    --accent:#38bdf8; --accent2:#0c4a6e;
+    --locked:#1a2d45; --bar:#1e3a5f;
+    --fill-green:#38bdf8; --fill-purple:#a78bfa;
+  }
+  body.forest-mode{
+    --bg:#0d1a0f; --panel:#152116; --panel2:#1a2b1c;
+    --line:#2d4a2f; --text:#d4edda; --dim:#7aa87d;
+    --accent:#4ade80; --accent2:#14532d;
+    --locked:#263b28; --bar:#2d4a2f;
+    --fill-green:#4ade80; --fill-purple:#c084fc;
+  }
+  body.dusk-mode{
+    --bg:#1a1205; --panel:#251a08; --panel2:#2e200d;
+    --line:#4a3018; --text:#fde8c8; --dim:#c49a6c;
+    --accent:#f59e0b; --accent2:#78350f;
+    --locked:#3d2a12; --bar:#4a3018;
+    --fill-green:#fbbf24; --fill-purple:#a78bfa;
+  }
+  body.lavender-mode{
+    --bg:#1c1630; --panel:#262040; --panel2:#302a50;
+    --line:#4a4070; --text:#ece8ff; --dim:#a89ed4;
+    --accent:#c084fc; --accent2:#5b21b6;
+    --locked:#352e55; --bar:#4a4070;
+    --fill-green:#d8b4fe; --fill-purple:#f0abfc;
+  }
   /* Light mode targeted overrides for hardcoded colours */
   body.light-mode .action-btn.selected{ background:var(--accent2); border-color:var(--accent); }
   body.light-mode .action-btn.selected .meta{ color:#166534; }
@@ -78,7 +106,7 @@
   .settings-row-left{ flex:1; }
   .settings-row-left label{ font-size:14px; display:block; }
   .settings-row-left .sdesc{ font-size:12px; color:var(--dim); margin-top:2px; }
-  .theme-btns{ display:flex; gap:6px; }
+  .theme-btns{ display:flex; gap:6px; flex-wrap:wrap; }
   .theme-btns button{ padding:4px 10px; font-size:12px; }
   *{box-sizing:border-box;}
   body{
@@ -224,6 +252,7 @@
   .mini{font-size:12px; padding:6px 10px; background:var(--panel2);
     border:1px solid var(--line); color:var(--dim); border-radius:6px; cursor:pointer;}
   .mini:hover{color:var(--text);}
+  .mini.active{border-color:var(--accent); background:var(--accent2); color:var(--text);}
   .tab-bar{display:flex; gap:6px; flex-wrap:wrap;}
   .tab-btn{font-size:13px; padding:6px 14px; background:var(--panel2);
     border:1px solid var(--line); color:var(--dim); border-radius:6px; cursor:pointer;}
@@ -5842,7 +5871,8 @@ function log(msg){
 /* ---- Settings ---- */
 function applySettings(){
   const s = state.settings || {};
-  document.body.classList.toggle('light-mode',   s.theme === 'light');
+  ['light-mode','ocean-mode','forest-mode','dusk-mode','lavender-mode'].forEach(c => document.body.classList.remove(c));
+  if (s.theme && s.theme !== 'dark') document.body.classList.add(s.theme + '-mode');
   document.body.classList.toggle('compact-mode', !!s.compactMode);
 }
 
@@ -6031,19 +6061,24 @@ function renderSettings(){
   const dispGrp = group('Display');
 
   // Theme
+  const themes = [
+    {id:'dark',     label:'🌙 Dark'},
+    {id:'light',    label:'☀️ Light'},
+    {id:'ocean',    label:'🌊 Ocean'},
+    {id:'forest',   label:'🌿 Forest'},
+    {id:'dusk',     label:'🌅 Dusk'},
+    {id:'lavender', label:'🪻 Lavender'},
+  ];
   const themeDiv = document.createElement('div');
   themeDiv.className = 'theme-btns';
-  const darkBtn = document.createElement('button');
-  darkBtn.className = 'mini' + (s.theme === 'dark' ? ' active' : '');
-  darkBtn.textContent = '🌙 Dark';
-  darkBtn.onclick = () => { s.theme = 'dark'; applySettings(); renderSettings(); };
-  const lightBtn = document.createElement('button');
-  lightBtn.className = 'mini' + (s.theme === 'light' ? ' active' : '');
-  lightBtn.textContent = '☀️ Light';
-  lightBtn.onclick = () => { s.theme = 'light'; applySettings(); renderSettings(); };
-  themeDiv.appendChild(darkBtn);
-  themeDiv.appendChild(lightBtn);
-  row(dispGrp, 'Theme', 'Switch between dark and light colour scheme', themeDiv);
+  themes.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'mini' + (s.theme === t.id ? ' active' : '');
+    btn.textContent = t.label;
+    btn.onclick = () => { s.theme = t.id; applySettings(); renderSettings(); };
+    themeDiv.appendChild(btn);
+  });
+  row(dispGrp, 'Theme', 'Choose a colour scheme', themeDiv);
 
   row(dispGrp, 'Compact mode', 'Tighter card/button padding — more content per screen',
     toggleBtn(s.compactMode, () => { s.compactMode = !s.compactMode; applySettings(); renderSettings(); }));
