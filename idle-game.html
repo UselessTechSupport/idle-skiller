@@ -6144,7 +6144,7 @@ function closeSkillsDrawer(){
 function switchMobilePane(pane){
   if(window.innerWidth > 819) return;
   const pa = document.querySelector('.panel-active');
-  if(pa) pa.style.display = pane === 'play' ? '' : 'none';
+  if(pa) pa.style.display = pane === 'play' ? 'block' : 'none';
   if(pane === 'play'){
     document.querySelectorAll('[data-right-tab]').forEach(s => s.style.display = 'none');
   } else {
