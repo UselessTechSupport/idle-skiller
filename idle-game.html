@@ -1438,12 +1438,12 @@ const ACTIONS = {
     {id:'headless_normal',   name:'Headless arrows (Logs)',         label:'Headless arrows made', levelReq:1,  xp:1,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:15,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'normal_logs',        count:1, name:'Logs'}]},
     {id:'headless_oak',      name:'Headless arrows (Oak)',          label:'Headless arrows made', levelReq:1,  xp:2,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:30,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'oak_logs',           count:1, name:'Oak logs'}]},
     {id:'headless_willow',   name:'Headless arrows (Willow)',       label:'Headless arrows made', levelReq:20, xp:3,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:45,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'willow_logs',        count:1, name:'Willow logs'}]},
-    {id:'headless_teak',     name:'Headless arrows (Teak)',         label:'Headless arrows made', levelReq:30, xp:4.5,  ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:45,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'teak_logs',          count:1, name:'Teak logs'}]},
+    {id:'headless_teak',     name:'Headless arrows (Teak)',         label:'Headless arrows made', levelReq:30, xp:4.5,  ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:50,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'teak_logs',          count:1, name:'Teak logs'}]},
     {id:'headless_maple',    name:'Headless arrows (Maple)',        label:'Headless arrows made', levelReq:35, xp:6,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:60,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'maple_logs',         count:1, name:'Maple logs'}]},
-    {id:'headless_mahogany', name:'Headless arrows (Mahogany)',     label:'Headless arrows made', levelReq:50, xp:7.5,  ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:60,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'mahogany_logs',      count:1, name:'Mahogany logs'}]},
+    {id:'headless_mahogany', name:'Headless arrows (Mahogany)',     label:'Headless arrows made', levelReq:50, xp:7.5,  ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:65,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'mahogany_logs',      count:1, name:'Mahogany logs'}]},
     {id:'headless_yew',      name:'Headless arrows (Yew)',          label:'Headless arrows made', levelReq:60, xp:9,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:75,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'yew_logs',           count:1, name:'Yew logs'}]},
     {id:'headless_magic',    name:'Headless arrows (Magic)',        label:'Headless arrows made', levelReq:75, xp:10.5, ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:90,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'magic_logs',         count:1, name:'Magic logs'}]},
-    {id:'headless_elder',    name:'Headless arrows (Elder)',        label:'Headless arrows made', levelReq:80, xp:12,   ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:90,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'elder_logs',         count:1, name:'Elder logs'}]},
+    {id:'headless_elder',    name:'Headless arrows (Elder)',        label:'Headless arrows made', levelReq:80, xp:12,   ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:95,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'elder_logs',         count:1, name:'Elder logs'}]},
     {id:'headless_eternal',  name:'Headless arrows (Eternal magic)',label:'Headless arrows made', levelReq:90, xp:15,   ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:120, splinterable:true, category:'Headless Arrows', ingredients:[{item:'eternal_magic_logs', count:1, name:'Eternal magic logs'}]},
     // --- Shortbows (unstrung) ---
     {id:'shortbow_u_logs',     name:'Fletch shortbow (u)',          label:'Shortbows fletched', levelReq:5,   xp:5,    ticks:3, item:'shortbow_u',          itemName:'Shortbow (u)',          splinterable:true, category:'Shortbows', ingredients:[{item:'normal_logs',        count:1, name:'Logs'}]},
@@ -2863,6 +2863,16 @@ const ITEM_STATS = {
   elder_crossbow:{range:82,attackInterval:4},  superior_crossbow:{range:94,attackInterval:4},
   bronze_arrow:{range:1}, iron_arrow:{range:2}, steel_arrow:{range:4}, mithril_arrow:{range:7},
   adamant_arrow:{range:10}, rune_arrow:{range:14}, dragon_arrow:{range:20},
+  bronze_brace:    {desc:'Crossbow component. Used to fletch a bronze crossbow (u).'},
+  iron_brace:      {desc:'Crossbow component. Used to fletch an iron crossbow (u).'},
+  steel_brace:     {desc:'Crossbow component. Used to fletch a steel crossbow (u).'},
+  mithril_brace:   {desc:'Crossbow component. Used to fletch a teak crossbow (u).'},
+  adamant_brace:   {desc:'Crossbow component. Used to fletch an adamant crossbow (u).'},
+  rune_brace:      {desc:'Crossbow component. Used to fletch a rune crossbow (u).'},
+  orikalkum_brace: {desc:'Crossbow component. Used to fletch a mahogany crossbow (u).'},
+  necronium_brace: {desc:'Crossbow component. Used to fletch a dragon crossbow (u).'},
+  bane_brace:      {desc:'Crossbow component. Used to fletch an elder crossbow (u).'},
+  elder_rune_brace:{desc:'Crossbow component. Used to fletch a superior crossbow (u).'},
   chinchompa:     {range:6,  bleed:{dmg:2, ticks:3}},
   red_chinchompa: {range:12, bleed:{dmg:4, ticks:4}},
   black_chinchompa:{range:18, bleed:{dmg:6, ticks:5}},
@@ -3340,6 +3350,7 @@ function getItemTooltip(itemId){
   const st = ITEM_STATS[itemId];
   if (st){
     const _s = v => (v > 0 ? '+' : '') + v;
+    if (st.desc)     lines.push(`<span class="tip-line">${st.desc}</span>`);
     if (st.attack)   lines.push(`<span class="tip-line">⚔️ Attack: ${_s(st.attack)}</span>`);
     if (st.range)    lines.push(`<span class="tip-line">🏹 Range: ${_s(st.range)}</span>`);
     if (st.mage)     lines.push(`<span class="tip-line">🔮 Magic: ${_s(st.mage)}</span>`);
@@ -3941,6 +3952,7 @@ function combatTick(){
       state.dead         = true;
       state.current      = null;
       state.progress     = 0;
+      state.batch        = { limit:0, done:0 };
       state.combat.mobHp = 0;
       state.combat.hp    = 0;
       save();
@@ -3952,6 +3964,7 @@ function combatTick(){
     log('☠️ You have been defeated! You retreat to safety.');
     state.current      = null;
     state.progress     = 0;
+    state.batch        = { limit:0, done:0 };
     state.combat.mobHp = 0;
     state.combat.hp    = state.combat.maxHp;
     return;
@@ -4193,7 +4206,7 @@ function renderCombatPanel(){
     btn.textContent = cs.label;
     btn.onclick = () => {
       if (state.current && COMBAT_SKILL_IDS.has(state.current.skillId)){
-        state.current = null; state.progress = 0;
+        state.current = null; state.progress = 0; state.batch = { limit:0, done:0 };
       }
       state.combat.style = cs.id;
       render();
@@ -5072,7 +5085,7 @@ function completeAction(action, silent){
   // consume ingredients (smithing and future crafting skills)
   if (action.ingredients){
     const missing = canAfford(action);
-    if (missing){ if (!silent) log(`Out of ${missing.name} — stopped.`); state.current = null; state.progress = 0; return; }
+    if (missing){ if (!silent) log(`Out of ${missing.name} — stopped.`); state.current = null; state.progress = 0; state.batch = { limit:0, done:0 }; return; }
     consumeIngredients(action);
   }
   // Pickpocket: chance to get caught → stun, no loot/xp this tick
@@ -5101,10 +5114,10 @@ function completeAction(action, silent){
   if (action.autoBone){
     if (action.altarReq && !state.upgrades?.altar){
       if (!silent) log('Need a Personal Altar — build one in Construction.');
-      state.current = null; state.progress = 0; return;
+      state.current = null; state.progress = 0; state.batch = { limit:0, done:0 }; return;
     }
     const bone = BONE_TIERS.find(t => (state.inventory[t.item] || 0) >= 1);
-    if (!bone){ if (!silent) log('Out of bones — stopped.'); state.current = null; state.progress = 0; return; }
+    if (!bone){ if (!silent) log('Out of bones — stopped.'); state.current = null; state.progress = 0; state.batch = { limit:0, done:0 }; return; }
     state.inventory[bone.item]--;
     if (state.inventory[bone.item] <= 0) delete state.inventory[bone.item];
     grantXp('prayer', bone.xpBase * (action.altarMult || 1) * (1 + getJewelryBonus('bone_xp', null)), silent);
@@ -5122,7 +5135,7 @@ function completeAction(action, silent){
   // Archaeology: pick random artifact from site, track collection, grant XP
   if (skillId === 'archaeology'){
     const siteArtifacts = ARCH_ARTIFACTS.filter(a => a.siteId === action.id);
-    if (!siteArtifacts.length){ state.current = null; state.progress = 0; return; }
+    if (!siteArtifacts.length){ state.current = null; state.progress = 0; state.batch = { limit:0, done:0 }; return; }
     const artifact = siteArtifacts[Math.floor(Math.random() * siteArtifacts.length)];
     const prev = state.archaeology.artifacts[artifact.id] || 0;
     // Past needed: extra piece → +10% XP, no counter change
@@ -6154,6 +6167,7 @@ function closeSkillsDrawer(){
 }
 function switchMobilePane(pane){
   if(window.innerWidth > 819) return;
+  closeMakeX();
   const pa = document.querySelector('.panel-active');
   if(pa) pa.style.display = pane === 'play' ? 'block' : 'none';
   if(pane === 'play'){
@@ -6650,7 +6664,7 @@ function renderActiveSkill(){
   if (state.current && state.current.skillId === s.id){
     const a = getAction(s.id, state.current.actionId);
     const curEffTicks = getCurrentEffTicks(a);
-    actionPct = (state.progress / curEffTicks) * 100;
+    actionPct = Math.min(100, (state.progress / curEffTicks) * 100);
     const batchBadge = state.batch?.limit > 0 ? ` <span style="color:var(--dim)">[${state.batch.done + 1}/${state.batch.limit}]</span>` : '';
     if (s.id === 'dungeoneering'){
       const remSecs = Math.ceil((curEffTicks - state.progress) * TICK_MS / 1000);
