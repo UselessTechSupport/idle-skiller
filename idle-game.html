@@ -2627,10 +2627,14 @@ const CONSTRUCTION_SHOP = [
   { id:'furnace',       name:'Furnace',       desc:'Smithing is 10% faster.',     plankType:'teak_plank',     plankName:'Teak plank',     cost:75  },
   { id:'cooking_range', name:'Cooking range', desc:'Halves cooking burn chance.', plankType:'teak_plank',     plankName:'Teak plank',     cost:75  },
   { id:'herb_patch',    name:'Herb patch',    desc:'Crops grow 25% faster.',      plankType:'mahogany_plank', plankName:'Mahogany plank', cost:100 },
-  { id:'study',         name:'Study',         desc:'Runecrafting is 15% faster.', plankType:'yew_plank',      plankName:'Yew plank',      cost:100 },
-  { id:'workshop',      name:'Workshop',      desc:'Fletching is 10% faster.',    plankType:'yew_plank',      plankName:'Yew plank',      cost:100 },
-  { id:'manor',         name:'Grand manor',   desc:'All XP gains are 5% higher.', plankType:'elder_plank',    plankName:'Elder plank',    cost:150 },
-  { id:'altar',         name:'Personal Altar', desc:'2.5× Prayer XP when burying bones — no PK risk.', plankType:'mahogany_plank', plankName:'Mahogany plank', cost:150 },
+  { id:'study',         name:'Study',         desc:'Runecrafting is 15% faster.', plankType:'yew_plank',      plankName:'Yew plank',      cost:125 },
+  { id:'workshop',      name:'Workshop',      desc:'Fletching is 10% faster.',    plankType:'yew_plank',      plankName:'Yew plank',      cost:125 },
+  { id:'manor',         name:'Grand manor',   desc:'All XP gains are 5% higher.', plankType:'elder_plank',    plankName:'Elder plank',    cost:200 },
+  { id:'altar',         name:'Personal Altar', desc:'2.5× Prayer XP when burying bones — no PK risk.', plankType:'mahogany_plank', plankName:'Mahogany plank', cost:200 },
+  { id:'fishing_pier',   name:'Fishing Pier',    desc:'20% chance to catch a bonus fish per fishing action.',    plankType:'willow_plank',  plankName:'Willow plank',  cost:100 },
+  { id:'hunting_lodge',  name:'Hunting Lodge',   desc:'Hunter impling spawn rate is doubled.',                   plankType:'maple_plank',   plankName:'Maple plank',   cost:200 },
+  { id:'alchemists_lab', name:"Alchemist's Lab", desc:'Combat potions last 25% longer.',                        plankType:'magic_plank',   plankName:'Magic plank',   cost:250 },
+  { id:'trophy_room',    name:'Trophy Room',     desc:'+10% item drop rate on all kills.',                      plankType:'eternal_plank', plankName:'Eternal plank', cost:350 },
 ];
 
 /* Lookup helpers */
@@ -3671,14 +3675,18 @@ function drinkPotion(itemId){
     log(`🧿 Drank ${name}. Familiar extended by ${effect.restore} min.`);
   } else if (effect.type === 'master') {
     if (!state.combat.potionBoosts) state.combat.potionBoosts = {};
+    const _mDur = state.upgrades?.alchemists_lab ? 1.25 : 1.0;
     effect.boosts.forEach(b => {
-      state.combat.potionBoosts[b.boostType] = { boost:b.boost, expiresAt:Date.now() + 10*60*1000 };
+      state.combat.potionBoosts[b.boostType] = { boost:b.boost, expiresAt:Date.now() + 10*60*1000 * _mDur };
     });
-    log(`⚗️ Drank ${name}. ${effect.label} for 10 min.`);
+    const _mMins = state.upgrades?.alchemists_lab ? '12m 30s' : '10 min';
+    log(`⚗️ Drank ${name}. ${effect.label} for ${_mMins}.`);
   } else {
     if (!state.combat.potionBoosts) state.combat.potionBoosts = {};
-    state.combat.potionBoosts[effect.boostType] = { boost:effect.boost, expiresAt:Date.now() + 5*60*1000 };
-    log(`⚗️ Drank ${name}. ${effect.label} for 5 min.`);
+    const _dur = state.upgrades?.alchemists_lab ? 1.25 : 1.0;
+    state.combat.potionBoosts[effect.boostType] = { boost:effect.boost, expiresAt:Date.now() + 5*60*1000 * _dur };
+    const _mins = state.upgrades?.alchemists_lab ? '6m 15s' : '5 min';
+    log(`⚗️ Drank ${name}. ${effect.label} for ${_mins}.`);
   }
   render();
 }
@@ -5147,6 +5155,9 @@ function completeAction(action, silent){
     // Gatherer's Band: 10% chance to double-yield from gathering skills
     if (SKILL_BY_ID[skillId]?.type === 'gathering' && state.equipment?.ring === 'gatherers_band' && Math.random() < 0.10)
       grantItem(action.item, action.itemName, qty);
+    // Fishing Pier: 20% chance to catch a bonus fish
+    if (skillId === 'fishing' && state.upgrades?.fishing_pier && Math.random() < 0.20)
+      grantItem(action.item, action.itemName, qty);
   }
   // Abyssal Rod: 1% chance to upgrade the caught fish to the next tier
   if (action.item && skillId === 'fishing' &&
@@ -5220,7 +5231,8 @@ function completeAction(action, silent){
     for (const [sid, xp] of xpGrants) grantXp(sid, xp, silent);
     const _dropBoost = getSummonBonus('drop_rate_pct') + getPetBonus('drop_rate_pct', null)
       + (state.equipment?.neck === 'adventurers_amulet' ? 0.05 : 0)
-      + (state.equipment?.ring === 'masters_ring' ? 0.05 : 0);
+      + (state.equipment?.ring === 'masters_ring' ? 0.05 : 0)
+      + (state.upgrades?.trophy_room ? 0.10 : 0);
     const _clogSrc = MOB_CLOG_SOURCE[action.id];
     state.combat.kills[action.id] = (state.combat.kills[action.id] || 0) + 1;
     for (const drop of (action.drops || [])){
@@ -5375,7 +5387,7 @@ function checkBonusDrop(skillId, action){
   }
 
   // Hunter: passive impling spawn (1% per non-impling action; tier scales with hunter level)
-  if (skillId === 'hunter' && !action.item?.includes('impling_jar') && Math.random() < 0.01){
+  if (skillId === 'hunter' && !action.item?.includes('impling_jar') && Math.random() < (state.upgrades?.hunting_lodge ? 0.02 : 0.01)){
     const hunterLvl = levelForXp(state.skills.hunter.xp);
     const r = Math.random() * 100;
     let jar, jarName;
