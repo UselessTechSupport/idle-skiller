@@ -425,6 +425,7 @@
     <button class="pane-btn" data-pane="status"     onclick="switchMobilePane('status')">⚔️ Status</button>
     <button class="pane-btn" data-pane="activities" onclick="switchMobilePane('activities')">🌿 Activities</button>
     <button class="pane-btn" data-pane="items"      onclick="switchMobilePane('items')">🎒 Items</button>
+    <button class="pane-btn" data-pane="quests"     onclick="switchMobilePane('quests')">📜 Quests</button>
   </div>
 </header>
 
@@ -474,6 +475,7 @@
       <button class="tab-btn" data-tab="status"     onclick="switchRightTab('status')">Status</button>
       <button class="tab-btn" data-tab="activities" onclick="switchRightTab('activities')">Activities</button>
       <button class="tab-btn" data-tab="items"       onclick="switchRightTab('items')">Items</button>
+      <button class="tab-btn" data-tab="quests"      onclick="switchRightTab('quests')">Quests</button>
     </div>
 
     <!-- Status tab: Equipment + Prayer -->
@@ -549,6 +551,15 @@
       <div id="sec-body-inv" class="sec-body">
         <div id="invPanel"></div>
       </div>
+    </div>
+
+    <!-- Quests tab -->
+    <div id="sec-quests" data-right-tab="quests" style="display:none;padding:4px 0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <h3 style="margin:0;font-size:14px;">Quests</h3>
+        <div id="questFilterBtns" style="display:flex;gap:4px;flex-wrap:wrap;"></div>
+      </div>
+      <div id="questsList"></div>
     </div>
 
     <div class="footer-actions" style="margin-top:8px;">
@@ -799,6 +810,7 @@ const PETS = [
   {id:'pet_solar_hawk',    name:'Solar Hawk',     icon:'🌟', skillId:null,           perkType:'ranged_dmg',   perkValue:0.05, perkLabel:'+5% Ranged damage'},
   {id:'pet_war_pup',       name:'War Pup',        icon:'🐕', skillId:null,           perkType:'melee_dmg',    perkValue:0.05, perkLabel:'+5% Melee damage'},
   {id:'pet_void_spawn',    name:'Void Spawn',     icon:'🌌', skillId:null,           perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% all XP'},
+  {id:'pet_void_herald',   name:'Void Herald',    icon:'🐲', skillId:null,           perkType:'drop_rate_pct',perkValue:0.03, perkLabel:'+3% drop rate'},
 ];
 
 const JEWELRY_PERKS = {
@@ -1206,7 +1218,8 @@ const SELL_PRICES = {
   raw_bird_meat:20, raw_rabbit:30,
   troll_hide:350, werewolf_fur:450, wyvern_bones:350, wyvern_scale:800,
   stone_fragment:200, vampire_dust:5000, ancient_scroll:80000,
-  void_scale:3000, leviathan_fang:8000, solar_shard:12000,
+  void_scale:3000, leviathan_fang:8000, solar_shard:12000, crystal_map_fragment:1000,
+  dragonstone_charm:15000, herald_amulet:80000, void_drake_pouch:50000,
   earth_impling_jar:500, nature_impling_jar:2000, kingly_impling_jar:8000,
   clue_scroll_easy:10000, clue_scroll_medium:30000, clue_scroll_hard:75000,
   clue_scroll_elite:200000, clue_scroll_master:500000,
@@ -2102,7 +2115,6 @@ const ACTIONS = {
       drops:[{item:'big_bones',       itemName:'Big bones',          chance:1.00, min:1,max:1, notable:false},
              {item:'coins',           itemName:'Coins',              chance:1.00, min:800,max:3000, notable:false},
              {item:'berserker_ring',  itemName:'Berserker ring',     chance:0.04, min:1,max:1, notable:true},
-             {item:'leviathan_fang',  itemName:'Leviathan fang',     chance:0.05, min:1,max:1, notable:true},
              {item:'gold_charm',      itemName:'Gold charm',         chance:0.14, min:1,max:1, notable:false},
              {item:'green_charm',     itemName:'Green charm',        chance:0.05, min:1,max:1, notable:false},
              {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.03, min:1,max:1, notable:true},
@@ -2125,7 +2137,6 @@ const ACTIONS = {
       drops:[{item:'dragon_bones',    itemName:'Dragon bones',       chance:1.00, min:1,max:1, notable:false},
              {item:'coins',           itemName:'Coins',              chance:1.00, min:1000,max:4000, notable:false},
              {item:'celestial_sword', itemName:'Celestial sword',    chance:0.02, min:1,max:1, notable:true},
-             {item:'solar_shard',     itemName:'Solar shard',        chance:0.04, min:1,max:1, notable:true},
              {item:'gold_charm',      itemName:'Gold charm',         chance:0.14, min:1,max:1, notable:false},
              {item:'green_charm',     itemName:'Green charm',        chance:0.05, min:1,max:1, notable:false},
              {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.04, min:1,max:1, notable:true},
@@ -2161,6 +2172,24 @@ const ACTIONS = {
         {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,  max:1,   notable:false},
         {item:'goblin_crown', itemName:'Goblin Crown', chance:0.03, min:1,  max:1,   notable:true},
         {item:'goblin_sword', itemName:'Goblin Sword', chance:0.04, min:1,  max:1,   notable:true},
+      ]},
+    // Quest Boss — one-time, no drops, significantly harder than the regular version
+    {id:'void_herald_quest', name:'Void Herald (Quest)', category:'Quest Bosses', levelReq:95, xp:0, ticks:280,
+      stats:{hp:5000, attack:80, defence:70}, drops:[]},
+    // Farmable Boss — unlocked after Echoes of the Deep quest
+    {id:'void_herald', name:'Void Herald', category:'Bosses', levelReq:90, xp:26000, ticks:260,
+      questReq:'echoes_of_deep',
+      stats:{hp:4500, attack:75, defence:65},
+      drops:[
+        {item:'dragon_bones',      itemName:'Dragon bones',      chance:1.00, min:1,   max:1,    notable:false},
+        {item:'coins',             itemName:'Coins',             chance:1.00, min:1500, max:6000, notable:false},
+        {item:'herald_amulet',     itemName:"Herald's amulet",   chance:0.02, min:1,   max:1,    notable:true},
+        {item:'dragonstone_charm', itemName:'Dragonstone charm', chance:0.03, min:1,   max:1,    notable:true},
+        {item:'gold_charm',        itemName:'Gold charm',        chance:0.14, min:1,   max:1,    notable:false},
+        {item:'green_charm',       itemName:'Green charm',       chance:0.05, min:1,   max:1,    notable:false},
+        {item:'crimson_charm',     itemName:'Crimson charm',     chance:0.04, min:1,   max:1,    notable:true},
+        {item:'blue_charm',        itemName:'Blue charm',        chance:0.02, min:1,   max:1,    notable:true},
+        {item:'pet_void_herald',   itemName:'Void Herald',       chance:0.001,min:1,   max:1,    notable:true},
       ]},
     {id:'harbinger',        name:'The Harbinger',                 category:'Bosses', levelReq:100, xp:42315, ticks:350, stats:{hp:6000, attack:85, defence:70},
       drops:[{item:'dragon_bones',    itemName:'Dragon bones',       chance:1.00, min:1,max:1, notable:false},
@@ -2293,6 +2322,7 @@ const SUMMONING_POUCHES = [
   {id:'revenant_imp_pouch',    name:'Revenant imp pouch',    icon:'👿', category:'Undead Familiars',levelReq:84, xp:353,   consumeXp:17.7, ticks:4, item:'revenant_imp_pouch',    itemName:'Revenant imp pouch',    effectType:'hp_regen_mult',  effectValue:0.50, affectedSkills:[],                        effectLabel:'+50% HP regen rate',       ingredients:[{item:'blue_charm',   count:1,name:'Blue charm'},   {item:'big_bones',    count:1,name:'Big bones'}]},
   {id:'revenant_knight_pouch', name:'Revenant knight pouch', icon:'🛡', category:'Undead Familiars',levelReq:90, xp:400,   consumeXp:20.7, ticks:4, item:'revenant_knight_pouch', itemName:'Revenant knight pouch', effectType:'attack_pct',    effectValue:0.12, affectedSkills:['melee','ranged','magic'], effectLabel:'+12% combat accuracy',     ingredients:[{item:'blue_charm',   count:1,name:'Blue charm'},   {item:'dragon_bones', count:1,name:'Dragon bones'}]},
   {id:'revenant_dragon_pouch', name:'Revenant dragon pouch', icon:'🐉', category:'Undead Familiars',levelReq:99, xp:484,   consumeXp:24.3, ticks:4, item:'revenant_dragon_pouch', itemName:'Revenant dragon pouch', effectType:'xp_pct',        effectValue:0.12, affectedSkills:null,                      effectLabel:'+12% all XP',              ingredients:[{item:'blue_charm',   count:1,name:'Blue charm'},   {item:'dragon_bones', count:1,name:'Dragon bones'}]},
+  {id:'void_drake_pouch',     name:'Void drake pouch',      icon:'🐲', category:'Undead Familiars',levelReq:95, xp:1800, consumeXp:90,   ticks:4, item:'void_drake_pouch',     itemName:'Void drake pouch',     effectType:'xp_pct',        effectValue:0.15, affectedSkills:null,                      effectLabel:'+15% all XP',              ingredients:[{item:'dragonstone_charm',count:1,name:'Dragonstone charm'},{item:'blue_charm',count:1,name:'Blue charm'},{item:'dragon_bones',count:1,name:'Dragon bones'}]},
 ];
 const SUMMON_POUCH_IDS = new Set(SUMMONING_POUCHES.map(p => p.id));
 ACTIONS.summoning = SUMMONING_POUCHES;
@@ -2431,6 +2461,7 @@ const COLLECTION_LOG_SOURCES = [
   { id:'boss_karg',   name:'General Karg',     category:'Bosses', items:[{id:'warlord_chestplate', name:'Warlord chestplate',  icon:'🛡️'},{id:'warlord_helm', name:'Warlord helm', icon:'🪖'}]},
   { id:'boss_harbinger',        name:'The Harbinger',                  category:'Bosses', items:[{id:'ancient_platebody',   name:'Ancient platebody',    icon:'🛡️'},{id:'harbinger_amulet', name:'Harbinger amulet', icon:'💀'}]},
   { id:'boss_ancient_lich',name:'Ancient Lich', category:'Bosses', items:[{id:'ancient_scroll',name:'Ancient scroll',icon:'📜'}]},
+  { id:'boss_void_herald', name:'Void Herald',  category:'Bosses', items:[{id:'herald_amulet',name:"Herald's amulet",icon:'📿'},{id:'dragonstone_charm',name:'Dragonstone charm',icon:'✨'}]},
   // Infused Magic Gear
   { id:'infused_magic_gear', name:'Infused Magic Gear', category:'Runecrafting', items:[
     {id:'stormwing_staff',  name:'Stormwing staff',  icon:'🌩️'},
@@ -2459,7 +2490,7 @@ const COLLECTION_LOG_SOURCES = [
     {id:'pet_baby_mole',    name:'Baby Mole',     icon:'🦔'}, {id:'pet_void_wyrm',    name:'Void Wyrm',     icon:'🐲'},
     {id:'pet_deep_spawn',   name:'Deep Spawn',    icon:'🦈'}, {id:'pet_lich_familiar',name:'Lich Familiar', icon:'💀'},
     {id:'pet_solar_hawk',   name:'Solar Hawk',    icon:'🌟'}, {id:'pet_war_pup',      name:'War Pup',       icon:'🐕'},
-    {id:'pet_void_spawn',   name:'Void Spawn',    icon:'🌌'},
+    {id:'pet_void_spawn',   name:'Void Spawn',    icon:'🌌'}, {id:'pet_void_herald',  name:'Void Herald',   icon:'🐲'},
   ]},
   // Clue Scrolls
   { id:'clue_easy',   name:'Easy Casket',   category:'Clue Scrolls', items:[
@@ -2500,6 +2531,7 @@ const MOB_CLOG_SOURCE = {
   burrower:'boss_burrower', void_dragon:'boss_void_dragon', deep_kings:'boss_deep_kings',
   solara:'boss_solara', karg:'boss_karg', harbinger:'boss_harbinger',
   ice_warrior:'mob_ice_warrior', vampire:'mob_vampire', ancient_lich:'boss_ancient_lich',
+  void_herald:'boss_void_herald',
 };
 // Openable item → collection log source ID
 const OPENABLE_CLOG_SOURCE = {
@@ -2514,7 +2546,8 @@ const CLOG_KILL_SOURCE = {
   boss_goblin_king:'goblin_king', boss_burrower:'burrower',
   boss_void_dragon:'void_dragon', boss_deep_kings:'deep_kings',
   boss_solara:'solara', boss_karg:'karg', boss_harbinger:'harbinger',
-  boss_ancient_lich:'ancient_lich', mob_void_stalker:'void_stalker',
+  boss_ancient_lich:'ancient_lich', boss_void_herald:'void_herald',
+  mob_void_stalker:'void_stalker',
   mob_ice_warrior:'ice_warrior', mob_vampire:'vampire',
 };
 // Collection log source ID → openCounts key (the openable item ID)
@@ -2605,6 +2638,8 @@ const ACHIEVEMENTS = [
   {id:'kill_nex_50',   name:"Harbinger's Nemesis",    desc:'Kill the Harbinger 50 times',              icon:'💀', category:'Combat', checkFn:()=>(state.combat.kills?.harbinger||0)>=50,       lockFn:()=>!state.slayer.unlocks?.boss_tasks},
   {id:'kill_lich_1',  name:'Lich Bane',   desc:'Kill the Ancient Lich',          icon:'💀', category:'Combat', checkFn:()=>(state.combat.kills?.ancient_lich||0)>=1,  lockFn:()=>!state.slayer.unlocks?.boss_tasks},
   {id:'kill_lich_50', name:'Lich Master', desc:'Kill the Ancient Lich 50 times', icon:'💀', category:'Combat', checkFn:()=>(state.combat.kills?.ancient_lich||0)>=50, lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'kill_void_herald_1', name:'Herald Slayer',   desc:'Kill the Void Herald',             icon:'🐲', category:'Combat', checkFn:()=>(state.combat.kills?.void_herald||0)>=1,   lockFn:()=>!state.quests?.echoes_of_deep},
+  {id:'kill_void_herald_50',name:"Herald's Ruin",   desc:'Kill the Void Herald 50 times',    icon:'🐲', category:'Combat', checkFn:()=>(state.combat.kills?.void_herald||0)>=50,  lockFn:()=>!state.quests?.echoes_of_deep},
 
   // Slayer tasks
   {id:'slay_10',  name:'On Task',     desc:'Complete 10 Slayer tasks',   icon:'📋', category:'Slayer', checkFn:()=>(state.slayer.totalTasksDone||0)>=10},
@@ -2616,10 +2651,11 @@ const ACHIEVEMENTS = [
   {id:'got_tavia_map', name:'Treasure Hunter',   desc:'Find the Map to the Deep',                    icon:'🗺️', category:'Special', checkFn:()=>(state.collectionLog?.fishing_bonus?.map_to_the_deep||0)>0},
   {id:'got_whip',      name:'Void Hunter',        desc:'Obtain a Void Whip',                      icon:'⚔️', category:'Special', checkFn:()=>(state.collectionLog?.mob_void_stalker?.abyssal_whip||0)>0},
   {id:'got_ancient',     name:'Darkness Conquered',      desc:'Obtain an Ancient platebody',                icon:'🛡️', category:'Special', checkFn:()=>(state.collectionLog?.boss_harbinger?.ancient_platebody||0)>0, lockFn:()=>!state.slayer.unlocks?.boss_tasks},
-  {id:'all_boss_log',  name:'Boss Logger',        desc:'Log an item from every boss',             icon:'📖', category:'Special', checkFn:()=>['boss_burrower','boss_void_dragon','boss_deep_kings','boss_solara','boss_karg','boss_harbinger','boss_ancient_lich'].every(s=>Object.keys(state.collectionLog?.[s]||{}).length>0), lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'all_boss_log',  name:'Boss Logger',        desc:'Log an item from every boss',             icon:'📖', category:'Special', checkFn:()=>['boss_burrower','boss_void_dragon','boss_deep_kings','boss_solara','boss_karg','boss_harbinger','boss_ancient_lich','boss_void_herald'].every(s=>Object.keys(state.collectionLog?.[s]||{}).length>0), lockFn:()=>!state.slayer.unlocks?.boss_tasks},
   {id:'arch_3_perks',  name:'Perk Collector',     desc:'Have 3 archaeology perks active',         icon:'🏺', category:'Special', checkFn:()=>Object.keys(state.archaeology?.activePerks||{}).length>=3},
   {id:'slay_shop_all', name:'Points Well Spent',  desc:'Purchase all Slayer shop items',          icon:'🏪', category:'Special', checkFn:()=>['boss_tasks','slayer_boost','auto_task','task_extend','point_bonus'].every(k=>!!state.slayer.unlocks?.[k])},
-  {id:'goblin_diplomacy_done', name:'Diplomat', desc:'Complete the Goblin Diplomacy quest', icon:'📜', category:'Special', checkFn:()=>!!state.quests?.goblin_diplomacy},
+  {id:'goblin_diplomacy_done', name:'Diplomat',         desc:'Complete the Goblin Diplomacy quest',  icon:'📜', category:'Special', checkFn:()=>!!state.quests?.goblin_diplomacy},
+  {id:'echoes_of_deep_done',  name:'Void Pact Sealed', desc:'Complete the Echoes of the Deep quest', icon:'🐲', category:'Special', checkFn:()=>!!state.quests?.echoes_of_deep},
   {id:'got_crystal',   name:'Crystal Gifts',      desc:'Find a crystal tool seed on Crystal course',icon:'💠', category:'Special', checkFn:()=>(state.collectionLog?.agility_crystal?.crystal_tool_seed||0)>0, lockFn:()=>!state.quests?.lost_city},
   {id:'tutorial_done', name:'First Steps',        desc:'Complete or skip the tutorial',              icon:'📖', category:'Special', checkFn:()=>!!state.tutorial?.done},
 ];
@@ -2878,7 +2914,13 @@ const ITEM_STATS = {
   black_chinchompa:{range:18, bleed:{dmg:6, ticks:5}},
   ice_gloves:{defence:25},
   warlord_helm:{defence:40, attack:10},
-  harbinger_amulet:{attack:15, range:15, mage:15, defence:20, dropRate:0.05},
+  harbinger_amulet:{attack:15, range:15, mage:15, defence:20, dropRate:5},
+  herald_amulet:   {attack:10, range:10, mage:10, defence:15, dropRate:3, desc:"A tri-stat amulet from the Void Herald. Boosts all combat styles and increases drop rates."},
+  leviathan_fang:  {desc:'A relic from the Leviathan Kings. Needed for the Echoes of the Deep quest.'},
+  solar_shard:     {desc:'A relic from Commander Solara. Needed for the Echoes of the Deep quest.'},
+  crystal_map_fragment:{desc:'An ancient map hinting at a hidden elven city. Used to complete the Discovering the Lost City quest.'},
+  dragonstone_charm:{desc:'A charm pulsing with void energy. Used in high-level Summoning.'},
+  void_drake_pouch:{desc:'Summons a void drake familiar. +15% XP to all skills while active.'},
   combat_pendant:{attack:3, defence:3},
   adventurers_amulet:{dropRate:5},
   goblin_crown:{attack:8, defence:25},
@@ -2960,7 +3002,7 @@ const EQUIP_SLOTS = {
   air_rune:'ammo', water_rune:'ammo', earth_rune:'ammo',  fire_rune:'ammo',
   mind_rune:'ammo', cosmic_rune:'ammo', chaos_rune:'ammo', nature_rune:'ammo',
   law_rune:'ammo',  death_rune:'ammo',  blood_rune:'ammo', soul_rune:'ammo',
-  warlord_helm:'head', harbinger_amulet:'neck', ice_gloves:'gloves',
+  warlord_helm:'head', harbinger_amulet:'neck', herald_amulet:'neck', ice_gloves:'gloves',
   ...Object.fromEntries(SKILLCAPES.map(c => [c.id, 'cape'])),
   ...Object.fromEntries(PETS.map(p => [p.id, 'pet'])),
   amulet_of_skill:'neck', spirit_catcher:'neck', combat_pendant:'neck', adventurers_amulet:'neck',
@@ -4294,6 +4336,44 @@ function renderCombatPanel(){
         list.appendChild(btn);
       }
     }
+
+    // Echoes of the Deep quest
+    const hasFang   = (state.inventory['leviathan_fang'] || 0) > 0;
+    const hasShard  = (state.inventory['solar_shard']    || 0) > 0;
+    const eodDone   = !!state.quests?.echoes_of_deep;
+    const eodHdr = document.createElement('div');
+    eodHdr.className = 'action-category-header';
+    eodHdr.style.marginTop = '16px';
+    eodHdr.textContent = 'Echoes of the Deep';
+    list.appendChild(eodHdr);
+    if (eodDone){
+      const done = document.createElement('div');
+      done.className = 'dg-bonus';
+      done.innerHTML = `✅ <b>Complete</b> — The Void Herald is now available in the Bosses tab.`;
+      list.appendChild(done);
+    } else {
+      const voidQuestAction = (ACTIONS.combat || []).find(a => a.id === 'void_herald_quest');
+      const relicInfo = document.createElement('div');
+      relicInfo.className = 'dg-bonus';
+      relicInfo.style.marginBottom = '10px';
+      relicInfo.innerHTML = `
+        ${hasFang  ? '✅' : '🔍'} <b>Leviathan fang</b> — ${hasFang  ? 'Obtained' : 'Kill the Leviathan Kings (rare drop)'}<br>
+        ${hasShard ? '✅' : '🔍'} <b>Solar shard</b>    — ${hasShard ? 'Obtained' : 'Kill Commander Solara (rare drop)'}`;
+      list.appendChild(relicInfo);
+      if (voidQuestAction){
+        const unlocked = hasFang && hasShard;
+        const btn = document.createElement('button');
+        btn.className = 'action-btn' + (state.current?.actionId === 'void_herald_quest' ? ' selected' : '');
+        btn.disabled = !unlocked;
+        const mobInfo = `<br><span style="color:var(--dim);font-size:11px;">HP: ${voidQuestAction.stats.hp}  ATK: ${voidQuestAction.stats.attack}  DEF: ${voidQuestAction.stats.defence} — No drops, quest completion only</span>`;
+        const recStr = combatLvl < voidQuestAction.levelReq ? `<span style="color:#f59e0b;font-size:11px;"> ⚠ Rec. Lv ${voidQuestAction.levelReq}</span>` : '';
+        const lockStr = !unlocked ? `<br><span style="color:#f87171;font-size:11px;">🔒 Requires Leviathan fang + Solar shard</span>` : '';
+        btn.innerHTML = `<span>${voidQuestAction.name}${recStr}${mobInfo}${lockStr}</span><span class="meta">Quest boss</span>`;
+        if (unlocked) btn.onclick = () => startAction(styleId, 'void_herald_quest');
+        list.appendChild(btn);
+      }
+    }
+
   } else {
     const slayerLv = levelForXp(state.skills.slayer?.xp || 0);
     // Filter out quest-locked bosses
@@ -5271,7 +5351,7 @@ function completeAction(action, silent){
     ];
     for (const [sid, xp] of xpGrants) grantXp(sid, xp, silent);
     const _dropBoost = getSummonBonus('drop_rate_pct') + getPetBonus('drop_rate_pct', null)
-      + (state.equipment?.neck === 'adventurers_amulet' ? 0.05 : 0)
+      + calcStats().dropRate / 100
       + (state.equipment?.ring === 'masters_ring' ? 0.05 : 0)
       + (state.upgrades?.trophy_room ? 0.10 : 0);
     const _clogSrc = MOB_CLOG_SOURCE[action.id];
@@ -5304,6 +5384,35 @@ function completeAction(action, silent){
     if (action.id === 'goblin_king_quest'){
       completeQuest('goblin_diplomacy');
       if ((state.inventory['goblin_diplomatic_note'] || 0) > 0) delete state.inventory['goblin_diplomatic_note'];
+    }
+    // Crystal map fragment — 1/300 from Pickpocket Elf, unique quest relic
+    if (action.id === 'pickpocket_elf' && !state.quests?.lost_city && !(state.inventory['crystal_map_fragment'] || 0)){
+      if (Math.random() < 1/300){
+        grantItem('crystal_map_fragment', 'Crystal map fragment', 1);
+        if (!silent) log('🗺️ You find a fragment of an ancient crystal map...');
+      }
+    }
+    // Leviathan fang — 1/250 from Leviathan Kings, unique quest relic
+    if (action.id === 'deep_kings' && !state.quests?.echoes_of_deep && !(state.inventory['leviathan_fang'] || 0)){
+      if (Math.random() < 1/250){
+        grantItem('leviathan_fang', 'Leviathan fang', 1);
+        logCollectionDrop('boss_deep_kings', 'leviathan_fang', 1);
+        if (!silent) log('👑 The Leviathan Kings leave behind a fractured fang...');
+      }
+    }
+    // Solar shard — 1/250 from Commander Solara, unique quest relic
+    if (action.id === 'solara' && !state.quests?.echoes_of_deep && !(state.inventory['solar_shard'] || 0)){
+      if (Math.random() < 1/250){
+        grantItem('solar_shard', 'Solar shard', 1);
+        logCollectionDrop('boss_solara', 'solar_shard', 1);
+        if (!silent) log('☀️ Commander Solara shatters, leaving a shard of solar essence...');
+      }
+    }
+    // Void Herald quest completion
+    if (action.id === 'void_herald_quest'){
+      completeQuest('echoes_of_deep');
+      if ((state.inventory['leviathan_fang'] || 0) > 0) delete state.inventory['leviathan_fang'];
+      if ((state.inventory['solar_shard']    || 0) > 0) delete state.inventory['solar_shard'];
     }
     // Slayer task kill tracking
     if (state.slayer?.task?.mobId === action.id){
@@ -5500,11 +5609,50 @@ function checkBonusDrop(skillId, action){
 const QUEST_NAMES = {
   lost_city:        'Discovering the Lost City',
   goblin_diplomacy: 'Goblin Diplomacy',
+  echoes_of_deep:   'Echoes of the Deep',
 };
 const QUEST_COMPLETE_MSGS = {
   lost_city:        'The Crystal course is now accessible.',
   goblin_diplomacy: 'The Goblin King now roams — challenge him in the Bosses tab.',
+  echoes_of_deep:   'The Void Herald can now be challenged in the Bosses tab.',
 };
+const QUEST_DATA = [
+  {
+    id: 'goblin_diplomacy',
+    name: 'Goblin Diplomacy',
+    icon: '👑',
+    lore: 'The goblins have grown restless. A crumpled diplomatic note has surfaced among their ranks. Someone must parley with the Goblin King before conflict erupts.',
+    requirements: [{type:'combat', level:50, label:'Combat level 50'}],
+    rewards: 'Access to the Goblin King boss for regular farming.',
+    progressNote: 'Track progress in the Combat → Quests tab.',
+  },
+  {
+    id: 'lost_city',
+    name: 'Discovering the Lost City',
+    icon: '🗺️',
+    lore: 'Ancient elven ruins are rumoured to lie hidden deep within the forest. Only those nimble and cunning enough may find the path.',
+    requirements: [
+      {type:'skill', id:'agility',  level:70, label:'Agility 70'},
+      {type:'skill', id:'thieving', level:70, label:'Thieving 70'},
+      {type:'item',  id:'crystal_map_fragment', label:'Crystal map fragment (pickpocket elves, lv 85)'},
+    ],
+    rewards: 'Unlocks the Crystal Agility Course and crystal tool seed drops.',
+    completable: true,
+  },
+  {
+    id: 'echoes_of_deep',
+    name: 'Echoes of the Deep',
+    icon: '🐲',
+    lore: 'Two ancient void creatures — the Leviathan Kings and Commander Solara — have fallen, leaving fragments of their power. A Void Herald stirs in the abyss, drawn to claim them.',
+    requirements: [
+      {type:'skill', id:'melee', level:75, label:'Combat level 75 (to fight Leviathan Kings)'},
+      {type:'item',  id:'leviathan_fang', label:'Leviathan fang (rare drop from Leviathan Kings)'},
+      {type:'item',  id:'solar_shard',    label:'Solar shard (rare drop from Commander Solara)'},
+    ],
+    rewards: "Access to the Void Herald boss. Drops Dragonstone charms for the Void drake pouch (lv 95 Summoning, +15% all XP) and the Herald's amulet (+10 all combat, +3% drop rate).",
+    progressNote: 'Track progress in the Combat → Quests tab.',
+  },
+];
 function completeQuest(questId){
   if (!state.quests) state.quests = {};
   state.quests[questId] = true;
@@ -5512,6 +5660,16 @@ function completeQuest(questId){
   const msg  = QUEST_COMPLETE_MSGS[questId] || '';
   log(`✨ Quest complete: ${name}! ${msg}`);
   render();
+}
+function finishQuest(questId){
+  if (questId === 'lost_city'){
+    if (!(state.inventory['crystal_map_fragment'] || 0)) return;
+    const agLv  = levelForXp(state.skills.agility?.xp  || 0);
+    const thLv  = levelForXp(state.skills.thieving?.xp || 0);
+    if (agLv < 70 || thLv < 70) return;
+    completeQuest('lost_city');
+    delete state.inventory['crystal_map_fragment'];
+  }
 }
 
 /* ---- Collection Log + Achievements ---- */
@@ -5944,6 +6102,102 @@ function renderShop(){
         el.appendChild(atRow);
       }
     });
+  }
+}
+
+let questFilter = 'all';
+function renderQuestsTab(){
+  const list = $('questsList');
+  if (!list) return;
+  const filterBtns = $('questFilterBtns');
+  if (filterBtns){
+    filterBtns.innerHTML = '';
+    for (const [f, label] of [['all','All'],['completed','Completed'],['not_started','Not Completed']]){
+      const b = document.createElement('button');
+      b.className = 'mini';
+      if (questFilter === f) b.style.cssText = 'background:var(--accent);color:#fff;border-color:var(--accent);';
+      b.textContent = label;
+      b.onclick = () => { questFilter = f; renderQuestsTab(); };
+      filterBtns.appendChild(b);
+    }
+  }
+  const completedCount = QUEST_DATA.filter(q => !!state.quests?.[q.id]).length;
+  list.innerHTML = '';
+  const prog = document.createElement('div');
+  prog.style.cssText = 'font-size:12px;color:var(--dim);margin-bottom:10px;';
+  prog.textContent = `${completedCount} / ${QUEST_DATA.length} quests complete`;
+  list.appendChild(prog);
+  for (const q of QUEST_DATA){
+    const done = !!state.quests?.[q.id];
+    if (questFilter === 'completed'   && !done) continue;
+    if (questFilter === 'not_started' &&  done) continue;
+    const card = document.createElement('div');
+    card.style.cssText = 'background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:10px;';
+    if (done) card.style.borderColor = '#4ade8060';
+    // Check requirements
+    const reqResults = q.requirements.map(r => {
+      let met = false;
+      if (r.type === 'skill'){
+        const lv = levelForXp(state.skills[r.id]?.xp || 0);
+        met = lv >= r.level;
+      } else if (r.type === 'combat'){
+        const combatLv = Math.floor((levelForXp(state.skills.melee?.xp||0) + levelForXp(state.skills.ranged?.xp||0) + levelForXp(state.skills.magic?.xp||0)) / 3);
+        met = combatLv >= r.level;
+      } else if (r.type === 'item'){
+        met = (state.inventory[r.id] || 0) > 0;
+      }
+      return {label: r.label, met};
+    });
+    const allMet = reqResults.every(r => r.met);
+    // Header row
+    const hdr = document.createElement('div');
+    hdr.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;';
+    hdr.innerHTML = `<span style="font-weight:600;font-size:13px;">${q.icon} ${q.name}</span>
+      <span style="font-size:12px;font-weight:600;color:${done ? '#4ade80' : '#6b7280'}">${done ? '✅ Complete' : '○ Not started'}</span>`;
+    card.appendChild(hdr);
+    // Lore
+    const lore = document.createElement('div');
+    lore.style.cssText = 'font-size:11px;color:var(--dim);margin-bottom:6px;font-style:italic;';
+    lore.textContent = q.lore;
+    card.appendChild(lore);
+    // Requirements
+    const reqHdr = document.createElement('div');
+    reqHdr.style.cssText = 'font-size:11px;font-weight:600;color:var(--text);margin-bottom:3px;';
+    reqHdr.textContent = 'Requirements:';
+    card.appendChild(reqHdr);
+    for (const r of reqResults){
+      const row = document.createElement('div');
+      row.style.cssText = 'font-size:11px;color:var(--dim);padding-left:8px;';
+      row.innerHTML = `${r.met ? '✅' : '❌'} ${r.label}`;
+      card.appendChild(row);
+    }
+    // Rewards
+    const rwdHdr = document.createElement('div');
+    rwdHdr.style.cssText = 'font-size:11px;font-weight:600;color:var(--text);margin:6px 0 2px;';
+    rwdHdr.textContent = 'Reward:';
+    card.appendChild(rwdHdr);
+    const rwd = document.createElement('div');
+    rwd.style.cssText = 'font-size:11px;color:var(--dim);padding-left:8px;';
+    rwd.textContent = q.rewards;
+    card.appendChild(rwd);
+    // Progress note or complete button
+    if (!done){
+      if (q.progressNote){
+        const note = document.createElement('div');
+        note.style.cssText = 'font-size:11px;color:#f59e0b;margin-top:6px;';
+        note.textContent = q.progressNote;
+        card.appendChild(note);
+      } else if (q.completable){
+        const btn = document.createElement('button');
+        btn.className = 'mini';
+        btn.textContent = 'Complete Quest';
+        btn.disabled = !allMet;
+        btn.style.cssText = `margin-top:8px;${allMet ? 'background:var(--accent);color:#fff;border-color:var(--accent);' : ''}`;
+        btn.onclick = () => finishQuest(q.id);
+        card.appendChild(btn);
+      }
+    }
+    list.appendChild(card);
   }
 }
 
@@ -6477,6 +6731,7 @@ function render(){
   renderClueSection();
   renderSlayerSection();
   renderItemsPanel();
+  renderQuestsTab();
   renderTotalLevel();
   renderLog();
   _applyAllCollapsed();

@@ -57,13 +57,17 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Constitution | 99 | Starts at lv 10; gains XP on every kill (50% of action XP) |
 | Prayer | 99 | Bury bones / use altar (×2.5 or ×3.5 XP); 16 active prayers across 4 tiers; drain system; protect prayers reduce damage 50% |
 
-**Mobs:** 13 standard + 10 slayer-locked (Scuttling Claw → Void Stalker) + 8 bosses (Goblin King, The Burrower, Void Dragon, Leviathan Kings, Ancient Lich, Commander Solara, General Karg, The Harbinger)
+**Mobs:** 13 standard + 10 slayer-locked (Scuttling Claw → Void Stalker) + 9 bosses (Goblin King, The Burrower, Void Dragon, Leviathan Kings, Ancient Lich, Commander Solara, General Karg, Void Herald, The Harbinger)
 
 **Drakes:** Emerald (lv55, green hide), Azure (lv65, blue hide), Crimson (lv72, red hide), Obsidian (lv80, black hide), Gilded (lv87, royal hide) — all drop dragon bones and dragon arrowheads
 
 **Combat level requirements** are recommendations only — all mobs are attackable at any level; a yellow ⚠ Rec. Lv hint appears when below the suggested level. Slayer level requirements still hard-lock slayer monsters.
 
-**Quests:** Goblin Diplomacy — collect a Goblin Diplomatic Note from goblins (1/100 drop, guaranteed at 1000kc), then defeat the Goblin King quest boss (one-time, no drops, significantly harder than the regular version) to unlock the Goblin King as a repeatable boss. The Quests combat tab shows quest progress and the quest boss.
+**Quests (3 total):** All quests are tracked in the dedicated **Quests tab** in the right panel (filter: All / Completed / Not Started).
+
+- **Goblin Diplomacy** — collect a Goblin Diplomatic Note from goblins (1/100, guaranteed at 1000kc), defeat the Goblin King quest boss (one-time) to unlock the Goblin King as a repeatable boss. Track progress in Combat → Quests.
+- **Discovering the Lost City** — pickpocket elves (lv 85 Thieving) for a 1/300 chance at a Crystal map fragment; complete via the Quests tab when Agility and Thieving are both 70+. Reward: unlocks the Crystal Agility Course and crystal tool seed drops.
+- **Echoes of the Deep** — collect the Leviathan fang (1/250 from Leviathan Kings) and Solar shard (1/250 from Commander Solara), then defeat the Void Herald quest boss (lv 95, one-time). Reward: unlocks the Void Herald as a farmable lv 90 boss. Void Herald drops the **Herald's amulet** (tri-stat +10 all combat, +3% drop rate) and **Dragonstone charms** for the Void drake pouch (lv 95 Summoning, +15% all XP). Track item progress in Combat → Quests.
 
 #### Support
 
@@ -79,7 +83,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 
 | Skill | Max Lv | Actions | Notes |
 |---|---|---|---|
-| Summoning | 99 | 18 pouches | Craft pouches from charms (gold/green/crimson/blue) + secondary; charms drop from all combat mobs; 10-min familiar timer; auto-renew from inventory; passive effects: speed, XP, attack accuracy, drop rate, HP regen; Undead Familiars (lv 80–99) replace Necromancy content |
+| Summoning | 99 | 19 pouches | Craft pouches from charms (gold/green/crimson/blue) + secondary; charms drop from all combat mobs; 10-min familiar timer; auto-renew from inventory; passive effects: speed, XP, attack accuracy, drop rate, HP regen; Undead Familiars (lv 80–99) replace Necromancy content; **Void drake pouch** (lv 95) requires a Dragonstone charm dropped by the Void Herald boss — grants +15% XP to all skills |
 
 ### Engine features
 
@@ -108,7 +112,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - **Skillcapes** — 26 skill-specific capes (level 99 required, 99,000 coins each) with passive perks: gathering/artisan capes give +10% speed or +15% XP; combat capes give damage/defence/regen bonuses; Ranged cape gives 85% chance to save ammo; Magic cape gives 85% chance to save runes; support capes give thematic bonuses (prayer drain reduction, stun reduction, token gain, etc.)
 - **Max Cape** — requires level 99 in all 26 skills, costs 10M coins; contains every skillcape perk simultaneously
 - **Completionist Cape** — requires virtual level 150 in all implemented skills + all 79 achievements completed; costs 10B coins; contains all skillcape perks + BiS combat stats (ATK/RNG/MAG 80, DEF 120)
-- **Pets** — 33 equippable pets (26 from skilling at 1/5000, 7 from bosses at 1/500–1/1000); each grants a passive perk (+5% XP, +5% speed, or unique bonus); only one active at a time; tracked in Collection Log
+- **Pets** — 34 equippable pets (26 from skilling at 1/5000, 8 from bosses at 1/500–1/1000); each grants a passive perk (+5% XP, +5% speed, or unique bonus); only one active at a time; tracked in Collection Log
 - Tool upgrade shop, Construction upgrades, Dungeoneering token shop — all consolidated inside the 🏪 Shop overlay
 - Slayer points shop — 5 permanent unlocks
 - Archaeology perk system — up to 3 active perks from artefact restoration
@@ -116,8 +120,8 @@ When creating a new character, choose between **Normal** (death restores HP and 
 
 **UI / QoL**
 - Mobile-first layout: header collapses to title row + utility buttons + pane switcher; larger touch targets; equipment grid single-column on mobile
-- **Mobile app layout** — hamburger (☰) slides in the skills list as a drawer; pane switcher row (▶ Play / ⚔️ Status / 🌿 Activities / 🎒 Items) swaps the main content area without scrolling; game log always pinned at top of content area; Activities pane gives direct access to Farming, Summoning, Clues, and Slayer
-- **Right panel tab system** — Log pinned to the top of the right panel (always visible); remaining sections grouped into three tabs: Status (Equipment + Prayer), Activities (Farming, Slayer, Summoning, Clues), Items (Inventory); tab choice persists across saves
+- **Mobile app layout** — hamburger (☰) slides in the skills list as a drawer; pane switcher row (▶ Play / ⚔️ Status / 🌿 Activities / 🎒 Items / 📜 Quests) swaps the main content area without scrolling; game log always pinned at top of content area; Activities pane gives direct access to Farming, Summoning, Clues, and Slayer
+- **Right panel tab system** — Log pinned to the top of the right panel (always visible); remaining sections grouped into four tabs: Status (Equipment + Prayer), Activities (Farming, Slayer, Summoning, Clues), Items (Inventory), **Quests**; tab choice persists across saves
 - Inventory grouped by category — Openable, Equipment, Pets, Food & Potions, Seeds & Herbs, Summoning Pouches, Summoning, Ores & Bars, Logs, Fish, Gems & Hides, Runes & Energy, Ammo, Hunter, Currency, Other
 - Equipment panel with 12 slots (Head, Weapon, Offhand, Ammo, Neck, Cape, Ring, Body, Gloves, Legs, Feet, Pet) and live stat totals
 - **Item tooltips** — hover any inventory item or equipped slot to see stats, perks, spell school, heal amount, and equip requirements; mobile long-press (500ms) triggers the same tooltip
@@ -125,7 +129,8 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - Settings menu — 9 colour themes in a 3×3 grid (Dark, Light, Ocean, Dusk, Lavender, Crimson, Midnight, Sunset, Slate), Compact mode, Hide locked actions, configurable log size, Replay Tutorial, Debug Tools access
 - **Tutorial** — opt-in at character creation (checkbox, on by default); 5-step overlay covering skills, actions, inventory, and next steps; skippable at any time; "First Steps" achievement fires on first completion or skip; replayable from Settings
 - Stop button always visible next to action progress bar
-- **Achievement system** — 79 achievements across Skills, Total Level, Combat, Slayer, and Special categories; filter by All / Hide Completed / Hide Locked; locked achievements require prerequisites (slayer unlocks, quest completion, etc.)
+- **Achievement system** — 83 achievements across Skills, Total Level, Combat, Slayer, and Special categories; filter by All / Hide Completed / Hide Locked; locked achievements require prerequisites (slayer unlocks, quest completion, etc.)
+- **Quest log** — dedicated Quests tab listing all 3 quests with lore, skill/item requirements (✅/❌ per requirement), rewards text, and inline "Complete Quest" buttons where applicable; filters: All / Completed / Not Completed
 - **Skill icons** — emoji icon prefixed on every skill row in the sidebar
 - **Collection Log** — 34 drop sources across 6 categories (Woodcutting, Mining, Fishing, Agility, Hunter, Combat, Bosses, Pets, Clue Scrolls); tracks per-item obtain counts; unobtained items shown greyed; global and per-source progress counters; kill count shown per boss/mob source, opened count per geode/jar/spirit source, completion count per clue tier
 - **Smithing tab** grouped into 4 broad sections (Bars / Armour / Weapons / Other) instead of a separate header per metal tier
