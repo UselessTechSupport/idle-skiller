@@ -3562,6 +3562,24 @@ function showTooltip(content, x, y){
   _positionTooltip(el, x, y);
 }
 function hideTooltip(){ $('gameTooltip').style.display = 'none'; }
+function showDropTable(name, drops){
+  const sorted = [...drops].sort((a,b) => b.chance - a.chance);
+  const fmt = c => c >= 1 ? '100%' : (c * 100).toFixed(2) + '%';
+  const qty  = d => d.min === d.max ? String(d.min) : `${d.min}–${d.max}`;
+  const rows = sorted.map(d => {
+    const star = d.notable ? '★ ' : '';
+    const col  = d.notable ? 'color:#f59e0b;' : '';
+    return `<div style="display:flex;justify-content:space-between;gap:12px;padding:2px 0;${col}">
+      <span>${star}${d.itemName}</span>
+      <span style="white-space:nowrap;color:var(--dim);flex-shrink:0">${qty(d)} &nbsp; ${fmt(d.chance)}</span>
+    </div>`;
+  }).join('');
+  $('dropTableContent').innerHTML =
+    `<div style="font-weight:600;color:var(--accent);margin-bottom:8px;padding-right:20px">${name} — Drops</div>
+     <div style="font-size:12px;line-height:1.9">${rows}</div>`;
+  $('dropTableModal').style.display = 'flex';
+}
+function closeDropTable(){ $('dropTableModal').style.display = 'none'; }
 function _positionTooltip(el, x, y){
   const pad = 14, vw = window.innerWidth, vh = window.innerHeight;
   let left = x + pad, top = y + pad;
@@ -4499,6 +4517,14 @@ function renderCombatPanel(){
       btn.innerHTML = `<span>${a.name}${recStr}${taskBadge}${mobInfo}${slayerLockStr}${dropStr}</span>
                        <span class="meta">${a.xp} xp</span>`;
       if (!slayerLocked) btn.onclick = () => startAction(styleId, a.id);
+      if (a.drops?.length){
+        const icon = document.createElement('span');
+        icon.textContent = '📋';
+        icon.title = 'View drop table';
+        icon.style.cssText = 'cursor:pointer;opacity:0.6;font-size:11px;margin-left:5px;vertical-align:middle';
+        icon.onclick = e => { e.stopPropagation(); showDropTable(a.name, a.drops); };
+        btn.querySelector('.meta').appendChild(icon);
+      }
       list.appendChild(btn);
     });
     if (visibleMobs.length === 0){
@@ -7236,6 +7262,14 @@ function renderActiveSkill(){
       btn.innerHTML = `<span>${a.name}${lockStr}</span>
                        <span class="meta">${metaContent}</span>`;
       if (unlocked) btn.onclick = () => startAction(s.id, a.id);
+      if (a.drops?.length){
+        const icon = document.createElement('span');
+        icon.textContent = '📋';
+        icon.title = 'View drop table';
+        icon.style.cssText = 'cursor:pointer;opacity:0.6;font-size:11px;margin-left:5px;vertical-align:middle';
+        icon.onclick = e => { e.stopPropagation(); showDropTable(a.name, a.drops); };
+        btn.querySelector('.meta').appendChild(icon);
+      }
       list.appendChild(btn);
     }
   });
@@ -8120,6 +8154,17 @@ init();
 </script>
 
 <div id="gameTooltip" class="game-tooltip"></div>
+<div id="dropTableModal" onclick="if(event.target===this)closeDropTable()"
+     style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.65);
+            align-items:center;justify-content:center;">
+  <div style="background:var(--panel2);border:1px solid var(--accent);border-radius:8px;
+              padding:16px 18px;max-width:340px;width:90%;max-height:75vh;overflow-y:auto;position:relative;">
+    <button onclick="closeDropTable()"
+            style="position:absolute;top:8px;right:10px;background:none;border:none;
+                   color:var(--text);font-size:18px;cursor:pointer;line-height:1;padding:0;">×</button>
+    <div id="dropTableContent"></div>
+  </div>
+</div>
 
 <!-- Tutorial overlay -->
 <div id="tutorialOverlay" class="settings-overlay" onclick="if(event.target===this)closeTutorial()">

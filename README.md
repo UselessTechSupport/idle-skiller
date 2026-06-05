@@ -93,6 +93,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - Training rates scale steeply: ~30–60k XP/hr at level 1, ~200k at level 50, ~600k at level 90+, ~700–900k at level 99–110; applies across all 26 skills including combat (per combat style), summoning, construction, and archaeology
 - Autosave every 10 seconds (localStorage + in-memory fallback for sandboxed environments)
 - Offline progress — calculates up to 12h of gains on load; "while you were away" popup
+- **Drop table viewer** — click 📋 on any combat mob/boss or thieving pickpocket NPC to see its full drop table (item, quantity range, raw % chance)
 
 **Crafting / production**
 - Ingredient system — actions consume items from inventory
