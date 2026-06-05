@@ -753,7 +753,7 @@ const PETS = [
   {id:'pet_nimble_cat',    name:'Nimble Cat',     icon:'🐱', skillId:'agility',      perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Agility speed'},
   {id:'pet_raccoon',       name:'Raccoon',        icon:'🦝', skillId:'thieving',     perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Thieving XP'},
   {id:'pet_imp',           name:'Imp',            icon:'👺', skillId:'slayer',       perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Slayer XP'},
-  {id:'pet_dungeon_rat',   name:'Dungeon Rat',    icon:'🐀', skillId:'dungeoneering',perkType:'dg_token_pct', perkValue:0.05, perkLabel:'+5% Dungeoneering token gain'},
+  {id:'pet_dungeon_rat',   name:"Lil' Lubi'",     icon:'🐀', skillId:'dungeoneering',perkType:'dg_token_pct', perkValue:0.05, perkLabel:'+5% Dungeoneering token gain'},
   {id:'pet_dig_sprite',    name:'Dig Sprite',     icon:'🏺', skillId:'archaeology',  perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Archaeology XP'},
   // Boss pets
   {id:'pet_baby_mole',     name:'Baby Mole',      icon:'🦔', skillId:null,           perkType:'drop_rate_pct',perkValue:0.05, perkLabel:'+5% drop rate'},
@@ -2410,7 +2410,7 @@ const COLLECTION_LOG_SOURCES = [
     {id:'pet_magic_owl',    name:'Magic Owl',     icon:'🦉'}, {id:'pet_divine_lamb',  name:'Divine Lamb',   icon:'🐑'},
     {id:'pet_mini_familiar',name:'Mini Familiar', icon:'🌀'}, {id:'pet_nimble_cat',   name:'Nimble Cat',    icon:'🐱'},
     {id:'pet_raccoon',      name:'Raccoon',       icon:'🦝'}, {id:'pet_imp',          name:'Imp',           icon:'👺'},
-    {id:'pet_dungeon_rat',  name:'Dungeon Rat',   icon:'🐀'}, {id:'pet_dig_sprite',   name:'Dig Sprite',    icon:'🏺'},
+    {id:'pet_dungeon_rat',  name:"Lil' Lubi'",    icon:'🐀'}, {id:'pet_dig_sprite',   name:'Dig Sprite',    icon:'🏺'},
   ]},
   { id:'boss_pets', name:'Boss Pets', category:'Pets', items:[
     {id:'pet_baby_mole',    name:'Baby Mole',     icon:'🦔'}, {id:'pet_void_wyrm',    name:'Void Wyrm',     icon:'🐲'},
@@ -3291,7 +3291,7 @@ function getArchBonus(type){
 
 function getItemTooltip(itemId){
   if (!itemId) return '';
-  const name = state.itemNames[itemId] || itemId;
+  const name = state.itemNames[itemId] || PETS.find(p => p.id === itemId)?.name || itemId;
   const lines = [];
   const st = ITEM_STATS[itemId];
   if (st){
@@ -5439,7 +5439,7 @@ function checkBonusDrop(skillId, action){
   if (skillId === 'agility')     _tryPet('pet_nimble_cat',   'Nimble Cat',   '🐱', 'A nimble cat matches your every move!');
   if (skillId === 'thieving')    _tryPet('pet_raccoon',      'Raccoon',      '🦝', 'A raccoon picks your pocket back!');
   if (skillId === 'slayer')      _tryPet('pet_imp',          'Imp',          '👺', 'An imp decides you are scary enough to follow!');
-  if (skillId === 'dungeoneering')_tryPet('pet_dungeon_rat', 'Dungeon Rat',  '🐀', 'A dungeon rat scurries out of the darkness!');
+  if (skillId === 'dungeoneering')_tryPet('pet_dungeon_rat', "Lil' Lubi'",   '🐀', "Lil' Lubi' scurries out of the darkness!");
   if (skillId === 'archaeology') _tryPet('pet_dig_sprite',   'Dig Sprite',   '🏺', 'A sprite drifts from the excavation!');
 
   // Clue scrolls — 1/1000 per action; tier based on action level requirement
