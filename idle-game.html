@@ -3336,6 +3336,11 @@ function getItemTooltip(itemId){
   if (cape?.perkLabel) lines.push(`<span class="tip-perk">✨ ${cape.perkLabel}</span>`);
   const pet = PETS.find(p => p.id === itemId);
   if (pet?.perkLabel) lines.push(`<span class="tip-perk">✨ ${pet.perkLabel}</span>`);
+  const treeSeed = TREE_SEEDS.find(ts => ts.id === itemId);
+  if (treeSeed){
+    lines.push(`<span class="tip-req">Requires Farming level ${treeSeed.levelReq}</span>`);
+    lines.push(`<span class="tip-line">⏱ Grows in ${treeSeed.growMs / (60*60*1000)}h</span>`);
+  }
   const heal = FOOD_HEALS[itemId];
   if (heal) lines.push(`<span class="tip-perk">❤️ Heals: +${heal} HP</span>`);
   const req = EQUIP_REQS[itemId];
@@ -3996,7 +4001,7 @@ function harvestTree(){
   const xpGained = xpBase * qty;
   grantItem(state.tree_farming.tree, state.tree_farming.treeName, qty);
   grantXp('farming', xpGained);
-  log(`Chopped ${qty} ${state.tree_farming.treeName}. (+${xpGained} xp)`);
+  log(`Harvested ${qty} ${state.tree_farming.treeName} from tree patch. (+${xpGained} Farming xp)`);
   const treeSeedId = state.tree_farming.seed;
   Object.assign(state.tree_farming, { seed:null, seedName:null, tree:null, treeName:null, plantedAt:null, ready:false, readyAt:null });
   if (state.tree_farming.autoReplant && (state.inventory[treeSeedId] || 0) > 0) plantTree(treeSeedId);
@@ -4385,7 +4390,7 @@ function renderFarmTab(){
         const opt = document.createElement('option');
         opt.value = t.id;
         const locked = farmLvlT < t.levelReq;
-        opt.textContent = `${t.name} ×${state.inventory[t.id]}${locked ? ` (Lv ${t.levelReq})` : ''}`;
+        opt.textContent = `${t.name} ×${state.inventory[t.id]} (Lv ${t.levelReq})`;
         opt.disabled = locked;
         selT.appendChild(opt);
       });
@@ -4576,7 +4581,7 @@ function renderFarmSection(){
         const opt = document.createElement('option');
         opt.value = t.id;
         const locked = farmLvl2 < t.levelReq;
-        opt.textContent = `${t.name} ×${state.inventory[t.id]}${locked ? ` (Lv ${t.levelReq})` : ''}`;
+        opt.textContent = `${t.name} ×${state.inventory[t.id]} (Lv ${t.levelReq})`;
         opt.disabled = locked;
         sel2.appendChild(opt);
       });
