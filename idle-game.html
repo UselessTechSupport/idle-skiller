@@ -177,23 +177,31 @@
     .equip-grid{ grid-template-columns:1fr; }
   }
 
-  /* Mobile sticky jump nav */
+  /* Mobile sticky nav */
   .mobile-nav{
     display:none;
   }
   @media(max-width:819px){
     .mobile-nav{
-      display:flex; gap:6px; padding:8px 12px;
+      display:flex; flex-wrap:wrap;
       background:var(--panel); border-bottom:1px solid var(--line);
       position:sticky; top:0; z-index:20;
-      overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch;
+      gap:1px; padding:0;
     }
     .mobile-nav a{
-      font-size:12px; padding:5px 10px; border-radius:6px;
+      flex:1 1 calc(100% / 3);
+      display:flex; align-items:center; justify-content:center;
+      min-height:44px; padding:6px 4px;
+      font-size:13px; font-weight:500;
       background:var(--panel2); color:var(--dim);
-      text-decoration:none; flex-shrink:0;
+      text-decoration:none; text-align:center;
+      transition:background .1s, color .1s;
+      cursor:pointer;
     }
-    .mobile-nav a:active{ background:var(--accent2); color:var(--text); }
+    .mobile-nav a:nth-child(4),
+    .mobile-nav a:nth-child(5){ flex:1 1 50%; }
+    .mobile-nav a:active,
+    .mobile-nav a.active{ background:var(--accent); color:#fff; }
   }
 
   /* Collapsible section headers */
@@ -209,7 +217,7 @@
   .sec-hdr.collapsed .chev{ transform:rotate(-90deg); }
   .sec-hdr .sec-badge{ font-size:11px; font-weight:600; margin-left:auto; color:var(--text); text-transform:none; letter-spacing:0; }
   .sec-body.collapsed{ display:none; }
-  .sec-anchor{ scroll-margin-top:48px; }
+  .sec-anchor{ scroll-margin-top:96px; }
 
   /* Section colour accents */
   .sec-hdr.equip-hdr  { border-color:#5b8def55; color:#5b8def; }
@@ -399,16 +407,12 @@
       </div>
 </header>
 
-<nav class="mobile-nav">
-  <a href="#sec-active">▶ Play</a>
-  <a href="#sec-equip">⚔️ Equip</a>
-  <a href="#sec-prayer">🙏 Prayer</a>
-  <a href="#sec-farm">🌿 Farm</a>
-  <a href="#sec-clues">🗺️ Clues</a>
-  <a href="#sec-slayer">🗡️ Slayer</a>
-  <a href="#sec-inv">🎒 Items</a>
-  <a href="#sec-log">📜 Log</a>
-  <a href="#sec-skills">🏆 Skills</a>
+<nav class="mobile-nav" id="mobileNav">
+  <a onclick="mobileNavTo('sec-active')">▶ Play</a>
+  <a onclick="mobileNavTo('sec-equip','status')">⚔️ Status</a>
+  <a onclick="mobileNavTo('sec-inv','items')">🎒 Items</a>
+  <a onclick="mobileNavTo('sec-skills')">🏆 Skills</a>
+  <a onclick="mobileNavTo('sec-log')">📜 Log</a>
 </nav>
 
 <div class="wrap">
@@ -6113,6 +6117,14 @@ function switchRightTab(tab){
   document.querySelectorAll('[data-right-tab]').forEach(sec => {
     sec.style.display = sec.dataset.rightTab === tab ? '' : 'none';
   });
+}
+function mobileNavTo(sectionId, tab){
+  if (tab) switchRightTab(tab);
+  const el = document.getElementById(sectionId);
+  if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  document.querySelectorAll('#mobileNav a').forEach(a =>
+    a.classList.toggle('active', a.getAttribute('onclick')?.includes(sectionId))
+  );
 }
 function stopAction(){
   if (state.current){
