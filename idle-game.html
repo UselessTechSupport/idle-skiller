@@ -1674,7 +1674,10 @@ const ACTIONS = {
             {item:'uncut_diamond', itemName:'Uncut diamond', chance:0.10, min:1, max:1, notable:true}]},
     // --- Lock ---
     {id:'lock_wooden_chest',  name:'Wooden chest',   category:'Lock', levelReq:1,  xp:12,  ticks:5, lock:true,
-     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:10,   max:40,   notable:false}]},
+     drops:[{item:'coins',            itemName:'Coins',            chance:1.0,  min:10, max:40, notable:false},
+            {item:'ironwort_seed',    itemName:'Ironwort seed',    chance:0.08, min:1,  max:2,  notable:false},
+            {item:'bronze_bar',       itemName:'Bronze bar',       chance:0.06, min:1,  max:2,  notable:false},
+            {item:'shimmerleaf_seed', itemName:'Shimmerleaf seed', chance:0.04, min:1,  max:1,  notable:false}]},
     {id:'lock_bronze',        name:'Bronze lock',    category:'Lock', levelReq:10, xp:25,  ticks:5, lock:true,
      drops:[{item:'coins', itemName:'Coins', chance:1.0, min:40,   max:100,  notable:false},
             {item:'ironwort_seed',   itemName:'Ironwort seed',   chance:0.035, min:1, max:2, notable:false},
@@ -1685,17 +1688,30 @@ const ACTIONS = {
             {item:'veilmoss_seed',itemName:'Veilmoss seed',chance:0.015, min:1, max:1, notable:false},
             {item:'crimsonherb_seed',    itemName:'Crimsonherb seed',    chance:0.005, min:1, max:1, notable:true}]},
     {id:'lock_iron',          name:'Iron lock',      category:'Lock', levelReq:25, xp:50,  ticks:6, lock:true,
-     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:100,  max:300,  notable:false},
-            {item:'uncut_sapphire', itemName:'Uncut sapphire', chance:0.10, min:1, max:1, notable:false}]},
+     drops:[{item:'coins',          itemName:'Coins',          chance:1.0,  min:100, max:300, notable:false},
+            {item:'iron_bar',       itemName:'Iron bar',       chance:0.15, min:1,   max:3,   notable:false},
+            {item:'uncut_sapphire', itemName:'Uncut sapphire', chance:0.10, min:1,   max:1,   notable:false},
+            {item:'thornweed_seed', itemName:'Thornweed seed', chance:0.05, min:1,   max:2,   notable:false},
+            {item:'goldbloom_seed', itemName:'Goldbloom seed', chance:0.03, min:1,   max:1,   notable:false}]},
     {id:'lock_steel',         name:'Steel lock',     category:'Lock', levelReq:45, xp:200, ticks:7, lock:true,
-     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:300,  max:800,  notable:false},
-            {item:'steel_bar', itemName:'Steel bar', chance:0.12, min:1, max:3, notable:false}]},
+     drops:[{item:'coins',        itemName:'Coins',        chance:1.0,  min:300, max:800, notable:false},
+            {item:'steel_bar',    itemName:'Steel bar',    chance:0.15, min:1,   max:3,   notable:false},
+            {item:'mithril_bar',  itemName:'Mithril bar',  chance:0.08, min:1,   max:2,   notable:false},
+            {item:'uncut_ruby',   itemName:'Uncut ruby',   chance:0.06, min:1,   max:1,   notable:false},
+            {item:'duskroot_seed',itemName:'Duskroot seed',chance:0.04, min:1,   max:1,   notable:false}]},
     {id:'lock_dragon',        name:'Dragon lock',    category:'Lock', levelReq:65, xp:445, ticks:8, lock:true,
-     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:800,  max:1500, notable:false},
-            {item:'uncut_dragonstone', itemName:'Uncut dragonstone', chance:0.08, min:1, max:1, notable:true}]},
+     drops:[{item:'coins',             itemName:'Coins',             chance:1.0,  min:800, max:1500, notable:false},
+            {item:'adamant_bar',       itemName:'Adamant bar',       chance:0.10, min:1,   max:3,    notable:false},
+            {item:'uncut_ruby',        itemName:'Uncut ruby',        chance:0.08, min:1,   max:1,    notable:false},
+            {item:'rune_bar',          itemName:'Rune bar',          chance:0.05, min:1,   max:2,    notable:false},
+            {item:'veilmoss_seed',     itemName:'Veilmoss seed',     chance:0.04, min:1,   max:1,    notable:false},
+            {item:'uncut_dragonstone', itemName:'Uncut dragonstone', chance:0.08, min:1,   max:1,    notable:true}]},
     {id:'lock_ancient_vault', name:'Ancient vault',  category:'Lock', levelReq:85, xp:810, ticks:9, lock:true,
-     drops:[{item:'coins', itemName:'Coins', chance:1.0, min:1500, max:3000, notable:false},
-            {item:'uncut_onyx', itemName:'Uncut onyx', chance:0.05, min:1, max:1, notable:true}]},
+     drops:[{item:'coins',           itemName:'Coins',           chance:1.0,  min:1500, max:3000, notable:false},
+            {item:'rune_bar',        itemName:'Rune bar',        chance:0.12, min:1,    max:5,    notable:false},
+            {item:'elder_rune_bar',  itemName:'Elder rune bar',  chance:0.05, min:1,    max:2,    notable:false},
+            {item:'crimsonherb_seed',itemName:'Crimsonherb seed',chance:0.04, min:1,    max:1,    notable:true},
+            {item:'uncut_onyx',      itemName:'Uncut onyx',      chance:0.05, min:1,    max:1,    notable:true}]},
   ],
   fishing:[
     {id:'raw_shrimps',          name:'Fish shrimps',          levelReq:1,  xp:10,  ticks:4,  item:'raw_shrimps',          itemName:'Raw shrimps'},
@@ -4521,7 +4537,7 @@ function renderCombatPanel(){
         const icon = document.createElement('span');
         icon.textContent = '📋';
         icon.title = 'View drop table';
-        icon.style.cssText = 'cursor:pointer;opacity:0.6;font-size:11px;margin-left:5px;vertical-align:middle';
+        icon.style.cssText = 'cursor:pointer;opacity:0.7;font-size:14px;margin-left:6px;vertical-align:middle;padding:2px 3px';
         icon.onclick = e => { e.stopPropagation(); showDropTable(a.name, a.drops); };
         btn.querySelector('.meta').appendChild(icon);
       }
@@ -7266,7 +7282,7 @@ function renderActiveSkill(){
         const icon = document.createElement('span');
         icon.textContent = '📋';
         icon.title = 'View drop table';
-        icon.style.cssText = 'cursor:pointer;opacity:0.6;font-size:11px;margin-left:5px;vertical-align:middle';
+        icon.style.cssText = 'cursor:pointer;opacity:0.7;font-size:14px;margin-left:6px;vertical-align:middle;padding:2px 3px';
         icon.onclick = e => { e.stopPropagation(); showDropTable(a.name, a.drops); };
         btn.querySelector('.meta').appendChild(icon);
       }
