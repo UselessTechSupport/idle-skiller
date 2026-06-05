@@ -116,11 +116,11 @@ When creating a new character, choose between **Normal** (death restores HP and 
 
 **UI / QoL**
 - Mobile-first layout: header collapses to title row + scrollable button strip on narrow screens; larger touch targets; equipment grid single-column on mobile
-- Always-visible Farming, Slayer, Prayer, and Summoning sidebar panels (usable without navigating to the skill)
+- **Right panel tab system** — Log pinned to the top of the right panel (always visible); remaining sections grouped into three tabs: Status (Equipment + Prayer), Activities (Farming, Slayer, Summoning, Clues), Items (Inventory); tab choice persists across saves
 - Inventory grouped by category — Openable, Equipment, Pets, Food & Potions, Seeds & Herbs, Summoning Pouches, Summoning, Ores & Bars, Logs, Fish, Gems & Hides, Runes & Energy, Ammo, Hunter, Currency, Other
 - Equipment panel with 12 slots (Head, Weapon, Offhand, Ammo, Neck, Cape, Ring, Body, Gloves, Legs, Feet, Pet) and live stat totals
 - **Item tooltips** — hover any inventory item or equipped slot to see stats, perks, spell school, heal amount, and equip requirements; mobile long-press (500ms) triggers the same tooltip
-- Prayer HUD in sidebar
+- Prayer HUD in Activities tab
 - Settings menu — 9 colour themes in a 3×3 grid (Dark, Light, Ocean, Dusk, Lavender, Crimson, Midnight, Sunset, Slate), Compact mode, Hide locked actions, configurable log size, Replay Tutorial, Debug Tools access
 - **Tutorial** — opt-in at character creation (checkbox, on by default); 5-step overlay covering skills, actions, inventory, and next steps; skippable at any time; "First Steps" achievement fires on first completion or skip; replayable from Settings
 - Stop button always visible next to action progress bar
