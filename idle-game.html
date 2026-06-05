@@ -306,7 +306,7 @@
   .tab-btn:hover{border-color:var(--accent); color:var(--text);}
   .tab-btn.active{border-color:var(--accent); background:var(--accent2); color:var(--text);}
 
-  /* Debug panel */
+  /* Debug panel (commented out — uncomment to restore dev tools)
   .debug-card{border-color:#c2410c;}
   .debug-card h2{color:#f97316;}
   .dbtn{font-size:12px; padding:5px 10px; background:var(--panel2); color:#f97316;
@@ -316,6 +316,7 @@
   .debug-sel,.debug-num{background:var(--panel2); color:var(--text);
     border:1px solid var(--line); border-radius:4px; padding:4px 8px; font-size:13px;}
   .debug-num{width:64px;}
+  */
 
   /* Offline modal */
   .modal-bg{position:fixed; inset:0; background:rgba(0,0,0,.6);
@@ -573,7 +574,7 @@
   </div>
 </div>
 
-<!-- Debug panel (hidden by default) -->
+<!-- Debug panel (commented out — uncomment to restore dev tools)
 <div id="debugPanel" style="display:none; padding:0 14px 14px; max-width:1100px; margin:0 auto;">
   <div class="card debug-card">
     <h2>🐛 Debug Tools</h2>
@@ -595,6 +596,7 @@
     </div>
   </div>
 </div>
+-->
 
 <!-- Fire spirit QTE — centered overlay -->
 <div id="fireSpiritToast" class="fire-spirit-overlay">
@@ -6934,17 +6936,18 @@ function renderSettings(){
   tutBtn.onclick = () => { closeSettings(); openTutorial(); };
   row(tutGrp, 'Tutorial', 'Walk through the basics again', tutBtn);
 
-  const dbgGrp = group('Debug');
-  const dbgBtn = document.createElement('button');
-  dbgBtn.className = 'mini';
-  dbgBtn.style.cssText = 'color:#f97316;border-color:#c2410c;';
-  dbgBtn.textContent = '🐛 Open Debug Tools';
-  dbgBtn.onclick = () => {
-    closeSettings();
-    const p = $('debugPanel');
-    p.style.display = p.style.display === 'none' ? 'block' : 'none';
-  };
-  row(dbgGrp, 'Debug', 'Toggle the debug tools panel', dbgBtn);
+  // Debug group commented out — uncomment to restore dev tools
+  // const dbgGrp = group('Debug');
+  // const dbgBtn = document.createElement('button');
+  // dbgBtn.className = 'mini';
+  // dbgBtn.style.cssText = 'color:#f97316;border-color:#c2410c;';
+  // dbgBtn.textContent = '🐛 Open Debug Tools';
+  // dbgBtn.onclick = () => {
+  //   closeSettings();
+  //   const p = $('debugPanel');
+  //   p.style.display = p.style.display === 'none' ? 'block' : 'none';
+  // };
+  // row(dbgGrp, 'Debug', 'Toggle the debug tools panel', dbgBtn);
 }
 
 function render(){
@@ -8164,11 +8167,10 @@ $('rollPkBtn').onclick = () => {
   render();
 };
 
-/* ---------- DEBUG TOOLS ---------- */
-// Give N of every item producible by a skill (ores, logs, or bars)
+/* ---------- DEBUG TOOLS (commented out — uncomment to restore) ----------
 function debugGive(skillId, n){
   (ACTIONS[skillId] || []).forEach(a => {
-    if (!a.item) return; // skip consume-only actions (e.g. firemaking)
+    if (!a.item) return;
     state.inventory[a.item] = (state.inventory[a.item] || 0) + n;
     state.itemNames[a.item] = a.itemName;
   });
@@ -8187,10 +8189,10 @@ function debugSetLevel(){
   log(`Debug: ${SKILL_BY_ID[skillId].name} → level ${lvl}.`);
   render();
 }
-// Populate skill dropdown and wire toggle button
 $('debugSkillSel').innerHTML = SKILL_ROADMAP.map(
   s => `<option value="${s.id}">${s.name}</option>`
 ).join('');
+*/
 // save when leaving / backgrounding (important on mobile)
 window.addEventListener('beforeunload', save);
 document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
