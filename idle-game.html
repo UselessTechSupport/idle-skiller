@@ -7698,16 +7698,40 @@ document.addEventListener('mousemove', e => {
   if (tt.style.display !== 'none') _positionTooltip(tt, e.clientX, e.clientY);
 });
 let _tipTimer = null;
+let _tipPinned = false;
+let _tipTouchX = 0, _tipTouchY = 0;
 document.addEventListener('touchstart', e => {
+  if (_tipPinned){
+    if (!e.target.closest('#gameTooltip')){ hideTooltip(); _tipPinned = false; }
+    return;
+  }
   const el = e.target.closest('[data-tipid]');
   if (!el) return;
+  _tipTouchX = e.touches[0].clientX;
+  _tipTouchY = e.touches[0].clientY;
+  clearTimeout(_tipTimer);
   _tipTimer = setTimeout(() => {
-    const t = e.touches[0];
-    showTooltip(getItemTooltip(el.dataset.tipid), t.clientX, t.clientY);
-  }, 500);
+    const html = getItemTooltip(el.dataset.tipid);
+    if (!html) return;
+    const tt = $('gameTooltip');
+    tt.innerHTML = html;
+    tt.style.display = 'block';
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const w = tt.offsetWidth, h = tt.offsetHeight;
+    tt.style.left = Math.max(8, Math.min((vw - w) / 2, vw - w - 8)) + 'px';
+    tt.style.top  = Math.max(8, Math.min(Math.round(vh * 0.18), vh - h - 8)) + 'px';
+    _tipPinned = true;
+  }, 450);
 }, {passive:true});
-document.addEventListener('touchend',  () => { clearTimeout(_tipTimer); hideTooltip(); });
-document.addEventListener('touchmove', () => { clearTimeout(_tipTimer); hideTooltip(); });
+document.addEventListener('touchend', () => { clearTimeout(_tipTimer); });
+document.addEventListener('touchmove', e => {
+  clearTimeout(_tipTimer);
+  if (_tipPinned){
+    const dx = e.touches[0].clientX - _tipTouchX;
+    const dy = e.touches[0].clientY - _tipTouchY;
+    if (Math.abs(dx) > 25 || Math.abs(dy) > 25){ hideTooltip(); _tipPinned = false; }
+  }
+}, {passive:true});
 
 init();
 </script>
