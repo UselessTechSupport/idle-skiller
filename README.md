@@ -50,7 +50,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 
 | Skill | Max Lv | Notes |
 |---|---|---|
-| Melee | 120 | Primary combat style; trains Attack + Constitution; weapon type matters — lightsword (3-tick, 0.7×, 8% bonus hit), broadsword (4-tick, 1.0×, baseline), 2H sword (5-tick, 1.4×, 10% crushing stun) |
+| Melee | 120 | Primary combat style; trains Attack + Constitution; weapon type matters — lightsword (3-tick, 0.7×, 8% bonus hit), broadsword (4-tick, 1.0×, baseline), 2H sword (5-tick, 1.4×, 10% crushing stun); **unique monster drops**: Makeshift Spear (goblins, 2H, 3-tick 1.0×), Bone Maul (hill giants, 2H, 5-tick 1.65×, 20% stun), Vampiric Edge (vampires, 1H, 4-tick 1.0×, 15% lifesteal); various tier-matched smithed weapons also drop from lower-tier mobs |
 | Ranged | 120 | Trains Ranged + Constitution; requires ammo in Ammo slot — arrows (Bronze–Dragon, +1–20 range bonus, 1 consumed per attack) or chinchompas (lv45/55/65, bleed on hit — refreshes, does not stack); shortbow (3-tick, fast) vs longbow (4-tick, 1.2× damage) vs crossbow (4-tick, 1-handed, 15% armour pierce) |
 | Magic | 120 | Trains Magic + Constitution; requires a rune loaded in the Ammo slot — each rune defines a spell school with a unique effect: Air (5% bonus hit), Water (5% mob atk reduction), Earth (15% mob dmg reduction), Fire (burn DoT), Mind (20% mob dmg reduction), Cosmic (25% crit ×2), Chaos (40% miss + ×2.5 on hit), Nature (25% root), Law (15% reflect), Death (5% execute at <25% HP), Blood (25% lifesteal), Soul (+20% mob combat stats as flat dmg); Magic cape saves 85% of rune casts |
 | Defence | 120 | Gains XP in Defensive mode |
