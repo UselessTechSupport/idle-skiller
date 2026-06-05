@@ -1748,6 +1748,8 @@ const ACTIONS = {
     {id:'brew_lesser_prayer',     name:'Lesser prayer potion',     label:'Potions brewed', category:'Prayer Potions',     levelReq:1,  xp:25,  ticks:3, item:'lesser_prayer_potion',     itemName:'Lesser prayer potion',     ingredients:[{item:'crimsonherb',                   count:1, name:'Crimsonherb'}]},
     {id:'brew_prayer',            name:'Prayer potion',            label:'Potions brewed', category:'Prayer Potions',     levelReq:50, xp:105, ticks:3, item:'prayer_potion',            itemName:'Prayer potion',            ingredients:[{item:'lesser_prayer_potion',     count:1, name:'Lesser prayer potion'},  {item:'crimsonherb',     count:1, name:'Crimsonherb'}]},
     {id:'brew_supreme_prayer',    name:'Supreme prayer potion',    label:'Potions brewed', category:'Prayer Potions',     levelReq:90, xp:300, ticks:3, item:'supreme_prayer_potion',    itemName:'Supreme prayer potion',    ingredients:[{item:'prayer_potion',            count:1, name:'Prayer potion'},          {item:'crimsonherb',     count:1, name:'Crimsonherb'}]},
+    // Master Potions
+    {id:'brew_master_combat', name:'Master combat potion', label:'Potions brewed', category:'Master Potions', levelReq:97, xp:2500, ticks:5, item:'master_combat_potion', itemName:'Master combat potion', ingredients:[{item:'supreme_attack_potion',count:1,name:'Supreme attack potion'},{item:'supreme_defence_potion',count:1,name:'Supreme defence potion'},{item:'supreme_ranging_potion',count:1,name:'Supreme ranging potion'},{item:'supreme_magic_potion',count:1,name:'Supreme magic potion'},{item:'burnt_food',count:1,name:'Burnt food'},{item:'divine_dust',count:1,name:'Divine dust'},{item:'wood_pulp',count:1,name:'Wood pulp'}]},
   ],
   runecrafting:[
     // --- Rune Crafting (essence mined in Mining skill) ---
@@ -2950,6 +2952,7 @@ const POTION_EFFECTS = {
   lesser_prayer_potion:    { type:'prayer', restore:0.25 },
   prayer_potion:           { type:'prayer', restore:0.50 },
   supreme_prayer_potion:   { type:'prayer', restore:1.00 },
+  master_combat_potion:    { type:'master', boosts:[{boostType:'melee',boost:0.20},{boostType:'defence',boost:0.20},{boostType:'ranged',boost:0.20},{boostType:'magic',boost:0.20}], label:'+20% All Combat Stats' },
 };
 
 const FAIL_MECHANICS = {
@@ -3666,6 +3669,12 @@ function drinkPotion(itemId){
     const addMs = effect.restore * 60 * 1000;
     state.summoning.active.expiresAt = Math.min(Date.now() + 10*60*1000, state.summoning.active.expiresAt + addMs);
     log(`🧿 Drank ${name}. Familiar extended by ${effect.restore} min.`);
+  } else if (effect.type === 'master') {
+    if (!state.combat.potionBoosts) state.combat.potionBoosts = {};
+    effect.boosts.forEach(b => {
+      state.combat.potionBoosts[b.boostType] = { boost:b.boost, expiresAt:Date.now() + 10*60*1000 };
+    });
+    log(`⚗️ Drank ${name}. ${effect.label} for 10 min.`);
   } else {
     if (!state.combat.potionBoosts) state.combat.potionBoosts = {};
     state.combat.potionBoosts[effect.boostType] = { boost:effect.boost, expiresAt:Date.now() + 5*60*1000 };
@@ -7242,6 +7251,13 @@ function renderItemsPanel(){
       let activeLabel = '';
       if (_eff.type === 'combat'){
         const _ab = state.combat?.potionBoosts?.[_eff.boostType];
+        if (_ab && Date.now() < _ab.expiresAt){
+          const _mins = Math.ceil((_ab.expiresAt - Date.now()) / 60000);
+          activeLabel = `<span style="font-size:10px;color:var(--accent);margin-left:3px;">${_mins}m</span>`;
+        }
+      } else if (_eff.type === 'master'){
+        const _firstBoost = _eff.boosts?.[0];
+        const _ab = _firstBoost && state.combat?.potionBoosts?.[_firstBoost.boostType];
         if (_ab && Date.now() < _ab.expiresAt){
           const _mins = Math.ceil((_ab.expiresAt - Date.now()) / 60000);
           activeLabel = `<span style="font-size:10px;color:var(--accent);margin-left:3px;">${_mins}m</span>`;
