@@ -662,6 +662,20 @@
   </div>
 </div>
 
+<!-- Make X modal -->
+<div id="makeXOverlay" class="settings-overlay" onclick="if(event.target===this)closeMakeX()">
+  <div class="settings-modal" style="width:280px;padding:20px;">
+    <div style="font-weight:600;margin-bottom:12px;">How many to make?</div>
+    <input id="makeXInput" type="number" min="1" step="1"
+      style="width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:8px;font-size:15px;margin-bottom:12px;box-sizing:border-box;"
+      onkeydown="if(event.key==='Enter')confirmMakeX()">
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="mini" onclick="closeMakeX()">Cancel</button>
+      <button class="mini" onclick="confirmMakeX()">Make</button>
+    </div>
+  </div>
+</div>
+
 <!-- Settings modal -->
 <div id="settingsOverlay" class="settings-overlay" onclick="if(event.target===this)closeSettings()">
   <div class="settings-modal">
@@ -6082,9 +6096,30 @@ function startAction(skillId, actionId, batchLimit = 0){
   log(`Started: ${action.name}${batchLimit > 0 ? ` (×${batchLimit})` : ''}.`);
   render();
 }
+let _makeXCtx = null;
 function startBatchCustom(skillId, actionId){
-  const n = parseInt(prompt('How many to make?'), 10);
-  if (n > 0) startAction(skillId, actionId, n);
+  _makeXCtx = { skillId, actionId };
+  const inp = $('makeXInput');
+  inp.value = '';
+  $('makeXOverlay').classList.add('open');
+  setTimeout(() => inp.focus(), 50);
+}
+function closeMakeX(){
+  $('makeXOverlay').classList.remove('open');
+  _makeXCtx = null;
+}
+function confirmMakeX(){
+  const n = parseInt($('makeXInput').value, 10);
+  if (n > 0 && _makeXCtx) startAction(_makeXCtx.skillId, _makeXCtx.actionId, n);
+  closeMakeX();
+}
+function startBatchAll(skillId, actionId){
+  const action = getAction(skillId, actionId);
+  if (!action?.ingredients) return;
+  const max = Math.min(...action.ingredients.map(ing =>
+    Math.floor((state.inventory[ing.item] || 0) / ing.count)
+  ));
+  if (max > 0) startAction(skillId, actionId, max);
 }
 function stopAction(){
   if (state.current){
@@ -6769,10 +6804,10 @@ function renderActiveSkill(){
           <div class="meta" style="margin-top:2px;">${metaContent}</div>
         </div>
         <div style="display:flex;gap:3px;flex-shrink:0;">
-          <button class="mini" onclick="startAction('${s.id}','${a.id}',1)">×1</button>
-          <button class="mini" onclick="startAction('${s.id}','${a.id}',5)">×5</button>
-          <button class="mini" onclick="startBatchCustom('${s.id}','${a.id}')">×?</button>
-          <button class="mini" onclick="startAction('${s.id}','${a.id}',100)">×100</button>
+          <button class="mini" onclick="startAction('${s.id}','${a.id}',1)">Make 1</button>
+          <button class="mini" onclick="startAction('${s.id}','${a.id}',5)">Make 5</button>
+          <button class="mini" onclick="startBatchCustom('${s.id}','${a.id}')">Make X</button>
+          <button class="mini" onclick="startBatchAll('${s.id}','${a.id}')">Make All</button>
         </div>`;
       list.appendChild(row);
     } else {
