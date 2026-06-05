@@ -439,8 +439,26 @@
   <!-- RIGHT: equipment + prayer + inventory + log -->
   <div class="card panel-right">
 
-    <!-- Equipment -->
-    <div id="sec-equip" class="sec-anchor">
+    <!-- Log — always visible at top -->
+    <div id="sec-log" class="sec-anchor">
+      <div class="sec-hdr" onclick="toggleSection('log')">
+        📜 Log
+        <span class="chev">▼</span>
+      </div>
+      <div id="sec-body-log" class="sec-body">
+        <div id="log"></div>
+      </div>
+    </div>
+
+    <!-- Tab bar -->
+    <div class="tab-bar" id="rightTabBar" style="margin:4px 0 8px;">
+      <button class="tab-btn" data-tab="status"     onclick="switchRightTab('status')">Status</button>
+      <button class="tab-btn" data-tab="activities" onclick="switchRightTab('activities')">Activities</button>
+      <button class="tab-btn" data-tab="items"       onclick="switchRightTab('items')">Items</button>
+    </div>
+
+    <!-- Status tab: Equipment + Prayer -->
+    <div id="sec-equip" class="sec-anchor" data-right-tab="status">
       <div class="sec-hdr equip-hdr" onclick="toggleSection('equip')">
         ⚔️ Equipment
         <span class="chev">▼</span>
@@ -450,8 +468,7 @@
       </div>
     </div>
 
-    <!-- Prayer HUD -->
-    <div id="sec-prayer" class="sec-anchor">
+    <div id="sec-prayer" class="sec-anchor" data-right-tab="status">
       <div class="sec-hdr prayer-hdr" onclick="toggleSection('prayer')">
         🙏 Prayer
         <span id="prayerHudPoints" class="sec-badge"></span>
@@ -462,8 +479,8 @@
       </div>
     </div>
 
-    <!-- Summoning HUD -->
-    <div id="sec-summoning" class="sec-anchor">
+    <!-- Activities tab: Summoning + Farming + Clues + Slayer -->
+    <div id="sec-summoning" class="sec-anchor" data-right-tab="activities">
       <div class="sec-hdr" onclick="toggleSection('summoning')">
         🧿 Summoning <span id="summonBadge" class="sec-badge"></span> <span class="chev">▼</span>
       </div>
@@ -472,8 +489,7 @@
       </div>
     </div>
 
-    <!-- Farming -->
-    <div id="sec-farm" class="sec-anchor">
+    <div id="sec-farm" class="sec-anchor" data-right-tab="activities">
       <div class="sec-hdr" onclick="toggleSection('farm')">
         🌿 Farming
         <span id="farmSectionBadge" class="sec-badge"></span>
@@ -484,8 +500,7 @@
       </div>
     </div>
 
-    <!-- Clue Scrolls -->
-    <div id="sec-clues" class="sec-anchor">
+    <div id="sec-clues" class="sec-anchor" data-right-tab="activities">
       <div class="sec-hdr" onclick="toggleSection('clues')">
         🗺️ Clues
         <span id="clueSectionBadge" class="sec-badge"></span>
@@ -496,8 +511,7 @@
       </div>
     </div>
 
-    <!-- Slayer -->
-    <div id="sec-slayer" class="sec-anchor">
+    <div id="sec-slayer" class="sec-anchor" data-right-tab="activities">
       <div class="sec-hdr" onclick="toggleSection('slayer')">
         🗡️ Slayer
         <span id="slayerSectionBadge" class="sec-badge"></span>
@@ -508,24 +522,13 @@
       </div>
     </div>
 
-    <!-- Inventory -->
-    <div id="sec-inv" class="sec-anchor">
+    <!-- Items tab: Inventory -->
+    <div id="sec-inv" class="sec-anchor" data-right-tab="items">
       <div class="sec-hdr inv-hdr" style="cursor:default;">
         🎒 Items
       </div>
       <div id="sec-body-inv" class="sec-body">
         <div id="invPanel"></div>
-      </div>
-    </div>
-
-    <!-- Log -->
-    <div id="sec-log" class="sec-anchor">
-      <div class="sec-hdr" onclick="toggleSection('log')" style="margin-top:8px;">
-        📜 Log
-        <span class="chev">▼</span>
-      </div>
-      <div id="sec-body-log" class="sec-body">
-        <div id="log"></div>
       </div>
     </div>
 
@@ -3079,6 +3082,7 @@ function freshState(){
     prayer:         { points:0, maxPoints:1, active:{}, drainCounter:0, lastRegen:0 },
     achievements:    {},
     skillTabs:       {},
+    rightTab:        'status',
     collectionLog:   {},
     tutorial:        { done: false },
     openCounts:      {},
@@ -6126,6 +6130,15 @@ function startBatchAll(skillId, actionId){
   ));
   if (max > 0) startAction(skillId, actionId, max);
 }
+function switchRightTab(tab){
+  state.rightTab = tab;
+  document.querySelectorAll('#rightTabBar .tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tab);
+  });
+  document.querySelectorAll('[data-right-tab]').forEach(sec => {
+    sec.style.display = sec.dataset.rightTab === tab ? '' : 'none';
+  });
+}
 function stopAction(){
   if (state.current){
     state.current = null;
@@ -7572,6 +7585,7 @@ function init(){
 
   render();
   renderLog();
+  switchRightTab(state.rightTab || 'status');
 
   // the heartbeat
   setInterval(tick, TICK_MS);
