@@ -154,17 +154,58 @@
     .panel-right{ overflow-y:auto; max-height:calc(100vh - 56px); }
   }
 
-  /* Mobile: active skill first, then right panel, then skills */
-  @media(max-width:819px){
-    .panel-skills{ order:3; }
-    .panel-active{ order:1; }
-    .panel-right { order:2; }
+  /* Mobile: hamburger drawer layout */
+  .hamburger-btn{ display:none; }
+  .pane-switcher{ display:none; }
+  #drawerBackdrop{ display:none; position:fixed; inset:0; z-index:199; background:rgba(0,0,0,.45); }
+  #drawerBackdrop.open{ display:block; }
 
-    /* Header: stack title row above scrollable button strip */
+  @media(max-width:819px){
+    /* Skills panel becomes a fixed slide-in drawer */
+    .panel-skills{
+      position:fixed; left:0; top:0; width:280px; height:100vh;
+      z-index:200; overflow-y:auto; border-radius:0;
+      transform:translateX(-100%); transition:transform .25s;
+    }
+    .panel-skills.drawer-open{
+      transform:translateX(0);
+      box-shadow:4px 0 24px rgba(0,0,0,.5);
+    }
+
+    /* Active skill pane hidden until Play tab selected (JS controls) */
+    .panel-active{ display:none; }
+
+    /* Right panel always visible; internal tab bar replaced by pane switcher */
+    #rightTabBar{ display:none; }
+
+    /* Header stacks: title row → utility buttons → pane switcher */
     header{ flex-direction:column; align-items:stretch; gap:6px; padding:8px 12px; }
     .header-left{ justify-content:space-between; }
     .header-btns{ overflow-x:auto; white-space:nowrap; flex-wrap:nowrap; padding-bottom:2px; -webkit-overflow-scrolling:touch; }
     .header-btns .mini{ flex-shrink:0; }
+
+    /* Hamburger button */
+    .hamburger-btn{
+      display:flex; align-items:center; justify-content:center;
+      background:none; border:none; color:var(--text);
+      font-size:22px; padding:4px 8px; cursor:pointer; flex-shrink:0;
+      min-height:38px;
+    }
+    .hamburger-btn:hover{ color:var(--accent); }
+
+    /* Pane switcher row */
+    .pane-switcher{
+      display:flex; gap:1px;
+      background:var(--line); border-radius:8px; overflow:hidden;
+    }
+    .pane-btn{
+      flex:1; min-height:38px; padding:6px 4px;
+      font-size:12px; font-weight:500;
+      background:var(--panel2); color:var(--dim);
+      border:none; cursor:pointer;
+      transition:background .1s, color .1s;
+    }
+    .pane-btn.active{ background:var(--accent); color:#fff; }
 
     /* Larger touch targets */
     .mini{ padding:8px 12px; min-height:38px; }
@@ -175,33 +216,6 @@
 
     /* Equipment slots single column */
     .equip-grid{ grid-template-columns:1fr; }
-  }
-
-  /* Mobile sticky nav */
-  .mobile-nav{
-    display:none;
-  }
-  @media(max-width:819px){
-    .mobile-nav{
-      display:flex; flex-wrap:wrap;
-      background:var(--panel); border-bottom:1px solid var(--line);
-      position:sticky; top:0; z-index:20;
-      gap:1px; padding:0;
-    }
-    .mobile-nav a{
-      flex:1 1 calc(100% / 3);
-      display:flex; align-items:center; justify-content:center;
-      min-height:44px; padding:6px 4px;
-      font-size:13px; font-weight:500;
-      background:var(--panel2); color:var(--dim);
-      text-decoration:none; text-align:center;
-      transition:background .1s, color .1s;
-      cursor:pointer;
-    }
-    .mobile-nav a:nth-child(4),
-    .mobile-nav a:nth-child(5){ flex:1 1 50%; }
-    .mobile-nav a:active,
-    .mobile-nav a.active{ background:var(--accent); color:#fff; }
   }
 
   /* Collapsible section headers */
@@ -395,6 +409,7 @@
 
 <header>
   <div class="header-left">
+    <button class="hamburger-btn" onclick="openSkillsDrawer()">☰</button>
     <h1>⛏️ Idle Skiller <span style="color:var(--dim);font-weight:400;font-size:13px;">starter</span></h1>
     <span class="total">Total level: <b id="totalLevel">1</b></span>
   </div>
@@ -404,16 +419,16 @@
     <button class="mini" onclick="openAchievements()">🏆 Achievements</button>
     <button class="mini" onclick="openCollectionLog()">📖 Log</button>
     <button class="mini" onclick="openSettings()">⚙️ Settings</button>
-      </div>
+  </div>
+  <div class="pane-switcher" id="paneSwitcher">
+    <button class="pane-btn" data-pane="play"       onclick="switchMobilePane('play')">▶ Play</button>
+    <button class="pane-btn" data-pane="status"     onclick="switchMobilePane('status')">⚔️ Status</button>
+    <button class="pane-btn" data-pane="activities" onclick="switchMobilePane('activities')">🌿 Activities</button>
+    <button class="pane-btn" data-pane="items"      onclick="switchMobilePane('items')">🎒 Items</button>
+  </div>
 </header>
 
-<nav class="mobile-nav" id="mobileNav">
-  <a onclick="mobileNavTo('sec-active')">▶ Play</a>
-  <a onclick="mobileNavTo('sec-equip','status')">⚔️ Status</a>
-  <a onclick="mobileNavTo('sec-inv','items')">🎒 Items</a>
-  <a onclick="mobileNavTo('sec-skills')">🏆 Skills</a>
-  <a onclick="mobileNavTo('sec-log')">📜 Log</a>
-</nav>
+<div id="drawerBackdrop" onclick="closeSkillsDrawer()"></div>
 
 <div class="wrap">
   <!-- LEFT: all 26 skills -->
@@ -6118,12 +6133,25 @@ function switchRightTab(tab){
     sec.style.display = sec.dataset.rightTab === tab ? '' : 'none';
   });
 }
-function mobileNavTo(sectionId, tab){
-  if (tab) switchRightTab(tab);
-  const el = document.getElementById(sectionId);
-  if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
-  document.querySelectorAll('#mobileNav a').forEach(a =>
-    a.classList.toggle('active', a.getAttribute('onclick')?.includes(sectionId))
+function openSkillsDrawer(){
+  document.querySelector('.panel-skills').classList.add('drawer-open');
+  document.getElementById('drawerBackdrop').classList.add('open');
+}
+function closeSkillsDrawer(){
+  document.querySelector('.panel-skills').classList.remove('drawer-open');
+  document.getElementById('drawerBackdrop').classList.remove('open');
+}
+function switchMobilePane(pane){
+  if(window.innerWidth > 819) return;
+  const pa = document.querySelector('.panel-active');
+  if(pa) pa.style.display = pane === 'play' ? '' : 'none';
+  if(pane === 'play'){
+    document.querySelectorAll('[data-right-tab]').forEach(s => s.style.display = 'none');
+  } else {
+    switchRightTab(pane);
+  }
+  document.querySelectorAll('#paneSwitcher .pane-btn').forEach(btn =>
+    btn.classList.toggle('active', btn.dataset.pane === pane)
   );
 }
 function stopAction(){
@@ -6577,7 +6605,11 @@ function renderSkillList(){
 }
 
 let viewedSkill = 'woodcutting';
-function selectSkill(id){ viewedSkill = id; render(); }
+function selectSkill(id){
+  viewedSkill = id;
+  if(window.innerWidth <= 819){ closeSkillsDrawer(); switchMobilePane('play'); }
+  render();
+}
 
 /* inventoryTab kept for backward-compat but no longer drives rendering */
 let inventoryTab = 'all';
@@ -7565,6 +7597,7 @@ function init(){
   render();
   renderLog();
   switchRightTab(state.rightTab || 'status');
+  switchMobilePane('play');
 
   // the heartbeat
   setInterval(tick, TICK_MS);

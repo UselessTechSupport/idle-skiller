@@ -115,8 +115,8 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - **Jewelry perk system** — all 18 craftable rings and amulets have unique passive perks (XP boosts, rune save, farm speed, HP regen, prayer drain, dodge, bone XP, slayer kill modifiers); two silver slayer rings (Ring of Haste: 25% double-kill, Ring of Endurance: 25% zero-kill)
 
 **UI / QoL**
-- Mobile-first layout: header collapses to title row + scrollable button strip on narrow screens; larger touch targets; equipment grid single-column on mobile
-- **Mobile sticky nav** — 2-row grid nav (Play / Status / Items on top row, Skills / Log on bottom row); 44px touch targets; active highlight shows current section; Status and Items buttons automatically switch the right panel tab before scrolling
+- Mobile-first layout: header collapses to title row + utility buttons + pane switcher; larger touch targets; equipment grid single-column on mobile
+- **Mobile app layout** — hamburger (☰) slides in the skills list as a drawer; pane switcher row (▶ Play / ⚔️ Status / 🌿 Activities / 🎒 Items) swaps the main content area without scrolling; game log always pinned at top of content area; Activities pane gives direct access to Farming, Summoning, Clues, and Slayer
 - **Right panel tab system** — Log pinned to the top of the right panel (always visible); remaining sections grouped into three tabs: Status (Equipment + Prayer), Activities (Farming, Slayer, Summoning, Clues), Items (Inventory); tab choice persists across saves
 - Inventory grouped by category — Openable, Equipment, Pets, Food & Potions, Seeds & Herbs, Summoning Pouches, Summoning, Ores & Bars, Logs, Fish, Gems & Hides, Runes & Energy, Ammo, Hunter, Currency, Other
 - Equipment panel with 12 slots (Head, Weapon, Offhand, Ammo, Neck, Cape, Ring, Body, Gloves, Legs, Feet, Pet) and live stat totals
