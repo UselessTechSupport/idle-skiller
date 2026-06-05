@@ -1,8 +1,8 @@
-# Idle Skiller
+# IdleWright
 
 A 2D single-player idle/incremental game inspired by classic idle RPG gameplay.
 
-**Legal notice:** Idle Skiller is an independent, non-commercial fan project. It is not affiliated with, endorsed by, or connected to Jagex Ltd. in any way. All character, location, and item names are original; any similarity to existing game content is coincidental.
+**Legal notice:** IdleWright is an independent, non-commercial fan project. It is not affiliated with, endorsed by, or connected to Jagex Ltd. in any way. All character, location, and item names are original; any similarity to existing game content is coincidental.
 
 Built as a single self-contained HTML file — open it in a browser and play, no build step required.
 
