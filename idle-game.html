@@ -1404,9 +1404,17 @@ const ACTIONS = {
     {id:'cook_sailfish',          name:'Cook sailfish',          label:'Sailfish cooked',          levelReq:99, xp:595, ticks:5, item:'cooked_sailfish',          itemName:'Cooked sailfish',          ingredients:[{item:'raw_sailfish',          count:1, name:'Raw sailfish'}]},
   ],
   fletching:[
-    // --- Headless arrow shafts (auto-uses best log in inventory) ---
-    {id:'headless_auto', name:'Fletch headless arrows', label:'Headless arrows made',
-     levelReq:1, xp:0, ticks:2, item:'headless_arrow', itemName:'Headless arrow', splinterable:true, autoLog:true, category:'Headless Arrows'},
+    // --- Headless arrow shafts ---
+    {id:'headless_normal',   name:'Headless arrows (Logs)',         label:'Headless arrows made', levelReq:1,  xp:1,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:15,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'normal_logs',        count:1, name:'Logs'}]},
+    {id:'headless_oak',      name:'Headless arrows (Oak)',          label:'Headless arrows made', levelReq:1,  xp:2,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:30,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'oak_logs',           count:1, name:'Oak logs'}]},
+    {id:'headless_willow',   name:'Headless arrows (Willow)',       label:'Headless arrows made', levelReq:20, xp:3,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:45,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'willow_logs',        count:1, name:'Willow logs'}]},
+    {id:'headless_teak',     name:'Headless arrows (Teak)',         label:'Headless arrows made', levelReq:30, xp:4.5,  ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:45,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'teak_logs',          count:1, name:'Teak logs'}]},
+    {id:'headless_maple',    name:'Headless arrows (Maple)',        label:'Headless arrows made', levelReq:35, xp:6,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:60,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'maple_logs',         count:1, name:'Maple logs'}]},
+    {id:'headless_mahogany', name:'Headless arrows (Mahogany)',     label:'Headless arrows made', levelReq:50, xp:7.5,  ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:60,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'mahogany_logs',      count:1, name:'Mahogany logs'}]},
+    {id:'headless_yew',      name:'Headless arrows (Yew)',          label:'Headless arrows made', levelReq:60, xp:9,    ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:75,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'yew_logs',           count:1, name:'Yew logs'}]},
+    {id:'headless_magic',    name:'Headless arrows (Magic)',        label:'Headless arrows made', levelReq:75, xp:10.5, ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:90,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'magic_logs',         count:1, name:'Magic logs'}]},
+    {id:'headless_elder',    name:'Headless arrows (Elder)',        label:'Headless arrows made', levelReq:80, xp:12,   ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:90,  splinterable:true, category:'Headless Arrows', ingredients:[{item:'elder_logs',         count:1, name:'Elder logs'}]},
+    {id:'headless_eternal',  name:'Headless arrows (Eternal magic)',label:'Headless arrows made', levelReq:90, xp:15,   ticks:2, item:'headless_arrow', itemName:'Headless arrow', count:120, splinterable:true, category:'Headless Arrows', ingredients:[{item:'eternal_magic_logs', count:1, name:'Eternal magic logs'}]},
     // --- Shortbows (unstrung) ---
     {id:'shortbow_u_logs',     name:'Fletch shortbow (u)',          label:'Shortbows fletched', levelReq:5,   xp:5,    ticks:3, item:'shortbow_u',          itemName:'Shortbow (u)',          splinterable:true, category:'Shortbows', ingredients:[{item:'normal_logs',        count:1, name:'Logs'}]},
     {id:'shortbow_u_oak',      name:'Fletch oak shortbow (u)',      label:'Shortbows fletched', levelReq:20,  xp:16.5, ticks:3, item:'oak_shortbow_u',      itemName:'Oak shortbow (u)',      splinterable:true, category:'Shortbows', ingredients:[{item:'oak_logs',           count:1, name:'Oak logs'}]},
@@ -2203,18 +2211,6 @@ const TOOLS = {
 };
 
 /* Headless-arrow log tiers (best-first for auto-select) */
-const HEADLESS_LOG_TIERS = [
-  {item:'eternal_magic_logs', name:'Eternal magic logs', levelReq:90, xp:15,  count:120},
-  {item:'elder_logs',         name:'Elder logs',         levelReq:80, xp:12,  count:90},
-  {item:'magic_logs',         name:'Magic logs',         levelReq:75, xp:10.5,count:90},
-  {item:'yew_logs',           name:'Yew logs',           levelReq:60, xp:9,   count:75},
-  {item:'mahogany_logs',      name:'Mahogany logs',      levelReq:50, xp:7.5, count:60},
-  {item:'maple_logs',         name:'Maple logs',         levelReq:35, xp:6,   count:60},
-  {item:'teak_logs',          name:'Teak logs',          levelReq:30, xp:4.5, count:45},
-  {item:'willow_logs',        name:'Willow logs',        levelReq:20, xp:3,   count:45},
-  {item:'oak_logs',           name:'Oak logs',           levelReq:1,  xp:2,   count:30},
-  {item:'normal_logs',        name:'Logs',               levelReq:1,  xp:1,   count:15},
-];
 
 const BONE_TIERS = [
   { item:'dragon_bones', name:'Dragon bones', xpBase:72  },
@@ -5071,27 +5067,6 @@ function completeAction(action, silent){
       return;
     }
   }
-  // Headless arrows: auto-select best available log
-  if (action.autoLog){
-    const fletchLevel = levelForXp(state.skills.fletching.xp);
-    const tier = HEADLESS_LOG_TIERS.find(
-      t => fletchLevel >= t.levelReq && (state.inventory[t.item] || 0) >= 1
-    );
-    if (!tier){ if (!silent) log('Out of logs — stopped.'); state.current = null; state.progress = 0; return; }
-    state.inventory[tier.item]--;
-    const failDef = FAIL_MECHANICS.fletching;
-    const noBadAt = 1 + failDef.zeroAt;
-    const splinterChance = Math.max(0, (noBadAt - fletchLevel) / failDef.zeroAt * failDef.chance);
-    if (Math.random() < splinterChance){
-      grantItem(failDef.product, failDef.productName);
-      if (!silent) log(failDef.msg);
-      return;
-    }
-    grantItem('headless_arrow', 'Headless arrow', tier.count);
-    grantXp('fletching', tier.xp, silent);
-    if (!silent) checkBonusDrop(skillId, action);
-    return;
-  }
   // Prayer: auto-select best bone from inventory
   if (action.autoBone){
     if (action.altarReq && !state.upgrades?.altar){
@@ -6791,15 +6766,6 @@ function renderActiveSkill(){
       const timeStr = fm > 0 ? `${fm}m${fsc > 0 ? ' ' + fsc + 's' : ''}` : `${fsc}s`;
       const dgXphr = Math.round(a.xp * 6000 / Math.max(1, calcFloorSecs(a) / (TICK_MS/1000)));
       metaContent = `${a.xp.toLocaleString()} xp · ${timeStr} · ${dgXphr.toLocaleString()} xp/hr`;
-    } else if (a.autoLog){
-      const fletchLevel = levelForXp(state.skills[s.id].xp);
-      const tier = HEADLESS_LOG_TIERS.find(
-        t => fletchLevel >= t.levelReq && (state.inventory[t.item] || 0) >= 1
-      );
-      const tierStr = tier
-        ? `${tier.name} → ${tier.count} arrows, ${tier.xp} xp`
-        : 'No logs in inventory';
-      metaContent = `Uses best log: ${tierStr} · ${(a.ticks*TICK_MS/1000).toFixed(1)}s`;
     } else if (a.xpBase != null){
       const curAgilLevel = levelForXp(state.skills[s.id].xp);
       const scaledXp = a.xpBase + curAgilLevel * (a.xpPerLevel || 0);
@@ -7501,7 +7467,8 @@ function init(){
   if (!state.quests) state.quests = {};
   if (state.current?.skillId === 'thieving' && state.current.stunTicks)
     state.current.stunTicks = 0; // don't resume mid-stun after reload
-  if (state.current?.actionId?.startsWith('headless_from_')) state.current.actionId = 'headless_auto';
+  if (state.current?.actionId === 'headless_auto' || state.current?.actionId?.startsWith('headless_from_'))
+    state.current = null;
   if (!state.prayer){
     const pLvl = Math.min(levelForXp(state.skills.prayer?.xp || 0), SKILL_BY_ID['prayer'].maxLevel);
     state.prayer = { points:pLvl, maxPoints:pLvl, active:{}, drainCounter:0, lastRegen:0 };
