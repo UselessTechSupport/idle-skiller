@@ -137,6 +137,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - **Smithing tab** grouped into 4 broad sections (Bars / Armour / Weapons / Other) instead of a separate header per metal tier
 - **Combat style/subtab buttons** (Melee / Range / Mage, Mobs / Slayer / Bosses / Quests) now styled consistently with the rest of the UI — active state highlighted in green
 - **Skill sub-tabs** — multi-category skills (Smithing, Crafting, Fletching, Divination, Hunter, Herblore, Thieving, Runecrafting) now show a tab bar at the top of the action list; clicking a tab shows only that category's actions instead of one long scrollable list
+- **Mobile log position** — on mobile (▶ Play pane), the activity log always appears above the active skill panel
 
 **Bonus drops**
 - Woodcutting: bird's nests (1%, 4 variants)
