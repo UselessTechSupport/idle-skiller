@@ -782,41 +782,42 @@ const SKILLCAPES = [
 
 const PETS = [
   // Skilling pets — 1/5000 per action
-  {id:'pet_beaver',        name:'Beaver',         icon:'🦫', skillId:'woodcutting',  perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Woodcutting speed'},
-  {id:'pet_rock_golem',    name:'Rock Golem',     icon:'🪨', skillId:'mining',       perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Mining speed'},
-  {id:'pet_tiny_kraken',   name:'Tiny Kraken',    icon:'🦑', skillId:'fishing',      perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Fishing XP'},
+  {id:'pet_beaver',        name:'Beaver',         icon:'🦫', skillId:'woodcutting',  perkType:'special',      perkValue:0,    perkLabel:'5% chance per chop to receive double logs'},
+  {id:'pet_rock_golem',    name:'Rock Golem',     icon:'🪨', skillId:'mining',       perkType:'special',      perkValue:0,    perkLabel:'5% chance per ore to mine double ore'},
+  {id:'pet_tiny_kraken',   name:'Tiny Kraken',    icon:'🦑', skillId:'fishing',      perkType:'special',      perkValue:0,    perkLabel:'2% chance per fishing action to find a gem or coin pouch'},
   {id:'pet_herb_sprite',   name:'Herb Sprite',    icon:'🌿', skillId:'farming',      perkType:'farm_speed',   perkValue:0.10, perkLabel:'Crops grow 10% faster'},
-  {id:'pet_gecko',         name:'Gecko',          icon:'🦎', skillId:'hunter',       perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Hunter XP'},
-  {id:'pet_wisp',          name:'Memory Wisp',    icon:'💫', skillId:'divination',   perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Divination XP'},
-  {id:'pet_crafting_imp',  name:'Crafting Imp',   icon:'🎭', skillId:'crafting',     perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Crafting speed'},
-  {id:'pet_robin',         name:'Robin',          icon:'🐦', skillId:'fletching',    perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Fletching speed'},
-  {id:'pet_forge_sprite',  name:'Forge Sprite',   icon:'🌋', skillId:'smithing',     perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Smithing speed'},
-  {id:'pet_chef_mouse',    name:'Chef Mouse',     icon:'🐭', skillId:'cooking',      perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Cooking XP'},
-  {id:'pet_fire_sprite',   name:'Fire Sprite',    icon:'🕯️', skillId:'firemaking',   perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Firemaking XP'},
-  {id:'pet_rune_sprite',   name:'Rune Sprite',    icon:'🔮', skillId:'runecrafting', perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Runecrafting XP'},
-  {id:'pet_chisel_gnome',  name:'Chisel Gnome',   icon:'🪵', skillId:'construction', perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Construction XP'},
-  {id:'pet_herb_frog',     name:'Herb Frog',      icon:'🐸', skillId:'herblore',     perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Herblore speed'},
+  {id:'pet_gecko',         name:'Gecko',          icon:'🦎', skillId:'hunter',       perkType:'special',      perkValue:0,    perkLabel:'Universal scouting: 0.5% chance per any action to find an impling jar scaled to Hunter level'},
+  {id:'pet_wisp',          name:'Memory Wisp',    icon:'💫', skillId:'divination',   perkType:'special',      perkValue:0,    perkLabel:'Memory bank: 3% chance per action to replay XP from the last different skill you trained'},
+  {id:'pet_crafting_imp',  name:'Crafting Imp',   icon:'🎭', skillId:'crafting',     perkType:'special',      perkValue:0,    perkLabel:'8% chance per Crafting action to not consume any ingredients (free craft)'},
+  {id:'pet_robin',         name:'Robin',          icon:'🐦', skillId:'fletching',    perkType:'special',      perkValue:0,    perkLabel:'10% chance per Fletching action to produce double output'},
+  {id:'pet_forge_sprite',  name:'Forge Sprite',   icon:'🌋', skillId:'smithing',     perkType:'special',      perkValue:0,    perkLabel:'5% chance per smelting action to produce double bars'},
+  {id:'pet_chef_mouse',    name:'Chef Mouse',     icon:'🐭', skillId:'cooking',      perkType:'special',      perkValue:0,    perkLabel:'Cooking always yields 1 burnt food as a side; burns produce double burnt food'},
+  {id:'pet_fire_sprite',   name:'Fire Sprite',    icon:'🕯️', skillId:'firemaking',   perkType:'special',      perkValue:0,    perkLabel:'Warm Aura: all skilling actions are 2% faster'},
+  {id:'pet_rune_sprite',   name:'Rune Sprite',    icon:'🔮', skillId:'runecrafting', perkType:'special',      perkValue:0,    perkLabel:'10% chance per Runecrafting action to craft double runes'},
+  {id:'pet_chisel_gnome',  name:'Chisel Gnome',   icon:'🪵', skillId:'construction', perkType:'special',      perkValue:0,    perkLabel:'10% chance when building furniture to produce double the item (buy one get one)'},
+  {id:'pet_herb_frog',     name:'Herb Frog',      icon:'🐸', skillId:'herblore',     perkType:'special',      perkValue:0,    perkLabel:"3% chance per brew to produce the supreme-tier version of the potion"},
   {id:'pet_tiny_warrior',  name:'Tiny Warrior',   icon:'⚔️', skillId:'melee',        perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Melee XP'},
   {id:'pet_shield_crab',   name:'Shield Crab',    icon:'🦀', skillId:'defence',      perkType:'defence_flat', perkValue:5,    perkLabel:'+5 Defence bonus'},
   {id:'pet_blood_sprite',  name:'Blood Sprite',   icon:'❤️', skillId:'constitution', perkType:'hp_regen_mult',perkValue:0.10, perkLabel:'+10% HP regen rate'},
   {id:'pet_golden_eagle',  name:'Golden Eagle',   icon:'🦅', skillId:'ranged',       perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Ranged XP'},
-  {id:'pet_magic_owl',     name:'Magic Owl',      icon:'🦉', skillId:'magic',        perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Magic XP'},
+  {id:'pet_magic_owl',     name:'Magic Owl',      icon:'🦉', skillId:'magic',        perkType:'magic_dmg',    perkValue:0.05, perkLabel:'+5% Magic damage'},
   {id:'pet_divine_lamb',   name:'Divine Lamb',    icon:'🐑', skillId:'prayer',       perkType:'prayer_drain', perkValue:0.10, perkLabel:'-10% Prayer drain rate'},
-  {id:'pet_mini_familiar', name:'Mini Familiar',  icon:'🌀', skillId:'summoning',    perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Summoning XP'},
-  {id:'pet_nimble_cat',    name:'Nimble Cat',     icon:'🐱', skillId:'agility',      perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Agility speed'},
-  {id:'pet_raccoon',       name:'Raccoon',        icon:'🦝', skillId:'thieving',     perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Thieving XP'},
-  {id:'pet_imp',           name:'Imp',            icon:'👺', skillId:'slayer',       perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Slayer XP'},
-  {id:'pet_dungeon_rat',   name:"Lil' Lubi'",     icon:'🐀', skillId:'dungeoneering',perkType:'dg_token_pct', perkValue:0.05, perkLabel:'+5% Dungeoneering token gain'},
-  {id:'pet_dig_sprite',    name:'Dig Sprite',     icon:'🏺', skillId:'archaeology',  perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Archaeology XP'},
+  {id:'pet_mini_familiar', name:'Mini Familiar',  icon:'🌀', skillId:'summoning',    perkType:'special',      perkValue:0,    perkLabel:'Summoning familiar duration +50%'},
+  {id:'pet_nimble_cat',    name:'Nimble Cat',     icon:'🐱', skillId:'agility',      perkType:'special',      perkValue:0,    perkLabel:'Each Agility action passively grants 30 Constitution XP'},
+  {id:'pet_raccoon',       name:'Raccoon',        icon:'🦝', skillId:'thieving',     perkType:'special',      perkValue:0,    perkLabel:'10% chance per pickpocket to steal twice (double loot + XP)'},
+  {id:'pet_imp',           name:'Imp',            icon:'👺', skillId:'slayer',       perkType:'special',      perkValue:0,    perkLabel:'Slayer task completion grants double points'},
+  {id:'pet_dungeon_rat',   name:"Lil' Lubi'",     icon:'🐀', skillId:'dungeoneering',perkType:'dg_token_pct', perkValue:0.05, perkLabel:'+5% DG token gain; 3% chance per floor to find a mini supply cache'},
+  {id:'pet_dig_sprite',    name:'Dig Sprite',     icon:'🏺', skillId:'archaeology',  perkType:'special',      perkValue:0,    perkLabel:'10% chance per dig to progress a random other artifact at the same site'},
   // Boss pets
   {id:'pet_baby_mole',     name:'Baby Mole',      icon:'🦔', skillId:null,           perkType:'drop_rate_pct',perkValue:0.05, perkLabel:'+5% drop rate'},
   {id:'pet_void_wyrm',     name:'Void Wyrm',      icon:'🐲', skillId:null,           perkType:'hp_regen_mult',perkValue:0.15, perkLabel:'+15% HP regen rate'},
-  {id:'pet_deep_spawn',    name:'Deep Spawn',     icon:'🦈', skillId:'slayer',       perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Slayer XP'},
+  {id:'pet_deep_spawn',    name:'Deep Spawn',     icon:'🦈', skillId:'slayer',       perkType:'special',      perkValue:0,    perkLabel:'+10% damage to monsters while on a Slayer task'},
   {id:'pet_lich_familiar', name:'Lich Familiar',  icon:'💀', skillId:null,           perkType:'prayer_drain', perkValue:0.10, perkLabel:'-10% Prayer drain rate'},
   {id:'pet_solar_hawk',    name:'Solar Hawk',     icon:'🌟', skillId:null,           perkType:'ranged_dmg',   perkValue:0.05, perkLabel:'+5% Ranged damage'},
   {id:'pet_war_pup',       name:'War Pup',        icon:'🐕', skillId:null,           perkType:'melee_dmg',    perkValue:0.05, perkLabel:'+5% Melee damage'},
   {id:'pet_void_spawn',    name:'Void Spawn',     icon:'🌌', skillId:null,           perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% all XP'},
   {id:'pet_void_herald',   name:'Void Herald',    icon:'🐲', skillId:null,           perkType:'drop_rate_pct',perkValue:0.03, perkLabel:'+3% drop rate'},
+  {id:'pet_phoenix_chick', name:'Phoenix Chick',  icon:'🔥', skillId:'firemaking',   perkType:'special',      perkValue:0,    perkLabel:'Phoenix Blessing: 1% chance per Firemaking action to bulk-burn up to 50 logs for 90% XP'},
 ];
 
 const JEWELRY_PERKS = {
@@ -1197,6 +1198,10 @@ const SELL_PRICES = {
   gold_charm:100, green_charm:400, crimson_charm:1200, blue_charm:4000,
   green_dragonhide:300, blue_dragonhide:600, red_dragonhide:1000, black_dragonhide:1600, royal_dragonhide:2400,
   larupia_fur:80, kebbit_fur:120, kyatt_fur:250,
+  phantom_pelt:800, apex_pelt:3000, phantom_claw:80000, phantom_fang:50000,
+  phoenix_feather:800, phoenix_arrow:90, phoenix_bow:350000,
+  phantom_vambraces:8000, phantom_chaps:12000, phantom_body:18000,
+  apex_phantom_body:40000, phantom_hunters_cape:120000,
   cloth_hat:1500, cloth_robe_top:3500, cloth_robe_bottom:3000,
   splitbark_helm:6000, splitbark_top:16000, splitbark_bottom:10000,
   lunar_helm:18000, lunar_torso:40000, lunar_legs:28000,
@@ -1278,6 +1283,9 @@ const SELL_PRICES = {
   bronze_crossbow_u:60,  iron_crossbow_u:250,  steel_crossbow_u:450,  teak_crossbow_u:650,
   adamant_crossbow_u:1000, mahogany_crossbow_u:1400, rune_crossbow_u:2000,
   dragon_crossbow_u:3200, elder_crossbow_u:5500, superior_crossbow_u:9000,
+  burnt_food:15,
+  oak_chair:400, teak_table:1200, mahogany_throne:2500, yew_bookcase:4000,
+  magic_wardrobe:6500, ornate_altar:10000, eternal_throne:18000,
 };
 
 const RUNE_SPELLS = {
@@ -1512,7 +1520,8 @@ const ACTIONS = {
     {id:'arrows_mithril', name:'Fletch mithril arrows', label:'Mithril arrows made', levelReq:45, xp:86,   ticks:3, item:'mithril_arrow', itemName:'Mithril arrow', count:15, category:'Arrows', ingredients:[{item:'headless_arrow', count:15, name:'Headless arrows'},{item:'mithril_arrowhead', count:15, name:'Mithril arrowheads'}]},
     {id:'arrows_adamant', name:'Fletch adamant arrows', label:'Adamant arrows made', levelReq:60, xp:145,  ticks:3, item:'adamant_arrow', itemName:'Adamant arrow', count:15, category:'Arrows', ingredients:[{item:'headless_arrow', count:15, name:'Headless arrows'},{item:'adamant_arrowhead', count:15, name:'Adamant arrowheads'}]},
     {id:'arrows_rune',    name:'Fletch rune arrows',    label:'Rune arrows made',    levelReq:75, xp:216,  ticks:3, item:'rune_arrow',    itemName:'Rune arrow',    count:15, category:'Arrows', ingredients:[{item:'headless_arrow', count:15, name:'Headless arrows'},{item:'rune_arrowhead',    count:15, name:'Rune arrowheads'}]},
-    {id:'arrows_dragon',  name:'Fletch dragon arrows',  label:'Dragon arrows made',  levelReq:90, xp:300,  ticks:3, item:'dragon_arrow',  itemName:'Dragon arrow',  count:15, category:'Arrows', ingredients:[{item:'headless_arrow', count:15, name:'Headless arrows'},{item:'dragon_arrowhead',  count:15, name:'Dragon arrowheads'}]},
+    {id:'arrows_dragon',   name:'Fletch dragon arrows',  label:'Dragon arrows made',   levelReq:90, xp:300,  ticks:3, item:'dragon_arrow',   itemName:'Dragon arrow',   count:15, category:'Arrows', ingredients:[{item:'headless_arrow', count:15, name:'Headless arrows'},{item:'dragon_arrowhead',  count:15, name:'Dragon arrowheads'}]},
+    {id:'arrows_phoenix',  name:'Fletch phoenix arrows', label:'Phoenix arrows made',  levelReq:80, xp:280,  ticks:3, item:'phoenix_arrow',  itemName:'Phoenix arrow',  count:15, category:'Arrows', ingredients:[{item:'phoenix_feather', count:1, name:'Phoenix feather'}]},
   // Stringing
   {id:'shortbow',           name:'Shortbow',               category:'Stringing', levelReq:10,  xp:5,   ticks:3, item:'shortbow',           itemName:'Shortbow',               ingredients:[{item:'shortbow_u',          count:1,name:'Unstrung shortbow'},    {item:'bowstring',count:1,name:'Bowstring'}]},
   {id:'oak_shortbow',       name:'Oak shortbow',           category:'Stringing', levelReq:25,  xp:16.5,ticks:3, item:'oak_shortbow',       itemName:'Oak shortbow',           ingredients:[{item:'oak_shortbow_u',      count:1,name:'Unstrung oak shortbow'},{item:'bowstring',count:1,name:'Bowstring'}]},
@@ -1588,9 +1597,14 @@ const ACTIONS = {
     {id:'craft_kebbit_cowl',   name:'Swifttail cowl',   label:'Hunter armour crafted', category:'Hunter Leather', levelReq:24, xp:35,  ticks:2, item:'kebbit_cowl',      itemName:'Swifttail cowl',   ingredients:[{item:'kebbit_fur', count:1, name:'Swifttail fur'}]},
     {id:'craft_kebbit_chaps',  name:'Swifttail chaps',  label:'Hunter armour crafted', category:'Hunter Leather', levelReq:28, xp:48,  ticks:2, item:'kebbit_chaps',     itemName:'Swifttail chaps',  ingredients:[{item:'kebbit_fur', count:2, name:'Swifttail fur'}]},
     {id:'craft_kebbit_body',   name:'Swifttail body',   label:'Hunter armour crafted', category:'Hunter Leather', levelReq:33, xp:65,  ticks:2, item:'kebbit_body',      itemName:'Swifttail body',   ingredients:[{item:'kebbit_fur', count:3, name:'Swifttail fur'}]},
-    {id:'craft_kyatt_vambs',   name:'Jaguar vambraces', label:'Hunter armour crafted', category:'Hunter Leather', levelReq:45, xp:55,  ticks:2, item:'kyatt_vambraces',  itemName:'Jaguar vambraces', ingredients:[{item:'kyatt_fur',  count:1, name:'Jaguar fur'}]},
-    {id:'craft_kyatt_chaps',   name:'Jaguar chaps',     label:'Hunter armour crafted', category:'Hunter Leather', levelReq:52, xp:78,  ticks:2, item:'kyatt_chaps',      itemName:'Jaguar chaps',     ingredients:[{item:'kyatt_fur',  count:2, name:'Jaguar fur'}]},
-    {id:'craft_kyatt_body',    name:'Jaguar body',      label:'Hunter armour crafted', category:'Hunter Leather', levelReq:58, xp:105, ticks:2, item:'kyatt_body',       itemName:'Jaguar body',      ingredients:[{item:'kyatt_fur',  count:3, name:'Jaguar fur'}]},
+    {id:'craft_kyatt_vambs',      name:'Jaguar vambraces',       label:'Hunter armour crafted', category:'Hunter Leather', levelReq:45, xp:55,  ticks:2, item:'kyatt_vambraces',       itemName:'Jaguar vambraces',       ingredients:[{item:'kyatt_fur',    count:1, name:'Jaguar fur'}]},
+    {id:'craft_kyatt_chaps',      name:'Jaguar chaps',           label:'Hunter armour crafted', category:'Hunter Leather', levelReq:52, xp:78,  ticks:2, item:'kyatt_chaps',           itemName:'Jaguar chaps',           ingredients:[{item:'kyatt_fur',    count:2, name:'Jaguar fur'}]},
+    {id:'craft_kyatt_body',       name:'Jaguar body',            label:'Hunter armour crafted', category:'Hunter Leather', levelReq:58, xp:105, ticks:2, item:'kyatt_body',            itemName:'Jaguar body',            ingredients:[{item:'kyatt_fur',    count:3, name:'Jaguar fur'}]},
+    {id:'craft_phantom_vambs',    name:'Phantom vambraces',      label:'Hunter armour crafted', category:'Hunter Leather', levelReq:84, xp:175, ticks:2, item:'phantom_vambraces',     itemName:'Phantom vambraces',      ingredients:[{item:'phantom_pelt', count:2, name:'Phantom pelt'}]},
+    {id:'craft_phantom_chaps',    name:'Phantom chaps',          label:'Hunter armour crafted', category:'Hunter Leather', levelReq:87, xp:240, ticks:2, item:'phantom_chaps',         itemName:'Phantom chaps',          ingredients:[{item:'phantom_pelt', count:3, name:'Phantom pelt'}]},
+    {id:'craft_phantom_body',     name:'Phantom body',           label:'Hunter armour crafted', category:'Hunter Leather', levelReq:91, xp:320, ticks:2, item:'phantom_body',          itemName:'Phantom body',           ingredients:[{item:'phantom_pelt', count:4, name:'Phantom pelt'}]},
+    {id:'craft_apex_phantom_body',name:'Apex phantom body',      label:'Hunter armour crafted', category:'Hunter Leather', levelReq:96, xp:420, ticks:2, item:'apex_phantom_body',     itemName:'Apex phantom body',      ingredients:[{item:'apex_pelt',    count:3, name:'Apex pelt'}]},
+    {id:'craft_phantom_cape',     name:"Phantom hunter's cape",  label:'Hunter armour crafted', category:'Hunter Leather', levelReq:94, xp:500, ticks:3, item:'phantom_hunters_cape',  itemName:"Phantom hunter's cape",  ingredients:[{item:'phantom_fang', count:1, name:'Phantom fang'}]},
 
     // --- Dragonhide Armour (hides from future combat) ---
     {id:'craft_green_dhide_vambs', name:"Green d'hide vambraces", label:"Green d'hide vambraces made", levelReq:57, xp:62,  ticks:3, item:'green_dhide_vambs', itemName:"Green d'hide vambraces", category:'Dragonhide Armour', ingredients:[{item:'green_dragonhide', count:1, name:'Green dragonhide'}]},
@@ -1904,6 +1918,8 @@ const ACTIONS = {
     // Pitfall
     {id:'larupia',            name:'Panther',               category:'Pitfall',       levelReq:31, xp:98,  ticks:5,  item:'larupia_fur',          itemName:'Panther pelt'},
     {id:'sabre_tooth_kyatt',  name:'Sabre jaguar',          category:'Pitfall',       levelReq:55, xp:370, ticks:9,  item:'kyatt_fur',            itemName:'Jaguar fur'},
+    {id:'phantom_wolf',       name:'Phantom wolf',          category:'Pitfall',       levelReq:90, xp:1400,ticks:14, item:'phantom_pelt',         itemName:'Phantom pelt',    count:2},
+    {id:'apex_phantom',       name:'Apex phantom',          category:'Pitfall',       levelReq:97, xp:2300,ticks:17, item:'phantom_pelt',         itemName:'Phantom pelt',    count:3},
     // Impling Jar
     // Impling jars are obtained passively while training other hunter actions (see checkBonusDrop)
   ],
@@ -1998,6 +2014,13 @@ const ACTIONS = {
     {id:'make_magic_plank',    name:'Make magic plank',    label:'Planks made', levelReq:75, xp:576,  ticks:8,  item:'magic_plank',    itemName:'Magic plank',    ingredients:[{item:'magic_logs',         count:1, name:'Magic logs'}]},
     {id:'make_elder_plank',    name:'Make elder plank',    label:'Planks made', levelReq:85, xp:902,  ticks:10, item:'elder_plank',    itemName:'Elder plank',    ingredients:[{item:'elder_logs',         count:1, name:'Elder logs'}]},
     {id:'make_eternal_plank',  name:'Make eternal plank',  label:'Planks made', levelReq:95, xp:1320, ticks:12, item:'eternal_plank',  itemName:'Eternal plank',  ingredients:[{item:'eternal_magic_logs', count:1, name:'Eternal magic logs'}]},
+    {id:'oak_chair',         name:'Oak chair',         category:'Furniture', label:'Furniture built', levelReq:20, xp:140,  ticks:4,  item:'oak_chair',         itemName:'Oak chair',         ingredients:[{item:'oak_plank',      count:2, name:'Oak plank'}]},
+    {id:'teak_table',        name:'Teak table',        category:'Furniture', label:'Furniture built', levelReq:40, xp:360,  ticks:5,  item:'teak_table',        itemName:'Teak table',        ingredients:[{item:'teak_plank',     count:3, name:'Teak plank'}]},
+    {id:'mahogany_throne',   name:'Mahogany throne',   category:'Furniture', label:'Furniture built', levelReq:55, xp:680,  ticks:6,  item:'mahogany_throne',   itemName:'Mahogany throne',   ingredients:[{item:'mahogany_plank', count:3, name:'Mahogany plank'}]},
+    {id:'yew_bookcase',      name:'Yew bookcase',      category:'Furniture', label:'Furniture built', levelReq:68, xp:1100, ticks:7,  item:'yew_bookcase',      itemName:'Yew bookcase',      ingredients:[{item:'yew_plank',      count:3, name:'Yew plank'}]},
+    {id:'magic_wardrobe',    name:'Magic wardrobe',    category:'Furniture', label:'Furniture built', levelReq:80, xp:1700, ticks:8,  item:'magic_wardrobe',    itemName:'Magic wardrobe',    ingredients:[{item:'magic_plank',    count:3, name:'Magic plank'}]},
+    {id:'ornate_altar',      name:'Ornate altar',      category:'Furniture', label:'Furniture built', levelReq:88, xp:2500, ticks:10, item:'ornate_altar',      itemName:'Ornate altar',      ingredients:[{item:'elder_plank',    count:3, name:'Elder plank'}]},
+    {id:'eternal_throne',    name:'Eternal throne',    category:'Furniture', label:'Furniture built', levelReq:97, xp:3800, ticks:12, item:'eternal_throne',    itemName:'Eternal throne',    ingredients:[{item:'eternal_plank',  count:3, name:'Eternal plank'}]},
   ],
   combat:[
     // ── Mobs ─────────────────────────────────────────────────────────────────
@@ -2331,6 +2354,24 @@ const ACTIONS = {
         {item:'blue_charm',        itemName:'Blue charm',        chance:0.02, min:1,   max:1,    notable:true},
         {item:'pet_void_herald',   itemName:'Void Herald',       chance:0.001,min:1,   max:1,    notable:true},
       ]},
+    // Quest Boss — one-time, no drops, significantly harder than the regular version
+    {id:'phoenix_quest', name:'Phoenix (Quest)', category:'Quest Bosses', levelReq:70, xp:0, ticks:220,
+      stats:{hp:3500, attack:72, defence:55}, drops:[]},
+    // Farmable Boss — unlocked after Rise of the Phoenix quest
+    {id:'phoenix', name:'Phoenix', category:'Bosses', questReq:'rise_of_the_phoenix',
+      levelReq:70, xp:14000, ticks:150,
+      stats:{hp:2200, attack:60, defence:45},
+      drops:[
+        {item:'phoenix_feather',  itemName:'Phoenix feather', chance:1.00, min:1, max:3,   notable:false},
+        {item:'fire_rune',        itemName:'Fire rune',       chance:1.00, min:150,max:300, notable:false},
+        {item:'big_bones',        itemName:'Big bones',       chance:1.00, min:1, max:1,   notable:false},
+        {item:'gold_charm',       itemName:'Gold charm',      chance:0.15, min:1, max:2,   notable:false},
+        {item:'green_charm',      itemName:'Green charm',     chance:0.08, min:1, max:1,   notable:false},
+        {item:'crimson_charm',    itemName:'Crimson charm',   chance:0.04, min:1, max:1,   notable:false},
+        {item:'blue_charm',       itemName:'Blue charm',      chance:0.015,min:1, max:1,   notable:true },
+        {item:'phoenix_bow',      itemName:'Phoenix bow',     chance:0.008,min:1, max:1,   notable:true },
+        {item:'pet_phoenix_chick',itemName:'Phoenix Chick',   chance:0.002,min:1, max:1,   notable:true },
+      ]},
     {id:'harbinger',        name:'The Harbinger',                 category:'Bosses', levelReq:100, xp:42315, ticks:350, stats:{hp:6000, attack:85, defence:70},
       drops:[{item:'dragon_bones',    itemName:'Dragon bones',       chance:1.00, min:1,max:1, notable:false},
              {item:'coins',           itemName:'Coins',              chance:1.00, min:2000,max:8000, notable:false},
@@ -2525,6 +2566,8 @@ const COLLECTION_LOG_SOURCES = [
     {id:'dragon_impling_jar',   name:'Dragon impling jar',   icon:'🦋'},
     {id:'kingly_impling_jar',   name:'Kingly impling jar',   icon:'🦋'},
     {id:'jaguar_tooth',         name:'Sabre jaguar tooth',   icon:'🦷'},
+    {id:'phantom_claw',         name:'Phantom claw',         icon:'🐾'},
+    {id:'phantom_fang',         name:'Phantom fang',         icon:'🐺'},
   ]},
   { id:'jar_baby',     name:'Baby Impling Jar',     category:'Hunter', items:[
     {id:'coins',           name:'Coins',           icon:'🪙'},
@@ -2608,6 +2651,7 @@ const COLLECTION_LOG_SOURCES = [
   { id:'boss_harbinger',        name:'The Harbinger',                  category:'Bosses', items:[{id:'ancient_platebody',   name:'Ancient platebody',    icon:'🛡️'},{id:'harbinger_amulet', name:'Harbinger amulet', icon:'💀'}]},
   { id:'boss_ancient_lich',name:'Ancient Lich', category:'Bosses', items:[{id:'ancient_scroll',name:'Ancient scroll',icon:'📜'}]},
   { id:'boss_void_herald', name:'Void Herald',  category:'Bosses', items:[{id:'herald_amulet',name:"Herald's amulet",icon:'📿'},{id:'dragonstone_charm',name:'Dragonstone charm',icon:'✨'}]},
+  { id:'boss_phoenix',     name:'Phoenix',      category:'Bosses', items:[{id:'phoenix_bow',name:'Phoenix bow',icon:'🏹'},{id:'pet_phoenix_chick',name:'Phoenix Chick',icon:'🔥'}]},
   // Infused Magic Gear
   { id:'infused_magic_gear', name:'Infused Magic Gear', category:'Runecrafting', items:[
     {id:'stormwing_staff',  name:'Stormwing staff',  icon:'🌩️'},
@@ -2679,6 +2723,7 @@ const MOB_CLOG_SOURCE = {
   solara:'boss_solara', karg:'boss_karg', harbinger:'boss_harbinger',
   ice_warrior:'mob_ice_warrior', vampire:'mob_vampire', ancient_lich:'boss_ancient_lich',
   void_herald:'boss_void_herald',
+  phoenix:'boss_phoenix',
 };
 // Openable item → collection log source ID
 const OPENABLE_CLOG_SOURCE = {
@@ -2694,6 +2739,7 @@ const CLOG_KILL_SOURCE = {
   boss_void_dragon:'void_dragon', boss_deep_kings:'deep_kings',
   boss_solara:'solara', boss_karg:'karg', boss_harbinger:'harbinger',
   boss_ancient_lich:'ancient_lich', boss_void_herald:'void_herald',
+  boss_phoenix:'phoenix',
   mob_goblin:'goblin', mob_hill_giant:'hill_giant',
   mob_void_stalker:'void_stalker',
   mob_ice_warrior:'ice_warrior', mob_vampire:'vampire',
@@ -2804,6 +2850,7 @@ const ACHIEVEMENTS = [
   {id:'slay_shop_all', name:'Points Well Spent',  desc:'Purchase all Slayer shop items',          icon:'🏪', category:'Special', checkFn:()=>['boss_tasks','slayer_boost','auto_task','task_extend','point_bonus'].every(k=>!!state.slayer.unlocks?.[k])},
   {id:'goblin_diplomacy_done', name:'Diplomat',         desc:'Complete the Goblin Diplomacy quest',  icon:'📜', category:'Special', checkFn:()=>!!state.quests?.goblin_diplomacy},
   {id:'echoes_of_deep_done',  name:'Void Pact Sealed', desc:'Complete the Echoes of the Deep quest', icon:'🐲', category:'Special', checkFn:()=>!!state.quests?.echoes_of_deep},
+  {id:'phoenix_done',         name:'Risen',            desc:'Complete the Rise of the Phoenix quest', icon:'🔥', category:'Special', checkFn:()=>!!state.quests?.rise_of_the_phoenix},
   {id:'got_crystal',   name:'Crystal Gifts',      desc:'Find a crystal tool seed on Crystal course',icon:'💠', category:'Special', checkFn:()=>(state.collectionLog?.agility_crystal?.crystal_tool_seed||0)>0, lockFn:()=>!state.quests?.lost_city},
   {id:'tutorial_done', name:'First Steps',        desc:'Complete or skip the tutorial',              icon:'📖', category:'Special', checkFn:()=>!!state.tutorial?.done},
 ];
@@ -2814,8 +2861,12 @@ const EQUIP_REQS = {
     ...WEAPON_PIECES.map(w => [`${t.id}${w.suffix}`, {skill: w.slot === 'weapon' ? 'melee' : 'defence', level:t.levelReq}]),
   ])),
   abyssal_whip:    {skill:'melee', level:70},
+  phantom_claw:    {skill:'melee', level:80},
+  phoenix_bow:     {skill:'ranged', level:82},
   celestial_sword: {skill:'melee', level:65},
   jaguar_tooth:    {skill:'melee', level:45},
+  phantom_vambraces:{skill:'ranged', level:75}, phantom_chaps:{skill:'ranged', level:80},
+  phantom_body:    {skill:'ranged', level:85},  apex_phantom_body:{skill:'ranged', level:90},
   makeshift_spear: {skill:'melee', level:1},
   bone_maul:       {skill:'melee', level:20},
   vampiric_edge:   {skill:'melee', level:70},
@@ -2860,18 +2911,22 @@ const EQUIP_REQS = {
 };
 
 const CONSTRUCTION_SHOP = [
-  { id:'sawmill',       name:'Sawmill',       desc:'Woodcutting is 10% faster.',  plankType:'oak_plank',      plankName:'Oak plank',      cost:50  },
-  { id:'furnace',       name:'Furnace',       desc:'Smithing is 10% faster.',     plankType:'teak_plank',     plankName:'Teak plank',     cost:75  },
-  { id:'cooking_range', name:'Cooking range', desc:'Halves cooking burn chance.', plankType:'teak_plank',     plankName:'Teak plank',     cost:75  },
-  { id:'herb_patch',    name:'Herb patch',    desc:'Crops grow 25% faster.',      plankType:'mahogany_plank', plankName:'Mahogany plank', cost:100 },
-  { id:'study',         name:'Study',         desc:'Runecrafting is 15% faster.', plankType:'yew_plank',      plankName:'Yew plank',      cost:125 },
-  { id:'workshop',      name:'Workshop',      desc:'Fletching is 10% faster.',    plankType:'yew_plank',      plankName:'Yew plank',      cost:125 },
-  { id:'manor',         name:'Grand manor',   desc:'All XP gains are 5% higher.', plankType:'elder_plank',    plankName:'Elder plank',    cost:200 },
-  { id:'altar',         name:'Personal Altar', desc:'2.5× Prayer XP when burying bones — no PK risk.', plankType:'mahogany_plank', plankName:'Mahogany plank', cost:200 },
-  { id:'fishing_pier',   name:'Fishing Pier',    desc:'20% chance to catch a bonus fish per fishing action.',    plankType:'willow_plank',  plankName:'Willow plank',  cost:100 },
-  { id:'hunting_lodge',  name:'Hunting Lodge',   desc:'Hunter impling spawn rate is doubled.',                   plankType:'maple_plank',   plankName:'Maple plank',   cost:200 },
-  { id:'alchemists_lab', name:"Alchemist's Lab", desc:'Combat potions last 25% longer.',                        plankType:'magic_plank',   plankName:'Magic plank',   cost:250 },
-  { id:'trophy_room',    name:'Trophy Room',     desc:'+10% item drop rate on all kills.',                      plankType:'eternal_plank', plankName:'Eternal plank', cost:350 },
+  { id:'sawmill',       name:'Sawmill',           levelReq:15, desc:'Woodcutting is 10% faster.',                                   plankType:'oak_plank',      plankName:'Oak plank',      cost:50  },
+  { id:'cooking_range', name:'Cooking range',     levelReq:20, desc:'Halves cooking burn chance.',                                  plankType:'teak_plank',     plankName:'Teak plank',     cost:75  },
+  { id:'furnace',       name:'Furnace',           levelReq:25, desc:'Smithing is 10% faster.',                                      plankType:'teak_plank',     plankName:'Teak plank',     cost:75  },
+  { id:'fishing_pier',  name:'Fishing Pier',      levelReq:30, desc:'20% chance to catch a bonus fish per fishing action.',         plankType:'willow_plank',   plankName:'Willow plank',   cost:100 },
+  { id:'herb_patch',    name:'Herb patch',        levelReq:45, desc:'Crops grow 25% faster.',                                       plankType:'mahogany_plank', plankName:'Mahogany plank', cost:100 },
+  { id:'altar',         name:'Personal Altar',    levelReq:50, desc:'2.5× Prayer XP when burying bones — no PK risk.',             plankType:'mahogany_plank', plankName:'Mahogany plank', cost:200 },
+  { id:'study',         name:'Study',             levelReq:55, desc:'Runecrafting is 15% faster.',                                  plankType:'yew_plank',      plankName:'Yew plank',      cost:125 },
+  { id:'workshop',      name:'Workshop',          levelReq:58, desc:'Fletching is 10% faster.',                                     plankType:'yew_plank',      plankName:'Yew plank',      cost:125 },
+  { id:'hunting_lodge', name:'Hunting Lodge',     levelReq:62, desc:'Hunter impling spawn rate is doubled.',                        plankType:'maple_plank',    plankName:'Maple plank',    cost:200 },
+  { id:'dungeon_room',  name:'Dungeon Room',      levelReq:70, desc:'+15% Slayer point rewards per task.',                          plankType:'yew_plank',      plankName:'Yew plank',      cost:150 },
+  { id:'alchemists_lab',name:"Alchemist's Lab",   levelReq:72, desc:'Combat potions last 25% longer.',                              plankType:'magic_plank',    plankName:'Magic plank',    cost:250 },
+  { id:'manor',         name:'Grand manor',       levelReq:75, desc:'All XP gains are 5% higher.',                                  plankType:'elder_plank',    plankName:'Elder plank',    cost:200 },
+  { id:'relic_chamber', name:'Relic Chamber',     levelReq:78, desc:'Archaeology actions have a 20% chance to find a second artifact.', plankType:'magic_plank', plankName:'Magic plank',  cost:150 },
+  { id:'training_ground',name:'Training Ground',  levelReq:85, desc:'Each combat kill passively grants 40 Agility XP.',             plankType:'elder_plank',    plankName:'Elder plank',    cost:175 },
+  { id:'trophy_room',   name:'Trophy Room',       levelReq:90, desc:'+10% item drop rate on all kills.',                            plankType:'eternal_plank',  plankName:'Eternal plank',  cost:350 },
+  { id:'menagerie',     name:'Menagerie',         levelReq:92, desc:'Each completed action has a 10% chance to produce a random charm.', plankType:'elder_plank', plankName:'Elder plank',  cost:200 },
 ];
 
 /* Lookup helpers */
@@ -3030,6 +3085,26 @@ const ITEM_STATS = {
   kebbit_vambraces:{ range:5, defence:5 }, kebbit_cowl:{ range:5, defence:5 },
   kebbit_chaps:{ range:10, defence:10 }, kebbit_body:{ range:14, defence:14 },
   kyatt_vambraces:{ range:8, defence:8 }, kyatt_chaps:{ range:16, defence:16 }, kyatt_body:{ range:22, defence:22 },
+  phantom_vambraces:{ range:22, defence:12, desc:'Crafted from phantom pelt.' },
+  phantom_chaps:    { range:32, defence:18, desc:'Crafted from phantom pelt.' },
+  phantom_body:     { range:44, defence:26, desc:'Crafted from phantom pelt.' },
+  apex_phantom_body:{ range:55, defence:32, desc:'Crafted from apex pelt.' },
+  phantom_hunters_cape:{ range:10, defence:8, dropRate:3, desc:"Natural Predator: 3% chance per combat kill to obtain an impling jar. +3% drop rate." },
+  phantom_claw:     { attack:62, attackInterval:3, damageMult:1.1, desc:'A razor-sharp claw from a phantom wolf. Fast and lethal.' },
+  phantom_pelt:     { desc:'Supple hide from a phantom wolf. Used in high-tier Hunter leather crafting.' },
+  apex_pelt:        { desc:'Rare hide from an apex phantom. Used in the finest Hunter leather armor.' },
+  phantom_fang:     { desc:"A phantom wolf's fang, radiating elusive energy. Craft into a Phantom hunter's cape." },
+  phoenix_ember:    { desc:'A glowing ember from a sacred elder fire. Something ancient stirs within.' },
+  phoenix_feather:  { desc:'An iridescent feather that never burns. Used in fletching phoenix arrows.' },
+  phoenix_arrow:    { desc:'Arrows tipped with phoenix feathers. Scorching on impact.' },
+  phoenix_bow:      { range:72, attackInterval:5, damageMult:1.12, desc:'A powerful bow strung with phoenix sinew. Ignites with each shot.' },
+  oak_chair:        { desc:'A sturdy oak chair. Sell it or keep it.' },
+  teak_table:       { desc:'A finely crafted teak dining table.' },
+  mahogany_throne:  { desc:'An imposing mahogany throne fit for a lord.' },
+  yew_bookcase:     { desc:'A tall yew bookcase filled with tomes.' },
+  magic_wardrobe:   { desc:'A rune-etched magic wood wardrobe.' },
+  ornate_altar:     { desc:'An elaborately carved elder-wood altar.' },
+  eternal_throne:   { desc:'A legendary throne of eternal wood. Worth a fortune.' },
   green_dhide_vambs:{ range:8, defence:8 },   green_dhide_chaps:{ range:16, defence:16 },  green_dhide_body:{ range:24, defence:24 },
   blue_dhide_vambs:{ range:12, defence:12 },  blue_dhide_chaps:{ range:24, defence:24 },   blue_dhide_body:{ range:36, defence:36 },
   black_dhide_vambs:{ range:15, defence:15 }, black_dhide_chaps:{ range:30, defence:30 },  black_dhide_body:{ range:45, defence:45 },
@@ -3144,6 +3219,9 @@ const EQUIP_SLOTS = {
   void_drake_head:'head', leather_cowl:'head', kebbit_cowl:'head', cloth_hat:'head', splitbark_helm:'head', lunar_helm:'head',
   ancient_platebody:'body', warlord_chestplate:'body',
   kebbit_body:'body', kyatt_body:'body',
+  phantom_vambraces:'gloves', phantom_chaps:'legs', phantom_body:'body', apex_phantom_body:'body',
+  phantom_hunters_cape:'cape', phantom_claw:'weapon',
+  phoenix_bow:'weapon',
   leather_body:'body',       green_dhide_body:'body',  blue_dhide_body:'body',
   black_dhide_body:'body',   red_dhide_body:'body',    royal_dhide_body:'body',
   cloth_robe_top:'body',     splitbark_top:'body',     lunar_torso:'body',
@@ -3357,10 +3435,11 @@ function freshState(){
     openCounts:      {},
     clueCompletions: {},
     clues:        { active: null },
-    hardcore:     false,
-    dead:         false,
-    saveVersion:  1,
-    lastSaved:    Date.now(),
+    hardcore:       false,
+    dead:           false,
+    lastActionData: { skillId: null, xp: 0 },
+    saveVersion:    1,
+    lastSaved:      Date.now(),
   };
 }
 
@@ -3474,9 +3553,10 @@ function activateSummon(pouchId){
     pouchId, pouchName:def.name, icon:def.icon,
     effectType:def.effectType, effectValue:def.effectValue,
     affectedSkills:def.affectedSkills, effectLabel:def.effectLabel,
-    expiresAt: Date.now() + 10 * 60 * 1000,
+    expiresAt: Date.now() + 10 * 60 * 1000 * (state.equipment?.pet === 'pet_mini_familiar' ? 1.5 : 1.0),
   };
-  log(`${def.icon} ${def.name} summoned! ${def.effectLabel} for 10 min.`);
+  const _sumDur = state.equipment?.pet === 'pet_mini_familiar' ? '15 min' : '10 min';
+  log(`${def.icon} ${def.name} summoned! ${def.effectLabel} for ${_sumDur}.`);
   render();
 }
 function dismissSummon(){
@@ -3823,7 +3903,10 @@ function calcPlayerDamage(styleId, mob, ignoreDefence=false){
   const def      = ignoreDefence ? 0 : (mob.stats.defence || 0);
   const hit      = Math.min(0.95, Math.max(0.1, 1 - def / (def + effLevel + bonus + 1)));
   if (Math.random() > hit) return 0;
-  return 1 + Math.floor(Math.random() * maxHit);
+  let dmg = 1 + Math.floor(Math.random() * maxHit);
+  // Deep Spawn: +10% damage while on a Slayer task
+  if (state.slayer?.task && state.equipment?.pet === 'pet_deep_spawn') dmg = Math.ceil(dmg * 1.10);
+  return dmg;
 }
 
 function calcMobDamage(mob){
@@ -4621,6 +4704,43 @@ function renderCombatPanel(){
       }
     }
 
+    // Rise of the Phoenix quest
+    const hasEmber   = (state.inventory['phoenix_ember'] || 0) > 0;
+    const fmLvl      = levelForXp(state.skills.firemaking?.xp || 0);
+    const phoenixDone = !!state.quests?.rise_of_the_phoenix;
+    const phoenixQHdr = document.createElement('div');
+    phoenixQHdr.className = 'action-category-header';
+    phoenixQHdr.style.marginTop = '16px';
+    phoenixQHdr.textContent = 'Rise of the Phoenix';
+    list.appendChild(phoenixQHdr);
+    if (phoenixDone){
+      const done = document.createElement('div');
+      done.className = 'dg-bonus';
+      done.innerHTML = `✅ <b>Complete</b> — The Phoenix now hunts in the Bosses tab.`;
+      list.appendChild(done);
+    } else {
+      const phoenixQuestAction = (ACTIONS.combat || []).find(a => a.id === 'phoenix_quest');
+      const emberInfo = document.createElement('div');
+      emberInfo.className = 'dg-bonus';
+      emberInfo.style.marginBottom = '10px';
+      emberInfo.innerHTML = `
+        ${fmLvl >= 90 ? '✅' : '🔍'} <b>Firemaking 90</b> — ${fmLvl >= 90 ? `Level ${fmLvl}` : `Level ${fmLvl} (need 90)`}<br>
+        ${hasEmber ? '✅' : '🔍'} <b>Phoenix ember</b> — ${hasEmber ? 'Obtained' : 'Burn elder logs (rare drop, 1/300)'}`;
+      list.appendChild(emberInfo);
+      if (phoenixQuestAction){
+        const unlocked = hasEmber;
+        const btn = document.createElement('button');
+        btn.className = 'action-btn' + (state.current?.actionId === 'phoenix_quest' ? ' selected' : '');
+        btn.disabled = !unlocked;
+        const mobInfo = `<br><span style="color:var(--dim);font-size:11px;">HP: ${phoenixQuestAction.stats.hp}  ATK: ${phoenixQuestAction.stats.attack}  DEF: ${phoenixQuestAction.stats.defence} — No drops, quest completion only</span>`;
+        const recStr = combatLvl < phoenixQuestAction.levelReq ? `<span style="color:#f59e0b;font-size:11px;"> ⚠ Rec. Lv ${phoenixQuestAction.levelReq}</span>` : '';
+        const lockStr = !unlocked ? `<br><span style="color:#f87171;font-size:11px;">🔒 Requires Phoenix ember</span>` : '';
+        btn.innerHTML = `<span>${phoenixQuestAction.name}${recStr}${mobInfo}${lockStr}</span><span class="meta">Quest boss</span>`;
+        if (unlocked) btn.onclick = () => startAction(styleId, 'phoenix_quest');
+        list.appendChild(btn);
+      }
+    }
+
   } else {
     const slayerLv = levelForXp(state.skills.slayer?.xp || 0);
     // Filter out quest-locked bosses
@@ -5222,29 +5342,31 @@ function getCurrentEffTicks(action){
   const capeSpeed = getCapeBonus('speed_pct', state.current?.skillId);
   const petSpeed  = getPetBonus('speed_pct', state.current?.skillId);
   const jwlSpeed  = getJewelryBonus('speed_pct', state.current?.skillId);
+  const warmAura  = state.equipment?.pet === 'pet_fire_sprite' ? 0.02 : 0; // Fire Sprite: 2% faster all skills
   if (state.current?.skillId === 'thieving'){
     const agilLevel = effLvl('agility');
     if (action.lock){
       const toolMult = getToolSpeedMult('thieving');
       const agilMult = 1 - (agilLevel / 99 * 0.30);
-      return Math.max(1, Math.ceil(base * toolMult * agilMult * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - jwlSpeed)));
+      return Math.max(1, Math.ceil(base * toolMult * agilMult * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed)));
     }
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20)) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - jwlSpeed)));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20)) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed)));
   }
   if (state.current?.skillId === 'runecrafting'){
     const agilLevel = effLvl('agility');
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - jwlSpeed)));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed)));
   }
   const archSpeed = getArchBonus(`speed_${state.current.skillId}`);
-  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId) * getConstructionMult(state.current.skillId) * (1 - archSpeed) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - jwlSpeed)));
+  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId) * getConstructionMult(state.current.skillId) * (1 - archSpeed) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed)));
 }
 
 function getConstructionMult(skillId){
   let mult = 1.0;
-  if (skillId === 'woodcutting'  && state.upgrades?.sawmill)  mult *= 0.90;
-  if (skillId === 'smithing'     && state.upgrades?.furnace)  mult *= 0.90;
-  if (skillId === 'runecrafting' && state.upgrades?.study)    mult *= 0.85;
-  if (skillId === 'fletching'    && state.upgrades?.workshop) mult *= 0.90;
+  if (skillId === 'woodcutting'  && state.upgrades?.sawmill)         mult *= 0.90;
+  if (skillId === 'smithing'     && state.upgrades?.furnace)         mult *= 0.90;
+  if (skillId === 'runecrafting' && state.upgrades?.study)           mult *= 0.85;
+  if (skillId === 'fletching'    && state.upgrades?.workshop)        mult *= 0.90;
+  if (skillId === 'agility'      && state.upgrades?.training_ground) mult *= 0.90;
   return mult;
 }
 
@@ -5419,9 +5541,14 @@ function completeAction(action, silent){
   const skillId = state.current?.skillId;
   // consume ingredients (smithing and future crafting skills)
   if (action.ingredients){
-    const missing = canAfford(action);
-    if (missing){ if (!silent) log(`Out of ${missing.name} — stopped.`); state.current = null; state.progress = 0; state.batch = { limit:0, done:0 }; return; }
-    consumeIngredients(action);
+    // Crafting Imp: 8% chance for free craft (no ingredients consumed)
+    if (skillId === 'crafting' && state.equipment?.pet === 'pet_crafting_imp' && Math.random() < 0.08){
+      if (!silent) log('🎭 Crafting Imp: free craft! No materials consumed.');
+    } else {
+      const missing = canAfford(action);
+      if (missing){ if (!silent) log(`Out of ${missing.name} — stopped.`); state.current = null; state.progress = 0; state.batch = { limit:0, done:0 }; return; }
+      consumeIngredients(action);
+    }
   }
   // Pickpocket: chance to get caught → stun, no loot/xp this tick
   if (skillId === 'thieving' && action.catchChance && !action.lock){
@@ -5500,6 +5627,37 @@ function completeAction(action, silent){
       }
     }
     grantXp('archaeology', artifact.xp, silent);
+    // Dig Sprite: 10% chance to progress a different artifact at the same site
+    if (state.equipment?.pet === 'pet_dig_sprite' && Math.random() < 0.10){
+      const _others = siteArtifacts.filter(a => a.id !== artifact.id && (state.archaeology.artifacts[a.id] || 0) < a.needed);
+      if (_others.length){
+        const _bonus = _others[Math.floor(Math.random() * _others.length)];
+        const _bprev = state.archaeology.artifacts[_bonus.id] || 0;
+        state.archaeology.artifacts[_bonus.id] = _bprev + 1;
+        if (!silent) log(`🏺 Dig Sprite uncovers a bonus ${_bonus.name} piece! (${_bprev+1}/${_bonus.needed})`);
+        if (_bprev + 1 === _bonus.needed){
+          const _activeCount = Object.keys(state.archaeology.activePerks).length;
+          if (_activeCount < ARCH_MAX_PERKS){ state.archaeology.activePerks[_bonus.id] = true; if (!silent) log(`✨ Collection complete — perk unlocked: ${_bonus.perkName}!`); }
+        }
+        grantXp('archaeology', _bonus.xp, silent);
+      }
+    }
+    // Relic Chamber: 20% chance to find a second artifact piece
+    if (state.upgrades?.relic_chamber && Math.random() < 0.20){
+      const prev2 = state.archaeology.artifacts[artifact.id] || 0;
+      if (prev2 < artifact.needed){
+        state.archaeology.artifacts[artifact.id] = prev2 + 1;
+        if (!silent) log(`🏺 Relic Chamber — bonus find: ${artifact.name} (${prev2 + 1}/${artifact.needed})`);
+        if (prev2 + 1 === artifact.needed){
+          const activeCount = Object.keys(state.archaeology.activePerks).length;
+          if (activeCount < ARCH_MAX_PERKS){
+            state.archaeology.activePerks[artifact.id] = true;
+            if (!silent) log(`✨ Collection complete — perk unlocked: ${artifact.perkName}!`);
+          }
+        }
+        grantXp('archaeology', artifact.xp, silent);
+      }
+    }
     if (!silent) checkBonusDrop(skillId, action);
     return;
   }
@@ -5517,6 +5675,9 @@ function completeAction(action, silent){
     if (Math.random() < chance){
       const qty = failDef.qtyFn ? failDef.qtyFn(action) : 1;
       grantItem(failDef.product, failDef.productName, qty);
+      // Chef Mouse: double burnt food on burns
+      if (skillId === 'cooking' && state.equipment?.pet === 'pet_chef_mouse')
+        grantItem('burnt_food', 'Burnt food', qty);
       if (!silent) log(failDef.msgFn ? failDef.msgFn(qty) : failDef.msg);
       return;
     }
@@ -5540,6 +5701,29 @@ function completeAction(action, silent){
     // Abyssal Focus: 10% chance to double rune output
     if (skillId === 'runecrafting' && state.upgrades?.abyssal_focus && Math.random() < 0.10)
       grantItem(action.item, action.itemName, qty);
+    // Pet output bonuses
+    const _pet = state.equipment?.pet;
+    if (_pet === 'pet_beaver'       && skillId === 'woodcutting'  && Math.random() < 0.05)
+      { grantItem(action.item, action.itemName, qty); if (!silent) log('🦫 Beaver: double timber!'); }
+    if (_pet === 'pet_rock_golem'   && skillId === 'mining'       && Math.random() < 0.05)
+      { grantItem(action.item, action.itemName, qty); if (!silent) log('🪨 Rock Golem: double ore!'); }
+    if (_pet === 'pet_robin'        && skillId === 'fletching'    && Math.random() < 0.10)
+      { grantItem(action.item, action.itemName, action.count || 1); if (!silent) log('🐦 Robin: double output!'); }
+    if (_pet === 'pet_forge_sprite' && skillId === 'smithing'     && Math.random() < 0.05)
+      { grantItem(action.item, action.itemName, 1); if (!silent) log('🌋 Forge Sprite: hot streak — double bars!'); }
+    if (_pet === 'pet_rune_sprite'  && skillId === 'runecrafting' && Math.random() < 0.10)
+      { grantItem(action.item, action.itemName, qty); if (!silent) log('🔮 Rune Sprite: double runes!'); }
+    if (_pet === 'pet_chisel_gnome' && skillId === 'construction' && action.category === 'Furniture' && Math.random() < 0.10)
+      { grantItem(action.item, action.itemName, 1); if (!silent) log(`🪵 Chisel Gnome: buy one get one! (+1 ${action.itemName})`); }
+    // Chef Mouse: successful cook also yields 1 burnt food
+    if (_pet === 'pet_chef_mouse'   && skillId === 'cooking')
+      grantItem('burnt_food', 'Burnt food', 1);
+    // Herb Frog: 3% chance to produce the supreme version of a brewed potion
+    if (_pet === 'pet_herb_frog' && skillId === 'herblore' && Math.random() < 0.03){
+      const _SUPREME = {attack_potion:'supreme_attack_potion',defence_potion:'supreme_defence_potion',ranging_potion:'supreme_ranging_potion',magic_potion:'supreme_magic_potion',summoning_potion:'supreme_summoning_potion',prayer_potion:'supreme_prayer_potion'};
+      const _supId = _SUPREME[action.item];
+      if (_supId){ const _supName = _supId.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); grantItem(_supId,_supName,1); if (!silent) log(`🐸 Herb Frog's secret technique — ${_supName}!`); }
+    }
   }
   // Abyssal Rod: 1% chance to upgrade the caught fish to the next tier
   if (action.item && skillId === 'fishing' &&
@@ -5552,6 +5736,12 @@ function completeAction(action, silent){
       grantItem(upgrade.item, upgrade.itemName);
       if (!silent) log(`✨ Deep Sea Rod pulses — you caught a ${upgrade.itemName}!`);
     }
+  }
+  // Tiny Kraken: 2% chance for deep sea loot (gem or coin pouch)
+  if (skillId === 'fishing' && state.equipment?.pet === 'pet_tiny_kraken' && Math.random() < 0.02){
+    const _r = Math.random();
+    if (_r < 0.5){ const _c = 500 + Math.floor(Math.random() * 1500); grantItem('coins','Coins',_c); if (!silent) log(`🦑 Kraken finds a coin pouch! (+${_c} coins)`); }
+    else { const _gems=[['uncut_sapphire','Uncut sapphire',60],['uncut_emerald','Uncut emerald',25],['uncut_ruby','Uncut ruby',12],['uncut_diamond','Uncut diamond',3]]; let _rr=Math.random()*100,_gem=null; for(const[_id,_nm,_w]of _gems){_rr-=_w;if(_rr<=0){_gem=[_id,_nm];break;}} if(_gem){grantItem(_gem[0],_gem[1],1);if(!silent)log(`🦑 Kraken drags up a ${_gem[1]}!`);} }
   }
   // Thieving: process drops table + agility extra-loot bonus
   if (skillId === 'thieving'){
@@ -5571,6 +5761,12 @@ function completeAction(action, silent){
         }
       }
       if (!silent) log('✨ Agility — extra loot!');
+    }
+    // Raccoon: 10% chance to steal twice (double loot + XP)
+    if (state.equipment?.pet === 'pet_raccoon' && Math.random() < 0.10){
+      for (const _drop of (action.drops || [])){ if (Math.random() < _drop.chance){ const _qty=(_drop.min||1)+Math.floor(Math.random()*((_drop.max||1)-(_drop.min||1)+1)); grantItem(_drop.item,_drop.itemName,_qty); } }
+      grantXp('thieving', action.xp, silent);
+      if (!silent) log('🦝 Raccoon: sleight of hand — stole twice!');
     }
     grantXp('thieving', action.xp, silent);
     if (!silent) checkBonusDrop(skillId, action);
@@ -5598,6 +5794,8 @@ function completeAction(action, silent){
       if (!silent) log(`💎 Found a crystal tool seed on the Crystal course!`);
     }
     grantXp('agility', xp, silent);
+    // Nimble Cat: each Agility action grants 30 Constitution XP
+    if (state.equipment?.pet === 'pet_nimble_cat') grantXp('constitution', 30, silent);
     if (!silent) checkBonusDrop(skillId, action);
     return;
   }
@@ -5633,6 +5831,23 @@ function completeAction(action, silent){
       }
     }
     if (!silent) checkBonusDrop(skillId, action);
+    // Natural Predator (Phantom hunter's cape): 3% chance per combat kill to spawn an impling jar
+    if (state.equipment?.cape === 'phantom_hunters_cape' && Math.random() < 0.03){
+      const hunterLvl = levelForXp(state.skills.hunter?.xp || 0);
+      const r = Math.random() * 100;
+      let jar, jarName;
+      if      (hunterLvl >= 91 && r < 10) { jar='kingly_impling_jar';   jarName='Kingly impling jar'; }
+      else if (hunterLvl >= 83 && r < 25) { jar='dragon_impling_jar';   jarName='Dragon impling jar'; }
+      else if (hunterLvl >= 62 && r < 45) { jar='nature_impling_jar';   jarName='Nature impling jar'; }
+      else if (hunterLvl >= 50 && r < 60) { jar='eclectic_impling_jar'; jarName='Eclectic impling jar'; }
+      else if (hunterLvl >= 36 && r < 75) { jar='earth_impling_jar';    jarName='Earth impling jar'; }
+      else                                 { jar='baby_impling_jar';     jarName='Baby impling jar'; }
+      grantItem(jar, jarName);
+      logCollectionDrop('hunter_bonus', jar, 1);
+      if (!silent) log(`🐾 Predator's instinct — you snatch an impling! (${jarName})`);
+    }
+    // Training Ground: each combat kill grants passive Agility XP
+    if (state.upgrades?.training_ground) grantXp('agility', 40, silent);
     // Goblin Diplomatic Note — 1/100 from goblins; guaranteed at 1000kc
     if (action.id === 'goblin' && !(state.inventory['goblin_diplomatic_note'] || 0) && !state.quests?.goblin_diplomacy){
       const kc = state.combat.kills['goblin'] || 0;
@@ -5675,6 +5890,11 @@ function completeAction(action, silent){
       if ((state.inventory['leviathan_fang'] || 0) > 0) delete state.inventory['leviathan_fang'];
       if ((state.inventory['solar_shard']    || 0) > 0) delete state.inventory['solar_shard'];
     }
+    // Rise of the Phoenix quest completion
+    if (action.id === 'phoenix_quest'){
+      completeQuest('rise_of_the_phoenix');
+      if ((state.inventory['phoenix_ember'] || 0) > 0) delete state.inventory['phoenix_ember'];
+    }
     // Slayer task kill tracking
     if (state.slayer?.task?.mobId === action.id){
       const boost = state.slayer.unlocks?.slayer_boost ? 1.1 : 1.0;
@@ -5686,7 +5906,9 @@ function completeAction(action, silent){
       if (_skipChance   > 0 && Math.random() < _skipChance)   _killCount = 0;
       state.slayer.task.count += _killCount;
       if (state.slayer.task.count >= state.slayer.task.target){
-        const pts = state.slayer.task.pointsReward + (state.slayer.unlocks?.point_bonus ? 5 : 0);
+        const _ptBase = state.slayer.task.pointsReward + (state.slayer.unlocks?.point_bonus ? 5 : 0);
+        const _ptMult = state.upgrades?.dungeon_room ? Math.ceil(_ptBase * 1.15) : _ptBase;
+        const pts = state.equipment?.pet === 'pet_imp' ? _ptMult * 2 : _ptMult;
         state.slayer.points += pts;
         state.slayer.totalTasksDone++;
         const bonusXp = Math.floor(state.slayer.task.target * action.xp * 0.5);
@@ -5717,12 +5939,50 @@ function completeAction(action, silent){
     const tokens  = Math.max(1, Math.floor(dgLevel * action.tokenMult * (1 + getCapeBonus('dg_token_pct', null) + getPetBonus('dg_token_pct', null) + (state.upgrades?.token_surplus ? 0.15 : 0) + (state.upgrades?.token_mastery ? 0.25 : 0))));
     grantItem('dg_tokens', 'Dungeoneering tokens', tokens);
     log(`⚔️ Floor complete! +${tokens} tokens.`);
+    // Dungeon Rat: 3% chance for mini supply cache
+    if (state.equipment?.pet === 'pet_dungeon_rat' && Math.random() < 0.03){
+      grantItem('dragon_bones','Dragon bones',10);
+      grantItem('rune_essence','Rune essence',50);
+      grantItem('torstol_seed','Torstol seed',1);
+      log("🐀 Lil' Lubi' sniffs out a hidden stash! (+10 Dragon bones, +50 Rune essence, +1 Torstol seed)");
+    }
     state.current.earnedTokens = tokens;
     state.current.floorTicks   = Math.round(calcFloorSecs(action) / (TICK_MS / 1000));
   }
   // Stop single-completion actions (floors, future one-shots)
   if (action.single){ state.current = null; state.progress = 0; }
   if (!silent) checkAchievements();
+  // Gecko: universal scouting — 0.5% per any action to find an impling jar (scaled to Hunter level)
+  if (state.equipment?.pet === 'pet_gecko' && Math.random() < 0.005){
+    const _hLvl = levelForXp(state.skills.hunter?.xp || 0);
+    const _hr = Math.random() * 100;
+    let _jar, _jarName;
+    if      (_hLvl >= 91 && _hr < 10) { _jar='kingly_impling_jar';   _jarName='Kingly impling jar'; }
+    else if (_hLvl >= 83 && _hr < 25) { _jar='dragon_impling_jar';   _jarName='Dragon impling jar'; }
+    else if (_hLvl >= 62 && _hr < 45) { _jar='nature_impling_jar';   _jarName='Nature impling jar'; }
+    else if (_hLvl >= 50 && _hr < 60) { _jar='eclectic_impling_jar'; _jarName='Eclectic impling jar'; }
+    else if (_hLvl >= 36 && _hr < 75) { _jar='earth_impling_jar';    _jarName='Earth impling jar'; }
+    else                               { _jar='baby_impling_jar';     _jarName='Baby impling jar'; }
+    grantItem(_jar, _jarName, 1);
+    if (!silent) log(`🦎 Gecko scouts an impling! (${_jarName})`);
+  }
+  // Memory Wisp: 3% per any action to replay XP from last different skill trained
+  if (state.equipment?.pet === 'pet_wisp' && state.lastActionData?.skillId && state.lastActionData.skillId !== skillId && Math.random() < 0.03){
+    grantXp(state.lastActionData.skillId, state.lastActionData.xp, silent);
+    if (!silent) log(`💫 Memory Wisp recalls your ${state.lastActionData.skillId} training!`);
+  }
+  state.lastActionData = { skillId, xp: action.xp };
+  // Menagerie: 10% chance per action to produce a random charm
+  if (state.upgrades?.menagerie && Math.random() < 0.10){
+    const r = Math.random() * 100;
+    let charmId, charmName;
+    if      (r < 60) { charmId = 'gold_charm';    charmName = 'Gold charm'; }
+    else if (r < 85) { charmId = 'green_charm';   charmName = 'Green charm'; }
+    else if (r < 97) { charmId = 'crimson_charm'; charmName = 'Crimson charm'; }
+    else             { charmId = 'blue_charm';     charmName = 'Blue charm'; }
+    grantItem(charmId, charmName, 1);
+    if (!silent) log(`🐾 Menagerie — a creature returns with a charm! (${charmName})`);
+  }
   // Batch limit: stop after N completions
   if ((state.batch?.limit || 0) > 0){
     state.batch.done++;
@@ -5784,6 +6044,27 @@ function checkBonusDrop(skillId, action){
     log("🗺️ You find a mysterious map tucked inside the fish!");
   }
 
+  // Firemaking: phoenix ember — rare drop from elder+ logs (quest item, drops only once)
+  if (skillId === 'firemaking' && (action.id === 'burn_elder_logs' || action.id === 'burn_eternal_magic_logs')
+      && !state.quests?.rise_of_the_phoenix && !(state.inventory['phoenix_ember'] || 0)
+      && Math.random() < 1/300){
+    grantItem('phoenix_ember', 'Phoenix ember', 1);
+    if (!silent) log('🔥 A phoenix ember materialises from the flames — something ancient stirs.');
+  }
+  // Firemaking: Phoenix Blessing pet perk — 1% chance to bulk-burn up to 50 logs
+  if (skillId === 'firemaking' && state.equipment?.pet === 'pet_phoenix_chick' && Math.random() < 0.01){
+    const ing = action.ingredients?.[0];
+    if (ing){
+      const have = state.inventory[ing.item] || 0;
+      const extra = Math.min(49, have);
+      if (extra > 0){
+        state.inventory[ing.item] = Math.max(0, have - extra);
+        const bonusXp = Math.floor(action.xp * extra * 0.9);
+        grantXp('firemaking', bonusXp, silent);
+        if (!silent) log(`🔥 Phoenix Blessing! Burned ${extra + 1} logs at once (+${bonusXp.toLocaleString()} bonus XP)`);
+      }
+    }
+  }
   // Firemaking: fire spirit QTE (15% per burn; only one spirit at a time)
   if (skillId === 'firemaking' && !fireSpirit && Math.random() < 0.15){
     const autoCollect = state.equipment?.neck === 'spirit_catcher' || state.equipment?.neck === 'adventurers_amulet';
@@ -5817,6 +6098,20 @@ function checkBonusDrop(skillId, action){
     grantItem('jaguar_tooth', 'Sabre jaguar tooth');
     logCollectionDrop('hunter_bonus', 'jaguar_tooth', 1);
     log(`🦷 The sabre jaguar drops a tooth! (Sabre jaguar tooth)`);
+  }
+  // Phantom wolf: also grants apex_pelt from apex_phantom; chase drops
+  if (skillId === 'hunter' && action.id === 'apex_phantom'){
+    grantItem('apex_pelt', 'Apex pelt', 1);
+  }
+  if (skillId === 'hunter' && action.id === 'phantom_wolf' && Math.random() < 1/500){
+    grantItem('phantom_claw', 'Phantom claw', 1);
+    logCollectionDrop('hunter_bonus', 'phantom_claw', 1);
+    if (!silent) log(`🐾 The phantom wolf drops a claw! (Phantom claw)`);
+  }
+  if (skillId === 'hunter' && action.id === 'apex_phantom' && Math.random() < 1/1000){
+    grantItem('phantom_fang', 'Phantom fang', 1);
+    logCollectionDrop('hunter_bonus', 'phantom_fang', 1);
+    if (!silent) log(`🐺 The apex phantom drops a fang! (Phantom fang)`);
   }
 
   // Skilling pets — 1/5000 per action (0.0002); only if not already owned/equipped
@@ -5868,14 +6163,16 @@ function checkBonusDrop(skillId, action){
 }
 
 const QUEST_NAMES = {
-  lost_city:        'Discovering the Lost City',
-  goblin_diplomacy: 'Goblin Diplomacy',
-  echoes_of_deep:   'Echoes of the Deep',
+  lost_city:           'Discovering the Lost City',
+  goblin_diplomacy:    'Goblin Diplomacy',
+  echoes_of_deep:      'Echoes of the Deep',
+  rise_of_the_phoenix: 'Rise of the Phoenix',
 };
 const QUEST_COMPLETE_MSGS = {
-  lost_city:        'The Crystal course is now accessible.',
-  goblin_diplomacy: 'The Goblin King now roams — challenge him in the Bosses tab.',
-  echoes_of_deep:   'The Void Herald can now be challenged in the Bosses tab.',
+  lost_city:           'The Crystal course is now accessible.',
+  goblin_diplomacy:    'The Goblin King now roams — challenge him in the Bosses tab.',
+  echoes_of_deep:      'The Void Herald can now be challenged in the Bosses tab.',
+  rise_of_the_phoenix: 'The Phoenix has been defeated — it now roams the volcanic peaks.',
 };
 const QUEST_DATA = [
   {
@@ -5894,8 +6191,8 @@ const QUEST_DATA = [
     lore: 'Ancient elven ruins are rumoured to lie hidden deep within the forest. Only those nimble and cunning enough may find the path.',
     requirements: [
       {type:'skill', id:'agility',  level:70, label:'Agility 70'},
-      {type:'skill', id:'thieving', level:70, label:'Thieving 70'},
-      {type:'item',  id:'crystal_map_fragment', label:'Crystal map fragment (pickpocket elves, lv 85)'},
+      {type:'skill', id:'thieving', level:85, label:'Thieving 85 (to pickpocket elves)'},
+      {type:'item',  id:'crystal_map_fragment', label:'Crystal map fragment (rare drop from pickpocket elves)'},
     ],
     rewards: 'Unlocks the Crystal Agility Course and crystal tool seed drops.',
     completable: true,
@@ -5913,6 +6210,18 @@ const QUEST_DATA = [
     rewards: "Access to the Void Herald boss. Drops Dragonstone charms for the Void drake pouch (lv 95 Summoning, +15% all XP) and the Herald's amulet (+10 all combat, +3% drop rate).",
     progressNote: 'Track progress in the Combat → Quests tab.',
   },
+  {
+    id: 'rise_of_the_phoenix',
+    name: 'Rise of the Phoenix',
+    icon: '🔥',
+    lore: 'Ancient texts speak of a Deathless Phoenix that nests among the sacred elder trees. Firemakers who have mastered the elder flame sometimes find a phoenix ember — a fragment of its consciousness. Gather one and face the Phoenix at its volcanic pyre.',
+    requirements: [
+      {type:'skill', id:'firemaking', level:90, label:'Firemaking 90 (to burn elder logs)'},
+      {type:'item',  id:'phoenix_ember', label:'Phoenix ember (rare drop from burning elder logs)'},
+    ],
+    rewards: 'Access to the Phoenix boss. Drops phoenix feathers for fletching and the rare Phoenix bow.',
+    progressNote: 'Track progress in the Combat → Quests tab.',
+  },
 ];
 function completeQuest(questId){
   if (!state.quests) state.quests = {};
@@ -5927,7 +6236,7 @@ function finishQuest(questId){
     if (!(state.inventory['crystal_map_fragment'] || 0)) return;
     const agLv  = levelForXp(state.skills.agility?.xp  || 0);
     const thLv  = levelForXp(state.skills.thieving?.xp || 0);
-    if (agLv < 70 || thLv < 70) return;
+    if (agLv < 70 || thLv < 85) return;
     completeQuest('lost_city');
     delete state.inventory['crystal_map_fragment'];
   }
@@ -6299,17 +6608,20 @@ function renderShop(){
   }
 
   if (shopTab === 'construction'){
+    const conLvl = levelForXp(state.skills.construction?.xp || 0);
     CONSTRUCTION_SHOP.forEach(item => {
-      const owned  = !!state.upgrades[item.id];
-      const have   = state.inventory[item.plankType] || 0;
-      const canBuy = have >= item.cost;
-      const card   = document.createElement('div');
-      card.className = 'upgrade-tier' + (owned ? ' equipped' : '');
-      card.innerHTML = `<div class="tier-left"><span>${item.name}</span><span class="tier-speed">${item.desc}</span><span class="tier-cost">${item.cost}× ${item.plankName} (have: ${have.toLocaleString()})</span></div>`;
+      const owned   = !!state.upgrades[item.id];
+      const locked  = conLvl < (item.levelReq || 1);
+      const have    = state.inventory[item.plankType] || 0;
+      const canBuy  = !locked && have >= item.cost;
+      const card    = document.createElement('div');
+      card.className = 'upgrade-tier' + (owned ? ' equipped' : '') + (locked ? ' locked' : '');
+      card.innerHTML = `<div class="tier-left"><span>${item.name}</span><span class="tier-speed">${item.desc}</span><span class="tier-cost">${locked ? `Requires Construction ${item.levelReq}` : `${item.cost}× ${item.plankName} (have: ${have.toLocaleString()})`}</span></div>`;
       const btn = document.createElement('button');
       btn.className = 'mini';
-      if (owned)    { btn.textContent = '✓ Built'; btn.disabled = true; }
-      else          { btn.textContent = canBuy ? 'Build' : `Need ${(item.cost-have).toLocaleString()} more`; btn.disabled = !canBuy; btn.onclick = () => buyConstructionUpgrade(item.id); }
+      if (owned)        { btn.textContent = '✓ Built'; btn.disabled = true; }
+      else if (locked)  { btn.textContent = `Lv ${item.levelReq}`; btn.disabled = true; }
+      else              { btn.textContent = canBuy ? 'Build' : `Need ${(item.cost-have).toLocaleString()} more`; btn.disabled = !canBuy; btn.onclick = () => buyConstructionUpgrade(item.id); }
       card.appendChild(btn); el.appendChild(card);
     });
   }
@@ -7614,36 +7926,6 @@ function renderActiveSkill(){
     return;
   }
 
-  if (s.id === 'construction'){
-    const shopHdr = document.createElement('div');
-    shopHdr.className = 'action-category-header';
-    shopHdr.textContent = 'Construction Shop';
-    list.appendChild(shopHdr);
-    CONSTRUCTION_SHOP.forEach(item => {
-      const owned   = !!state.upgrades[item.id];
-      const have    = state.inventory[item.plankType] || 0;
-      const canBuy  = have >= item.cost;
-      const card    = document.createElement('div');
-      card.className = 'upgrade-tier' + (owned ? ' equipped' : '');
-      card.innerHTML = `<div class="tier-left">
-        <span>${item.name}</span>
-        <span class="tier-speed">${item.desc}</span>
-        <span class="tier-cost">${item.cost}× ${item.plankName} (have: ${have.toLocaleString()})</span>
-      </div>`;
-      const btn = document.createElement('button');
-      btn.className = 'mini';
-      if (owned){
-        btn.textContent = '✓ Built';
-        btn.disabled = true;
-      } else {
-        btn.textContent = canBuy ? 'Build' : `Need ${(item.cost - have).toLocaleString()} more`;
-        btn.disabled = !canBuy;
-        btn.onclick = () => buyConstructionUpgrade(item.id);
-      }
-      card.appendChild(btn);
-      list.appendChild(card);
-    });
-  }
 }
 
 /* ---- Section collapse ---- */
@@ -8019,7 +8301,8 @@ function init(){
   if (!state.clueCompletions) state.clueCompletions = {};
   if (!state.tutorial)        state.tutorial        = { done: false };
   if (!state.combat.kills)    state.combat.kills    = {};
-  if (!state.summoning) state.summoning = { active:null, autoRenew:true };
+  if (!state.summoning)       state.summoning       = { active:null, autoRenew:true };
+  if (!state.lastActionData)  state.lastActionData  = { skillId: null, xp: 0 };
   if (state.summoning.autoRenew == null) state.summoning.autoRenew = true;
   if (state.summoning.active && Date.now() >= state.summoning.active.expiresAt){
     const _pid = state.summoning.active.pouchId;
