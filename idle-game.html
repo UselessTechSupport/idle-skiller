@@ -8195,7 +8195,16 @@ $('debugSkillSel').innerHTML = SKILL_ROADMAP.map(
 */
 // save when leaving / backgrounding (important on mobile)
 window.addEventListener('beforeunload', save);
-document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden){
+    save();
+  } else {
+    const offline = applyOffline();
+    save();
+    if (offline && offline.ticks > 0) showOffline(offline);
+    render();
+  }
+});
 
 // Item tooltips — event delegation
 document.addEventListener('mouseover', e => {
