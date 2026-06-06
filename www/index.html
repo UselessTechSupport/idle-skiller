@@ -5967,11 +5967,13 @@ function completeAction(action, silent){
     if (!silent) log(`🦎 Gecko scouts an impling! (${_jarName})`);
   }
   // Memory Wisp: 3% per any action to replay XP from last different skill trained
+  // Excluded from tracking: farming, and all combat skills
+  const _wispExcluded = new Set(['farming','melee','ranged','magic','constitution']);
   if (state.equipment?.pet === 'pet_wisp' && state.lastActionData?.skillId && state.lastActionData.skillId !== skillId && Math.random() < 0.03){
     grantXp(state.lastActionData.skillId, state.lastActionData.xp, silent);
     if (!silent) log(`💫 Memory Wisp recalls your ${state.lastActionData.skillId} training!`);
   }
-  state.lastActionData = { skillId, xp: action.xp };
+  if (!_wispExcluded.has(skillId)) state.lastActionData = { skillId, xp: action.xp };
   // Menagerie: 10% chance per action to produce a random charm
   if (state.upgrades?.menagerie && Math.random() < 0.10){
     const r = Math.random() * 100;
