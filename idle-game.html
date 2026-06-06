@@ -6571,6 +6571,7 @@ function upgradeTool(skillId, tierId){
 
 function startAction(skillId, actionId, batchLimit = 0){
   if (state.hardcore && state.dead){ log('This character has died — create a new character to keep playing.'); return; }
+  if (state.current?.skillId === skillId && state.current?.actionId === actionId && batchLimit === 0) return;
   const action = getAction(skillId, actionId);
   if (!action) return;
   if (!COMBAT_SKILL_IDS.has(skillId) && levelForXp(state.skills[skillId].xp) < action.levelReq) return; // locked
