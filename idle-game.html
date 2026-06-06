@@ -1197,6 +1197,9 @@ const SELL_PRICES = {
   gold_charm:100, green_charm:400, crimson_charm:1200, blue_charm:4000,
   green_dragonhide:300, blue_dragonhide:600, red_dragonhide:1000, black_dragonhide:1600, royal_dragonhide:2400,
   larupia_fur:80, kebbit_fur:120, kyatt_fur:250,
+  phantom_pelt:800, apex_pelt:3000, phantom_claw:80000, phantom_fang:50000,
+  phantom_vambraces:8000, phantom_chaps:12000, phantom_body:18000,
+  apex_phantom_body:40000, phantom_hunters_cape:120000,
   cloth_hat:1500, cloth_robe_top:3500, cloth_robe_bottom:3000,
   splitbark_helm:6000, splitbark_top:16000, splitbark_bottom:10000,
   lunar_helm:18000, lunar_torso:40000, lunar_legs:28000,
@@ -1588,9 +1591,14 @@ const ACTIONS = {
     {id:'craft_kebbit_cowl',   name:'Swifttail cowl',   label:'Hunter armour crafted', category:'Hunter Leather', levelReq:24, xp:35,  ticks:2, item:'kebbit_cowl',      itemName:'Swifttail cowl',   ingredients:[{item:'kebbit_fur', count:1, name:'Swifttail fur'}]},
     {id:'craft_kebbit_chaps',  name:'Swifttail chaps',  label:'Hunter armour crafted', category:'Hunter Leather', levelReq:28, xp:48,  ticks:2, item:'kebbit_chaps',     itemName:'Swifttail chaps',  ingredients:[{item:'kebbit_fur', count:2, name:'Swifttail fur'}]},
     {id:'craft_kebbit_body',   name:'Swifttail body',   label:'Hunter armour crafted', category:'Hunter Leather', levelReq:33, xp:65,  ticks:2, item:'kebbit_body',      itemName:'Swifttail body',   ingredients:[{item:'kebbit_fur', count:3, name:'Swifttail fur'}]},
-    {id:'craft_kyatt_vambs',   name:'Jaguar vambraces', label:'Hunter armour crafted', category:'Hunter Leather', levelReq:45, xp:55,  ticks:2, item:'kyatt_vambraces',  itemName:'Jaguar vambraces', ingredients:[{item:'kyatt_fur',  count:1, name:'Jaguar fur'}]},
-    {id:'craft_kyatt_chaps',   name:'Jaguar chaps',     label:'Hunter armour crafted', category:'Hunter Leather', levelReq:52, xp:78,  ticks:2, item:'kyatt_chaps',      itemName:'Jaguar chaps',     ingredients:[{item:'kyatt_fur',  count:2, name:'Jaguar fur'}]},
-    {id:'craft_kyatt_body',    name:'Jaguar body',      label:'Hunter armour crafted', category:'Hunter Leather', levelReq:58, xp:105, ticks:2, item:'kyatt_body',       itemName:'Jaguar body',      ingredients:[{item:'kyatt_fur',  count:3, name:'Jaguar fur'}]},
+    {id:'craft_kyatt_vambs',      name:'Jaguar vambraces',       label:'Hunter armour crafted', category:'Hunter Leather', levelReq:45, xp:55,  ticks:2, item:'kyatt_vambraces',       itemName:'Jaguar vambraces',       ingredients:[{item:'kyatt_fur',    count:1, name:'Jaguar fur'}]},
+    {id:'craft_kyatt_chaps',      name:'Jaguar chaps',           label:'Hunter armour crafted', category:'Hunter Leather', levelReq:52, xp:78,  ticks:2, item:'kyatt_chaps',           itemName:'Jaguar chaps',           ingredients:[{item:'kyatt_fur',    count:2, name:'Jaguar fur'}]},
+    {id:'craft_kyatt_body',       name:'Jaguar body',            label:'Hunter armour crafted', category:'Hunter Leather', levelReq:58, xp:105, ticks:2, item:'kyatt_body',            itemName:'Jaguar body',            ingredients:[{item:'kyatt_fur',    count:3, name:'Jaguar fur'}]},
+    {id:'craft_phantom_vambs',    name:'Phantom vambraces',      label:'Hunter armour crafted', category:'Hunter Leather', levelReq:84, xp:175, ticks:2, item:'phantom_vambraces',     itemName:'Phantom vambraces',      ingredients:[{item:'phantom_pelt', count:2, name:'Phantom pelt'}]},
+    {id:'craft_phantom_chaps',    name:'Phantom chaps',          label:'Hunter armour crafted', category:'Hunter Leather', levelReq:87, xp:240, ticks:2, item:'phantom_chaps',         itemName:'Phantom chaps',          ingredients:[{item:'phantom_pelt', count:3, name:'Phantom pelt'}]},
+    {id:'craft_phantom_body',     name:'Phantom body',           label:'Hunter armour crafted', category:'Hunter Leather', levelReq:91, xp:320, ticks:2, item:'phantom_body',          itemName:'Phantom body',           ingredients:[{item:'phantom_pelt', count:4, name:'Phantom pelt'}]},
+    {id:'craft_apex_phantom_body',name:'Apex phantom body',      label:'Hunter armour crafted', category:'Hunter Leather', levelReq:96, xp:420, ticks:2, item:'apex_phantom_body',     itemName:'Apex phantom body',      ingredients:[{item:'apex_pelt',    count:3, name:'Apex pelt'}]},
+    {id:'craft_phantom_cape',     name:"Phantom hunter's cape",  label:'Hunter armour crafted', category:'Hunter Leather', levelReq:94, xp:500, ticks:3, item:'phantom_hunters_cape',  itemName:"Phantom hunter's cape",  ingredients:[{item:'phantom_fang', count:1, name:'Phantom fang'}]},
 
     // --- Dragonhide Armour (hides from future combat) ---
     {id:'craft_green_dhide_vambs', name:"Green d'hide vambraces", label:"Green d'hide vambraces made", levelReq:57, xp:62,  ticks:3, item:'green_dhide_vambs', itemName:"Green d'hide vambraces", category:'Dragonhide Armour', ingredients:[{item:'green_dragonhide', count:1, name:'Green dragonhide'}]},
@@ -1904,6 +1912,8 @@ const ACTIONS = {
     // Pitfall
     {id:'larupia',            name:'Panther',               category:'Pitfall',       levelReq:31, xp:98,  ticks:5,  item:'larupia_fur',          itemName:'Panther pelt'},
     {id:'sabre_tooth_kyatt',  name:'Sabre jaguar',          category:'Pitfall',       levelReq:55, xp:370, ticks:9,  item:'kyatt_fur',            itemName:'Jaguar fur'},
+    {id:'phantom_wolf',       name:'Phantom wolf',          category:'Pitfall',       levelReq:90, xp:1400,ticks:14, item:'phantom_pelt',         itemName:'Phantom pelt',    count:2},
+    {id:'apex_phantom',       name:'Apex phantom',          category:'Pitfall',       levelReq:97, xp:2300,ticks:17, item:'phantom_pelt',         itemName:'Phantom pelt',    count:3},
     // Impling Jar
     // Impling jars are obtained passively while training other hunter actions (see checkBonusDrop)
   ],
@@ -2525,6 +2535,8 @@ const COLLECTION_LOG_SOURCES = [
     {id:'dragon_impling_jar',   name:'Dragon impling jar',   icon:'🦋'},
     {id:'kingly_impling_jar',   name:'Kingly impling jar',   icon:'🦋'},
     {id:'jaguar_tooth',         name:'Sabre jaguar tooth',   icon:'🦷'},
+    {id:'phantom_claw',         name:'Phantom claw',         icon:'🐾'},
+    {id:'phantom_fang',         name:'Phantom fang',         icon:'🐺'},
   ]},
   { id:'jar_baby',     name:'Baby Impling Jar',     category:'Hunter', items:[
     {id:'coins',           name:'Coins',           icon:'🪙'},
@@ -2814,8 +2826,11 @@ const EQUIP_REQS = {
     ...WEAPON_PIECES.map(w => [`${t.id}${w.suffix}`, {skill: w.slot === 'weapon' ? 'melee' : 'defence', level:t.levelReq}]),
   ])),
   abyssal_whip:    {skill:'melee', level:70},
+  phantom_claw:    {skill:'melee', level:80},
   celestial_sword: {skill:'melee', level:65},
   jaguar_tooth:    {skill:'melee', level:45},
+  phantom_vambraces:{skill:'ranged', level:75}, phantom_chaps:{skill:'ranged', level:80},
+  phantom_body:    {skill:'ranged', level:85},  apex_phantom_body:{skill:'ranged', level:90},
   makeshift_spear: {skill:'melee', level:1},
   bone_maul:       {skill:'melee', level:20},
   vampiric_edge:   {skill:'melee', level:70},
@@ -3030,6 +3045,15 @@ const ITEM_STATS = {
   kebbit_vambraces:{ range:5, defence:5 }, kebbit_cowl:{ range:5, defence:5 },
   kebbit_chaps:{ range:10, defence:10 }, kebbit_body:{ range:14, defence:14 },
   kyatt_vambraces:{ range:8, defence:8 }, kyatt_chaps:{ range:16, defence:16 }, kyatt_body:{ range:22, defence:22 },
+  phantom_vambraces:{ range:22, defence:12, desc:'Crafted from phantom pelt.' },
+  phantom_chaps:    { range:32, defence:18, desc:'Crafted from phantom pelt.' },
+  phantom_body:     { range:44, defence:26, desc:'Crafted from phantom pelt.' },
+  apex_phantom_body:{ range:55, defence:32, desc:'Crafted from apex pelt.' },
+  phantom_hunters_cape:{ range:10, defence:8, dropRate:3, desc:"Natural Predator: 3% chance per combat kill to obtain an impling jar. +3% drop rate." },
+  phantom_claw:     { attack:62, attackInterval:3, damageMult:1.1, desc:'A razor-sharp claw from a phantom wolf. Fast and lethal.' },
+  phantom_pelt:     { desc:'Supple hide from a phantom wolf. Used in high-tier Hunter leather crafting.' },
+  apex_pelt:        { desc:'Rare hide from an apex phantom. Used in the finest Hunter leather armor.' },
+  phantom_fang:     { desc:"A phantom wolf's fang, radiating elusive energy. Craft into a Phantom hunter's cape." },
   green_dhide_vambs:{ range:8, defence:8 },   green_dhide_chaps:{ range:16, defence:16 },  green_dhide_body:{ range:24, defence:24 },
   blue_dhide_vambs:{ range:12, defence:12 },  blue_dhide_chaps:{ range:24, defence:24 },   blue_dhide_body:{ range:36, defence:36 },
   black_dhide_vambs:{ range:15, defence:15 }, black_dhide_chaps:{ range:30, defence:30 },  black_dhide_body:{ range:45, defence:45 },
@@ -3144,6 +3168,8 @@ const EQUIP_SLOTS = {
   void_drake_head:'head', leather_cowl:'head', kebbit_cowl:'head', cloth_hat:'head', splitbark_helm:'head', lunar_helm:'head',
   ancient_platebody:'body', warlord_chestplate:'body',
   kebbit_body:'body', kyatt_body:'body',
+  phantom_vambraces:'gloves', phantom_chaps:'legs', phantom_body:'body', apex_phantom_body:'body',
+  phantom_hunters_cape:'cape', phantom_claw:'weapon',
   leather_body:'body',       green_dhide_body:'body',  blue_dhide_body:'body',
   black_dhide_body:'body',   red_dhide_body:'body',    royal_dhide_body:'body',
   cloth_robe_top:'body',     splitbark_top:'body',     lunar_torso:'body',
@@ -5633,6 +5659,21 @@ function completeAction(action, silent){
       }
     }
     if (!silent) checkBonusDrop(skillId, action);
+    // Natural Predator (Phantom hunter's cape): 3% chance per combat kill to spawn an impling jar
+    if (state.equipment?.cape === 'phantom_hunters_cape' && Math.random() < 0.03){
+      const hunterLvl = levelForXp(state.skills.hunter?.xp || 0);
+      const r = Math.random() * 100;
+      let jar, jarName;
+      if      (hunterLvl >= 91 && r < 10) { jar='kingly_impling_jar';   jarName='Kingly impling jar'; }
+      else if (hunterLvl >= 83 && r < 25) { jar='dragon_impling_jar';   jarName='Dragon impling jar'; }
+      else if (hunterLvl >= 62 && r < 45) { jar='nature_impling_jar';   jarName='Nature impling jar'; }
+      else if (hunterLvl >= 50 && r < 60) { jar='eclectic_impling_jar'; jarName='Eclectic impling jar'; }
+      else if (hunterLvl >= 36 && r < 75) { jar='earth_impling_jar';    jarName='Earth impling jar'; }
+      else                                 { jar='baby_impling_jar';     jarName='Baby impling jar'; }
+      grantItem(jar, jarName);
+      logCollectionDrop('hunter_bonus', jar, 1);
+      if (!silent) log(`🐾 Predator's instinct — you snatch an impling! (${jarName})`);
+    }
     // Goblin Diplomatic Note — 1/100 from goblins; guaranteed at 1000kc
     if (action.id === 'goblin' && !(state.inventory['goblin_diplomatic_note'] || 0) && !state.quests?.goblin_diplomacy){
       const kc = state.combat.kills['goblin'] || 0;
@@ -5817,6 +5858,20 @@ function checkBonusDrop(skillId, action){
     grantItem('jaguar_tooth', 'Sabre jaguar tooth');
     logCollectionDrop('hunter_bonus', 'jaguar_tooth', 1);
     log(`🦷 The sabre jaguar drops a tooth! (Sabre jaguar tooth)`);
+  }
+  // Phantom wolf: also grants apex_pelt from apex_phantom; chase drops
+  if (skillId === 'hunter' && action.id === 'apex_phantom'){
+    grantItem('apex_pelt', 'Apex pelt', 1);
+  }
+  if (skillId === 'hunter' && action.id === 'phantom_wolf' && Math.random() < 1/500){
+    grantItem('phantom_claw', 'Phantom claw', 1);
+    logCollectionDrop('hunter_bonus', 'phantom_claw', 1);
+    if (!silent) log(`🐾 The phantom wolf drops a claw! (Phantom claw)`);
+  }
+  if (skillId === 'hunter' && action.id === 'apex_phantom' && Math.random() < 1/1000){
+    grantItem('phantom_fang', 'Phantom fang', 1);
+    logCollectionDrop('hunter_bonus', 'phantom_fang', 1);
+    if (!silent) log(`🐺 The apex phantom drops a fang! (Phantom fang)`);
   }
 
   // Skilling pets — 1/5000 per action (0.0002); only if not already owned/equipped
