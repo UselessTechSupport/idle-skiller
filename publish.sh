@@ -20,7 +20,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 fi
 
 echo "🔒 Pushing to dev..."
-git push dev master
+git push --force-with-lease dev master
 
 echo "🌐 Pushing to origin (public)..."
 git push origin master
