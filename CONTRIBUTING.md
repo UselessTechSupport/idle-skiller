@@ -10,9 +10,9 @@ Three remotes, one working directory:
 
 | Remote | Repo | Purpose |
 |--------|------|---------|
-| `origin` | `idle-skiller` (public) | Public-facing game repo |
-| `dev` | `idle-skiller-dev` (private) | Development — game commits only, no app build files |
-| `app` | `idlewright-app` (private) | Capacitor project — builds the Android/iOS app |
+| `origin` | `idle-skiller` (public) | Public-facing game repo — game files only |
+| `dev` | `idle-skiller-dev` (private) | Development source of truth — most complete |
+| `app` | `idlewright-app` (private) | Capacitor project — completely separate, only contains app build files + `www/index.html` |
 
 **Clone dev to start working:**
 ```bash
@@ -29,9 +29,24 @@ git fetch --all
 
 ---
 
+## What lives where
+
+| File | dev | origin | app |
+|------|-----|--------|-----|
+| `idle-game.html` | ✅ | ✅ | ❌ |
+| `README.md` | ✅ | ✅ | ❌ |
+| `CONTRIBUTING.md` | ✅ | ✅ | ❌ |
+| `publish.sh` / `update-app.sh` | ✅ | ✅ | ❌ |
+| `www/index.html` | ❌ | ❌ | ✅ |
+| `android/`, `ios/`, Capacitor config | ❌ | ❌ | ✅ |
+
+The game repo and app repo have **independent git histories**. Never merge one into the other.
+
+---
+
 ## Local guardrails
 
-These prevent accidentally committing app build files to dev. Set them up once per machine — they live in `.git/` and are not tracked.
+These prevent accidentally committing app build files into the game repo. Set them up once per machine — they live in `.git/` and are not tracked.
 
 **1. Exclude `www/` from staging:**
 ```bash
@@ -40,7 +55,6 @@ echo -e "\n# App-repo files — belong in idlewright-app, not here\nwww/" >> .gi
 
 **2. Pre-commit hook — blocks accidental `www/` commits:**
 ```bash
-cp .git/hooks/pre-commit.sample .git/hooks/pre-commit 2>/dev/null || true
 cat > .git/hooks/pre-commit << 'HOOK'
 #!/bin/bash
 staged=$(git diff --cached --name-only)
@@ -64,27 +78,28 @@ chmod +x .git/hooks/pre-commit
 
 ## Push workflow
 
-**For dev only** (quick checkpoint, no public release):
+**Checkpoint to dev only:**
 ```bash
 git push dev master
 ```
 
-**To publish everywhere** (public + app sync):
+**Publish to dev + origin (public):**
 ```bash
 git pub
 # or: bash publish.sh
 ```
 
-`git pub` does this automatically:
-1. Pushes game commits to dev
-2. Copies `idle-game.html` → `www/index.html` and commits if changed
-3. Pushes to origin (public)
-4. Pushes to app (triggers CI build)
-
-Set up the `git pub` alias (run once per machine):
+Set up the alias once per machine:
 ```bash
 git config alias.pub '!bash publish.sh'
 ```
+
+**Update the app build** (only when you want to trigger a new app build):
+```bash
+bash update-app.sh
+```
+
+This copies the current `idle-game.html` into the `app` repo's `www/index.html` and pushes — completely separate from the game push.
 
 ---
 
@@ -94,12 +109,11 @@ Everything lives in one file: `idle-game.html`
 
 Open it in any browser — no build step, no server, no dependencies. Changes to `idle-game.html` are the only changes that matter for gameplay.
 
-`www/index.html` is a copy of `idle-game.html` used by the Capacitor app build. Don't edit it directly.
-
 ---
 
 ## Rules
 
-- **Never** `git merge app/master` or `git merge origin/master` into your working branch — this pulls in Capacitor history. If you need to sync, `git pull dev master`.
-- **Never** push `www/` files to dev (the hook will stop you, but still).
-- `publish.sh` is the only intended way to push to origin + app together.
+- **Never** `git merge app/master` into your working branch — the app repo has a completely different history. If you accidentally do this, undo with `git reset --hard HEAD~1`.
+- **Never** push `www/`, `android/`, `ios/`, or Capacitor files to dev or origin — the `.gitignore` and pre-commit hook will stop you, but be aware.
+- `publish.sh` pushes game commits to dev + origin only.
+- `update-app.sh` is the only way to update the app repo — it pushes to `app` independently.
