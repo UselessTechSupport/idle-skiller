@@ -1281,6 +1281,8 @@ const SELL_PRICES = {
   bronze_crossbow_u:60,  iron_crossbow_u:250,  steel_crossbow_u:450,  teak_crossbow_u:650,
   adamant_crossbow_u:1000, mahogany_crossbow_u:1400, rune_crossbow_u:2000,
   dragon_crossbow_u:3200, elder_crossbow_u:5500, superior_crossbow_u:9000,
+  oak_chair:400, teak_table:1200, mahogany_throne:2500, yew_bookcase:4000,
+  magic_wardrobe:6500, ornate_altar:10000, eternal_throne:18000,
 };
 
 const RUNE_SPELLS = {
@@ -2008,6 +2010,13 @@ const ACTIONS = {
     {id:'make_magic_plank',    name:'Make magic plank',    label:'Planks made', levelReq:75, xp:576,  ticks:8,  item:'magic_plank',    itemName:'Magic plank',    ingredients:[{item:'magic_logs',         count:1, name:'Magic logs'}]},
     {id:'make_elder_plank',    name:'Make elder plank',    label:'Planks made', levelReq:85, xp:902,  ticks:10, item:'elder_plank',    itemName:'Elder plank',    ingredients:[{item:'elder_logs',         count:1, name:'Elder logs'}]},
     {id:'make_eternal_plank',  name:'Make eternal plank',  label:'Planks made', levelReq:95, xp:1320, ticks:12, item:'eternal_plank',  itemName:'Eternal plank',  ingredients:[{item:'eternal_magic_logs', count:1, name:'Eternal magic logs'}]},
+    {id:'oak_chair',         name:'Oak chair',         category:'Furniture', label:'Furniture built', levelReq:20, xp:140,  ticks:4,  item:'oak_chair',         itemName:'Oak chair',         ingredients:[{item:'oak_plank',      count:2, name:'Oak plank'}]},
+    {id:'teak_table',        name:'Teak table',        category:'Furniture', label:'Furniture built', levelReq:40, xp:360,  ticks:5,  item:'teak_table',        itemName:'Teak table',        ingredients:[{item:'teak_plank',     count:3, name:'Teak plank'}]},
+    {id:'mahogany_throne',   name:'Mahogany throne',   category:'Furniture', label:'Furniture built', levelReq:55, xp:680,  ticks:6,  item:'mahogany_throne',   itemName:'Mahogany throne',   ingredients:[{item:'mahogany_plank', count:3, name:'Mahogany plank'}]},
+    {id:'yew_bookcase',      name:'Yew bookcase',      category:'Furniture', label:'Furniture built', levelReq:68, xp:1100, ticks:7,  item:'yew_bookcase',      itemName:'Yew bookcase',      ingredients:[{item:'yew_plank',      count:3, name:'Yew plank'}]},
+    {id:'magic_wardrobe',    name:'Magic wardrobe',    category:'Furniture', label:'Furniture built', levelReq:80, xp:1700, ticks:8,  item:'magic_wardrobe',    itemName:'Magic wardrobe',    ingredients:[{item:'magic_plank',    count:3, name:'Magic plank'}]},
+    {id:'ornate_altar',      name:'Ornate altar',      category:'Furniture', label:'Furniture built', levelReq:88, xp:2500, ticks:10, item:'ornate_altar',      itemName:'Ornate altar',      ingredients:[{item:'elder_plank',    count:3, name:'Elder plank'}]},
+    {id:'eternal_throne',    name:'Eternal throne',    category:'Furniture', label:'Furniture built', levelReq:97, xp:3800, ticks:12, item:'eternal_throne',    itemName:'Eternal throne',    ingredients:[{item:'eternal_plank',  count:3, name:'Eternal plank'}]},
   ],
   combat:[
     // ── Mobs ─────────────────────────────────────────────────────────────────
@@ -2875,18 +2884,22 @@ const EQUIP_REQS = {
 };
 
 const CONSTRUCTION_SHOP = [
-  { id:'sawmill',       name:'Sawmill',       desc:'Woodcutting is 10% faster.',  plankType:'oak_plank',      plankName:'Oak plank',      cost:50  },
-  { id:'furnace',       name:'Furnace',       desc:'Smithing is 10% faster.',     plankType:'teak_plank',     plankName:'Teak plank',     cost:75  },
-  { id:'cooking_range', name:'Cooking range', desc:'Halves cooking burn chance.', plankType:'teak_plank',     plankName:'Teak plank',     cost:75  },
-  { id:'herb_patch',    name:'Herb patch',    desc:'Crops grow 25% faster.',      plankType:'mahogany_plank', plankName:'Mahogany plank', cost:100 },
-  { id:'study',         name:'Study',         desc:'Runecrafting is 15% faster.', plankType:'yew_plank',      plankName:'Yew plank',      cost:125 },
-  { id:'workshop',      name:'Workshop',      desc:'Fletching is 10% faster.',    plankType:'yew_plank',      plankName:'Yew plank',      cost:125 },
-  { id:'manor',         name:'Grand manor',   desc:'All XP gains are 5% higher.', plankType:'elder_plank',    plankName:'Elder plank',    cost:200 },
-  { id:'altar',         name:'Personal Altar', desc:'2.5× Prayer XP when burying bones — no PK risk.', plankType:'mahogany_plank', plankName:'Mahogany plank', cost:200 },
-  { id:'fishing_pier',   name:'Fishing Pier',    desc:'20% chance to catch a bonus fish per fishing action.',    plankType:'willow_plank',  plankName:'Willow plank',  cost:100 },
-  { id:'hunting_lodge',  name:'Hunting Lodge',   desc:'Hunter impling spawn rate is doubled.',                   plankType:'maple_plank',   plankName:'Maple plank',   cost:200 },
-  { id:'alchemists_lab', name:"Alchemist's Lab", desc:'Combat potions last 25% longer.',                        plankType:'magic_plank',   plankName:'Magic plank',   cost:250 },
-  { id:'trophy_room',    name:'Trophy Room',     desc:'+10% item drop rate on all kills.',                      plankType:'eternal_plank', plankName:'Eternal plank', cost:350 },
+  { id:'sawmill',       name:'Sawmill',           levelReq:15, desc:'Woodcutting is 10% faster.',                                   plankType:'oak_plank',      plankName:'Oak plank',      cost:50  },
+  { id:'cooking_range', name:'Cooking range',     levelReq:20, desc:'Halves cooking burn chance.',                                  plankType:'teak_plank',     plankName:'Teak plank',     cost:75  },
+  { id:'furnace',       name:'Furnace',           levelReq:25, desc:'Smithing is 10% faster.',                                      plankType:'teak_plank',     plankName:'Teak plank',     cost:75  },
+  { id:'fishing_pier',  name:'Fishing Pier',      levelReq:30, desc:'20% chance to catch a bonus fish per fishing action.',         plankType:'willow_plank',   plankName:'Willow plank',   cost:100 },
+  { id:'herb_patch',    name:'Herb patch',        levelReq:45, desc:'Crops grow 25% faster.',                                       plankType:'mahogany_plank', plankName:'Mahogany plank', cost:100 },
+  { id:'altar',         name:'Personal Altar',    levelReq:50, desc:'2.5× Prayer XP when burying bones — no PK risk.',             plankType:'mahogany_plank', plankName:'Mahogany plank', cost:200 },
+  { id:'study',         name:'Study',             levelReq:55, desc:'Runecrafting is 15% faster.',                                  plankType:'yew_plank',      plankName:'Yew plank',      cost:125 },
+  { id:'workshop',      name:'Workshop',          levelReq:58, desc:'Fletching is 10% faster.',                                     plankType:'yew_plank',      plankName:'Yew plank',      cost:125 },
+  { id:'hunting_lodge', name:'Hunting Lodge',     levelReq:62, desc:'Hunter impling spawn rate is doubled.',                        plankType:'maple_plank',    plankName:'Maple plank',    cost:200 },
+  { id:'dungeon_room',  name:'Dungeon Room',      levelReq:70, desc:'+15% Slayer point rewards per task.',                          plankType:'yew_plank',      plankName:'Yew plank',      cost:150 },
+  { id:'alchemists_lab',name:"Alchemist's Lab",   levelReq:72, desc:'Combat potions last 25% longer.',                              plankType:'magic_plank',    plankName:'Magic plank',    cost:250 },
+  { id:'manor',         name:'Grand manor',       levelReq:75, desc:'All XP gains are 5% higher.',                                  plankType:'elder_plank',    plankName:'Elder plank',    cost:200 },
+  { id:'relic_chamber', name:'Relic Chamber',     levelReq:78, desc:'Archaeology actions have a 20% chance to find a second artifact.', plankType:'magic_plank', plankName:'Magic plank',  cost:150 },
+  { id:'training_ground',name:'Training Ground',  levelReq:85, desc:'Each combat kill passively grants 40 Agility XP.',             plankType:'elder_plank',    plankName:'Elder plank',    cost:175 },
+  { id:'trophy_room',   name:'Trophy Room',       levelReq:90, desc:'+10% item drop rate on all kills.',                            plankType:'eternal_plank',  plankName:'Eternal plank',  cost:350 },
+  { id:'menagerie',     name:'Menagerie',         levelReq:92, desc:'Each completed action has a 10% chance to produce a random charm.', plankType:'elder_plank', plankName:'Elder plank',  cost:200 },
 ];
 
 /* Lookup helpers */
@@ -3054,6 +3067,13 @@ const ITEM_STATS = {
   phantom_pelt:     { desc:'Supple hide from a phantom wolf. Used in high-tier Hunter leather crafting.' },
   apex_pelt:        { desc:'Rare hide from an apex phantom. Used in the finest Hunter leather armor.' },
   phantom_fang:     { desc:"A phantom wolf's fang, radiating elusive energy. Craft into a Phantom hunter's cape." },
+  oak_chair:        { desc:'A sturdy oak chair. Sell it or keep it.' },
+  teak_table:       { desc:'A finely crafted teak dining table.' },
+  mahogany_throne:  { desc:'An imposing mahogany throne fit for a lord.' },
+  yew_bookcase:     { desc:'A tall yew bookcase filled with tomes.' },
+  magic_wardrobe:   { desc:'A rune-etched magic wood wardrobe.' },
+  ornate_altar:     { desc:'An elaborately carved elder-wood altar.' },
+  eternal_throne:   { desc:'A legendary throne of eternal wood. Worth a fortune.' },
   green_dhide_vambs:{ range:8, defence:8 },   green_dhide_chaps:{ range:16, defence:16 },  green_dhide_body:{ range:24, defence:24 },
   blue_dhide_vambs:{ range:12, defence:12 },  blue_dhide_chaps:{ range:24, defence:24 },   blue_dhide_body:{ range:36, defence:36 },
   black_dhide_vambs:{ range:15, defence:15 }, black_dhide_chaps:{ range:30, defence:30 },  black_dhide_body:{ range:45, defence:45 },
@@ -5267,10 +5287,11 @@ function getCurrentEffTicks(action){
 
 function getConstructionMult(skillId){
   let mult = 1.0;
-  if (skillId === 'woodcutting'  && state.upgrades?.sawmill)  mult *= 0.90;
-  if (skillId === 'smithing'     && state.upgrades?.furnace)  mult *= 0.90;
-  if (skillId === 'runecrafting' && state.upgrades?.study)    mult *= 0.85;
-  if (skillId === 'fletching'    && state.upgrades?.workshop) mult *= 0.90;
+  if (skillId === 'woodcutting'  && state.upgrades?.sawmill)         mult *= 0.90;
+  if (skillId === 'smithing'     && state.upgrades?.furnace)         mult *= 0.90;
+  if (skillId === 'runecrafting' && state.upgrades?.study)           mult *= 0.85;
+  if (skillId === 'fletching'    && state.upgrades?.workshop)        mult *= 0.90;
+  if (skillId === 'agility'      && state.upgrades?.training_ground) mult *= 0.90;
   return mult;
 }
 
@@ -5526,6 +5547,22 @@ function completeAction(action, silent){
       }
     }
     grantXp('archaeology', artifact.xp, silent);
+    // Relic Chamber: 20% chance to find a second artifact piece
+    if (state.upgrades?.relic_chamber && Math.random() < 0.20){
+      const prev2 = state.archaeology.artifacts[artifact.id] || 0;
+      if (prev2 < artifact.needed){
+        state.archaeology.artifacts[artifact.id] = prev2 + 1;
+        if (!silent) log(`🏺 Relic Chamber — bonus find: ${artifact.name} (${prev2 + 1}/${artifact.needed})`);
+        if (prev2 + 1 === artifact.needed){
+          const activeCount = Object.keys(state.archaeology.activePerks).length;
+          if (activeCount < ARCH_MAX_PERKS){
+            state.archaeology.activePerks[artifact.id] = true;
+            if (!silent) log(`✨ Collection complete — perk unlocked: ${artifact.perkName}!`);
+          }
+        }
+        grantXp('archaeology', artifact.xp, silent);
+      }
+    }
     if (!silent) checkBonusDrop(skillId, action);
     return;
   }
@@ -5674,6 +5711,8 @@ function completeAction(action, silent){
       logCollectionDrop('hunter_bonus', jar, 1);
       if (!silent) log(`🐾 Predator's instinct — you snatch an impling! (${jarName})`);
     }
+    // Training Ground: each combat kill grants passive Agility XP
+    if (state.upgrades?.training_ground) grantXp('agility', 40, silent);
     // Goblin Diplomatic Note — 1/100 from goblins; guaranteed at 1000kc
     if (action.id === 'goblin' && !(state.inventory['goblin_diplomatic_note'] || 0) && !state.quests?.goblin_diplomacy){
       const kc = state.combat.kills['goblin'] || 0;
@@ -5727,7 +5766,8 @@ function completeAction(action, silent){
       if (_skipChance   > 0 && Math.random() < _skipChance)   _killCount = 0;
       state.slayer.task.count += _killCount;
       if (state.slayer.task.count >= state.slayer.task.target){
-        const pts = state.slayer.task.pointsReward + (state.slayer.unlocks?.point_bonus ? 5 : 0);
+        const _ptBase = state.slayer.task.pointsReward + (state.slayer.unlocks?.point_bonus ? 5 : 0);
+        const pts = state.upgrades?.dungeon_room ? Math.ceil(_ptBase * 1.15) : _ptBase;
         state.slayer.points += pts;
         state.slayer.totalTasksDone++;
         const bonusXp = Math.floor(state.slayer.task.target * action.xp * 0.5);
@@ -5764,6 +5804,17 @@ function completeAction(action, silent){
   // Stop single-completion actions (floors, future one-shots)
   if (action.single){ state.current = null; state.progress = 0; }
   if (!silent) checkAchievements();
+  // Menagerie: 10% chance per action to produce a random charm
+  if (state.upgrades?.menagerie && Math.random() < 0.10){
+    const r = Math.random() * 100;
+    let charmId, charmName;
+    if      (r < 60) { charmId = 'gold_charm';    charmName = 'Gold charm'; }
+    else if (r < 85) { charmId = 'green_charm';   charmName = 'Green charm'; }
+    else if (r < 97) { charmId = 'crimson_charm'; charmName = 'Crimson charm'; }
+    else             { charmId = 'blue_charm';     charmName = 'Blue charm'; }
+    grantItem(charmId, charmName, 1);
+    if (!silent) log(`🐾 Menagerie — a creature returns with a charm! (${charmName})`);
+  }
   // Batch limit: stop after N completions
   if ((state.batch?.limit || 0) > 0){
     state.batch.done++;
@@ -6354,17 +6405,20 @@ function renderShop(){
   }
 
   if (shopTab === 'construction'){
+    const conLvl = levelForXp(state.skills.construction?.xp || 0);
     CONSTRUCTION_SHOP.forEach(item => {
-      const owned  = !!state.upgrades[item.id];
-      const have   = state.inventory[item.plankType] || 0;
-      const canBuy = have >= item.cost;
-      const card   = document.createElement('div');
-      card.className = 'upgrade-tier' + (owned ? ' equipped' : '');
-      card.innerHTML = `<div class="tier-left"><span>${item.name}</span><span class="tier-speed">${item.desc}</span><span class="tier-cost">${item.cost}× ${item.plankName} (have: ${have.toLocaleString()})</span></div>`;
+      const owned   = !!state.upgrades[item.id];
+      const locked  = conLvl < (item.levelReq || 1);
+      const have    = state.inventory[item.plankType] || 0;
+      const canBuy  = !locked && have >= item.cost;
+      const card    = document.createElement('div');
+      card.className = 'upgrade-tier' + (owned ? ' equipped' : '') + (locked ? ' locked' : '');
+      card.innerHTML = `<div class="tier-left"><span>${item.name}</span><span class="tier-speed">${item.desc}</span><span class="tier-cost">${locked ? `Requires Construction ${item.levelReq}` : `${item.cost}× ${item.plankName} (have: ${have.toLocaleString()})`}</span></div>`;
       const btn = document.createElement('button');
       btn.className = 'mini';
-      if (owned)    { btn.textContent = '✓ Built'; btn.disabled = true; }
-      else          { btn.textContent = canBuy ? 'Build' : `Need ${(item.cost-have).toLocaleString()} more`; btn.disabled = !canBuy; btn.onclick = () => buyConstructionUpgrade(item.id); }
+      if (owned)        { btn.textContent = '✓ Built'; btn.disabled = true; }
+      else if (locked)  { btn.textContent = `Lv ${item.levelReq}`; btn.disabled = true; }
+      else              { btn.textContent = canBuy ? 'Build' : `Need ${(item.cost-have).toLocaleString()} more`; btn.disabled = !canBuy; btn.onclick = () => buyConstructionUpgrade(item.id); }
       card.appendChild(btn); el.appendChild(card);
     });
   }
