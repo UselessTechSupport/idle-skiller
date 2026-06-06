@@ -11,8 +11,9 @@ echo "🔒 Pushing to dev (game commits only)..."
 git push dev master
 
 echo "📦 Syncing app file..."
+mkdir -p www
 cp idle-game.html www/index.html
-git add www/index.html
+git add -f www/index.html
 
 if git diff --cached --quiet; then
   echo "   www/index.html already up to date"
