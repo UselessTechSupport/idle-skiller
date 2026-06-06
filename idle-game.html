@@ -782,36 +782,36 @@ const SKILLCAPES = [
 
 const PETS = [
   // Skilling pets — 1/5000 per action
-  {id:'pet_beaver',        name:'Beaver',         icon:'🦫', skillId:'woodcutting',  perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Woodcutting speed'},
-  {id:'pet_rock_golem',    name:'Rock Golem',     icon:'🪨', skillId:'mining',       perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Mining speed'},
-  {id:'pet_tiny_kraken',   name:'Tiny Kraken',    icon:'🦑', skillId:'fishing',      perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Fishing XP'},
+  {id:'pet_beaver',        name:'Beaver',         icon:'🦫', skillId:'woodcutting',  perkType:'special',      perkValue:0,    perkLabel:'5% chance per chop to receive double logs'},
+  {id:'pet_rock_golem',    name:'Rock Golem',     icon:'🪨', skillId:'mining',       perkType:'special',      perkValue:0,    perkLabel:'5% chance per ore to mine double ore'},
+  {id:'pet_tiny_kraken',   name:'Tiny Kraken',    icon:'🦑', skillId:'fishing',      perkType:'special',      perkValue:0,    perkLabel:'2% chance per fishing action to find a gem or coin pouch'},
   {id:'pet_herb_sprite',   name:'Herb Sprite',    icon:'🌿', skillId:'farming',      perkType:'farm_speed',   perkValue:0.10, perkLabel:'Crops grow 10% faster'},
-  {id:'pet_gecko',         name:'Gecko',          icon:'🦎', skillId:'hunter',       perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Hunter XP'},
-  {id:'pet_wisp',          name:'Memory Wisp',    icon:'💫', skillId:'divination',   perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Divination XP'},
-  {id:'pet_crafting_imp',  name:'Crafting Imp',   icon:'🎭', skillId:'crafting',     perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Crafting speed'},
-  {id:'pet_robin',         name:'Robin',          icon:'🐦', skillId:'fletching',    perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Fletching speed'},
-  {id:'pet_forge_sprite',  name:'Forge Sprite',   icon:'🌋', skillId:'smithing',     perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Smithing speed'},
-  {id:'pet_chef_mouse',    name:'Chef Mouse',     icon:'🐭', skillId:'cooking',      perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Cooking XP'},
-  {id:'pet_fire_sprite',   name:'Fire Sprite',    icon:'🕯️', skillId:'firemaking',   perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Firemaking XP'},
-  {id:'pet_rune_sprite',   name:'Rune Sprite',    icon:'🔮', skillId:'runecrafting', perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Runecrafting XP'},
-  {id:'pet_chisel_gnome',  name:'Chisel Gnome',   icon:'🪵', skillId:'construction', perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Construction XP'},
-  {id:'pet_herb_frog',     name:'Herb Frog',      icon:'🐸', skillId:'herblore',     perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Herblore speed'},
+  {id:'pet_gecko',         name:'Gecko',          icon:'🦎', skillId:'hunter',       perkType:'special',      perkValue:0,    perkLabel:'Universal scouting: 0.5% chance per any action to find an impling jar scaled to Hunter level'},
+  {id:'pet_wisp',          name:'Memory Wisp',    icon:'💫', skillId:'divination',   perkType:'special',      perkValue:0,    perkLabel:'Memory bank: 3% chance per action to replay XP from the last different skill you trained'},
+  {id:'pet_crafting_imp',  name:'Crafting Imp',   icon:'🎭', skillId:'crafting',     perkType:'special',      perkValue:0,    perkLabel:'8% chance per Crafting action to not consume any ingredients (free craft)'},
+  {id:'pet_robin',         name:'Robin',          icon:'🐦', skillId:'fletching',    perkType:'special',      perkValue:0,    perkLabel:'10% chance per Fletching action to produce double output'},
+  {id:'pet_forge_sprite',  name:'Forge Sprite',   icon:'🌋', skillId:'smithing',     perkType:'special',      perkValue:0,    perkLabel:'5% chance per smelting action to produce double bars'},
+  {id:'pet_chef_mouse',    name:'Chef Mouse',     icon:'🐭', skillId:'cooking',      perkType:'special',      perkValue:0,    perkLabel:'Cooking always yields 1 burnt food as a side; burns produce double burnt food'},
+  {id:'pet_fire_sprite',   name:'Fire Sprite',    icon:'🕯️', skillId:'firemaking',   perkType:'special',      perkValue:0,    perkLabel:'Warm Aura: all skilling actions are 2% faster'},
+  {id:'pet_rune_sprite',   name:'Rune Sprite',    icon:'🔮', skillId:'runecrafting', perkType:'special',      perkValue:0,    perkLabel:'10% chance per Runecrafting action to craft double runes'},
+  {id:'pet_chisel_gnome',  name:'Chisel Gnome',   icon:'🪵', skillId:'construction', perkType:'special',      perkValue:0,    perkLabel:'10% chance when building furniture to produce double the item (buy one get one)'},
+  {id:'pet_herb_frog',     name:'Herb Frog',      icon:'🐸', skillId:'herblore',     perkType:'special',      perkValue:0,    perkLabel:"3% chance per brew to produce the supreme-tier version of the potion"},
   {id:'pet_tiny_warrior',  name:'Tiny Warrior',   icon:'⚔️', skillId:'melee',        perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Melee XP'},
   {id:'pet_shield_crab',   name:'Shield Crab',    icon:'🦀', skillId:'defence',      perkType:'defence_flat', perkValue:5,    perkLabel:'+5 Defence bonus'},
   {id:'pet_blood_sprite',  name:'Blood Sprite',   icon:'❤️', skillId:'constitution', perkType:'hp_regen_mult',perkValue:0.10, perkLabel:'+10% HP regen rate'},
   {id:'pet_golden_eagle',  name:'Golden Eagle',   icon:'🦅', skillId:'ranged',       perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Ranged XP'},
-  {id:'pet_magic_owl',     name:'Magic Owl',      icon:'🦉', skillId:'magic',        perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Magic XP'},
+  {id:'pet_magic_owl',     name:'Magic Owl',      icon:'🦉', skillId:'magic',        perkType:'magic_dmg',    perkValue:0.05, perkLabel:'+5% Magic damage'},
   {id:'pet_divine_lamb',   name:'Divine Lamb',    icon:'🐑', skillId:'prayer',       perkType:'prayer_drain', perkValue:0.10, perkLabel:'-10% Prayer drain rate'},
-  {id:'pet_mini_familiar', name:'Mini Familiar',  icon:'🌀', skillId:'summoning',    perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Summoning XP'},
-  {id:'pet_nimble_cat',    name:'Nimble Cat',     icon:'🐱', skillId:'agility',      perkType:'speed_pct',    perkValue:0.05, perkLabel:'+5% Agility speed'},
-  {id:'pet_raccoon',       name:'Raccoon',        icon:'🦝', skillId:'thieving',     perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Thieving XP'},
-  {id:'pet_imp',           name:'Imp',            icon:'👺', skillId:'slayer',       perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Slayer XP'},
-  {id:'pet_dungeon_rat',   name:"Lil' Lubi'",     icon:'🐀', skillId:'dungeoneering',perkType:'dg_token_pct', perkValue:0.05, perkLabel:'+5% Dungeoneering token gain'},
-  {id:'pet_dig_sprite',    name:'Dig Sprite',     icon:'🏺', skillId:'archaeology',  perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Archaeology XP'},
+  {id:'pet_mini_familiar', name:'Mini Familiar',  icon:'🌀', skillId:'summoning',    perkType:'special',      perkValue:0,    perkLabel:'Summoning familiar duration +50%'},
+  {id:'pet_nimble_cat',    name:'Nimble Cat',     icon:'🐱', skillId:'agility',      perkType:'special',      perkValue:0,    perkLabel:'Each Agility action passively grants 30 Constitution XP'},
+  {id:'pet_raccoon',       name:'Raccoon',        icon:'🦝', skillId:'thieving',     perkType:'special',      perkValue:0,    perkLabel:'10% chance per pickpocket to steal twice (double loot + XP)'},
+  {id:'pet_imp',           name:'Imp',            icon:'👺', skillId:'slayer',       perkType:'special',      perkValue:0,    perkLabel:'Slayer task completion grants double points'},
+  {id:'pet_dungeon_rat',   name:"Lil' Lubi'",     icon:'🐀', skillId:'dungeoneering',perkType:'dg_token_pct', perkValue:0.05, perkLabel:'+5% DG token gain; 3% chance per floor to find a mini supply cache'},
+  {id:'pet_dig_sprite',    name:'Dig Sprite',     icon:'🏺', skillId:'archaeology',  perkType:'special',      perkValue:0,    perkLabel:'10% chance per dig to progress a random other artifact at the same site'},
   // Boss pets
   {id:'pet_baby_mole',     name:'Baby Mole',      icon:'🦔', skillId:null,           perkType:'drop_rate_pct',perkValue:0.05, perkLabel:'+5% drop rate'},
   {id:'pet_void_wyrm',     name:'Void Wyrm',      icon:'🐲', skillId:null,           perkType:'hp_regen_mult',perkValue:0.15, perkLabel:'+15% HP regen rate'},
-  {id:'pet_deep_spawn',    name:'Deep Spawn',     icon:'🦈', skillId:'slayer',       perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% Slayer XP'},
+  {id:'pet_deep_spawn',    name:'Deep Spawn',     icon:'🦈', skillId:'slayer',       perkType:'special',      perkValue:0,    perkLabel:'+10% damage to monsters while on a Slayer task'},
   {id:'pet_lich_familiar', name:'Lich Familiar',  icon:'💀', skillId:null,           perkType:'prayer_drain', perkValue:0.10, perkLabel:'-10% Prayer drain rate'},
   {id:'pet_solar_hawk',    name:'Solar Hawk',     icon:'🌟', skillId:null,           perkType:'ranged_dmg',   perkValue:0.05, perkLabel:'+5% Ranged damage'},
   {id:'pet_war_pup',       name:'War Pup',        icon:'🐕', skillId:null,           perkType:'melee_dmg',    perkValue:0.05, perkLabel:'+5% Melee damage'},
@@ -1283,6 +1283,7 @@ const SELL_PRICES = {
   bronze_crossbow_u:60,  iron_crossbow_u:250,  steel_crossbow_u:450,  teak_crossbow_u:650,
   adamant_crossbow_u:1000, mahogany_crossbow_u:1400, rune_crossbow_u:2000,
   dragon_crossbow_u:3200, elder_crossbow_u:5500, superior_crossbow_u:9000,
+  burnt_food:15,
   oak_chair:400, teak_table:1200, mahogany_throne:2500, yew_bookcase:4000,
   magic_wardrobe:6500, ornate_altar:10000, eternal_throne:18000,
 };
@@ -3434,10 +3435,11 @@ function freshState(){
     openCounts:      {},
     clueCompletions: {},
     clues:        { active: null },
-    hardcore:     false,
-    dead:         false,
-    saveVersion:  1,
-    lastSaved:    Date.now(),
+    hardcore:       false,
+    dead:           false,
+    lastActionData: { skillId: null, xp: 0 },
+    saveVersion:    1,
+    lastSaved:      Date.now(),
   };
 }
 
@@ -3551,9 +3553,10 @@ function activateSummon(pouchId){
     pouchId, pouchName:def.name, icon:def.icon,
     effectType:def.effectType, effectValue:def.effectValue,
     affectedSkills:def.affectedSkills, effectLabel:def.effectLabel,
-    expiresAt: Date.now() + 10 * 60 * 1000,
+    expiresAt: Date.now() + 10 * 60 * 1000 * (state.equipment?.pet === 'pet_mini_familiar' ? 1.5 : 1.0),
   };
-  log(`${def.icon} ${def.name} summoned! ${def.effectLabel} for 10 min.`);
+  const _sumDur = state.equipment?.pet === 'pet_mini_familiar' ? '15 min' : '10 min';
+  log(`${def.icon} ${def.name} summoned! ${def.effectLabel} for ${_sumDur}.`);
   render();
 }
 function dismissSummon(){
@@ -3900,7 +3903,10 @@ function calcPlayerDamage(styleId, mob, ignoreDefence=false){
   const def      = ignoreDefence ? 0 : (mob.stats.defence || 0);
   const hit      = Math.min(0.95, Math.max(0.1, 1 - def / (def + effLevel + bonus + 1)));
   if (Math.random() > hit) return 0;
-  return 1 + Math.floor(Math.random() * maxHit);
+  let dmg = 1 + Math.floor(Math.random() * maxHit);
+  // Deep Spawn: +10% damage while on a Slayer task
+  if (state.slayer?.task && state.equipment?.pet === 'pet_deep_spawn') dmg = Math.ceil(dmg * 1.10);
+  return dmg;
 }
 
 function calcMobDamage(mob){
@@ -5336,21 +5342,22 @@ function getCurrentEffTicks(action){
   const capeSpeed = getCapeBonus('speed_pct', state.current?.skillId);
   const petSpeed  = getPetBonus('speed_pct', state.current?.skillId);
   const jwlSpeed  = getJewelryBonus('speed_pct', state.current?.skillId);
+  const warmAura  = state.equipment?.pet === 'pet_fire_sprite' ? 0.02 : 0; // Fire Sprite: 2% faster all skills
   if (state.current?.skillId === 'thieving'){
     const agilLevel = effLvl('agility');
     if (action.lock){
       const toolMult = getToolSpeedMult('thieving');
       const agilMult = 1 - (agilLevel / 99 * 0.30);
-      return Math.max(1, Math.ceil(base * toolMult * agilMult * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - jwlSpeed)));
+      return Math.max(1, Math.ceil(base * toolMult * agilMult * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed)));
     }
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20)) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - jwlSpeed)));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20)) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed)));
   }
   if (state.current?.skillId === 'runecrafting'){
     const agilLevel = effLvl('agility');
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - jwlSpeed)));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed)));
   }
   const archSpeed = getArchBonus(`speed_${state.current.skillId}`);
-  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId) * getConstructionMult(state.current.skillId) * (1 - archSpeed) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - jwlSpeed)));
+  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId) * getConstructionMult(state.current.skillId) * (1 - archSpeed) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed)));
 }
 
 function getConstructionMult(skillId){
@@ -5534,9 +5541,14 @@ function completeAction(action, silent){
   const skillId = state.current?.skillId;
   // consume ingredients (smithing and future crafting skills)
   if (action.ingredients){
-    const missing = canAfford(action);
-    if (missing){ if (!silent) log(`Out of ${missing.name} — stopped.`); state.current = null; state.progress = 0; state.batch = { limit:0, done:0 }; return; }
-    consumeIngredients(action);
+    // Crafting Imp: 8% chance for free craft (no ingredients consumed)
+    if (skillId === 'crafting' && state.equipment?.pet === 'pet_crafting_imp' && Math.random() < 0.08){
+      if (!silent) log('🎭 Crafting Imp: free craft! No materials consumed.');
+    } else {
+      const missing = canAfford(action);
+      if (missing){ if (!silent) log(`Out of ${missing.name} — stopped.`); state.current = null; state.progress = 0; state.batch = { limit:0, done:0 }; return; }
+      consumeIngredients(action);
+    }
   }
   // Pickpocket: chance to get caught → stun, no loot/xp this tick
   if (skillId === 'thieving' && action.catchChance && !action.lock){
@@ -5615,6 +5627,21 @@ function completeAction(action, silent){
       }
     }
     grantXp('archaeology', artifact.xp, silent);
+    // Dig Sprite: 10% chance to progress a different artifact at the same site
+    if (state.equipment?.pet === 'pet_dig_sprite' && Math.random() < 0.10){
+      const _others = siteArtifacts.filter(a => a.id !== artifact.id && (state.archaeology.artifacts[a.id] || 0) < a.needed);
+      if (_others.length){
+        const _bonus = _others[Math.floor(Math.random() * _others.length)];
+        const _bprev = state.archaeology.artifacts[_bonus.id] || 0;
+        state.archaeology.artifacts[_bonus.id] = _bprev + 1;
+        if (!silent) log(`🏺 Dig Sprite uncovers a bonus ${_bonus.name} piece! (${_bprev+1}/${_bonus.needed})`);
+        if (_bprev + 1 === _bonus.needed){
+          const _activeCount = Object.keys(state.archaeology.activePerks).length;
+          if (_activeCount < ARCH_MAX_PERKS){ state.archaeology.activePerks[_bonus.id] = true; if (!silent) log(`✨ Collection complete — perk unlocked: ${_bonus.perkName}!`); }
+        }
+        grantXp('archaeology', _bonus.xp, silent);
+      }
+    }
     // Relic Chamber: 20% chance to find a second artifact piece
     if (state.upgrades?.relic_chamber && Math.random() < 0.20){
       const prev2 = state.archaeology.artifacts[artifact.id] || 0;
@@ -5648,6 +5675,9 @@ function completeAction(action, silent){
     if (Math.random() < chance){
       const qty = failDef.qtyFn ? failDef.qtyFn(action) : 1;
       grantItem(failDef.product, failDef.productName, qty);
+      // Chef Mouse: double burnt food on burns
+      if (skillId === 'cooking' && state.equipment?.pet === 'pet_chef_mouse')
+        grantItem('burnt_food', 'Burnt food', qty);
       if (!silent) log(failDef.msgFn ? failDef.msgFn(qty) : failDef.msg);
       return;
     }
@@ -5671,6 +5701,29 @@ function completeAction(action, silent){
     // Abyssal Focus: 10% chance to double rune output
     if (skillId === 'runecrafting' && state.upgrades?.abyssal_focus && Math.random() < 0.10)
       grantItem(action.item, action.itemName, qty);
+    // Pet output bonuses
+    const _pet = state.equipment?.pet;
+    if (_pet === 'pet_beaver'       && skillId === 'woodcutting'  && Math.random() < 0.05)
+      { grantItem(action.item, action.itemName, qty); if (!silent) log('🦫 Beaver: double timber!'); }
+    if (_pet === 'pet_rock_golem'   && skillId === 'mining'       && Math.random() < 0.05)
+      { grantItem(action.item, action.itemName, qty); if (!silent) log('🪨 Rock Golem: double ore!'); }
+    if (_pet === 'pet_robin'        && skillId === 'fletching'    && Math.random() < 0.10)
+      { grantItem(action.item, action.itemName, action.count || 1); if (!silent) log('🐦 Robin: double output!'); }
+    if (_pet === 'pet_forge_sprite' && skillId === 'smithing'     && Math.random() < 0.05)
+      { grantItem(action.item, action.itemName, 1); if (!silent) log('🌋 Forge Sprite: hot streak — double bars!'); }
+    if (_pet === 'pet_rune_sprite'  && skillId === 'runecrafting' && Math.random() < 0.10)
+      { grantItem(action.item, action.itemName, qty); if (!silent) log('🔮 Rune Sprite: double runes!'); }
+    if (_pet === 'pet_chisel_gnome' && skillId === 'construction' && action.category === 'Furniture' && Math.random() < 0.10)
+      { grantItem(action.item, action.itemName, 1); if (!silent) log(`🪵 Chisel Gnome: buy one get one! (+1 ${action.itemName})`); }
+    // Chef Mouse: successful cook also yields 1 burnt food
+    if (_pet === 'pet_chef_mouse'   && skillId === 'cooking')
+      grantItem('burnt_food', 'Burnt food', 1);
+    // Herb Frog: 3% chance to produce the supreme version of a brewed potion
+    if (_pet === 'pet_herb_frog' && skillId === 'herblore' && Math.random() < 0.03){
+      const _SUPREME = {attack_potion:'supreme_attack_potion',defence_potion:'supreme_defence_potion',ranging_potion:'supreme_ranging_potion',magic_potion:'supreme_magic_potion',summoning_potion:'supreme_summoning_potion',prayer_potion:'supreme_prayer_potion'};
+      const _supId = _SUPREME[action.item];
+      if (_supId){ const _supName = _supId.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); grantItem(_supId,_supName,1); if (!silent) log(`🐸 Herb Frog's secret technique — ${_supName}!`); }
+    }
   }
   // Abyssal Rod: 1% chance to upgrade the caught fish to the next tier
   if (action.item && skillId === 'fishing' &&
@@ -5683,6 +5736,12 @@ function completeAction(action, silent){
       grantItem(upgrade.item, upgrade.itemName);
       if (!silent) log(`✨ Deep Sea Rod pulses — you caught a ${upgrade.itemName}!`);
     }
+  }
+  // Tiny Kraken: 2% chance for deep sea loot (gem or coin pouch)
+  if (skillId === 'fishing' && state.equipment?.pet === 'pet_tiny_kraken' && Math.random() < 0.02){
+    const _r = Math.random();
+    if (_r < 0.5){ const _c = 500 + Math.floor(Math.random() * 1500); grantItem('coins','Coins',_c); if (!silent) log(`🦑 Kraken finds a coin pouch! (+${_c} coins)`); }
+    else { const _gems=[['uncut_sapphire','Uncut sapphire',60],['uncut_emerald','Uncut emerald',25],['uncut_ruby','Uncut ruby',12],['uncut_diamond','Uncut diamond',3]]; let _rr=Math.random()*100,_gem=null; for(const[_id,_nm,_w]of _gems){_rr-=_w;if(_rr<=0){_gem=[_id,_nm];break;}} if(_gem){grantItem(_gem[0],_gem[1],1);if(!silent)log(`🦑 Kraken drags up a ${_gem[1]}!`);} }
   }
   // Thieving: process drops table + agility extra-loot bonus
   if (skillId === 'thieving'){
@@ -5702,6 +5761,12 @@ function completeAction(action, silent){
         }
       }
       if (!silent) log('✨ Agility — extra loot!');
+    }
+    // Raccoon: 10% chance to steal twice (double loot + XP)
+    if (state.equipment?.pet === 'pet_raccoon' && Math.random() < 0.10){
+      for (const _drop of (action.drops || [])){ if (Math.random() < _drop.chance){ const _qty=(_drop.min||1)+Math.floor(Math.random()*((_drop.max||1)-(_drop.min||1)+1)); grantItem(_drop.item,_drop.itemName,_qty); } }
+      grantXp('thieving', action.xp, silent);
+      if (!silent) log('🦝 Raccoon: sleight of hand — stole twice!');
     }
     grantXp('thieving', action.xp, silent);
     if (!silent) checkBonusDrop(skillId, action);
@@ -5729,6 +5794,8 @@ function completeAction(action, silent){
       if (!silent) log(`💎 Found a crystal tool seed on the Crystal course!`);
     }
     grantXp('agility', xp, silent);
+    // Nimble Cat: each Agility action grants 30 Constitution XP
+    if (state.equipment?.pet === 'pet_nimble_cat') grantXp('constitution', 30, silent);
     if (!silent) checkBonusDrop(skillId, action);
     return;
   }
@@ -5840,7 +5907,8 @@ function completeAction(action, silent){
       state.slayer.task.count += _killCount;
       if (state.slayer.task.count >= state.slayer.task.target){
         const _ptBase = state.slayer.task.pointsReward + (state.slayer.unlocks?.point_bonus ? 5 : 0);
-        const pts = state.upgrades?.dungeon_room ? Math.ceil(_ptBase * 1.15) : _ptBase;
+        const _ptMult = state.upgrades?.dungeon_room ? Math.ceil(_ptBase * 1.15) : _ptBase;
+        const pts = state.equipment?.pet === 'pet_imp' ? _ptMult * 2 : _ptMult;
         state.slayer.points += pts;
         state.slayer.totalTasksDone++;
         const bonusXp = Math.floor(state.slayer.task.target * action.xp * 0.5);
@@ -5871,12 +5939,39 @@ function completeAction(action, silent){
     const tokens  = Math.max(1, Math.floor(dgLevel * action.tokenMult * (1 + getCapeBonus('dg_token_pct', null) + getPetBonus('dg_token_pct', null) + (state.upgrades?.token_surplus ? 0.15 : 0) + (state.upgrades?.token_mastery ? 0.25 : 0))));
     grantItem('dg_tokens', 'Dungeoneering tokens', tokens);
     log(`⚔️ Floor complete! +${tokens} tokens.`);
+    // Dungeon Rat: 3% chance for mini supply cache
+    if (state.equipment?.pet === 'pet_dungeon_rat' && Math.random() < 0.03){
+      grantItem('dragon_bones','Dragon bones',10);
+      grantItem('rune_essence','Rune essence',50);
+      grantItem('torstol_seed','Torstol seed',1);
+      log("🐀 Lil' Lubi' sniffs out a hidden stash! (+10 Dragon bones, +50 Rune essence, +1 Torstol seed)");
+    }
     state.current.earnedTokens = tokens;
     state.current.floorTicks   = Math.round(calcFloorSecs(action) / (TICK_MS / 1000));
   }
   // Stop single-completion actions (floors, future one-shots)
   if (action.single){ state.current = null; state.progress = 0; }
   if (!silent) checkAchievements();
+  // Gecko: universal scouting — 0.5% per any action to find an impling jar (scaled to Hunter level)
+  if (state.equipment?.pet === 'pet_gecko' && Math.random() < 0.005){
+    const _hLvl = levelForXp(state.skills.hunter?.xp || 0);
+    const _hr = Math.random() * 100;
+    let _jar, _jarName;
+    if      (_hLvl >= 91 && _hr < 10) { _jar='kingly_impling_jar';   _jarName='Kingly impling jar'; }
+    else if (_hLvl >= 83 && _hr < 25) { _jar='dragon_impling_jar';   _jarName='Dragon impling jar'; }
+    else if (_hLvl >= 62 && _hr < 45) { _jar='nature_impling_jar';   _jarName='Nature impling jar'; }
+    else if (_hLvl >= 50 && _hr < 60) { _jar='eclectic_impling_jar'; _jarName='Eclectic impling jar'; }
+    else if (_hLvl >= 36 && _hr < 75) { _jar='earth_impling_jar';    _jarName='Earth impling jar'; }
+    else                               { _jar='baby_impling_jar';     _jarName='Baby impling jar'; }
+    grantItem(_jar, _jarName, 1);
+    if (!silent) log(`🦎 Gecko scouts an impling! (${_jarName})`);
+  }
+  // Memory Wisp: 3% per any action to replay XP from last different skill trained
+  if (state.equipment?.pet === 'pet_wisp' && state.lastActionData?.skillId && state.lastActionData.skillId !== skillId && Math.random() < 0.03){
+    grantXp(state.lastActionData.skillId, state.lastActionData.xp, silent);
+    if (!silent) log(`💫 Memory Wisp recalls your ${state.lastActionData.skillId} training!`);
+  }
+  state.lastActionData = { skillId, xp: action.xp };
   // Menagerie: 10% chance per action to produce a random charm
   if (state.upgrades?.menagerie && Math.random() < 0.10){
     const r = Math.random() * 100;
@@ -8206,7 +8301,8 @@ function init(){
   if (!state.clueCompletions) state.clueCompletions = {};
   if (!state.tutorial)        state.tutorial        = { done: false };
   if (!state.combat.kills)    state.combat.kills    = {};
-  if (!state.summoning) state.summoning = { active:null, autoRenew:true };
+  if (!state.summoning)       state.summoning       = { active:null, autoRenew:true };
+  if (!state.lastActionData)  state.lastActionData  = { skillId: null, xp: 0 };
   if (state.summoning.autoRenew == null) state.summoning.autoRenew = true;
   if (state.summoning.active && Date.now() >= state.summoning.active.expiresAt){
     const _pid = state.summoning.active.pouchId;
