@@ -3416,7 +3416,7 @@ function freshState(){
     stats:     { attack:1, range:1, mage:1, defence:1, prayer:1, summoning:1, dropRate:0 },
     farming:      { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false, readyAt:null },
     tree_farming: { seed:null, seedName:null, tree:null, treeName:null, plantedAt:null, ready:false, autoReplant:false, readyAt:null },
-    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, attackTimer:0, kills:{}, potionBoosts:{}, bleed:{dmg:0, ticks:0}, burn:{dmg:0, ticks:0}, stunNextMobAttack:false },
+    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, selectedFoodType:null, attackTimer:0, kills:{}, potionBoosts:{}, bleed:{dmg:0, ticks:0}, burn:{dmg:0, ticks:0}, stunNextMobAttack:false },
     upgrades:       {},
     quests:         {},  // { questId: true } — completed quests
     autoOpenItems:  false,
@@ -4557,6 +4557,9 @@ function renderCombatPanel(){
         opt.textContent = `${state.itemNames[k] || k} ×${state.inventory[k]} (+${FOOD_HEALS[k]} HP)`;
         sel.appendChild(opt);
       });
+      if (state.combat.selectedFoodType && availableFood.includes(state.combat.selectedFoodType))
+        sel.value = state.combat.selectedFoodType;
+      sel.onchange = () => { state.combat.selectedFoodType = sel.value; };
       const addBtn = document.createElement('button');
       addBtn.className = 'mini';
       addBtn.textContent = '+ Queue';
@@ -8347,6 +8350,7 @@ function init(){
   if (!Array.isArray(state.combat.foodQueue)) state.combat.foodQueue = [];
   if (!state.upgrades) state.upgrades = {};
   if (state.combat.autoEatThreshold == null) state.combat.autoEatThreshold = 50;
+  if (state.combat.selectedFoodType === undefined) state.combat.selectedFoodType = null;
   if (!state.combat.potionBoosts) state.combat.potionBoosts = {};
   if (!state.saveVersion) state.saveVersion = 1; // v0 → v1: no data migration needed
   if (state.hardcore == null) state.hardcore = false;
