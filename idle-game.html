@@ -7614,36 +7614,6 @@ function renderActiveSkill(){
     return;
   }
 
-  if (s.id === 'construction'){
-    const shopHdr = document.createElement('div');
-    shopHdr.className = 'action-category-header';
-    shopHdr.textContent = 'Construction Shop';
-    list.appendChild(shopHdr);
-    CONSTRUCTION_SHOP.forEach(item => {
-      const owned   = !!state.upgrades[item.id];
-      const have    = state.inventory[item.plankType] || 0;
-      const canBuy  = have >= item.cost;
-      const card    = document.createElement('div');
-      card.className = 'upgrade-tier' + (owned ? ' equipped' : '');
-      card.innerHTML = `<div class="tier-left">
-        <span>${item.name}</span>
-        <span class="tier-speed">${item.desc}</span>
-        <span class="tier-cost">${item.cost}× ${item.plankName} (have: ${have.toLocaleString()})</span>
-      </div>`;
-      const btn = document.createElement('button');
-      btn.className = 'mini';
-      if (owned){
-        btn.textContent = '✓ Built';
-        btn.disabled = true;
-      } else {
-        btn.textContent = canBuy ? 'Build' : `Need ${(item.cost - have).toLocaleString()} more`;
-        btn.disabled = !canBuy;
-        btn.onclick = () => buyConstructionUpgrade(item.id);
-      }
-      card.appendChild(btn);
-      list.appendChild(card);
-    });
-  }
 }
 
 /* ---- Section collapse ---- */
