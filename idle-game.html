@@ -5894,8 +5894,8 @@ const QUEST_DATA = [
     lore: 'Ancient elven ruins are rumoured to lie hidden deep within the forest. Only those nimble and cunning enough may find the path.',
     requirements: [
       {type:'skill', id:'agility',  level:70, label:'Agility 70'},
-      {type:'skill', id:'thieving', level:70, label:'Thieving 70'},
-      {type:'item',  id:'crystal_map_fragment', label:'Crystal map fragment (pickpocket elves, lv 85)'},
+      {type:'skill', id:'thieving', level:85, label:'Thieving 85 (to pickpocket elves)'},
+      {type:'item',  id:'crystal_map_fragment', label:'Crystal map fragment (rare drop from pickpocket elves)'},
     ],
     rewards: 'Unlocks the Crystal Agility Course and crystal tool seed drops.',
     completable: true,
@@ -5927,7 +5927,7 @@ function finishQuest(questId){
     if (!(state.inventory['crystal_map_fragment'] || 0)) return;
     const agLv  = levelForXp(state.skills.agility?.xp  || 0);
     const thLv  = levelForXp(state.skills.thieving?.xp || 0);
-    if (agLv < 70 || thLv < 70) return;
+    if (agLv < 70 || thLv < 85) return;
     completeQuest('lost_city');
     delete state.inventory['crystal_map_fragment'];
   }
