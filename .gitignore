@@ -7,3 +7,17 @@ ios/App/build/
 ios/App/DerivedData/
 *.keystore
 *.jks
+
+# Capacitor / app-build files — belong in idlewright-app, not here
+android/
+ios/
+assets/
+icons/
+www/
+.github/
+capacitor.config.json
+package.json
+package-lock.json
+sync.sh
+privacy-policy.html
+store-listing.md

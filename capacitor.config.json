@@ -1,6 +1,0 @@
-{
-  "appId": "com.idlewright.app",
-  "appName": "IdleWright",
-  "webDir": "www",
-  "server": { "androidScheme": "https" }
-}
