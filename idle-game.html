@@ -236,6 +236,8 @@
   .sec-hdr .sec-badge{ font-size:11px; font-weight:600; margin-left:auto; color:var(--text); text-transform:none; letter-spacing:0; }
   .sec-body.collapsed{ display:none; }
   .sec-anchor{ scroll-margin-top:96px; }
+  .log-tab-btn{ font-size:10px; padding:1px 6px; border-radius:4px; border:1px solid var(--border); background:var(--bg2); color:var(--text-muted); cursor:pointer; }
+  .log-tab-btn:hover{ color:var(--text); }
 
   /* Section colour accents */
   .sec-hdr.equip-hdr  { border-color:#5b8def55; color:#5b8def; }
@@ -466,8 +468,10 @@
 
     <!-- Log — always visible at top -->
     <div id="sec-log" class="sec-anchor">
-      <div class="sec-hdr" onclick="toggleSection('log')">
-        📜 Log
+      <div class="sec-hdr" onclick="toggleSection('log')" style="display:flex;align-items:center;gap:6px;">
+        <span style="flex:1">📜 Log</span>
+        <button class="log-tab-btn" onclick="event.stopPropagation();state.activeLog='main';renderLog();" id="log-btn-main">Main</button>
+        <button class="log-tab-btn" onclick="event.stopPropagation();state.activeLog='combat';renderLog();" id="log-btn-combat">Combat</button>
         <span class="chev">▼</span>
       </div>
       <div id="sec-body-log" class="sec-body">
@@ -3438,6 +3442,8 @@ function freshState(){
     hardcore:       false,
     dead:           false,
     lastActionData: { skillId: null, xp: 0 },
+    activeLog:      'main',
+    combatLog:      [],
     saveVersion:    1,
     lastSaved:      Date.now(),
   };
@@ -5831,6 +5837,8 @@ function completeAction(action, silent){
           }
         }
         grantItem(drop.item, drop.itemName, qty);
+        state.combatLog.unshift({ name: drop.itemName, qty, mob: action.name });
+        if (state.combatLog.length > 100) state.combatLog.length = 100;
         if (drop.notable && _clogSrc) logCollectionDrop(_clogSrc, drop.item, qty);
         if (drop.notable) logCollectionDrop('boss_pets', drop.item, qty);
         if (!silent && drop.notable) log(`+${qty} ${drop.itemName}`);
@@ -8224,6 +8232,21 @@ function renderInventory(){ /* replaced by renderEquipSection + renderPrayerHud 
 
 function renderLog(){
   const el = $('log');
+  const mainBtn   = document.getElementById('log-btn-main');
+  const combatBtn = document.getElementById('log-btn-combat');
+  if (mainBtn)   mainBtn.style.fontWeight   = state.activeLog === 'main'   ? 'bold' : 'normal';
+  if (combatBtn) combatBtn.style.fontWeight = state.activeLog === 'combat' ? 'bold' : 'normal';
+  if (state.activeLog === 'combat'){
+    if (!state.combatLog || state.combatLog.length === 0){
+      el.innerHTML = '<div class="log-empty">No drops recorded yet.</div>';
+    } else {
+      const clearLink = `<div style="text-align:right;margin-bottom:4px;"><a href="#" onclick="event.preventDefault();state.combatLog=[];renderLog();" style="font-size:0.8em;opacity:0.6;">Clear</a></div>`;
+      el.innerHTML = clearLink + state.combatLog.map(e =>
+        `<div><span style="opacity:0.6;font-size:0.85em">${e.mob}</span>  +${e.qty} ${e.name}</div>`
+      ).join('');
+    }
+    return;
+  }
   if (logLines.length === 0){ el.innerHTML = '<div class="log-empty">Nothing yet.</div>'; return; }
   el.innerHTML = logLines.map(l => `<div>${l}</div>`).join('');
 }
@@ -8311,6 +8334,8 @@ function init(){
   if (!state.combat.kills)    state.combat.kills    = {};
   if (!state.summoning)       state.summoning       = { active:null, autoRenew:true };
   if (!state.lastActionData)  state.lastActionData  = { skillId: null, xp: 0 };
+  if (!state.activeLog)       state.activeLog       = 'main';
+  if (!state.combatLog)       state.combatLog       = [];
   if (state.summoning.autoRenew == null) state.summoning.autoRenew = true;
   if (state.summoning.active && Date.now() >= state.summoning.active.expiresAt){
     const _pid = state.summoning.active.pouchId;
