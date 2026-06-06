@@ -5359,8 +5359,8 @@ function getCurrentEffTicks(action){
     const agilLevel = effLvl('agility');
     return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed)));
   }
-  const archSpeed = getArchBonus(`speed_${state.current.skillId}`);
-  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current.skillId) * getConstructionMult(state.current.skillId) * (1 - archSpeed) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed)));
+  const archSpeed = getArchBonus(`speed_${state.current?.skillId}`);
+  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current?.skillId) * getConstructionMult(state.current?.skillId) * (1 - archSpeed) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed)));
 }
 
 function getConstructionMult(skillId){
@@ -7859,7 +7859,7 @@ function renderActiveSkill(){
     const isMiningNow = state.current?.skillId === 'archaeology';
     ARCH_SITES.forEach(site => {
       const unlocked   = archLvl >= site.levelReq;
-      const isActive   = isMiningNow && state.current.actionId === site.id;
+      const isActive   = isMiningNow && state.current?.actionId === site.id;
       const avgTicks   = Math.round(Math.min(1000, 1 / site.earlyChance * 0.63 + 1000 * (1 - (1 - site.earlyChance) ** 1000) * 0));
       const avgMin     = Math.floor(site.earlyChance > 0 ? Math.min(1000, 1/site.earlyChance) / 100 : 10);
       const pctChance  = (site.earlyChance * 100).toFixed(2);
