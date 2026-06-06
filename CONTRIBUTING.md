@@ -81,7 +81,7 @@ git pub
 3. Pushes to origin (public)
 4. Pushes to app (triggers CI build)
 
-Set up the `git pub` alias:
+Set up the `git pub` alias (run once per machine):
 ```bash
 git config alias.pub '!bash publish.sh'
 ```
