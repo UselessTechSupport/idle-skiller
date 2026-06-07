@@ -3026,7 +3026,7 @@ const CONSTRUCTION_SHOP = [
 /* Lookup helpers */
 const SKILL_BY_ID = Object.fromEntries(SKILL_ROADMAP.map(s => [s.id, s]));
 function getAction(skillId, actionId){
-  const src = COMBAT_SKILL_IDS.has(skillId) ? ACTIONS.combat : (ACTIONS[skillId] || []);
+  const src = (skillId !== 'summoning' && COMBAT_SKILL_IDS.has(skillId)) ? ACTIONS.combat : (ACTIONS[skillId] || []);
   return src?.find(a => a.id === actionId);
 }
 
