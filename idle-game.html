@@ -7662,7 +7662,8 @@ function renderSkillList(){
       row.className = 'skill-row ' + (s.implemented ? 'playable' : 'locked');
       if (state.current && state.current.skillId === s.id) row.classList.add('active');
       if (state.current && COMBAT_SKILL_IDS.has(state.current.skillId)){
-        const _trained = new Set([state.current.skillId, 'constitution']);
+        const _trained = new Set([state.current.skillId]);
+        if (state.current.skillId !== 'summoning') _trained.add('constitution');
         if (state.current.skillId === 'melee' && state.combat.defensive) _trained.add('defence');
         if (_trained.has(s.id)) row.classList.add('active');
       }
