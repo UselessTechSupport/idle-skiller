@@ -2,9 +2,15 @@
 
 A 2D single-player idle/incremental game inspired by classic idle RPG gameplay.
 
-**Legal notice:** IdleWright is an independent, non-commercial fan project. It is not affiliated with, endorsed by, or connected to Jagex Ltd. in any way. All character, location, and item names are original; any similarity to existing game content is coincidental.
+**Legal notice:** IdleWright is an independent, non-commercial project. Not affiliated with or endorsed by Jagex Ltd.
 
 Built as a single self-contained HTML file — open it in a browser and play, no build step required.
+
+## Origin
+
+IdleWright started as a spare-time project built entirely through vibe coding — I'm not a programmer, just someone who kept throwing ideas at an AI and seeing what stuck. I was taking work courses in my downtime and needed something to tinker with between sessions.
+
+The game itself is rooted in years of RuneScape and idle game obsession. I wanted something that felt like those games — skills, grinding, progression — but was mine to shape. One HTML file, no frameworks, no build step. If it runs in a browser, that's enough.
 
 ## How to play
 
