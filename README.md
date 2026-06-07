@@ -47,7 +47,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Firemaking | 110 | 10 log tiers | Consumes logs for XP only; 15% fire spirit QTE event — catch it for an openable spirit with herb seeds, fire runes, and the rare **Boots of Ash** (feet slot, 3% chance to save a log per burn); burning elder/eternal logs has a 1/300 chance to find a **Phoenix ember** — quest item for Rise of the Phoenix |
 | Cooking | 99 | 16 fish | Burn chance 20% → 0% over 10 levels above req; halved by Cooking Range upgrade |
 | Fletching | 110 | 78 actions | 10 individual headless arrow actions (Logs → Eternal magic; 15–120 arrows per log; Make 1/5/X/All batch support), unstrung short/long bows, crossbow stocks (each requires a matching crossbow brace smithed from 2 bars), arrow assembly (Bronze–Dragon + **Phoenix arrows** lv80, 15 per phoenix feather), stringing (10 shortbow + 10 longbow tiers), crossbow stringing (10 tiers; all require bowstring from shop); splinter mechanic (20% → 0%); dragon arrowheads drop from drakes |
-| Crafting | 110 | 67 actions | Gem cutting (7), jewellery (8 rings + 8 amulets + 2 silver slayer rings), Leather Armour (cowhide from Cows; 1× per piece, 3× body, 2× chaps), Hunter Leather (kebbit + kyatt), Dragonhide (5 tiers), Mage Armour (3 tiers — cloth lv20, splitbark lv55, lunar lv65; materials buyable from Shop); batch crafting; all jewelry has sell prices and unique perks (see tooltips) |
+| Crafting | 110 | 73 actions | Gem cutting (7), jewellery (11 rings + 11 amulets + 2 silver slayer rings), Leather Armour (cowhide from Cows; 1× per piece, 3× body, 2× chaps), Hunter Leather (kebbit + kyatt), Dragonhide (5 tiers), Mage Armour (3 tiers — cloth lv20, splitbark lv55, lunar lv65; materials buyable from Shop); batch crafting; all jewelry has sell prices and unique perks (see tooltips); **Tungsten jewelry** (lv 100–107) — 3 rings + 3 amulets requiring tungsten ingots (+ onyx/hydrix for amulets) with unique combat and skilling perks |
 | Herblore | 120 | 19 actions | 6 potion types × 3 tiers (Lesser / Normal / Supreme) + **Master combat potion** (lv 97); herbs from Farming; drink from inventory — attack/defence/ranging/magic potions give +5/10/15% combat boost for 5 min; prayer potions restore 25/50/100% of prayer points; summoning potions extend familiar by 2/5/10 min; master combat potion requires 1× each supreme combat potion + burnt food + divine dust + wood pulp — grants +20% all combat stats for 10 min |
 | Runecrafting | 110 | 11 rune altars (Air → Soul) + 5 infusions (lv90–110) | Agility bonus speeds up crafting; infuse endgame magic weapons: Stormwing staff (lv90, mage+45, 10% bonus hit) → Venomous staff (lv95, mage+55, venom DoT) → Tremor wand (lv100, mage+65, 20% lifesteal) → Venomous scythe (lv105, mage+72/atk+20, two-handed) → Sovereign wand (lv110, mage+88, 15% bonus hit) |
 | Construction | 99 | 10 plank types + 7 furniture actions + 16 permanent upgrades | **Plank-making** (lv1–95, logs → planks); **Furniture** (lv20–97, consumes planks for better XP + sellable items: oak chair → eternal throne); all shop upgrades are level-gated. Upgrades: Sawmill (WC +10%), Cooking Range (halve burn), Furnace (Smithing +10%), Fishing Pier (20% bonus fish), Herb Patch (farm +25%), Altar (2.5× Prayer XP), Study (RC +15%), Workshop (Fletching +10%), Hunting Lodge (2× impling rate), **Dungeon Room** lv70 (+15% Slayer points), Alchemist's Lab (potions last 25% longer), Manor (+5% all XP), **Relic Chamber** lv78 (20% chance for bonus archaeology artifact per dig), **Training Ground** lv85 (combat kills grant 40 Agility XP), Trophy Room (+10% drop rate), **Menagerie** lv92 (10% chance per action for a random charm) |
@@ -63,7 +63,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Constitution | 99 | Starts at lv 10; gains XP on every kill (50% of action XP) |
 | Prayer | 99 | Bury bones / use altar (×2.5 or ×3.5 XP); 16 active prayers across 4 tiers; drain system; protect prayers reduce damage 50% |
 
-**Mobs:** 13 standard + 10 slayer-locked (Scuttling Claw → Void Stalker) + 10 bosses (Goblin King, The Burrower, Void Dragon, Leviathan Kings, Ancient Lich, Commander Solara, General Karg, Void Herald, The Harbinger, **Phoenix**)
+**Mobs:** 13 standard + 10 slayer-locked (Scuttling Claw → Void Stalker) + 11 bosses (Goblin King, The Burrower, Void Dragon, Leviathan Kings, Ancient Lich, Commander Solara, General Karg, Void Herald, The Harbinger, **Phoenix**, **Tungsten Titan**)
 
 **Boss special attacks** — each boss has a unique periodic mechanic that fires during the fight: big hit (direct damage spike), prayer drain (strips prayer points), heal (recovers a portion of max HP), or phase transition (heals on reaching an HP threshold and becomes more aggressive). The special attack interval or threshold is defined per-boss.
 
@@ -71,12 +71,13 @@ When creating a new character, choose between **Normal** (death restores HP and 
 
 **Combat level requirements** are recommendations only — all mobs are attackable at any level; a yellow ⚠ Rec. Lv hint appears when below the suggested level. Slayer level requirements still hard-lock slayer monsters.
 
-**Quests (4 total):** All quests are tracked in the dedicated **Quests tab** in the right panel (filter: All / Completed / Not Started).
+**Quests (5 total):** All quests are tracked in the dedicated **Quests tab** in the right panel (filter: All / Completed / Not Started).
 
 - **Goblin Diplomacy** — collect a Goblin Diplomatic Note from goblins (1/100, guaranteed at 1000kc), defeat the Goblin King quest boss (one-time) to unlock the Goblin King as a repeatable boss. Track progress in Combat → Quests.
 - **Discovering the Lost City** — pickpocket elves (lv 85 Thieving) for a 1/300 chance at a Crystal map fragment; complete via the Quests tab when Agility and Thieving are both 70+. Reward: unlocks the Crystal Agility Course and crystal tool seed drops.
 - **Echoes of the Deep** — collect the Leviathan fang (1/250 from Leviathan Kings) and Solar shard (1/250 from Commander Solara), then defeat the Void Herald quest boss (lv 95, one-time). Reward: unlocks the Void Herald as a farmable lv 90 boss. Void Herald drops the **Herald's amulet** (tri-stat +10 all combat, +3% drop rate) and **Dragonstone charms** for the Void drake pouch (lv 95 Summoning, +15% all XP). Track item progress in Combat → Quests.
 - **Rise of the Phoenix** — burn elder or eternal logs (lv 90 Firemaking) for a 1/300 chance at a **Phoenix ember**; defeat the Phoenix quest boss (one-time, lv 70 recommended). Reward: unlocks the Phoenix as a farmable lv 70 boss. Phoenix drops **phoenix feathers** (always, 1–3) used to fletch phoenix arrows, the rare **Phoenix bow** (1/125, range 72, lv 82 req, 1.12× damage), and the **Phoenix Chick** pet (1/500). Track item progress in Combat → Quests.
+- **Heart of the Deep** — requires Combat lv 90 and Crafting lv 85; defeat the Tungsten Titan quest boss (one-time). Reward: unlocks the Tungsten Titan as a farmable lv 90 boss which drops **tungsten ingots** (~5% chance); enables crafting of all 6 tungsten jewelry pieces (lv 100–107). Track progress in Combat → Quests.
 
 #### Support
 
@@ -84,7 +85,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 |---|---|---|---|
 | Agility | 99 | 7 courses (Verdant Trail → Crystal) | Scaled XP; Danger Trail drops PK coins; Crystal course requires quest + 70 Thieving; bonuses to Thieving pick/lock and Runecrafting speed |
 | Thieving | 99 | 26 actions | Pickpocket (14 NPCs: melee, ranged, and mage-themed, catch/stun mechanic) + Locks (6 chests); combat items, seeds, gems, bars, runes, arrows, food, and potions from drops; agility gives extra loot chance; 📋 drop table viewer on all NPCs and chests |
-| Slayer | 120 | 6 masters (Aldric → Duroc) | Task assignment system; 2–30 pts/task; kill-tracking per mob; task completion bonus XP; Points Shop in Store menu (6 unlocks: boss tasks, XP boost, **Auto-Task** 350pts, extended tasks, point mastery, skip task); Auto-Task automatically assigns from your chosen master on completion |
+| Slayer | 120 | 6 masters (Aldric → Duroc) | Task assignment system; 2–30 pts/task; kill-tracking per mob; task completion bonus XP; Points Shop in Store menu (6 unlocks: boss tasks, XP boost, **Auto-Task** 350pts, extended tasks, point mastery, skip task); Auto-Task automatically assigns from your chosen master on completion and **auto-switches your active combat target** to the new task mob |
 | Dungeoneering | 120 | 3 floor types | Time-based floors; earns tokens; token shop: **17 items** — permanent upgrades (Swift Passage, Token Surplus, Sage's Tome, Bonecrusher, Auto-Eat, Charming Imp, Scroll of Life, Auto-Harvest, Bone Grinder, Lucky Break, Abyssal Focus, Token Mastery, Ring of Kinship) + repeatable consumables (Charm Cask, Dungeon Supply Cache, Mysterious Geode) |
 | Archaeology | 120 | 6 dig sites, 18 artefacts | Each tick has a chance to find an artefact early (chance increases at higher-level sites); artefacts grant XP on discovery (1,200–22,000 depending on tier); collecting the full set of an artefact unlocks a permanent passive perk (up to 3 active); perks include XP%, speed%, stat boosts, HP regen |
 
@@ -92,7 +93,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 
 | Skill | Max Lv | Actions | Notes |
 |---|---|---|---|
-| Summoning | 99 | 19 pouches | Craft pouches from charms (gold/green/crimson/blue) + secondary; charms drop from all combat mobs; 10-min familiar timer; auto-renew from inventory; passive effects: speed, XP, attack accuracy, drop rate, HP regen; Undead Familiars (lv 80–99) replace Necromancy content; **Void drake pouch** (lv 95) requires a Dragonstone charm dropped by the Void Herald boss — grants +15% XP to all skills |
+| Summoning | 99 | 19 pouches | Craft pouches from charms (gold/green/crimson/blue) + secondary; charms drop from all combat mobs; 10-min familiar timer; **auto-renew toggle** in the Summoning HUD — when ON, automatically re-summons from inventory when the familiar expires; passive effects: speed, XP, attack accuracy, drop rate, HP regen; Undead Familiars (lv 80–99) replace Necromancy content; **Void drake pouch** (lv 95) requires a Dragonstone charm dropped by the Void Herald boss — grants +15% XP to all skills |
 
 ### Engine features
 
@@ -113,7 +114,8 @@ When creating a new character, choose between **Normal** (death restores HP and 
 **Combat**
 - HP / Constitution system with per-mob HP values
 - 3 combat styles (Melee / Ranged / Magic) + Defensive mode (splits XP with Defence)
-- Food queue with configurable auto-eat threshold (unlocked via DG shop)
+- Food queue with configurable auto-eat threshold (unlocked via DG shop); exhausted foods are automatically removed from the queue
+- **Auto-drink potions** toggle — when ON, re-drinks the best available matching potion when a combat boost expires
 - Active prayer drain system (per-tick drain based on equipped prayers)
 - Slayer task kill-tracking with bonus XP on completion
 
@@ -122,11 +124,11 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - **Skillcapes** — 26 skill-specific capes (level 99 required, 99,000 coins each) with passive perks: gathering/artisan capes give +10% speed or +15% XP; combat capes give damage/defence/regen bonuses; Ranged cape gives 85% chance to save ammo; Magic cape gives 85% chance to save runes; support capes give thematic bonuses (prayer drain reduction, stun reduction, token gain, etc.)
 - **Max Cape** — requires level 99 in all 26 skills, costs 10M coins; contains every skillcape perk simultaneously
 - **Completionist Cape** — requires virtual level 150 in all implemented skills + all 79 achievements completed; costs 10B coins; contains all skillcape perks + BiS combat stats (ATK/RNG/MAG 80, DEF 120)
-- **Pets** — 35 equippable pets (26 from skilling at 1/5000, 9 from bosses at 1/500–1/1000); each has a unique skill-specific mechanic — examples: Beaver (5% double logs), Rock Golem (5% double ore), Gecko (0.5%/action universal impling scouting), Memory Wisp (3% replay last skill's XP), Crafting Imp (8% free craft), Robin (10% double fletching output), Chef Mouse (cooks always yield a burnt food side; burns give double), Fire Sprite (Warm Aura: 2% faster all skills), Herb Frog (3% supreme potion proc), Nimble Cat (30 Constitution XP per Agility lap), Raccoon (10% double pickpocket), Imp (double Slayer task points), Dig Sprite (10% cross-site artifact), Deep Spawn (boss; +10% damage on Slayer task), Phoenix Chick (boss; Phoenix Blessing: 1% chance to bulk-burn up to 50 logs for 90% XP); only one active at a time; tracked in Collection Log
+- **Pets** — 36 equippable pets (26 from skilling at 1/5000, 10 from bosses at 1/500–1/1000); each has a unique skill-specific mechanic — examples: Beaver (5% double logs), Rock Golem (5% double ore), Gecko (0.5%/action universal impling scouting), Memory Wisp (3% replay last skill's XP), Crafting Imp (8% free craft), Robin (10% double fletching output), Chef Mouse (cooks always yield a burnt food side; burns give double), Fire Sprite (Warm Aura: 2% faster all skills), Herb Frog (3% supreme potion proc), Nimble Cat (30 Constitution XP per Agility lap), Raccoon (10% double pickpocket), Imp (double Slayer task points), Dig Sprite (10% cross-site artifact), Deep Spawn (boss; +10% damage on Slayer task), Phoenix Chick (boss; Phoenix Blessing: 1% chance to bulk-burn up to 50 logs for 90% XP); only one active at a time; tracked in Collection Log
 - Tool upgrade shop, Construction upgrades, Dungeoneering token shop — all consolidated inside the 🏪 Shop overlay
 - Slayer points shop — 5 permanent unlocks
 - Archaeology perk system — up to 3 active perks from artefact restoration
-- **Jewelry perk system** — all 18 craftable rings and amulets have unique passive perks (XP boosts, rune save, farm speed, HP regen, prayer drain, dodge, bone XP, slayer kill modifiers); two silver slayer rings (Ring of Haste: 25% double-kill, Ring of Endurance: 25% zero-kill)
+- **Jewelry perk system** — all 24 craftable rings and amulets have unique passive perks (XP boosts, rune save, farm speed, HP regen, prayer drain, dodge, bone XP, slayer kill modifiers); two silver slayer rings (Ring of Haste: 25% double-kill, Ring of Endurance: 25% zero-kill); **tungsten jewelry** (lv 100–107) adds combat perks: counter-strike retaliation, slag curse, ore tier upgrade, incoming damage cap, smithing double, crafting/fletching/runecrafting/divination double
 
 **UI / QoL**
 - Mobile-first layout: header collapses to title row + utility buttons + pane switcher; larger touch targets; equipment grid single-column on mobile
@@ -136,7 +138,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - Equipment panel with 12 slots (Head, Weapon, Offhand, Ammo, Neck, Cape, Ring, Body, Gloves, Legs, Feet, Pet) and live stat totals
 - **Item tooltips** — hover any inventory item or equipped slot to see stats, perks, spell school, heal amount, and equip requirements; summoning pouches show effect, familiar duration, activation XP cost, and level requirement; mobile long-press (500ms) triggers the same tooltip
 - Prayer HUD in Activities tab
-- Settings menu — 9 colour themes in a 3×3 grid (Dark, Light, Ocean, Dusk, Lavender, Crimson, Midnight, Sunset, Slate), Compact mode, Hide locked actions, configurable log size (up to 200 lines), Replay Tutorial, Debug Tools access; game log persists across reloads
+- Settings menu — 9 colour themes in a 3×3 grid (Dark, Light, Ocean, Dusk, Lavender, Crimson, Midnight, Sunset, Slate), Compact mode, Hide locked actions, **Hide unaffordable** (hides crafting/smithing/herblore/etc. actions where you lack ingredients), configurable log size (up to 200 lines), Replay Tutorial, Debug Tools access; game log persists across reloads
 - **Tutorial** — opt-in at character creation (checkbox, on by default); 5-step overlay covering skills, actions, inventory, and next steps; skippable at any time; "First Steps" achievement fires on first completion or skip; replayable from Settings
 - Stop button always visible next to action progress bar
 - **Achievement system** — 87 achievements across Skills, Total Level, Combat, Slayer, and Special categories; filter by All / Hide Completed / Hide Locked; locked achievements require prerequisites (slayer unlocks, quest completion, etc.); select achievements grant permanent passive bonuses (XP% per skill, speed boosts) shown as green badges on the achievement card
@@ -172,6 +174,6 @@ When creating a new character, choose between **Normal** (death restores HP and 
 
 ## Tech stack
 
-Plain HTML + CSS + JavaScript. Single file (~7,000 lines), no dependencies, no build step.
+Plain HTML + CSS + JavaScript. Single file (~10,000 lines), no dependencies, no build step.
 
 Cross-platform target: PWA first (PC/iOS/Android from browser), then Capacitor for app stores if needed.
