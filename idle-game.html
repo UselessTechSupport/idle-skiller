@@ -8765,12 +8765,26 @@ $('rollPkBtn').onclick = () => {
   const opponentRoll  = Math.random() * opponentScore;
   const coins = wildernessEncounter.coins;
   if (playerRoll > opponentRoll){
-    grantItem('coins', 'Coins', coins);
-    log(`⚔️ You beat the PKer! Gained ${coins.toLocaleString()} coins.`);
+    const _pkWin = coins + Math.floor((state.inventory['coins'] || 0) * 0.15) + Math.floor(playerScore * 25);
+    grantItem('coins', 'Coins', _pkWin);
+    log(`⚔️ You beat the PKer! Gained ${_pkWin.toLocaleString()} coins.`);
   } else {
-    state.inventory['coins'] = Math.max(0, (state.inventory['coins'] || 0) - coins);
-    if (state.inventory['coins'] === 0) delete state.inventory['coins'];
-    log(`⚔️ The PKer got you... Lost ${coins.toLocaleString()} coins.`);
+    if (state.hardcore){
+      state.dead = true;
+      state.current = null;
+      state.progress = 0;
+      state.batch = { limit:0, done:0 };
+      state.combat.mobHp = 0;
+      state.combat.hp = 0;
+      save();
+      log('💀 The PKer killed you! Your Hardcore character is dead.');
+      log('   Open the Characters screen to view your final stats.');
+    } else {
+      const _pkLoss = Math.floor((state.inventory['coins'] || 0) * 0.1);
+      state.inventory['coins'] = Math.max(0, (state.inventory['coins'] || 0) - _pkLoss);
+      if (!state.inventory['coins']) delete state.inventory['coins'];
+      log(`⚔️ The PKer got you... Lost ${_pkLoss.toLocaleString()} coins (10% of your gold).`);
+    }
   }
   wildernessEncounter = null;
   $('wildernessPkToast').classList.remove('show');
