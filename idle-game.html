@@ -5516,8 +5516,7 @@ function tick(){
     }
   }
   // Prayer regen — only out of combat
-  if (state.prayer && state.prayer.points < state.prayer.maxPoints &&
-      (!state.current || !COMBAT_SKILL_IDS.has(state.current.skillId))){
+  if (state.prayer && state.prayer.points < state.prayer.maxPoints){
     const pBonus = Math.max(1, state.stats.prayer || 1);
     const regenMs = Math.max(6000, 60000 / (1 + pBonus / 10)) / (1 + getArchBonus('prayer_regen'));
     const now = Date.now();
@@ -8439,9 +8438,12 @@ function init(){
     state.current.stunTicks = 0; // don't resume mid-stun after reload
   if (state.current?.actionId === 'headless_auto' || state.current?.actionId?.startsWith('headless_from_'))
     state.current = null;
+  const _prayerLvl = Math.min(levelForXp(state.skills.prayer?.xp || 0), SKILL_BY_ID['prayer'].maxLevel);
   if (!state.prayer){
-    const pLvl = Math.min(levelForXp(state.skills.prayer?.xp || 0), SKILL_BY_ID['prayer'].maxLevel);
-    state.prayer = { points:pLvl, maxPoints:pLvl, active:{}, drainCounter:0, lastRegen:0 };
+    state.prayer = { points:_prayerLvl, maxPoints:_prayerLvl, active:{}, drainCounter:0, lastRegen:0 };
+  } else {
+    state.prayer.maxPoints = _prayerLvl;
+    if (state.prayer.points > state.prayer.maxPoints) state.prayer.points = state.prayer.maxPoints;
   }
   if (!state.prayer.active)                     state.prayer.active      = {};
   if (state.prayer.drainCounter == null)         state.prayer.drainCounter = 0;
