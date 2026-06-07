@@ -2261,7 +2261,7 @@ const ACTIONS = {
              {item:'green_charm',  itemName:'Green charm',  chance:0.05, min:1,max:1, notable:false},
              {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,max:1, notable:true},
              {item:'cooked_swordfish',itemName:'Cooked swordfish',chance:0.10,min:1,max:2,notable:false}]},
-    {id:'stone_sentinel', name:'Stone Sentinel', category:'Slayer', levelReq:75, slayerReq:75, xp:1296, ticks:18, stats:{hp:300, attack:60, defence:45},
+    {id:'stone_sentinel', name:'Stone Sentinel', category:'Slayer Monsters', levelReq:75, slayerReq:75, xp:1296, ticks:18, stats:{hp:300, attack:60, defence:45},
      drops:[
       {item:'big_bones',     itemName:'Big bones',     chance:1.0,   min:1,  max:1,   notable:false},
       {item:'coins',         itemName:'Coins',         chance:1.0,   min:200,max:800,  notable:false},
@@ -2274,7 +2274,7 @@ const ACTIONS = {
       {item:'blue_charm',    itemName:'Blue charm',    chance:0.016, min:1,  max:1,   notable:false},
       {item:'cooked_monkfish',itemName:'Cooked monkfish',chance:0.10,min:1,  max:2,   notable:false},
     ]},
-    {id:'vampire', name:'Vampire', category:'Slayer', levelReq:80, slayerReq:72, xp:1537, ticks:19, stats:{hp:340, attack:68, defence:50},
+    {id:'vampire', name:'Vampire', category:'Slayer Monsters', levelReq:80, slayerReq:72, xp:1537, ticks:19, stats:{hp:340, attack:68, defence:50},
      drops:[
       {item:'big_bones',    itemName:'Big bones',     chance:1.0,   min:1,  max:1,   notable:false},
       {item:'coins',        itemName:'Coins',         chance:1.0,   min:250,max:1000, notable:false},
@@ -8324,6 +8324,8 @@ function renderLog(){
 function save(){
   state.lastSaved = Date.now();
   rawSave(getSaveKey(), JSON.stringify(state));
+  const _logLim = state?.settings?.logLimit || 60;
+  rawSave(getSaveKey() + '_log', JSON.stringify(logLines.slice(0, _logLim)));
   const list = loadCharIndex();
   const entry = list.find(c => c.id === activeCharId);
   if (entry){ entry.lastSaved = state.lastSaved; entry.totalLevel = getTotalLevel(); entry.hardcore = !!state.hardcore; entry.dead = !!state.dead; saveCharIndex(list); }
@@ -8336,6 +8338,8 @@ function load(){
     state = Object.assign(freshState(), loaded); // merge so new skills appear in old saves
     // make sure every roadmap skill exists in the save (forward-compat)
     SKILL_ROADMAP.forEach(s => { if (!state.skills[s.id]) state.skills[s.id] = { xp: XP_TABLE[s.startLevel||1]||0 }; });
+    const _rawLog = rawLoad(getSaveKey() + '_log');
+    if (_rawLog){ try { logLines = JSON.parse(_rawLog); } catch(e){} }
     return true;
   } catch(e){ return false; }
 }
@@ -8552,7 +8556,7 @@ function init(){
   switchMobilePane('play');
 
   // the heartbeat
-  setInterval(tick, TICK_MS);
+  setInterval(() => { try { tick(); } catch(e) { console.error('[IdleWright] tick error:', e); } }, TICK_MS);
   setInterval(save, AUTOSAVE_MS);
 }
 
