@@ -1073,7 +1073,7 @@ const TUTORIAL_STEPS = [
   { icon:'🎒', title:'Items & Inventory',
     body:'Most actions produce items: logs, ores, fish, bars, and more. Everything you collect appears in the Inventory panel on the right, grouped by category.' },
   { icon:'🗺️', title:"What\'s Next",
-    body:'Once you have some levels and items, explore <b>Combat</b>, the <b>🏪 Shop</b> for tool upgrades, <b>Slayer</b> tasks, and <b>Dungeoneering</b>. There\'s no wrong order — just start clicking!' },
+    body:'Once you have some levels and items, explore <b>Combat</b>, the <b>🏪 Shop</b> for tool upgrades, <b>Slayer</b> tasks, and <b>Dungeoneering</b>. There\'s no wrong order — just start clicking!<br><br>For a full reference, check the <b>Wiki</b> — find it in the ⚙️ Settings menu.' },
 ];
 
 const METAL_TIERS = [
@@ -7509,6 +7509,14 @@ function renderSettings(){
   tutBtn.textContent = '📖 Replay Tutorial';
   tutBtn.onclick = () => { closeSettings(); openTutorial(); };
   row(tutGrp, 'Tutorial', 'Walk through the basics again', tutBtn);
+
+  // Resources
+  const resGrp = group('Resources');
+  const wikiBtn = document.createElement('button');
+  wikiBtn.className = 'mini';
+  wikiBtn.textContent = '📚 Open Wiki';
+  wikiBtn.onclick = () => window.open('https://github.com/UselessTechSupport/idle-skiller/wiki', '_blank');
+  row(resGrp, 'Wiki', 'Full guide — skills, bosses, quests, and more', wikiBtn);
 
   // Debug group commented out — uncomment to restore dev tools
   // const dbgGrp = group('Debug');
