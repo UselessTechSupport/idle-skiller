@@ -4570,6 +4570,9 @@ function renderCombatPanel(){
   $('nowDoing').innerHTML = doing;
   $('actionBar').style.width = actionPct + '%';
 
+  const _aidC = document.activeElement?.id;
+  if (_aidC === 'autoEatThreshSel' || _aidC === 'autoEatFoodSel') return;
+
   const list = $('treeList');
   list.innerHTML = '';
 
@@ -5077,7 +5080,8 @@ function renderFarmSection(){
     badge.textContent = f.seed ? (f.ready ? '🌿 READY' : '🌱') : '';
   }
 
-  if (document.activeElement?.id === 'farmSeedDropdown') return;
+  const _fsAid = document.activeElement?.id;
+  if (_fsAid === 'farmSeedDropdown' || _fsAid === 'treeSeedDropdown') return;
   const prevSeed = $('farmSeedDropdown')?.value;
   el.innerHTML = '';
 
@@ -5196,7 +5200,6 @@ function renderFarmSection(){
     const availTrees = TREE_SEEDS.filter(t => (state.inventory[t.id] || 0) > 0);
     const plantRow2 = document.createElement('div');
     plantRow2.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:8px;';
-    if (document.activeElement?.id === 'treeSeedDropdown') return;
     const _prevTree = document.getElementById('treeSeedDropdown')?.value;
     const sel2 = document.createElement('select');
     sel2.id = 'treeSeedDropdown';
@@ -5359,6 +5362,8 @@ function renderSlayerSection(){
   if (badge){
     badge.textContent = task ? `${task.count}/${task.target}` : `${state.slayer?.points || 0} pts`;
   }
+
+  if (document.activeElement?.id === 'slayerMasterSel') return;
 
   el.innerHTML = '';
 
@@ -6515,6 +6520,7 @@ function renderShop(){
   const el = $('shopContent');
   if (!el) return;
   const coins = state.inventory['coins'] || 0;
+  if (document.activeElement?.id === 'slayerMasterQuestSel') return;
   el.innerHTML = '';
   const bal = document.createElement('div');
   bal.style.cssText = 'font-size:15px;font-weight:600;margin-bottom:12px;';
@@ -7364,6 +7370,7 @@ function renderSettings(){
   const el = $('settingsContent');
   if (!el) return;
   const s = state.settings;
+  if (document.activeElement?.id === 'logSizeSel') return;
   el.innerHTML = '';
 
   function group(title){ const d=document.createElement('div'); d.className='settings-group'; const t=document.createElement('div'); t.className='settings-group-title'; t.textContent=title; d.appendChild(t); el.appendChild(d); return d; }
