@@ -3768,6 +3768,14 @@ function getAchievementBonus(type, skillId){
 
 function getItemTooltip(itemId){
   if (!itemId) return '';
+  const _pouchDef = SUMMONING_POUCHES.find(p => p.id === itemId);
+  if (_pouchDef){
+    let html = `<div class="tip-name">${_pouchDef.name}</div>`;
+    html += `<div class="tip-perk">${_pouchDef.effectLabel}</div>`;
+    html += `<div class="tip-line">10 min familiar · ${_pouchDef.consumeXp} xp to activate</div>`;
+    html += `<div class="tip-req">Summoning lv ${_pouchDef.levelReq}</div>`;
+    return html;
+  }
   const name = state.itemNames[itemId] || PETS.find(p => p.id === itemId)?.name || itemId;
   const lines = [];
   const st = ITEM_STATS[itemId];
