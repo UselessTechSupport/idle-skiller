@@ -811,6 +811,10 @@ const PETS = [
   {id:'pet_imp',           name:'Imp',            icon:'👺', skillId:'slayer',       perkType:'special',      perkValue:0,    perkLabel:'Slayer task completion grants double points'},
   {id:'pet_dungeon_rat',   name:"Lil' Lubi'",     icon:'🐀', skillId:'dungeoneering',perkType:'dg_token_pct', perkValue:0.05, perkLabel:'+5% DG token gain; 3% chance per floor to find a mini supply cache'},
   {id:'pet_dig_sprite',    name:'Dig Sprite',     icon:'🏺', skillId:'archaeology',  perkType:'special',      perkValue:0,    perkLabel:'10% chance per dig to progress a random other artifact at the same site'},
+  // Bird egg pets — hatched from bird eggs (obtained via bird\'s nests in Woodcutting)
+  {id:'pet_crimson_finch', name:'Crimson Finch',  icon:'🐦‍🔥', skillId:'woodcutting', perkType:'special',      perkValue:0.05, perkLabel:"5% extra chance per woodcutting action to find a bird's nest"},
+  {id:'pet_blue_jay',      name:'Blue Jay',       icon:'🐦',   skillId:'fishing',    perkType:'special',      perkValue:0.05, perkLabel:'5% chance per fishing action to catch a bonus fish'},
+  {id:'pet_green_parrot',  name:'Green Parrot',   icon:'🦜',   skillId:'farming',    perkType:'special',      perkValue:0.05, perkLabel:'5% chance per herb harvest to yield one extra herb'},
   // Boss pets
   {id:'pet_baby_mole',     name:'Baby Mole',      icon:'🦔', skillId:null,           perkType:'drop_rate_pct',perkValue:0.05, perkLabel:'+5% drop rate'},
   {id:'pet_void_wyrm',     name:'Void Wyrm',      icon:'🐲', skillId:null,           perkType:'hp_regen_mult',perkValue:0.15, perkLabel:'+15% HP regen rate'},
@@ -1235,6 +1239,7 @@ const SELL_PRICES = {
   radiant_energy:180, luminous_energy:240, incandescent_energy:320,
   birds_nest_seeds:600, birds_nest_ring:900,
   birds_nest_egg_red:250, birds_nest_egg_blue:250, birds_nest_egg_green:250,
+  red_bird_egg:1000, blue_bird_egg:1000, green_bird_egg:1000,
   mole_skin:6000, void_drake_head:30000, berserker_ring:60000, ring_of_kinship:50000, boots_of_ash:25000,
   ring_of_haste:2000, ring_of_endurance:3000,
   gold_ring:30,       gold_amulet:50,
@@ -2895,6 +2900,9 @@ const COLLECTION_LOG_SOURCES = [
     {id:'birds_nest_egg_red',  name:"Bird's nest (red egg)",  icon:'🥚'},
     {id:'birds_nest_egg_blue', name:"Bird's nest (blue egg)", icon:'🥚'},
     {id:'birds_nest_egg_green',name:"Bird's nest (grn egg)",  icon:'🥚'},
+    {id:'pet_crimson_finch',   name:'Crimson Finch',          icon:'🐦‍🔥'},
+    {id:'pet_blue_jay',        name:'Blue Jay',               icon:'🐦'},
+    {id:'pet_green_parrot',    name:'Green Parrot',           icon:'🦜'},
   ]},
   { id:'firemaking_spirit', name:'Fire Spirit', category:'Woodcutting', items:[
     {id:'boots_of_ash',     name:'Boots of Ash',     icon:'🥾'},
@@ -3363,6 +3371,9 @@ const OPENABLE_ITEMS = {
   birds_nest_egg_red:  {rewards:[{id:'red_bird_egg',   name:'Red bird egg',   weight:1}]},
   birds_nest_egg_blue: {rewards:[{id:'blue_bird_egg',  name:'Blue bird egg',  weight:1}]},
   birds_nest_egg_green:{rewards:[{id:'green_bird_egg', name:'Green bird egg', weight:1}]},
+  red_bird_egg:  {rewards:[{id:'pet_crimson_finch', name:'Crimson Finch', weight:1}]},
+  blue_bird_egg: {rewards:[{id:'pet_blue_jay',      name:'Blue Jay',      weight:1}]},
+  green_bird_egg:{rewards:[{id:'pet_green_parrot',  name:'Green Parrot',  weight:1}]},
   baby_impling_jar:{rewards:[
     {id:'coins',           name:'Coins',           weight:400, count:200},
     {id:'uncut_sapphire',  name:'Uncut sapphire',  weight:200},
@@ -3522,7 +3533,10 @@ const ITEM_STATS = {
   tungsten_amulet:{attack:12, defence:25, desc:"15% chance any incoming hit deals only 1 damage."},
   core_amulet:    {attack:10, defence:22, desc:"8% chance when smithing to produce an extra item."},
   forge_amulet:   {attack:8,  defence:18, desc:"6% chance when crafting/fletching/runecrafting/divination to produce an extra item."},
-  pet_tungsten_shard: {type:'pet', desc:'A tiny shard of the Tungsten Titan, still warm.'},
+  pet_tungsten_shard:  {type:'pet', desc:'A tiny shard of the Tungsten Titan, still warm.'},
+  pet_crimson_finch:   {type:'pet', desc:"5% extra chance per woodcutting action to find a bird's nest."},
+  pet_blue_jay:        {type:'pet', desc:'5% chance per fishing action to catch a bonus fish of the same type.'},
+  pet_green_parrot:    {type:'pet', desc:'5% chance per herb harvest to yield one extra herb.'},
   emerald_amulet:{ defence:5 }, sapphire_amulet:{ mage:7 },
   shortbow:{range:10,attackInterval:3}, oak_shortbow:{range:18,attackInterval:3}, willow_shortbow:{range:27,attackInterval:3}, teak_shortbow:{range:33,attackInterval:3},
   maple_shortbow:{range:40,attackInterval:3}, mahogany_shortbow:{range:46,attackInterval:3}, yew_shortbow:{range:55,attackInterval:3}, magic_shortbow:{range:69,attackInterval:3},
@@ -4895,6 +4909,8 @@ function harvestCrop(){
   const xpBase   = seed ? seed.xp : Math.floor(30 + farmLevel * 1.5);
   const xpGained = xpBase * qty;
   grantItem(state.farming.herb, state.farming.herbName, qty);
+  if (state.equipment?.pet === 'pet_green_parrot' && Math.random() < 0.05)
+    grantItem(state.farming.herb, state.farming.herbName, 1);
   grantXp('farming', xpGained);
   log(`Harvested ${qty} ${state.farming.herbName}. (+${xpGained} xp)`);
   checkBonusDrop('farming', {levelReq: farmLevel});
@@ -6323,6 +6339,8 @@ function completeAction(action, silent){
       { grantItem(action.item, action.itemName, qty); if (!silent) log('🔮 Rune Sprite: double runes!'); }
     if (_pet === 'pet_chisel_gnome' && skillId === 'construction' && action.category === 'Furniture' && Math.random() < 0.10)
       { grantItem(action.item, action.itemName, 1); if (!silent) log(`🪵 Chisel Gnome: buy one get one! (+1 ${action.itemName})`); }
+    if (_pet === 'pet_blue_jay'    && skillId === 'fishing'      && Math.random() < 0.05)
+      grantItem(action.item, action.itemName, 1);
     // Jewelry: smith_double (core_amulet) — 8% chance extra smithing output
     if (skillId === 'smithing' && Math.random() < getJewelryBonus('smith_double', null)){
       grantItem(action.item, action.itemName, action.count || 1);
@@ -6712,6 +6730,19 @@ function checkBonusDrop(skillId, action){
     grantItem(id, name);
     logCollectionDrop('woodcutting_bonus', id);
     log(`🪺 A bird's nest falls from the tree!`);
+  }
+  // Woodcutting: Crimson Finch pet — 5% extra nest chance
+  if (skillId === 'woodcutting' && state.equipment?.pet === 'pet_crimson_finch' && Math.random() < 0.05){
+    const _nestRoll = Math.random();
+    let _nId, _nName;
+    if (_nestRoll < 0.04)      { _nId='birds_nest_egg_red';   _nName="Bird's nest (red egg)"; }
+    else if (_nestRoll < 0.08) { _nId='birds_nest_egg_blue';  _nName="Bird's nest (blue egg)"; }
+    else if (_nestRoll < 0.12) { _nId='birds_nest_egg_green'; _nName="Bird's nest (green egg)"; }
+    else if (_nestRoll < 0.44) { _nId='birds_nest_ring';      _nName="Bird's nest (ring)"; }
+    else                       { _nId='birds_nest_seeds';     _nName="Bird's nest (seeds)"; }
+    grantItem(_nId, _nName);
+    logCollectionDrop('woodcutting_bonus', _nId);
+    if (!silent) log(`🐦‍🔥 Crimson Finch found a ${_nName.toLowerCase()}!`);
   }
 
   // Fishing: Kraken's Beak (1% from fish levelReq >= 60; capped at 1, blocked if dragon rod or above equipped)
@@ -7586,10 +7617,17 @@ function renderCollectionLog(){
 
 function openItem(itemId){
   if ((state.inventory[itemId] || 0) < 1) return;
+  const entry = OPENABLE_ITEMS[itemId];
+  if (entry?.rewards.length === 1){
+    const _r = entry.rewards[0];
+    if (EQUIP_SLOTS[_r.id] === 'pet' && ((state.inventory[_r.id]||0) > 0 || state.equipment?.pet === _r.id)){
+      log(`You already have a ${_r.name} — sell this egg instead.`);
+      return;
+    }
+  }
   state.inventory[itemId]--;
   if (!state.openCounts) state.openCounts = {};
   state.openCounts[itemId] = (state.openCounts[itemId] || 0) + 1;
-  const entry = OPENABLE_ITEMS[itemId];
   const totalWeight = entry.rewards.reduce((s, r) => s + r.weight, 0);
   let roll = Math.random() * totalWeight;
   let reward;
