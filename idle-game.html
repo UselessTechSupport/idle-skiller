@@ -3768,7 +3768,7 @@ function freshState(){
     stats:     { attack:1, range:1, mage:1, defence:1, prayer:1, summoning:1, dropRate:0 },
     farming:      { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false, readyAt:null },
     tree_farming: { seed:null, seedName:null, tree:null, treeName:null, plantedAt:null, ready:false, autoReplant:false, readyAt:null, autoHarvest:false },
-    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, selectedFoodType:null, attackTimer:0, kills:{}, potionBoosts:{}, bleed:{dmg:0, ticks:0}, burn:{dmg:0, ticks:0}, stunNextMobAttack:false, bossSpecTick:0, bossPhased:false },
+    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, selectedFoodType:null, attackTimer:0, kills:{}, potionBoosts:{}, bleed:{dmg:0, ticks:0}, burn:{dmg:0, ticks:0}, stunNextMobAttack:false, bossSpecTick:0, bossPhased:false, autoDrink:false },
     upgrades:       {},
     quests:         {},  // { questId: true } — completed quests
     autoOpenItems:  false,
@@ -4437,7 +4437,10 @@ function eatFood(index){
   const _healBonus = getJewelryBonus('food_heal_bonus', null);
   const heal = _healBonus > 0 ? Math.floor(_baseHeal * (1 + _healBonus)) : _baseHeal;
   state.inventory[itemId]--;
-  if (state.inventory[itemId] <= 0) delete state.inventory[itemId];
+  if (state.inventory[itemId] <= 0) {
+    delete state.inventory[itemId];
+    state.combat.foodQueue.splice(index, 1);
+  }
   state.combat.hp = Math.min(state.combat.maxHp, state.combat.hp + heal);
   log(`Ate ${state.itemNames[itemId] || itemId} (+${heal} HP). [${state.combat.hp}/${state.combat.maxHp}]`);
   render();
@@ -5046,6 +5049,22 @@ function renderCombatPanel(){
       ? '50% ' + SKILL_BY_ID[styleId].name + ' · 50% Defence · 50% Constitution'
       : '100% ' + SKILL_BY_ID[styleId].name + ' · 50% Constitution'}</span>`;
   list.appendChild(defRow);
+
+  // Auto-drink potions toggle
+  const autoDrinkRow = document.createElement('div');
+  autoDrinkRow.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px;';
+  const _adBtn = document.createElement('button');
+  _adBtn.className = 'mini';
+  if (state.combat.autoDrink) _adBtn.style.cssText = 'background:var(--accent2);border-color:var(--accent);font-weight:600;';
+  _adBtn.textContent = state.combat.autoDrink ? 'ON' : 'OFF';
+  _adBtn.onclick = () => { state.combat.autoDrink = !state.combat.autoDrink; render(); };
+  autoDrinkRow.innerHTML = `<span style="color:var(--dim)">Auto-drink potions:</span>`;
+  autoDrinkRow.appendChild(_adBtn);
+  const _adDesc = document.createElement('span');
+  _adDesc.style.cssText = 'color:var(--dim);font-size:12px;';
+  _adDesc.textContent = state.combat.autoDrink ? 'Re-drinks best matching potion on expiry' : 'Potions expire without re-drinking';
+  autoDrinkRow.appendChild(_adDesc);
+  list.appendChild(autoDrinkRow);
 
   // Mini skill stats + equipment bonuses
   const constLvl = levelForXp(state.skills.constitution.xp);
@@ -5865,8 +5884,22 @@ function tick(){
   // Potion boost expiry
   if (state.combat?.potionBoosts){
     const _now = Date.now();
-    for (const t of Object.keys(state.combat.potionBoosts))
-      if (_now > state.combat.potionBoosts[t].expiresAt) delete state.combat.potionBoosts[t];
+    const _stemMap = {melee:'attack', defence:'defence', ranged:'ranging', magic:'magic'};
+    for (const t of Object.keys(state.combat.potionBoosts)){
+      if (_now > state.combat.potionBoosts[t].expiresAt){
+        delete state.combat.potionBoosts[t];
+        if (state.combat.autoDrink){
+          if ((state.inventory['master_combat_potion'] || 0) > 0){
+            drinkPotion('master_combat_potion');
+          } else {
+            const stem = _stemMap[t] || t;
+            for (const pid of [`supreme_${stem}_potion`, `${stem}_potion`, `lesser_${stem}_potion`]){
+              if ((state.inventory[pid] || 0) > 0){ drinkPotion(pid); break; }
+            }
+          }
+        }
+      }
+    }
   }
   // fire spirit expiry + countdown
   if (fireSpirit){
@@ -6443,6 +6476,17 @@ function completeAction(action, silent){
             ? _storedId
             : ([...SLAYER_MASTERS].reverse().find(m => _slayerLv >= m.levelReq)?.id || 'turael');
           assignSlayerTask(_masterId);
+          // Auto-switch combat target to new mob
+          if (state.slayer.task && state.current
+              && COMBAT_SKILL_IDS.has(state.current.skillId)
+              && state.current.skillId !== 'summoning'){
+            state.current.id  = state.slayer.task.mobId;
+            state.combat.mobHp    = 0;
+            state.combat.mobMaxHp = 0;
+            state.progress        = 0;
+            state.batch           = { limit:0, done:0 };
+            if (!silent) log(`⚔️ Auto-switching to ${state.slayer.task.mobName}.`);
+          }
         }
       }
     }
@@ -8640,7 +8684,14 @@ function renderSummoningHud(){
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;">
       <span style="font-size:11px;color:var(--dim);">${mins}:${String(secs).padStart(2,'0')} remaining</span>
-      <button class="mini" style="font-size:10px;padding:2px 6px;" onclick="dismissSummon()">Dismiss</button>
+      <div style="display:flex;gap:4px;align-items:center;">
+        <span style="font-size:10px;color:var(--dim);">Auto-renew:</span>
+        <button class="mini" style="font-size:10px;padding:2px 6px;${state.summoning.autoRenew ? 'background:var(--accent2);border-color:var(--accent);font-weight:600;' : ''}"
+          onclick="state.summoning.autoRenew=!state.summoning.autoRenew;render()">
+          ${state.summoning.autoRenew ? 'ON' : 'OFF'}
+        </button>
+        <button class="mini" style="font-size:10px;padding:2px 6px;" onclick="dismissSummon()">Dismiss</button>
+      </div>
     </div>`;
 }
 
@@ -8909,6 +8960,7 @@ function init(){
   if (!state.slayer) state.slayer = { points:0, task:null, unlocks:{}, totalTasksDone:0 };
   if (state.slayer.autoTask         === undefined) state.slayer.autoTask         = false;
   if (state.slayer.autoTaskMasterId === undefined) state.slayer.autoTaskMasterId = 'turael';
+  if (state.combat.autoDrink        === undefined) state.combat.autoDrink        = false;
   const _nameRenames = {
     'spirit_tz_kih_pouch':  'Spirit Bat pouch',
     'spirit_dagannoth_pouch':'Spirit Shark pouch',
