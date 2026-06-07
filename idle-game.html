@@ -3509,7 +3509,7 @@ function freshState(){
     equipment: { head:null, weapon:null, offhand:null, ammo:null, neck:null, cape:null, ring:null, body:null, gloves:null, legs:null, feet:null, pet:null },
     stats:     { attack:1, range:1, mage:1, defence:1, prayer:1, summoning:1, dropRate:0 },
     farming:      { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false, readyAt:null },
-    tree_farming: { seed:null, seedName:null, tree:null, treeName:null, plantedAt:null, ready:false, autoReplant:false, readyAt:null },
+    tree_farming: { seed:null, seedName:null, tree:null, treeName:null, plantedAt:null, ready:false, autoReplant:false, readyAt:null, autoHarvest:false },
     combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, selectedFoodType:null, attackTimer:0, kills:{}, potionBoosts:{}, bleed:{dmg:0, ticks:0}, burn:{dmg:0, ticks:0}, stunNextMobAttack:false, bossSpecTick:0, bossPhased:false },
     upgrades:       {},
     quests:         {},  // { questId: true } — completed quests
@@ -4528,7 +4528,7 @@ function harvestCrop(){
     log('🌿 An herb sprite dances out of the harvest!');
   }
   const seedId = state.farming.seed;
-  Object.assign(state.farming, { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false });
+  Object.assign(state.farming, { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, readyAt:null });
   if (state.farming.autoReplant && (state.inventory[seedId] || 0) > 0) plantSeed(seedId);
   else render();
 }
@@ -5182,7 +5182,10 @@ function renderFarmSection(){
       btn.onclick = harvestCrop;
       el.appendChild(btn);
       if (state.upgrades?.auto_harvest && state.upgrades?.auto_harvest_on && state.farming.readyAt) {
-        const rem = Math.max(0, Math.ceil((state.farming.readyAt + 300_000 - Date.now()) / 1000));
+        const _cdGrowMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1)
+          * (1 - getCapeBonus('farm_speed','farming')) * (1 - getPetBonus('farm_speed','farming'))
+          * (1 - getJewelryBonus('farm_speed', null));
+        const rem = Math.max(0, Math.ceil((state.farming.readyAt + _cdGrowMs - Date.now()) / 1000));
         if (rem > 0) {
           const cdDiv = document.createElement('div');
           cdDiv.style.cssText = 'color:var(--dim);font-size:12px;margin-bottom:6px;';
@@ -5274,6 +5277,19 @@ function renderFarmSection(){
       hb2.textContent = 'Chop';
       hb2.onclick = harvestTree;
       el.appendChild(hb2);
+      if (state.upgrades?.auto_harvest && state.tree_farming?.autoHarvest && tf.readyAt) {
+        const _tsSeedCd = TREE_SEEDS.find(t => t.id === tf.seed);
+        if (_tsSeedCd) {
+          const remT = Math.max(0, Math.ceil((tf.readyAt + _tsSeedCd.growMs - Date.now()) / 1000));
+          if (remT > 0) {
+            const cdDiv2 = document.createElement('div');
+            cdDiv2.style.cssText = 'color:var(--dim);font-size:12px;margin-bottom:6px;';
+            const hh = Math.floor(remT/3600), mm = Math.floor((remT%3600)/60), ss = remT%60;
+            cdDiv2.textContent = hh > 0 ? `Auto-chops in ${hh}h ${mm}m` : `Auto-chops in ${mm}m ${ss<10?'0':''}${ss}s`;
+            el.appendChild(cdDiv2);
+          }
+        }
+      }
     }
   }
   const tog2 = document.createElement('div');
@@ -5283,6 +5299,15 @@ function renderFarmSection(){
       ${tf.autoReplant ? 'ON' : 'OFF'}
     </button>`;
   el.appendChild(tog2);
+  if (state.upgrades?.auto_harvest) {
+    const ahTog2 = document.createElement('div');
+    ahTog2.style.cssText = 'display:flex;align-items:center;gap:8px;margin-top:4px;';
+    ahTog2.innerHTML = `<span style="color:var(--dim);font-size:13px;">Tree auto-harvest:</span>
+      <button class="mini" onclick="state.tree_farming.autoHarvest=!state.tree_farming.autoHarvest;render()">
+        ${state.tree_farming?.autoHarvest ? 'ON' : 'OFF'}
+      </button>`;
+    el.appendChild(ahTog2);
+  }
 }
 
 function renderClueSection(){
@@ -5651,8 +5676,11 @@ function tick(){
       log(`Your ${state.farming.seedName} are ready to harvest!`);
     }
   }
+  const _ahGrowMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1)
+    * (1 - getCapeBonus('farm_speed','farming')) * (1 - getPetBonus('farm_speed','farming'))
+    * (1 - getJewelryBonus('farm_speed', null));
   if (state.farming?.ready && state.upgrades?.auto_harvest && state.upgrades?.auto_harvest_on &&
-      state.farming.readyAt && Date.now() >= state.farming.readyAt + 300_000) {
+      state.farming.readyAt && Date.now() >= state.farming.readyAt + _ahGrowMs) {
     harvestCrop();
   }
   if (state.tree_farming?.seed && !state.tree_farming.ready) {
@@ -5661,6 +5689,13 @@ function tick(){
       state.tree_farming.ready = true;
       if (!state.tree_farming.readyAt) state.tree_farming.readyAt = Date.now();
       log(`Your ${state.tree_farming.seedName} is ready to chop!`);
+    }
+  }
+  if (state.tree_farming?.ready && state.tree_farming?.autoHarvest
+      && state.upgrades?.auto_harvest && state.tree_farming.readyAt){
+    const _tsSeed = TREE_SEEDS.find(t => t.id === state.tree_farming.seed);
+    if (_tsSeed && Date.now() >= state.tree_farming.readyAt + _tsSeed.growMs){
+      harvestTree();
     }
   }
   if (state.autoOpenItems) processAutoOpen();
@@ -8519,6 +8554,7 @@ function init(){
   if (!state.combatLog)       state.combatLog       = [];
   if (state.combat.bossSpecTick == null) state.combat.bossSpecTick = 0;
   if (state.combat.bossPhased == null)   state.combat.bossPhased   = false;
+  if (state.tree_farming.autoHarvest == null) state.tree_farming.autoHarvest = false;
   if (state.summoning.autoRenew == null) state.summoning.autoRenew = true;
   if (state.summoning.active && Date.now() >= state.summoning.active.expiresAt){
     const _pid = state.summoning.active.pouchId;
@@ -8593,17 +8629,27 @@ function init(){
     state.farming.ready = true;
     if (!state.farming.readyAt) state.farming.readyAt = state.farming.plantedAt + _offlineGrowMs;
   }
+  const _offAhGrowMs = FARM_GROW_MS * (state.upgrades?.herb_patch ? 0.75 : 1)
+    * (1 - getCapeBonus('farm_speed','farming')) * (1 - getPetBonus('farm_speed','farming'))
+    * (1 - getJewelryBonus('farm_speed', null));
   if (state.farming?.ready && state.upgrades?.auto_harvest && state.upgrades?.auto_harvest_on &&
-      state.farming.readyAt && Date.now() >= state.farming.readyAt + 300_000) {
+      state.farming.readyAt && Date.now() >= state.farming.readyAt + _offAhGrowMs) {
     harvestCrop();
   }
   // Tree farming: mark ready if matured while offline
-  if (!state.tree_farming) state.tree_farming = { seed:null, seedName:null, tree:null, treeName:null, plantedAt:null, ready:false, autoReplant:false, readyAt:null };
+  if (!state.tree_farming) state.tree_farming = { seed:null, seedName:null, tree:null, treeName:null, plantedAt:null, ready:false, autoReplant:false, readyAt:null, autoHarvest:false };
   if (state.tree_farming.seed && !state.tree_farming.ready) {
     const _tts = TREE_SEEDS.find(t => t.id === state.tree_farming.seed);
     if (_tts && Date.now() >= state.tree_farming.plantedAt + _tts.growMs) {
       state.tree_farming.ready = true;
       if (!state.tree_farming.readyAt) state.tree_farming.readyAt = state.tree_farming.plantedAt + _tts.growMs;
+    }
+  }
+  if (state.tree_farming?.ready && state.tree_farming?.autoHarvest
+      && state.upgrades?.auto_harvest && state.tree_farming.readyAt){
+    const _offTts = TREE_SEEDS.find(t => t.id === state.tree_farming.seed);
+    if (_offTts && Date.now() >= state.tree_farming.readyAt + _offTts.growMs){
+      harvestTree();
     }
   }
   // Copyright rename migration — old RS-specific IDs → new names
