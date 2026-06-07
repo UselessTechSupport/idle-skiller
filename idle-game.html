@@ -1309,7 +1309,29 @@ const SELL_PRICES = {
   swamp_lizard:300, orange_salamander:800, red_salamander:2000, black_salamander:5000,
   // Other missing equipment
   ice_gloves:5000, warlord_helm:80000,
+  // High-tier bars (extends bronze_bar:30 → rune_bar:800 curve)
+  orikalkum_bar:1500, necronium_bar:2600, bane_bar:4000,
+  elder_rune_bar:6000, primal_bar:10000,
+  // Crafting bars
+  gold_bar:150, silver_bar:100,
+  // Cooked food (drops from all mobs)
+  cooked_shrimps:10, cooked_herring:20, cooked_trout:35,
+  cooked_salmon:60,  cooked_tuna:90,    cooked_lobster:130,
+  cooked_swordfish:200, cooked_monkfish:350, cooked_shark:400,
+  cooked_great_white_shark:650, cooked_rocktail:750,
 };
+
+// Auto-generate sell prices for all metal-tier gear (scales with bar price)
+(function(){
+  const _prem = {gloves:1.5, boots:1.5, helm:1.8, platelegs:2.0, platebody:2.2,
+                 lightsword:1.8, broadsword:2.0, '2h_sword':2.2, shield:2.0};
+  METAL_TIERS.forEach(tier => {
+    const bp = SELL_PRICES[tier.barItem] || 30;
+    [...ARMOUR_PIECES, ...WEAPON_PIECES].forEach(p => {
+      SELL_PRICES[`${tier.id}${p.suffix}`] = Math.round(bp * p.bars * (_prem[p.name] || 2.0));
+    });
+  });
+})();
 
 const RUNE_SPELLS = {
   air_rune:    {name:'Wind Strike',   effect:{type:'bonus_hit',   chance:0.05}},
