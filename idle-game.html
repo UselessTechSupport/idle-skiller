@@ -839,6 +839,19 @@ const JEWELRY_PERKS = {
   dragonstone_ring:   {type:'bone_xp',                                 value:0.10},
   onyx_ring:          {type:'xp_pct',            skillId:'slayer',     value:0.05},
   hydrix_ring:        {type:'xp_pct',            skillId:null,         value:0.03},
+  goblin_ring:        {type:'goblin_pickpocket',                        value:0.05},
+  bone_charm:         {type:'bone_upgrade',                             value:0.20},
+  troll_amulet:       {type:'stun_on_hit',                              value:0.08},
+  fang_ring:          {type:'melee_lifesteal',                          value:0.05},
+  shadow_amulet:      {type:'pk_immune',                                value:0.20},
+  basilisk_amulet:    {type:'mob_weaken',                               value:0.10},
+  fire_ring:          {type:'fire_spirit_bonus',                        value:0.25},
+  wyvern_ring:        {type:'food_heal_bonus',                          value:0.20},
+  void_ring:          {type:'spell_school_amp',                         value:0.15},
+  silk_amulet:        {type:'silent_steal',                             value:0.15},
+  stone_amulet:       {type:'ore_shatter',                              value:0.05},
+  hound_ring:         {type:'ranged_bleed',                             value:0.10},
+  soul_amulet:        {type:'prayer_refund',                            value:0.08},
 };
 
 const CLUE_TIERS = [
@@ -1319,6 +1332,14 @@ const SELL_PRICES = {
   cooked_salmon:60,  cooked_tuna:90,    cooked_lobster:130,
   cooked_swordfish:200, cooked_monkfish:350, cooked_shark:400,
   cooked_great_white_shark:650, cooked_rocktail:750,
+  // Combat rare drop materials (crafting ingredients for unique jewelry)
+  goblin_sigil:400, ancient_bone:350, troll_tooth:500, werewolf_fang:700,
+  shadow_shard:900, basilisk_eye:600, fire_essence:650, wyvern_heart:1400,
+  void_crystal:1800, tunnel_silk:250, grit_crystal:800, hound_pelt:700, soul_fragment:850,
+  // Crafted jewelry from rare drops
+  goblin_ring:1800, bone_charm:1600, troll_amulet:2500, fang_ring:3500,
+  shadow_amulet:4000, basilisk_amulet:3000, fire_ring:3200, wyvern_ring:7000,
+  void_ring:9000, silk_amulet:1200, stone_amulet:4500, hound_ring:4000, soul_amulet:5000,
 };
 
 // Auto-generate sell prices for all metal-tier gear (scales with bar price)
@@ -1628,6 +1649,20 @@ const ACTIONS = {
     {id:'craft_hydrix_amulet',      name:'Hydrix amulet',      label:'Hydrix amulets made',      levelReq:100, xp:242, ticks:2, item:'hydrix_amulet',      itemName:'Hydrix amulet',      category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'hydrix',      count:1,name:'Hydrix'}]},
     {id:'craft_ring_of_haste',     name:'Ring of Haste',      label:'Rings of Haste crafted',     levelReq:30,  xp:65,  ticks:2, item:'ring_of_haste',     itemName:'Ring of Haste',     category:'Jewellery', ingredients:[{item:'silver_bar',count:1,name:'Silver bar'},{item:'sapphire',count:1,name:'Sapphire'}]},
     {id:'craft_ring_of_endurance', name:'Ring of Endurance',  label:'Rings of Endurance crafted', levelReq:38,  xp:80,  ticks:2, item:'ring_of_endurance', itemName:'Ring of Endurance', category:'Jewellery', ingredients:[{item:'silver_bar',count:1,name:'Silver bar'},{item:'ruby',    count:1,name:'Ruby'}]},
+    // --- Monster drop jewelry ---
+    {id:'craft_silk_amulet',    name:'Silk Amulet',     label:'Silk Amulets crafted',     levelReq:15, xp:30,  ticks:2, item:'silk_amulet',    itemName:'Silk Amulet',    category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'tunnel_silk', count:1,name:'Tunnel silk'}]},
+    {id:'craft_goblin_ring',    name:'Goblin Ring',     label:'Goblin Rings crafted',     levelReq:25, xp:45,  ticks:2, item:'goblin_ring',    itemName:'Goblin Ring',    category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'goblin_sigil', count:1,name:'Goblin sigil'}]},
+    {id:'craft_bone_charm',     name:'Bone Charm',      label:'Bone Charms crafted',      levelReq:30, xp:55,  ticks:2, item:'bone_charm',     itemName:'Bone Charm',     category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'ancient_bone', count:1,name:'Ancient bone'}]},
+    {id:'craft_troll_amulet',   name:'Troll Amulet',    label:'Troll Amulets crafted',    levelReq:40, xp:75,  ticks:2, item:'troll_amulet',   itemName:'Troll Amulet',   category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'troll_tooth',  count:1,name:'Troll tooth'}]},
+    {id:'craft_basilisk_amulet',name:'Basilisk Amulet', label:'Basilisk Amulets crafted', levelReq:45, xp:85,  ticks:2, item:'basilisk_amulet',itemName:'Basilisk Amulet',category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'basilisk_eye',  count:1,name:'Basilisk eye'}]},
+    {id:'craft_fang_ring',      name:'Fang Ring',       label:'Fang Rings crafted',       levelReq:45, xp:88,  ticks:2, item:'fang_ring',      itemName:'Fang Ring',      category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'werewolf_fang', count:1,name:'Werewolf fang'}]},
+    {id:'craft_fire_ring',      name:'Fire Ring',       label:'Fire Rings crafted',       levelReq:50, xp:95,  ticks:2, item:'fire_ring',      itemName:'Fire Ring',      category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'fire_essence',  count:1,name:'Fire essence'}]},
+    {id:'craft_shadow_amulet',  name:'Shadow Amulet',   label:'Shadow Amulets crafted',   levelReq:50, xp:100, ticks:2, item:'shadow_amulet',  itemName:'Shadow Amulet',  category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'shadow_shard',  count:1,name:'Shadow shard'}]},
+    {id:'craft_hound_ring',     name:'Hound Ring',      label:'Hound Rings crafted',      levelReq:55, xp:105, ticks:2, item:'hound_ring',     itemName:'Hound Ring',     category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'hound_pelt',    count:1,name:'Crimson hound pelt'}]},
+    {id:'craft_stone_amulet',   name:'Stone Amulet',    label:'Stone Amulets crafted',    levelReq:55, xp:108, ticks:2, item:'stone_amulet',   itemName:'Stone Amulet',   category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'grit_crystal',  count:1,name:'Grit crystal'}]},
+    {id:'craft_soul_amulet',    name:'Soul Amulet',     label:'Soul Amulets crafted',     levelReq:60, xp:115, ticks:2, item:'soul_amulet',    itemName:'Soul Amulet',    category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'soul_fragment',  count:1,name:'Soul fragment'}]},
+    {id:'craft_wyvern_ring',    name:'Wyvern Ring',     label:'Wyvern Rings crafted',     levelReq:70, xp:140, ticks:2, item:'wyvern_ring',    itemName:'Wyvern Ring',    category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'wyvern_heart',   count:1,name:'Wyvern heart'}]},
+    {id:'craft_void_ring',      name:'Void Ring',       label:'Void Rings crafted',       levelReq:75, xp:155, ticks:2, item:'void_ring',      itemName:'Void Ring',      category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'void_crystal',   count:1,name:'Void crystal'}]},
 
     // --- Leather Armour ---
     {id:'craft_leather_gloves',    name:'Leather gloves',    label:'Leather gloves made',    levelReq:1,  xp:13.8,  ticks:2, item:'leather_gloves',    itemName:'Leather gloves',    category:'Leather Armour', ingredients:[{item:'cowhide',count:1,name:'Cowhide'}]},
@@ -2084,22 +2119,32 @@ const ACTIONS = {
              {item:'shortbow',        itemName:'Shortbow',        chance:0.025, min:1,max:1,  notable:false},
              {item:'bronze_crossbow', itemName:'Bronze crossbow', chance:0.02,  min:1,max:1,  notable:false},
              {item:'makeshift_spear', itemName:'Makeshift Spear', chance:0.005, min:1,max:1,  notable:true},
+             {item:'iron_ore',        itemName:'Iron ore',        chance:0.08,  min:1,max:3,  notable:false},
+             {item:'air_rune',        itemName:'Air rune',        chance:0.06,  min:3,max:8,  notable:false},
+             {item:'goblin_sigil',    itemName:'Goblin sigil',    chance:0.007, min:1,max:1,  notable:true},
              {item:'cooked_shrimps',  itemName:'Cooked shrimps',  chance:0.10,  min:1,max:2,  notable:false}]},
     {id:'cow',          name:'Cow',           category:'Mobs', levelReq:1,  xp:30,   ticks:5,  stats:{hp:7,   attack:2,  defence:1},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:5, max:15,  notable:false},
              {item:'cowhide',      itemName:'Cowhide',      chance:1.00, min:1,max:1, notable:true},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.08, min:1,max:1, notable:false},
+             {item:'ironwort_seed',itemName:'Ironwort seed', chance:0.04, min:1,max:2, notable:false},
              {item:'cooked_shrimps',itemName:'Cooked shrimps',chance:0.10,min:1,max:2, notable:false}]},
     {id:'guard',        name:'Guard',         category:'Mobs', levelReq:10, xp:55,   ticks:5,  stats:{hp:15,  attack:8,  defence:5},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:15,max:50,  notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.09, min:1,max:1, notable:false},
+             {item:'iron_ore',     itemName:'Iron ore',     chance:0.10, min:1,max:2, notable:false},
+             {item:'iron_bar',     itemName:'Iron bar',     chance:0.06, min:1,max:2, notable:false},
+             {item:'uncut_sapphire',itemName:'Uncut sapphire',chance:0.03,min:1,max:1,notable:false},
              {item:'cooked_herring',itemName:'Cooked herring',chance:0.10,min:1,max:2, notable:false}]},
     {id:'barbarian',    name:'Barbarian',     category:'Mobs', levelReq:15, xp:80,   ticks:6,  stats:{hp:22,  attack:12, defence:6},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:15,max:60,  notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.09, min:1,max:1, notable:false},
+             {item:'coal_ore',     itemName:'Coal ore',     chance:0.06, min:1,max:3, notable:false},
+             {item:'earth_rune',   itemName:'Earth rune',   chance:0.06, min:3,max:8, notable:false},
+             {item:'mithril_ore',  itemName:'Mithril ore',  chance:0.025,min:1,max:1, notable:false},
              {item:'cooked_herring',itemName:'Cooked herring',chance:0.10,min:1,max:2, notable:false}]},
     {id:'skeleton_warrior', name:'Skeleton Warrior', category:'Mobs', levelReq:25, xp:155, ticks:8, stats:{hp:45, attack:18, defence:10},
      drops:[
@@ -2112,6 +2157,10 @@ const ACTIONS = {
       {item:'steel_lightsword',itemName:'Steel lightsword',chance:0.015,min:1,  max:1,  notable:false},
       {item:'oak_shortbow',   itemName:'Oak shortbow',    chance:0.02,  min:1,  max:1,  notable:false},
       {item:'iron_crossbow',  itemName:'Iron crossbow',   chance:0.015, min:1,  max:1,  notable:false},
+      {item:'ancient_bone',   itemName:'Ancient bone',    chance:0.007, min:1,  max:1,  notable:true},
+      {item:'chaos_rune',     itemName:'Chaos rune',      chance:0.05,  min:3,  max:8,  notable:false},
+      {item:'uncut_sapphire', itemName:'Uncut sapphire',  chance:0.04,  min:1,  max:1,  notable:false},
+      {item:'iron_ore',       itemName:'Iron ore',        chance:0.08,  min:1,  max:3,  notable:false},
       {item:'cooked_trout',   itemName:'Cooked trout',    chance:0.10,  min:1,  max:2,  notable:false},
     ]},
     {id:'hill_giant',   name:'Hill Giant',    category:'Mobs', levelReq:20, xp:130,  ticks:7,  stats:{hp:36,  attack:15, defence:8},
@@ -2123,6 +2172,9 @@ const ACTIONS = {
              {item:'steel_broadsword',itemName:'Steel broadsword',chance:0.015,min:1,max:1,notable:false},
              {item:'oak_longbow',  itemName:'Oak longbow',  chance:0.02,  min:1,max:1,   notable:false},
              {item:'bone_maul',    itemName:'Bone Maul',    chance:0.0025,min:1,max:1,   notable:true},
+             {item:'ironwort_seed',itemName:'Ironwort seed', chance:0.04, min:1,max:2,   notable:false},
+             {item:'uncut_emerald',itemName:'Uncut emerald', chance:0.025,min:1,max:1,   notable:false},
+             {item:'coal_ore',     itemName:'Coal ore',      chance:0.06, min:1,max:3,   notable:false},
              {item:'cooked_trout', itemName:'Cooked trout', chance:0.10,  min:1,max:2,   notable:false}]},
     {id:'moss_giant',   name:'Moss Giant',    category:'Mobs', levelReq:30, xp:220,  ticks:9,  stats:{hp:70,  attack:22, defence:14},
       drops:[{item:'big_bones',        itemName:'Big bones',        chance:1.00,  min:1,max:1,  notable:false},
@@ -2134,15 +2186,22 @@ const ACTIONS = {
              {item:'steel_2h_sword',   itemName:'Steel 2h sword',   chance:0.02,  min:1,max:1,  notable:false},
              {item:'mithril_broadsword',itemName:'Mithril broadsword',chance:0.015,min:1,max:1, notable:false},
              {item:'willow_longbow',   itemName:'Willow longbow',   chance:0.02,  min:1,max:1,  notable:false},
+             {item:'thornweed_seed',   itemName:'Thornweed seed',   chance:0.02,  min:1,max:1,  notable:false},
+             {item:'uncut_ruby',       itemName:'Uncut ruby',       chance:0.025, min:1,max:1,  notable:false},
+             {item:'nature_rune',      itemName:'Nature rune',      chance:0.05,  min:3,max:6,  notable:false},
              {item:'cooked_salmon',    itemName:'Cooked salmon',    chance:0.10,  min:1,max:2,  notable:false}]},
     {id:'troll', name:'Troll', category:'Mobs', levelReq:40, xp:280, ticks:10, stats:{hp:110, attack:28, defence:18},
      drops:[
       {item:'big_bones',  itemName:'Big bones',   chance:1.0,  min:1,  max:1,   notable:false},
       {item:'coins',      itemName:'Coins',        chance:1.0,  min:50, max:200, notable:false},
       {item:'troll_hide', itemName:'Troll hide',   chance:1.0,  min:1,  max:1,   notable:false},
-      {item:'gold_charm', itemName:'Gold charm',   chance:0.11, min:1,  max:1,   notable:false},
-      {item:'green_charm',itemName:'Green charm',  chance:0.04, min:1,  max:1,   notable:false},
-      {item:'cooked_tuna',itemName:'Cooked tuna',  chance:0.10, min:1,  max:2,   notable:false},
+      {item:'gold_charm',    itemName:'Gold charm',    chance:0.11, min:1,  max:1,   notable:false},
+      {item:'green_charm',   itemName:'Green charm',   chance:0.04, min:1,  max:1,   notable:false},
+      {item:'troll_tooth',   itemName:'Troll tooth',   chance:0.007,min:1,  max:1,   notable:true},
+      {item:'uncut_sapphire',itemName:'Uncut sapphire',chance:0.04, min:1,  max:1,   notable:false},
+      {item:'earth_rune',    itemName:'Earth rune',    chance:0.06, min:5,  max:12,  notable:false},
+      {item:'iron_ore',      itemName:'Iron ore',      chance:0.08, min:1,  max:5,   notable:false},
+      {item:'cooked_tuna',   itemName:'Cooked tuna',   chance:0.10, min:1,  max:2,   notable:false},
     ]},
     {id:'werewolf', name:'Werewolf', category:'Mobs', levelReq:45, xp:330, ticks:11, stats:{hp:125, attack:30, defence:20},
      drops:[
@@ -2152,6 +2211,10 @@ const ACTIONS = {
       {item:'gold_charm',   itemName:'Gold charm',   chance:0.11, min:1,  max:1,   notable:false},
       {item:'green_charm',  itemName:'Green charm',  chance:0.04, min:1,  max:1,   notable:false},
       {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,  max:1,   notable:false},
+      {item:'werewolf_fang',itemName:'Werewolf fang',chance:0.006,min:1,  max:1,   notable:true},
+      {item:'mithril_ore',  itemName:'Mithril ore',  chance:0.05, min:1,  max:2,   notable:false},
+      {item:'chaos_rune',   itemName:'Chaos rune',   chance:0.05, min:3,  max:8,   notable:false},
+      {item:'uncut_ruby',   itemName:'Uncut ruby',   chance:0.03, min:1,  max:1,   notable:false},
       {item:'cooked_tuna',  itemName:'Cooked tuna',  chance:0.10, min:1,  max:2,   notable:false},
     ]},
     {id:'fire_giant',   name:'Fire Giant',    category:'Mobs', levelReq:50, xp:400,  ticks:12, stats:{hp:140, attack:35, defence:25},
@@ -2166,6 +2229,10 @@ const ACTIONS = {
              {item:'rune_lightsword', itemName:'Rune lightsword', chance:0.015, min:1,max:1,  notable:false},
              {item:'maple_shortbow',  itemName:'Maple shortbow',  chance:0.02,  min:1,max:1,  notable:false},
              {item:'adamant_crossbow',itemName:'Adamant crossbow',chance:0.015, min:1,max:1,  notable:false},
+             {item:'fire_essence',   itemName:'Fire essence',    chance:0.006, min:1,max:1,  notable:true},
+             {item:'fire_rune',      itemName:'Fire rune',       chance:0.08,  min:5,max:15, notable:false},
+             {item:'gold_ore',       itemName:'Gold ore',        chance:0.04,  min:1,max:2,  notable:false},
+             {item:'adamantite_ore', itemName:'Adamantite ore',  chance:0.025, min:1,max:1,  notable:false},
              {item:'cooked_lobster',  itemName:'Cooked lobster',  chance:0.10,  min:1,max:2,  notable:false}]},
     {id:'emerald_drake', name:'Emerald Drake', category:'Mobs', levelReq:55, xp:500,  ticks:13, stats:{hp:170, attack:40, defence:28},
       drops:[{item:'dragon_bones',     itemName:'Dragon bones',      chance:1.00, min:1,max:1,   notable:true},
@@ -2175,6 +2242,8 @@ const ACTIONS = {
              {item:'gold_charm',       itemName:'Gold charm',        chance:0.12, min:1,max:1,   notable:false},
              {item:'green_charm',      itemName:'Green charm',       chance:0.04, min:1,max:1,   notable:false},
              {item:'crimson_charm',    itemName:'Crimson charm',     chance:0.03, min:1,max:1,   notable:true},
+             {item:'cut_emerald',      itemName:'Emerald',           chance:0.04, min:1,max:1,   notable:false},
+             {item:'nature_rune',      itemName:'Nature rune',       chance:0.05, min:3,max:8,   notable:false},
              {item:'cooked_lobster',   itemName:'Cooked lobster',    chance:0.10, min:1,max:2,   notable:false}]},
     {id:'azure_drake',   name:'Azure Drake',   category:'Mobs', levelReq:65, xp:836,  ticks:15, stats:{hp:230, attack:50, defence:35},
       drops:[{item:'dragon_bones',     itemName:'Dragon bones',      chance:1.00, min:1,max:1,   notable:true},
@@ -2184,6 +2253,9 @@ const ACTIONS = {
              {item:'gold_charm',       itemName:'Gold charm',        chance:0.13, min:1,max:1,   notable:false},
              {item:'green_charm',      itemName:'Green charm',       chance:0.05, min:1,max:1,   notable:false},
              {item:'crimson_charm',    itemName:'Crimson charm',     chance:0.03, min:1,max:1,   notable:true},
+             {item:'cut_sapphire',     itemName:'Sapphire',          chance:0.04, min:1,max:1,   notable:false},
+             {item:'water_rune',       itemName:'Water rune',        chance:0.06, min:5,max:10,  notable:false},
+             {item:'law_rune',         itemName:'Law rune',          chance:0.04, min:2,max:5,   notable:false},
              {item:'cooked_swordfish', itemName:'Cooked swordfish',  chance:0.10, min:1,max:2,   notable:false}]},
     {id:'crimson_drake',  name:'Crimson Drake',  category:'Mobs', levelReq:72, xp:1018, ticks:16, stats:{hp:260, attack:54, defence:38},
       drops:[{item:'dragon_bones',     itemName:'Dragon bones',     chance:1.00, min:1,  max:1,   notable:true},
@@ -2193,6 +2265,8 @@ const ACTIONS = {
              {item:'gold_charm',       itemName:'Gold charm',       chance:0.13, min:1,  max:1,   notable:false},
              {item:'green_charm',      itemName:'Green charm',      chance:0.04, min:1,  max:1,   notable:false},
              {item:'crimson_charm',    itemName:'Crimson charm',    chance:0.03, min:1,  max:1,   notable:true},
+             {item:'cut_ruby',         itemName:'Ruby',             chance:0.04, min:1,  max:1,   notable:false},
+             {item:'fire_rune',        itemName:'Fire rune',        chance:0.06, min:5,  max:12,  notable:false},
              {item:'cooked_monkfish',  itemName:'Cooked monkfish',  chance:0.10, min:1,  max:2,   notable:false}]},
     {id:'obsidian_drake', name:'Obsidian Drake', category:'Mobs', levelReq:80, xp:1456, ticks:18, stats:{hp:320, attack:65, defence:48},
       drops:[{item:'dragon_bones',     itemName:'Dragon bones',      chance:1.00, min:1,max:1,   notable:true},
@@ -2203,6 +2277,8 @@ const ACTIONS = {
              {item:'green_charm',      itemName:'Green charm',       chance:0.05, min:1,max:1,   notable:false},
              {item:'crimson_charm',    itemName:'Crimson charm',     chance:0.03, min:1,max:1,   notable:true},
              {item:'blue_charm',       itemName:'Blue charm',        chance:0.02, min:1,max:1,   notable:true},
+             {item:'cut_diamond',      itemName:'Diamond',           chance:0.03, min:1,max:1,   notable:false},
+             {item:'death_rune',       itemName:'Death rune',        chance:0.05, min:3,max:8,   notable:false},
              {item:'cooked_shark',     itemName:'Cooked shark',      chance:0.10, min:1,max:2,   notable:false}]},
     {id:'gilded_drake', name:'Gilded Drake', category:'Mobs', levelReq:87, xp:1651, ticks:19, stats:{hp:380, attack:72, defence:55},
       drops:[{item:'dragon_bones',     itemName:'Dragon bones',      chance:1.00, min:1,  max:1,    notable:true},
@@ -2213,6 +2289,9 @@ const ACTIONS = {
              {item:'green_charm',      itemName:'Green charm',       chance:0.05, min:1,  max:1,    notable:false},
              {item:'crimson_charm',    itemName:'Crimson charm',     chance:0.035,min:1,  max:1,    notable:false},
              {item:'blue_charm',       itemName:'Blue charm',        chance:0.02, min:1,  max:1,    notable:true},
+             {item:'cut_dragonstone',  itemName:'Dragonstone',       chance:0.025,min:1,  max:1,    notable:false},
+             {item:'blood_rune',       itemName:'Blood rune',        chance:0.05, min:3,  max:8,    notable:false},
+             {item:'gold_bar',         itemName:'Gold bar',          chance:0.04, min:1,  max:2,    notable:false},
              {item:'cooked_shark',     itemName:'Cooked shark',      chance:0.10, min:1,  max:2,    notable:false}]},
     {id:'wyvern', name:'Wyvern', category:'Mobs', levelReq:70, xp:1018, ticks:16, stats:{hp:280, attack:55, defence:42},
      drops:[
@@ -2223,6 +2302,9 @@ const ACTIONS = {
       {item:'green_charm',  itemName:'Green charm',   chance:0.05, min:1,  max:1,   notable:false},
       {item:'crimson_charm',itemName:'Crimson charm', chance:0.03, min:1,  max:1,   notable:false},
       {item:'blue_charm',   itemName:'Blue charm',    chance:0.01, min:1,  max:1,   notable:false},
+      {item:'wyvern_heart', itemName:'Wyvern heart',  chance:0.005,min:1,  max:1,   notable:true},
+      {item:'law_rune',     itemName:'Law rune',      chance:0.06, min:3,  max:8,   notable:false},
+      {item:'uncut_diamond',itemName:'Uncut diamond', chance:0.025,min:1,  max:1,   notable:false},
       {item:'cooked_monkfish',itemName:'Cooked monkfish',chance:0.10,min:1,max:2,  notable:false},
     ]},
     {id:'dusk_prowler',  name:'Dusk Prowler',  category:'Mobs', levelReq:90, xp:2100, ticks:21, stats:{hp:430, attack:80, defence:60},
@@ -2233,40 +2315,62 @@ const ACTIONS = {
              {item:'green_charm',  itemName:'Green charm',  chance:0.06, min:1,max:1, notable:false},
              {item:'crimson_charm',itemName:'Crimson charm',chance:0.04, min:1,max:1, notable:true},
              {item:'blue_charm',   itemName:'Blue charm',   chance:0.02, min:1,max:1, notable:true},
+             {item:'shadow_shard', itemName:'Shadow shard', chance:0.007,min:1,max:1, notable:true},
+             {item:'death_rune',   itemName:'Death rune',   chance:0.06, min:5,max:12,notable:false},
+             {item:'blood_rune',   itemName:'Blood rune',   chance:0.04, min:3,max:8, notable:false},
+             {item:'uncut_dragonstone',itemName:'Uncut dragonstone',chance:0.02,min:1,max:1,notable:false},
              {item:'cooked_great_white_shark',itemName:'Cooked great white shark',chance:0.10,min:1,max:2,notable:false}]},
     // ── Slayer Monsters ───────────────────────────────────────────────────────
     {id:'scuttling_claw',    name:'Scuttling Claw',    category:'Slayer Monsters', levelReq:5,  xp:45,  ticks:5,  slayerReq:5,  stats:{hp:12,  attack:5,  defence:2},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:8, max:25,  notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.08, min:1,max:1, notable:false},
+             {item:'copper_ore',   itemName:'Copper ore',   chance:0.10, min:1,max:3, notable:false},
+             {item:'air_rune',     itemName:'Air rune',     chance:0.05, min:2,max:5, notable:false},
              {item:'cooked_shrimps',itemName:'Cooked shrimps',chance:0.10,min:1,max:2, notable:false}]},
     {id:'tunnel_lurker',     name:'Tunnel Lurker',     category:'Slayer Monsters', levelReq:10, xp:70,  ticks:6,  slayerReq:10, stats:{hp:18,  attack:9,  defence:5},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:12,max:40,  notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.09, min:1,max:1, notable:false},
+             {item:'tunnel_silk',  itemName:'Tunnel silk',  chance:0.008,min:1,max:1, notable:true},
+             {item:'copper_ore',   itemName:'Copper ore',   chance:0.08, min:1,max:3, notable:false},
+             {item:'iron_ore',     itemName:'Iron ore',     chance:0.06, min:1,max:2, notable:false},
              {item:'cooked_herring',itemName:'Cooked herring',chance:0.10,min:1,max:2, notable:false}]},
     {id:'wailing_wraith',    name:'Wailing Wraith',    category:'Slayer Monsters', levelReq:15, xp:95,  ticks:7,  slayerReq:15, stats:{hp:28,  attack:13, defence:7},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:15,max:55,  notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.09, min:1,max:1, notable:false},
+             {item:'soul_fragment',itemName:'Soul fragment', chance:0.007,min:1,max:1, notable:true},
+             {item:'soul_rune',    itemName:'Soul rune',    chance:0.04, min:2,max:5, notable:false},
+             {item:'chaos_rune',   itemName:'Chaos rune',   chance:0.04, min:2,max:5, notable:false},
              {item:'cooked_herring',itemName:'Cooked herring',chance:0.10,min:1,max:2, notable:false}]},
     {id:'stone_creeper',     name:'Stone Creeper',     category:'Slayer Monsters', levelReq:20, xp:130, ticks:8,  slayerReq:20, stats:{hp:38,  attack:16, defence:10},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:20,max:70,  notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.09, min:1,max:1, notable:false},
              {item:'green_charm',  itemName:'Green charm',  chance:0.03, min:1,max:1, notable:false},
+             {item:'grit_crystal', itemName:'Grit crystal', chance:0.008,min:1,max:1, notable:true},
+             {item:'copper_ore',   itemName:'Copper ore',   chance:0.10, min:1,max:5, notable:false},
+             {item:'iron_ore',     itemName:'Iron ore',     chance:0.06, min:1,max:3, notable:false},
              {item:'cooked_trout', itemName:'Cooked trout', chance:0.10, min:1,max:2, notable:false}]},
     {id:'venom_basilisk',    name:'Venom Basilisk',    category:'Slayer Monsters', levelReq:25, xp:175, ticks:8,  slayerReq:25, stats:{hp:50,  attack:20, defence:12},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:25,max:90,  notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.10, min:1,max:1, notable:false},
              {item:'green_charm',  itemName:'Green charm',  chance:0.03, min:1,max:1, notable:false},
+             {item:'basilisk_eye', itemName:'Basilisk eye', chance:0.007,min:1,max:1, notable:true},
+             {item:'thornweed_seed',itemName:'Thornweed seed',chance:0.04,min:1,max:2,notable:false},
+             {item:'uncut_sapphire',itemName:'Uncut sapphire',chance:0.03,min:1,max:1,notable:false},
              {item:'cooked_trout', itemName:'Cooked trout', chance:0.10, min:1,max:2, notable:false}]},
     {id:'hellfire_conjurer', name:'Hellfire Conjurer', category:'Slayer Monsters', levelReq:45, xp:300, ticks:10, slayerReq:45, stats:{hp:120, attack:32, defence:20, style:'mage'},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
              {item:'coins',        itemName:'Coins',        chance:1.00, min:60,max:200, notable:false},
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.11, min:1,max:1, notable:false},
              {item:'green_charm',  itemName:'Green charm',  chance:0.04, min:1,max:1, notable:false},
+             {item:'fire_essence', itemName:'Fire essence', chance:0.007,min:1,max:1, notable:true},
+             {item:'fire_rune',    itemName:'Fire rune',    chance:0.07, min:5,max:12,notable:false},
+             {item:'chaos_rune',   itemName:'Chaos rune',   chance:0.05, min:3,max:8, notable:false},
+             {item:'death_rune',   itemName:'Death rune',   chance:0.03, min:2,max:5, notable:false},
              {item:'cooked_tuna',  itemName:'Cooked tuna',  chance:0.10, min:1,max:2, notable:false}]},
     {id:'crimson_hound',     name:'Crimson Hound',     category:'Slayer Monsters', levelReq:50, xp:370, ticks:11, slayerReq:50, stats:{hp:135, attack:33, defence:22},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
@@ -2274,6 +2378,9 @@ const ACTIONS = {
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.12, min:1,max:1, notable:false},
              {item:'green_charm',  itemName:'Green charm',  chance:0.04, min:1,max:1, notable:false},
              {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,max:1, notable:true},
+             {item:'hound_pelt',   itemName:'Crimson hound pelt',chance:0.007,min:1,max:1,notable:true},
+             {item:'coal_ore',     itemName:'Coal ore',     chance:0.06, min:1,max:3, notable:false},
+             {item:'fire_rune',    itemName:'Fire rune',    chance:0.05, min:3,max:8, notable:false},
              {item:'cooked_lobster',itemName:'Cooked lobster',chance:0.10,min:1,max:2, notable:false}]},
     {id:'corrupt_shade',     name:'Corrupt Shade',     category:'Slayer Monsters', levelReq:60, xp:627, ticks:13, slayerReq:60, stats:{hp:200, attack:45, defence:30},
       drops:[{item:'bones',        itemName:'Bones',        chance:1.00, min:1,max:1, notable:false},
@@ -2281,6 +2388,9 @@ const ACTIONS = {
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.12, min:1,max:1, notable:false},
              {item:'green_charm',  itemName:'Green charm',  chance:0.04, min:1,max:1, notable:false},
              {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,max:1, notable:true},
+             {item:'soul_fragment',itemName:'Soul fragment', chance:0.007,min:1,max:1, notable:true},
+             {item:'blood_rune',   itemName:'Blood rune',   chance:0.05, min:3,max:8, notable:false},
+             {item:'soul_rune',    itemName:'Soul rune',    chance:0.04, min:2,max:5, notable:false},
              {item:'cooked_swordfish',itemName:'Cooked swordfish',chance:0.10,min:1,max:2,notable:false}]},
     {id:'ice_warrior', name:'Ice Warrior', category:'Slayer Monsters', levelReq:55, xp:440, ticks:12, stats:{hp:180, attack:42, defence:28},
      drops:[
@@ -2294,6 +2404,9 @@ const ACTIONS = {
       {item:'rune_broadsword', itemName:'Rune broadsword', chance:0.02,  min:1, max:1,  notable:false},
       {item:'rune_2h_sword',   itemName:'Rune 2h sword',   chance:0.01,  min:1, max:1,  notable:false},
       {item:'maple_longbow',   itemName:'Maple longbow',   chance:0.02,  min:1, max:1,  notable:false},
+      {item:'water_rune',     itemName:'Water rune',      chance:0.07,  min:5, max:12, notable:false},
+      {item:'law_rune',       itemName:'Law rune',        chance:0.04,  min:2, max:6,  notable:false},
+      {item:'uncut_sapphire', itemName:'Uncut sapphire',  chance:0.04,  min:1, max:1,  notable:false},
       {item:'cooked_lobster',  itemName:'Cooked lobster',  chance:0.10,  min:1, max:2,  notable:false},
     ]},
     {id:'grit_elemental',    name:'Grit Elemental',    category:'Slayer Monsters', levelReq:65, xp:780, ticks:14, slayerReq:65, stats:{hp:240, attack:52, defence:36},
@@ -2302,6 +2415,10 @@ const ACTIONS = {
              {item:'gold_charm',   itemName:'Gold charm',   chance:0.13, min:1,max:1, notable:false},
              {item:'green_charm',  itemName:'Green charm',  chance:0.05, min:1,max:1, notable:false},
              {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,max:1, notable:true},
+             {item:'grit_crystal', itemName:'Grit crystal', chance:0.007,min:1,max:1, notable:true},
+             {item:'uncut_ruby',   itemName:'Uncut ruby',   chance:0.04, min:1,max:1, notable:false},
+             {item:'earth_rune',   itemName:'Earth rune',   chance:0.06, min:5,max:10,notable:false},
+             {item:'adamantite_ore',itemName:'Adamantite ore',chance:0.04,min:1,max:2,notable:false},
              {item:'cooked_swordfish',itemName:'Cooked swordfish',chance:0.10,min:1,max:2,notable:false}]},
     {id:'stone_sentinel', name:'Stone Sentinel', category:'Slayer Monsters', levelReq:75, slayerReq:75, xp:1296, ticks:18, stats:{hp:300, attack:60, defence:45},
      drops:[
@@ -2314,6 +2431,9 @@ const ACTIONS = {
       {item:'green_charm',   itemName:'Green charm',   chance:0.05,  min:1,  max:1,   notable:false},
       {item:'crimson_charm', itemName:'Crimson charm', chance:0.03,  min:1,  max:1,   notable:false},
       {item:'blue_charm',    itemName:'Blue charm',    chance:0.016, min:1,  max:1,   notable:false},
+      {item:'grit_crystal',  itemName:'Grit crystal',  chance:0.006, min:1,  max:1,   notable:true},
+      {item:'rune_ore',      itemName:'Runite ore',    chance:0.04,  min:1,  max:2,   notable:false},
+      {item:'uncut_dragonstone',itemName:'Uncut dragonstone',chance:0.02,min:1,max:1, notable:false},
       {item:'cooked_monkfish',itemName:'Cooked monkfish',chance:0.10,min:1,  max:2,   notable:false},
     ]},
     {id:'vampire', name:'Vampire', category:'Slayer Monsters', levelReq:80, slayerReq:72, xp:1537, ticks:19, stats:{hp:340, attack:68, defence:50},
@@ -2327,6 +2447,9 @@ const ACTIONS = {
       {item:'crimson_charm', itemName:'Crimson charm',  chance:0.034, min:1,  max:1,   notable:false},
       {item:'blue_charm',    itemName:'Blue charm',     chance:0.017, min:1,  max:1,   notable:false},
       {item:'vampiric_edge', itemName:'Vampiric Edge',  chance:0.002, min:1,  max:1,   notable:true},
+      {item:'blood_rune',    itemName:'Blood rune',     chance:0.08,  min:5,  max:15,  notable:false},
+      {item:'goldbloom_seed',itemName:'Goldbloom seed', chance:0.04,  min:1,  max:2,   notable:false},
+      {item:'uncut_ruby',    itemName:'Uncut ruby',     chance:0.04,  min:1,  max:1,   notable:false},
       {item:'cooked_shark',  itemName:'Cooked shark',   chance:0.10,  min:1,  max:2,   notable:false},
     ]},
     {id:'void_stalker',      name:'Void Stalker',      category:'Slayer Monsters', levelReq:85, xp:1714, ticks:19, slayerReq:85, stats:{hp:360, attack:70, defence:55},
@@ -2337,6 +2460,9 @@ const ACTIONS = {
              {item:'green_charm',  itemName:'Green charm',  chance:0.05, min:1,max:1, notable:false},
              {item:'crimson_charm',itemName:'Crimson charm',chance:0.04, min:1,max:1, notable:true},
              {item:'blue_charm',   itemName:'Blue charm',   chance:0.02, min:1,max:1, notable:true},
+             {item:'void_crystal', itemName:'Void crystal', chance:0.006,min:1,max:1, notable:true},
+             {item:'soul_rune',    itemName:'Soul rune',    chance:0.06, min:5,max:12,notable:false},
+             {item:'death_rune',   itemName:'Death rune',   chance:0.05, min:3,max:8, notable:false},
              {item:'cooked_shark', itemName:'Cooked shark', chance:0.10, min:1,max:2, notable:false}]},
     // ── Bosses ────────────────────────────────────────────────────────────────
     {id:'burrower',   name:'The Burrower',         category:'Bosses', levelReq:30,  xp:565,   ticks:50,  spec:{type:'big_hit', interval:15, dmg:15, msg:'The Burrower slams you from below!'}, stats:{hp:500,  attack:18, defence:12},
@@ -2346,6 +2472,9 @@ const ACTIONS = {
              {item:'gold_charm',      itemName:'Gold charm',         chance:0.10, min:1,max:1, notable:false},
              {item:'green_charm',     itemName:'Green charm',        chance:0.03, min:1,max:1, notable:false},
              {item:'pet_baby_mole',   itemName:'Baby Mole',          chance:0.002,min:1,max:1, notable:true},
+             {item:'ironwort_seed',   itemName:'Ironwort seed',      chance:0.20, min:1,max:3, notable:false},
+             {item:'shimmerleaf_seed',itemName:'Shimmerleaf seed',   chance:0.10, min:1,max:2, notable:false},
+             {item:'coal_ore',        itemName:'Coal ore',           chance:0.15, min:2,max:5, notable:false},
              {item:'cooked_salmon',   itemName:'Cooked salmon',      chance:0.15, min:2,max:4, notable:false}]},
     {id:'void_dragon',        name:'Void Dragon',   category:'Bosses', levelReq:60,  xp:6266,  ticks:130, spec:{type:'big_hit', interval:20, dmg:25, msg:'The Void Dragon breathes void fire!'}, stats:{hp:1500, attack:45, defence:35},
       drops:[{item:'dragon_bones',    itemName:'Dragon bones',       chance:1.00, min:1,max:1, notable:false},
@@ -2356,6 +2485,10 @@ const ACTIONS = {
              {item:'green_charm',     itemName:'Green charm',        chance:0.04, min:1,max:1, notable:false},
              {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.03, min:1,max:1, notable:true},
              {item:'pet_void_wyrm',   itemName:'Void Wyrm',          chance:0.002,min:1,max:1, notable:true},
+             {item:'void_crystal',    itemName:'Void crystal',       chance:0.05, min:1,max:2, notable:false},
+             {item:'death_rune',      itemName:'Death rune',         chance:0.15, min:10,max:25,notable:false},
+             {item:'soul_rune',       itemName:'Soul rune',          chance:0.10, min:5, max:15,notable:false},
+             {item:'uncut_dragonstone',itemName:'Uncut dragonstone', chance:0.08, min:1, max:2, notable:false},
              {item:'cooked_swordfish',itemName:'Cooked swordfish',   chance:0.15, min:2,max:4, notable:false}]},
     {id:'deep_kings',  name:'Leviathan Kings',     category:'Bosses', levelReq:75,  xp:12960, ticks:180, spec:{type:'drain_prayer', interval:25, pts:2, msg:'The Leviathan Kings curse your prayers!'}, stats:{hp:2500, attack:55, defence:45},
       drops:[{item:'big_bones',       itemName:'Big bones',          chance:1.00, min:1,max:1, notable:false},
@@ -2366,6 +2499,10 @@ const ACTIONS = {
              {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.03, min:1,max:1, notable:true},
              {item:'blue_charm',      itemName:'Blue charm',         chance:0.02, min:1,max:1, notable:true},
              {item:'pet_deep_spawn',  itemName:'Deep Spawn',         chance:0.00133,min:1,max:1,notable:true},
+             {item:'blood_rune',      itemName:'Blood rune',         chance:0.15, min:10,max:20,notable:false},
+             {item:'soul_rune',       itemName:'Soul rune',          chance:0.10, min:5, max:12,notable:false},
+             {item:'uncut_dragonstone',itemName:'Uncut dragonstone', chance:0.08, min:1, max:2, notable:false},
+             {item:'leviathan_fang',  itemName:'Leviathan fang',     chance:0.004,min:1, max:1, notable:true},
              {item:'cooked_monkfish', itemName:'Cooked monkfish',    chance:0.15, min:2,max:4, notable:false}]},
     {id:'ancient_lich', name:'Ancient Lich', category:'Bosses', levelReq:90, xp:28000, ticks:280, spec:{type:'drain_prayer', interval:20, pts:3, msg:'The Ancient Lich drains your spiritual energy!'}, stats:{hp:4500, attack:75, defence:65},
      drops:[
@@ -2379,6 +2516,9 @@ const ACTIONS = {
       {item:'crimson_charm', itemName:'Crimson charm', chance:0.037,min:1,   max:1,   notable:false},
       {item:'blue_charm',    itemName:'Blue charm',    chance:0.019,min:1,   max:1,   notable:true},
       {item:'pet_lich_familiar',itemName:'Lich Familiar',chance:0.00133,min:1,max:1,  notable:true},
+      {item:'chaos_rune',     itemName:'Chaos rune',    chance:0.30,  min:20, max:50,  notable:false},
+      {item:'law_rune',       itemName:'Law rune',      chance:0.20,  min:10, max:25,  notable:false},
+      {item:'blood_rune',     itemName:'Blood rune',    chance:0.15,  min:10, max:20,  notable:false},
       {item:'cooked_great_white_shark',itemName:'Cooked great white shark',chance:0.15,min:2,max:4,notable:false},
     ]},
     {id:'solara',    name:'Commander Solara',   category:'Bosses', levelReq:85,  xp:19844, ticks:220, spec:{type:'big_hit', interval:20, dmg:35, msg:'Solara fires a celestial arrow!'}, stats:{hp:3000, attack:65, defence:55},
@@ -2390,6 +2530,11 @@ const ACTIONS = {
              {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.04, min:1,max:1, notable:true},
              {item:'blue_charm',      itemName:'Blue charm',         chance:0.02, min:1,max:1, notable:true},
              {item:'pet_solar_hawk',  itemName:'Solar Hawk',         chance:0.00133,min:1,max:1,notable:true},
+             {item:'solar_shard',     itemName:'Solar shard',        chance:0.004,min:1, max:1, notable:true},
+             {item:'law_rune',        itemName:'Law rune',           chance:0.20, min:10,max:20,notable:false},
+             {item:'blood_rune',      itemName:'Blood rune',         chance:0.10, min:5, max:15,notable:false},
+             {item:'uncut_dragonstone',itemName:'Uncut dragonstone', chance:0.08, min:1, max:2, notable:false},
+             {item:'gold_bar',        itemName:'Gold bar',           chance:0.10, min:2, max:5, notable:false},
              {item:'cooked_shark',    itemName:'Cooked shark',       chance:0.15, min:2,max:4, notable:false}]},
     {id:'karg',   name:'General Karg',    category:'Bosses', levelReq:85,  xp:19844, ticks:220, spec:{type:'big_hit', interval:15, dmg:30, msg:'Karg charges with his warlord axe!'}, stats:{hp:3000, attack:68, defence:52},
       drops:[{item:'dragon_bones',      itemName:'Dragon bones',     chance:1.00, min:1,max:1, notable:false},
@@ -2401,6 +2546,10 @@ const ACTIONS = {
              {item:'crimson_charm',     itemName:'Crimson charm',    chance:0.04, min:1,max:1, notable:true},
              {item:'blue_charm',        itemName:'Blue charm',       chance:0.02, min:1,max:1, notable:true},
              {item:'pet_war_pup',       itemName:'War Pup',          chance:0.00133,min:1,max:1,notable:true},
+             {item:'adamant_bar',       itemName:'Adamant bar',      chance:0.15, min:2,max:5, notable:false},
+             {item:'rune_bar',          itemName:'Rune bar',         chance:0.10, min:1,max:3, notable:false},
+             {item:'death_rune',        itemName:'Death rune',       chance:0.15, min:10,max:20,notable:false},
+             {item:'uncut_diamond',     itemName:'Uncut diamond',    chance:0.10, min:1,max:2, notable:false},
              {item:'cooked_shark',      itemName:'Cooked shark',     chance:0.15, min:2,max:4, notable:false}]},
     // Quest Boss — one-time, no drops, significantly harder than the regular version
     {id:'goblin_king_quest', name:'Goblin King (Quest)', category:'Quest Bosses', levelReq:50, xp:0, ticks:180,
@@ -2423,6 +2572,8 @@ const ACTIONS = {
         {item:'crimson_charm',itemName:'Crimson charm',chance:0.03, min:1,  max:1,   notable:false},
         {item:'goblin_crown', itemName:'Goblin Crown', chance:0.03, min:1,  max:1,   notable:true},
         {item:'goblin_sword', itemName:'Goblin Sword', chance:0.04, min:1,  max:1,   notable:true},
+        {item:'goblin_sigil', itemName:'Goblin sigil', chance:0.10, min:1,  max:3,   notable:false},
+        {item:'air_rune',     itemName:'Air rune',     chance:0.25, min:20, max:40,  notable:false},
         {item:'cooked_salmon',itemName:'Cooked salmon',chance:0.15, min:2,  max:4,   notable:false},
       ]},
     // Quest Boss — one-time, no drops, significantly harder than the regular version
@@ -2443,6 +2594,9 @@ const ACTIONS = {
         {item:'crimson_charm',     itemName:'Crimson charm',     chance:0.04, min:1,   max:1,    notable:true},
         {item:'blue_charm',        itemName:'Blue charm',        chance:0.02, min:1,   max:1,    notable:true},
         {item:'pet_void_herald',   itemName:'Void Herald',       chance:0.001,min:1,   max:1,    notable:true},
+        {item:'void_crystal',      itemName:'Void crystal',      chance:0.10, min:1,   max:3,    notable:false},
+        {item:'soul_rune',         itemName:'Soul rune',         chance:0.20, min:15,  max:30,   notable:false},
+        {item:'death_rune',        itemName:'Death rune',        chance:0.15, min:10,  max:20,   notable:false},
         {item:'cooked_great_white_shark',itemName:'Cooked great white shark',chance:0.15,min:2,max:4,notable:false},
       ]},
     // Quest Boss — one-time, no drops, significantly harder than the regular version
@@ -2463,6 +2617,9 @@ const ACTIONS = {
         {item:'blue_charm',       itemName:'Blue charm',      chance:0.015,min:1, max:1,   notable:true },
         {item:'phoenix_bow',      itemName:'Phoenix bow',     chance:0.008,min:1, max:1,   notable:true },
         {item:'pet_phoenix_chick',itemName:'Phoenix Chick',   chance:0.002,min:1, max:1,   notable:true },
+        {item:'fire_essence',     itemName:'Fire essence',    chance:0.15, min:1, max:3,   notable:false},
+        {item:'ironwort_seed',    itemName:'Ironwort seed',   chance:0.10, min:1, max:3,   notable:false},
+        {item:'thornweed_seed',   itemName:'Thornweed seed',  chance:0.08, min:1, max:2,   notable:false},
         {item:'cooked_monkfish',  itemName:'Cooked monkfish', chance:0.15, min:2, max:4,   notable:false},
       ]},
     {id:'harbinger',        name:'The Harbinger',                 category:'Bosses', levelReq:100, xp:42315, ticks:350, spec:{type:'big_hit', interval:20, dmg:45, msg:'The Harbinger unleashes a void surge!'}, stats:{hp:6000, attack:85, defence:70},
@@ -2474,8 +2631,12 @@ const ACTIONS = {
              {item:'green_charm',     itemName:'Green charm',        chance:0.06, min:1,max:1, notable:false},
              {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.04, min:1,max:1, notable:true},
              {item:'blue_charm',      itemName:'Blue charm',         chance:0.02, min:1,max:1, notable:true},
-             {item:'pet_void_spawn',  itemName:'Void Spawn',         chance:0.001, min:1,max:1,notable:true},
-             {item:'cooked_rocktail', itemName:'Cooked rocktail',    chance:0.15,  min:2,max:4,notable:false}]},
+             {item:'pet_void_spawn',  itemName:'Void Spawn',         chance:0.001, min:1,max:1, notable:true},
+             {item:'void_crystal',    itemName:'Void crystal',       chance:0.08,  min:1,max:2, notable:false},
+             {item:'soul_rune',       itemName:'Soul rune',          chance:0.20,  min:20,max:40,notable:false},
+             {item:'blood_rune',      itemName:'Blood rune',         chance:0.15,  min:10,max:25,notable:false},
+             {item:'uncut_dragonstone',itemName:'Uncut dragonstone', chance:0.10,  min:1,max:3, notable:false},
+             {item:'cooked_rocktail', itemName:'Cooked rocktail',    chance:0.15,  min:2,max:4, notable:false}]},
   ],
   prayer:[
     { id:'bury_auto',  name:'Bury bones',      label:'Bones buried',  category:'Burying',
@@ -3169,6 +3330,19 @@ const ITEM_STATS = {
   jaguar_tooth:{ attack:40, attackInterval:2, damageMult:0.70, accuracyPenalty:0.30 },
   ancient_platebody:{ attack:8, defence:95 }, warlord_chestplate:{ attack:6, defence:80 },
   berserker_ring:{ attack:8, defence:4 }, ring_of_kinship:{ attack:8, defence:8, desc:'A legendary ring forged from dungeoneering mastery.' }, void_drake_head:{ defence:5 },
+  goblin_ring:{defence:2, desc:"A sigil-stamped ring. 5% chance on any kill to pickpocket 50–300 bonus coins."},
+  bone_charm:{defence:3, desc:'Bones dropped by mobs have 20% chance to upgrade one tier.'},
+  troll_amulet:{attack:3, defence:4, desc:'8% chance each attack stuns the mob, skipping its next hit.'},
+  fang_ring:{attack:4, defence:3, desc:'Melee hits have 5% lifesteal.'},
+  shadow_amulet:{defence:5, desc:'20% chance to auto-escape PK encounters in the wilderness.'},
+  basilisk_amulet:{defence:6, desc:'Mobs spawn with 10% reduced max HP.'},
+  fire_ring:{defence:3, desc:'Fire spirits appear 25% more often during Firemaking.'},
+  wyvern_ring:{defence:5, desc:'Food heals 20% more HP when eaten.'},
+  void_ring:{mage:4, defence:4, desc:'Your active rune spell school proc triggers 15% more often.'},
+  silk_amulet:{defence:2, desc:'15% chance a failed Thieving pickpocket doesn\'t trigger a stun.'},
+  stone_amulet:{defence:6, desc:'5% chance Mining crits for 5× ore in one hit.'},
+  hound_ring:{range:4, defence:3, desc:'Ranged hits have 10% chance to apply a 3-tick bleed.'},
+  soul_amulet:{defence:5, desc:'8% chance each prayer point drained is refunded.'},
   leather_cowl:{ defence:3 }, leather_gloves:{ defence:2 }, leather_boots:{ defence:3 },
   boots_of_ash:{ defence:10 },
   gold_ring:{defence:2}, sapphire_ring:{mage:5,defence:2}, emerald_ring:{range:5,defence:3},
@@ -3337,6 +3511,9 @@ const EQUIP_SLOTS = {
   berserker_ring:'ring', ring_of_kinship:'ring', ring_of_haste:'ring', ring_of_endurance:'ring',
   sapphire_ring:'ring', emerald_ring:'ring', ruby_ring:'ring',
   diamond_ring:'ring', dragonstone_ring:'ring', onyx_ring:'ring', hydrix_ring:'ring', gold_ring:'ring',
+  goblin_ring:'ring', fang_ring:'ring', fire_ring:'ring', wyvern_ring:'ring', void_ring:'ring',
+  hound_ring:'ring', stone_amulet:'neck', troll_amulet:'neck', shadow_amulet:'neck',
+  basilisk_amulet:'neck', silk_amulet:'neck', soul_amulet:'neck', bone_charm:'neck',
   sapphire_amulet:'neck', emerald_amulet:'neck', ruby_amulet:'neck', diamond_amulet:'neck',
   dragonstone_amulet:'neck', onyx_amulet:'neck', hydrix_amulet:'neck', gold_amulet:'neck',
   shortbow:'weapon', oak_shortbow:'weapon', willow_shortbow:'weapon', teak_shortbow:'weapon',
@@ -3836,6 +4013,19 @@ function _describePerk(p){
     case 'slayer_double_kill': return `${pct(p.value)} chance each kill counts twice`;
     case 'slayer_zero_kill':   return `${pct(p.value)} chance each kill counts as 0`;
     case 'ammo_save':          return `${pct(p.value)} chance to save ammo on attack`;
+    case 'goblin_pickpocket':  return `${pct(p.value)} chance on kill to pickpocket 50–300 bonus coins`;
+    case 'bone_upgrade':       return `${pct(p.value)} chance bones upgrade one tier on drop`;
+    case 'stun_on_hit':        return `${pct(p.value)} chance each hit stuns mob (skips its next attack)`;
+    case 'melee_lifesteal':    return `${pct(p.value)} Melee lifesteal`;
+    case 'pk_immune':          return `${pct(p.value)} chance to auto-escape wilderness PK`;
+    case 'mob_weaken':         return `Mobs spawn with ${pct(p.value)} reduced max HP`;
+    case 'fire_spirit_bonus':  return `Fire spirits appear ${pct(p.value)} more often`;
+    case 'food_heal_bonus':    return `Food heals ${pct(p.value)} more HP`;
+    case 'spell_school_amp':   return `Spell school procs trigger ${pct(p.value)} more often`;
+    case 'silent_steal':       return `${pct(p.value)} chance getting caught doesn't stun`;
+    case 'ore_shatter':        return `${pct(p.value)} chance mining yields 5× ore`;
+    case 'ranged_bleed':       return `${pct(p.value)} chance Ranged hits apply a 3-tick bleed`;
+    case 'prayer_refund':      return `${pct(p.value)} chance each drained prayer point is refunded`;
     default:                   return p.type;
   }
 }
@@ -4162,7 +4352,9 @@ function eatFood(index){
   const itemId = state.combat.foodQueue[index];
   if (!itemId) return;
   if ((state.inventory[itemId] || 0) < 1){ log(`No ${state.itemNames[itemId] || itemId} left.`); return; }
-  const heal = FOOD_HEALS[itemId] || 0;
+  const _baseHeal = FOOD_HEALS[itemId] || 0;
+  const _healBonus = getJewelryBonus('food_heal_bonus', null);
+  const heal = _healBonus > 0 ? Math.floor(_baseHeal * (1 + _healBonus)) : _baseHeal;
   state.inventory[itemId]--;
   if (state.inventory[itemId] <= 0) delete state.inventory[itemId];
   state.combat.hp = Math.min(state.combat.maxHp, state.combat.hp + heal);
@@ -4272,8 +4464,10 @@ function combatTick(){
   const action = getAction(state.current.skillId, state.current.actionId);
   if (!action) return;
   if (!state.combat.mobHp || state.combat.mobMaxHp !== action.stats.hp){
-    state.combat.mobHp    = action.stats.hp;
-    state.combat.mobMaxHp = action.stats.hp;
+    const _weakenPct = getJewelryBonus('mob_weaken', null);
+    const _baseHp = action.stats.hp;
+    state.combat.mobHp    = _weakenPct > 0 ? Math.max(1, Math.floor(_baseHp * (1 - _weakenPct))) : _baseHp;
+    state.combat.mobMaxHp = state.combat.mobHp;
     state.combat.attackTimer = 0;
   }
   // Tick bleed each game tick (chinchompa)
@@ -4351,13 +4545,14 @@ function combatTick(){
     const petDmg = getPetBonus(`${state.current.skillId}_dmg`, null);
     if (petDmg && playerDmg > 0) playerDmg = Math.max(1, Math.ceil(playerDmg * (1 + petDmg)));
     // Spell effects on player damage (pre-apply)
+    const _spellAmp = 1 + getJewelryBonus('spell_school_amp', null);
     if (spell){
       const fx = spell.effect;
       if (fx.type === 'chaos'){
         if (playerDmg > 0 && Math.random() < fx.missPct) playerDmg = 0;
         else if (playerDmg > 0) playerDmg = Math.max(1, Math.floor(playerDmg * fx.mult));
       }
-      if (fx.type === 'crit' && playerDmg > 0 && Math.random() < fx.chance)
+      if (fx.type === 'crit' && playerDmg > 0 && Math.random() < Math.min(1, fx.chance * _spellAmp))
         playerDmg *= 2;
       if (fx.type === 'execute' && playerDmg > 0 && state.combat.mobHp > 0)
         if ((state.combat.mobHp / state.combat.mobMaxHp) < fx.threshold && Math.random() < fx.chance)
@@ -4399,6 +4594,19 @@ function combatTick(){
     }
     if (wEffect?.type === 'lifesteal' && playerDmg > 0)
       state.combat.hp = Math.min(state.combat.maxHp, state.combat.hp + Math.max(1, Math.floor(playerDmg * wEffect.pct)));
+    // Jewelry: stun_on_hit (troll_amulet) — 8% chance to stun mob
+    if (playerDmg > 0 && Math.random() < getJewelryBonus('stun_on_hit', null))
+      state.combat.stunNextMobAttack = true;
+    // Jewelry: melee_lifesteal (fang_ring) — 5% lifesteal on melee
+    if (state.current.skillId === 'melee' && playerDmg > 0){
+      const _mls = getJewelryBonus('melee_lifesteal', null);
+      if (_mls > 0) state.combat.hp = Math.min(state.combat.maxHp, state.combat.hp + Math.max(1, Math.floor(playerDmg * _mls)));
+    }
+    // Jewelry: ranged_bleed (hound_ring) — 10% chance to apply 3-tick bleed (1% mob HP/tick)
+    if (state.current.skillId === 'ranged' && playerDmg > 0 && state.combat.mobHp > 0
+        && Math.random() < getJewelryBonus('ranged_bleed', null)){
+      state.combat.bleed = { dmg: Math.max(1, Math.floor(state.combat.mobMaxHp * 0.01)), ticks: 3 };
+    }
     // Magic weapon proc effects
     const mwEffect = state.current.skillId === 'magic' && playerDmg > 0 ? getMageWeaponEffect() : null;
     if (mwEffect?.type === 'bonus_hit' && Math.random() < mwEffect.chance){
@@ -4419,7 +4627,7 @@ function combatTick(){
     const fx = _spell.effect;
     if (fx.type === 'mob_reduce' && mobDmg > 0)
       mobDmg = Math.floor(mobDmg * (1 - fx.pct));
-    if (fx.type === 'root_chance' && Math.random() < fx.chance)
+    if (fx.type === 'root_chance' && Math.random() < Math.min(1, fx.chance * _spellAmp))
       mobDmg = 0;
     if (fx.type === 'reflect' && mobDmg > 0 && state.combat.mobHp > 0){
       const reflected = Math.max(1, Math.floor(mobDmg * fx.pct));
@@ -5646,7 +5854,8 @@ function tick(){
       state.prayer.drainCounter = (state.prayer.drainCounter || 0) + 1;
       if (state.prayer.drainCounter >= threshold){
         state.prayer.drainCounter = 0;
-        state.prayer.points = Math.max(0, state.prayer.points - 1);
+        if (Math.random() >= getJewelryBonus('prayer_refund', null))
+          state.prayer.points = Math.max(0, state.prayer.points - 1);
         if (state.prayer.points === 0){
           state.prayer.active = {};
           log('Your prayer ran out.');
@@ -5760,11 +5969,15 @@ function completeAction(action, silent){
     const noCatchAt = action.levelReq + zeroAt;
     const catchChance = Math.max(0, (noCatchAt - level) / zeroAt * action.catchChance);
     if (Math.random() < catchChance){
-      const stunReduction = getCapeBonus('stun_reduction', null);
-      state.current.stunTicks = Math.max(1, Math.round((action.stunTicks || 5) * (1 - stunReduction)));
-      const secs = Math.ceil(state.current.stunTicks * TICK_MS / 1000);
-      if (!silent) log(`🚨 Caught! Stunned for ${secs}s.`);
-      return;
+      if (Math.random() < getJewelryBonus('silent_steal', null)){
+        // silk_amulet: caught but stun is silently avoided
+      } else {
+        const stunReduction = getCapeBonus('stun_reduction', null);
+        state.current.stunTicks = Math.max(1, Math.round((action.stunTicks || 5) * (1 - stunReduction)));
+        const secs = Math.ceil(state.current.stunTicks * TICK_MS / 1000);
+        if (!silent) log(`🚨 Caught! Stunned for ${secs}s.`);
+        return;
+      }
     }
   }
   // Lockpick slip: rusty lockpick can slip on locks (no loot, no stun)
@@ -5786,7 +5999,8 @@ function completeAction(action, silent){
     state.inventory[bone.item]--;
     if (state.inventory[bone.item] <= 0) delete state.inventory[bone.item];
     grantXp('prayer', bone.xpBase * (action.altarMult || 1) * (1 + getJewelryBonus('bone_xp', null)), silent);
-    if (action.wilderness && !silent && !wildernessEncounter && Math.random() < 0.12){
+    if (action.wilderness && !silent && !wildernessEncounter && Math.random() < 0.12
+        && Math.random() >= getJewelryBonus('pk_immune', null)){
       const prayLevel = levelForXp(state.skills.prayer.xp);
       const coins = (action.pkCoinBase || 80) + prayLevel * (action.pkCoinPerLevel || 12);
       wildernessEncounter = { expiresAt: Date.now() + 15000, coins };
@@ -5981,7 +6195,8 @@ function completeAction(action, silent){
     const xp = action.xpBase != null
       ? action.xpBase + agilLevel * (action.xpPerLevel || 0)
       : action.xp;
-    if (action.wilderness && !silent && !wildernessEncounter && Math.random() < 0.15){
+    if (action.wilderness && !silent && !wildernessEncounter && Math.random() < 0.15
+        && Math.random() >= getJewelryBonus('pk_immune', null)){
       const coins = action.pkCoinBase + agilLevel * (action.pkCoinPerLevel || 0);
       wildernessEncounter = { expiresAt: Date.now() + 15000, coins };
       $('wildernessPkToast').classList.add('show');
@@ -6030,8 +6245,16 @@ function completeAction(action, silent){
             continue;
           }
         }
-        grantItem(drop.item, drop.itemName, qty);
-        state.combatLog.unshift({ name: drop.itemName, qty, mob: action.name });
+        // bone_upgrade (bone_charm): chance to upgrade bone tier
+        let _grantItem = drop.item, _grantName = drop.itemName, _grantQty = qty;
+        const _boneUpgrade = getJewelryBonus('bone_upgrade', null);
+        if (_boneUpgrade > 0 && Math.random() < _boneUpgrade){
+          if (drop.item === 'bones')      { _grantItem = 'big_bones';    _grantName = 'Big bones'; }
+          else if (drop.item === 'big_bones')    { _grantItem = 'dragon_bones'; _grantName = 'Dragon bones'; }
+          else if (drop.item === 'dragon_bones') { _grantItem = 'wyvern_bones'; _grantName = 'Wyvern bones'; }
+        }
+        grantItem(_grantItem, _grantName, _grantQty);
+        state.combatLog.unshift({ name: _grantName, qty: _grantQty, mob: action.name });
         if (state.combatLog.length > 100) state.combatLog.length = 100;
         if (drop.notable && _clogSrc) logCollectionDrop(_clogSrc, drop.item, qty);
         if (drop.notable) logCollectionDrop('boss_pets', drop.item, qty);
@@ -6039,6 +6262,13 @@ function completeAction(action, silent){
       }
     }
     if (!silent) checkBonusDrop(skillId, action);
+    // Goblin pickpocket (goblin_ring): 5% chance to pickpocket bonus coins
+    const _gpPct = getJewelryBonus('goblin_pickpocket', null);
+    if (_gpPct > 0 && Math.random() < _gpPct){
+      const _gpCoins = 50 + Math.floor(Math.random() * 251);
+      grantItem('coins', 'Coins', _gpCoins);
+      if (!silent) log(`🪙 A goblin spirit snatches ${_gpCoins} coins for you!`);
+    }
     // Natural Predator (Phantom hunter's cape): 3% chance per combat kill to spawn an impling jar
     if (state.equipment?.cape === 'phantom_hunters_cape' && Math.random() < 0.03){
       const hunterLvl = levelForXp(state.skills.hunter?.xp || 0);
@@ -6208,6 +6438,11 @@ function completeAction(action, silent){
 }
 
 function checkBonusDrop(skillId, action){
+  // Mining: ore shatter (stone_amulet) — 5% chance 5× ore
+  if (skillId === 'mining' && Math.random() < getJewelryBonus('ore_shatter', null)){
+    grantItem(action.item, action.itemName, 4); // +4 extra (already got 1 from main grant)
+    if (!silent) log(`💥 Shatter strike! Extra ore burst!`);
+  }
   // Mining: geodes (5% per ore; tier based on level req)
   if (skillId === 'mining' && Math.random() < 0.05){
     const hi = action.levelReq > 50;
@@ -6276,7 +6511,7 @@ function checkBonusDrop(skillId, action){
     }
   }
   // Firemaking: fire spirit QTE (15% per burn; only one spirit at a time)
-  if (skillId === 'firemaking' && !fireSpirit && Math.random() < 0.15){
+  if (skillId === 'firemaking' && !fireSpirit && Math.random() < Math.min(1, 0.15 * (1 + getJewelryBonus('fire_spirit_bonus', null)))){
     const autoCollect = state.equipment?.neck === 'spirit_catcher' || state.equipment?.neck === 'adventurers_amulet';
     if (autoCollect){
       grantItem('fire_spirit', 'Fire spirit');
@@ -8339,6 +8574,9 @@ const MATERIAL_ITEM_IDS = new Set([
   'stone_fragment','vampire_dust','leviathan_fang','solar_shard',
   'crystal_map_fragment','goblin_diplomatic_note','phoenix_ember',
   'ancient_scroll','krackens_beak','map_to_the_deep','cloth','fine_cloth',
+  'goblin_sigil','ancient_bone','troll_tooth','werewolf_fang','shadow_shard',
+  'basilisk_eye','fire_essence','wyvern_heart','void_crystal','tunnel_silk',
+  'grit_crystal','hound_pelt','soul_fragment',
 ]);
 function getItemCat(id){
   if (id.startsWith('pet_'))                     return 'Pets';
