@@ -852,6 +852,12 @@ const JEWELRY_PERKS = {
   stone_amulet:       {type:'ore_shatter',                              value:0.05},
   hound_ring:         {type:'ranged_bleed',                             value:0.10},
   soul_amulet:        {type:'prayer_refund',                            value:0.08},
+  tungsten_ring:      {type:'counter_strike',                           value:0.10},
+  alloy_ring:         {type:'slag_curse',                               value:0.08},
+  depth_ring:         {type:'ore_upgrade',                              value:0.06},
+  tungsten_amulet:    {type:'damage_cap',                               value:0.15},
+  core_amulet:        {type:'smith_double',                             value:0.08},
+  forge_amulet:       {type:'craft_double',                             value:0.06},
 };
 
 const CLUE_TIERS = [
@@ -1239,6 +1245,11 @@ const SELL_PRICES = {
   dragonstone_ring:5000, dragonstone_amulet:8000,
   onyx_ring:20000,    onyx_amulet:30000,
   hydrix_ring:200000, hydrix_amulet:300000,
+  // Tungsten material and jewelry
+  tungsten_ingot:2500,
+  tungsten_ring:18000, alloy_ring:22000, depth_ring:28000,
+  tungsten_amulet:20000, core_amulet:26000, forge_amulet:32000,
+  pet_tungsten_shard:0,
   harbinger_amulet:50000,
   celestial_sword:100000, warlord_chestplate:150000, ancient_platebody:600000,
   abyssal_whip:40000, crystal_tool_seed:80000,
@@ -1661,6 +1672,12 @@ const ACTIONS = {
     {id:'craft_hound_ring',     name:'Hound Ring',      label:'Hound Rings crafted',      levelReq:55, xp:105, ticks:2, item:'hound_ring',     itemName:'Hound Ring',     category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'hound_pelt',    count:1,name:'Crimson hound pelt'}]},
     {id:'craft_stone_amulet',   name:'Stone Amulet',    label:'Stone Amulets crafted',    levelReq:55, xp:108, ticks:2, item:'stone_amulet',   itemName:'Stone Amulet',   category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'grit_crystal',  count:1,name:'Grit crystal'}]},
     {id:'craft_soul_amulet',    name:'Soul Amulet',     label:'Soul Amulets crafted',     levelReq:60, xp:115, ticks:2, item:'soul_amulet',    itemName:'Soul Amulet',    category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'soul_fragment',  count:1,name:'Soul fragment'}]},
+    {id:'craft_tungsten_ring',  name:'Tungsten ring',   label:'Tungsten rings made',      levelReq:100,xp:250, ticks:2, item:'tungsten_ring',  itemName:'Tungsten ring',  category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'tungsten_ingot',count:1,name:'Tungsten ingot'}]},
+    {id:'craft_tungsten_amulet',name:'Tungsten amulet', label:'Tungsten amulets made',    levelReq:101,xp:265, ticks:2, item:'tungsten_amulet',itemName:'Tungsten amulet',category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'tungsten_ingot',count:1,name:'Tungsten ingot'},{item:'onyx',count:1,name:'Onyx'}]},
+    {id:'craft_alloy_ring',     name:'Alloy ring',      label:'Alloy rings made',         levelReq:103,xp:285, ticks:2, item:'alloy_ring',     itemName:'Alloy ring',     category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'tungsten_ingot',count:1,name:'Tungsten ingot'}]},
+    {id:'craft_core_amulet',    name:'Core amulet',     label:'Core amulets made',        levelReq:104,xp:300, ticks:2, item:'core_amulet',    itemName:'Core amulet',    category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'tungsten_ingot',count:1,name:'Tungsten ingot'},{item:'onyx',count:1,name:'Onyx'}]},
+    {id:'craft_depth_ring',     name:'Depth ring',      label:'Depth rings made',         levelReq:106,xp:320, ticks:2, item:'depth_ring',     itemName:'Depth ring',     category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'tungsten_ingot',count:1,name:'Tungsten ingot'}]},
+    {id:'craft_forge_amulet',   name:'Forge amulet',    label:'Forge amulets made',       levelReq:107,xp:340, ticks:2, item:'forge_amulet',   itemName:'Forge amulet',   category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'tungsten_ingot',count:1,name:'Tungsten ingot'},{item:'hydrix',count:1,name:'Hydrix'}]},
     {id:'craft_wyvern_ring',    name:'Wyvern Ring',     label:'Wyvern Rings crafted',     levelReq:70, xp:140, ticks:2, item:'wyvern_ring',    itemName:'Wyvern Ring',    category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'wyvern_heart',   count:1,name:'Wyvern heart'}]},
     {id:'craft_void_ring',      name:'Void Ring',       label:'Void Rings crafted',       levelReq:75, xp:155, ticks:2, item:'void_ring',      itemName:'Void Ring',      category:'Jewellery', ingredients:[{item:'gold_bar',count:1,name:'Gold bar'},{item:'void_crystal',   count:1,name:'Void crystal'}]},
 
@@ -2718,6 +2735,31 @@ const ACTIONS = {
              {item:'lunar_torso',      itemName:'Lunar torso',       chance:0.05,  min:1,max:1,  notable:true},
              {item:'lunar_legs',       itemName:'Lunar legs',        chance:0.05,  min:1,max:1,  notable:true},
              {item:'cooked_rocktail', itemName:'Cooked rocktail',    chance:0.15,  min:2,max:4, notable:false}]},
+    // Quest Boss — one-time, no drops
+    {id:'tungsten_titan_quest', name:'Tungsten Titan (Quest)', category:'Quest Bosses', levelReq:90, xp:0, ticks:320,
+      stats:{hp:7000, attack:92, defence:78}, drops:[]},
+    // Farmable Boss — unlocked after Heart of the Deep quest
+    {id:'tungsten_titan', name:'Tungsten Titan', category:'Bosses', levelReq:90, xp:38000, ticks:320,
+      questReq:'heart_of_deep',
+      spec:{type:'big_hit', interval:20, dmg:42, msg:'The Tungsten Titan unleashes a crushing blow!'},
+      stats:{hp:5500, attack:84, defence:70},
+      drops:[
+        {item:'dragon_bones',        itemName:'Dragon bones',        chance:1.00,  min:1, max:1,    notable:false},
+        {item:'coins',               itemName:'Coins',               chance:1.00,  min:3000,max:10000,notable:false},
+        {item:'tungsten_ingot',      itemName:'Tungsten ingot',      chance:0.05,  min:1, max:1,    notable:true},
+        {item:'pet_tungsten_shard',  itemName:'Tungsten Shard',      chance:0.001, min:1, max:1,    notable:true},
+        {item:'gold_charm',          itemName:'Gold charm',          chance:0.15,  min:1, max:1,    notable:false},
+        {item:'green_charm',         itemName:'Green charm',         chance:0.06,  min:1, max:1,    notable:false},
+        {item:'crimson_charm',       itemName:'Crimson charm',       chance:0.04,  min:1, max:1,    notable:true},
+        {item:'blue_charm',          itemName:'Blue charm',          chance:0.02,  min:1, max:1,    notable:true},
+        {item:'rune_ore',            itemName:'Runite ore',          chance:0.15,  min:1, max:3,    notable:false},
+        {item:'death_rune',          itemName:'Death rune',          chance:0.20,  min:10,max:25,   notable:false},
+        {item:'soul_rune',           itemName:'Soul rune',           chance:0.15,  min:5, max:15,   notable:false},
+        {item:'adamant_bar',         itemName:'Adamant bar',         chance:0.20,  min:2, max:5,    notable:false},
+        {item:'rune_bar',            itemName:'Rune bar',            chance:0.10,  min:1, max:3,    notable:false},
+        {item:'uncut_dragonstone',   itemName:'Uncut dragonstone',   chance:0.10,  min:1, max:2,    notable:false},
+        {item:'cooked_rocktail',     itemName:'Cooked rocktail',     chance:0.15,  min:2, max:4,    notable:false},
+      ]},
   ],
   prayer:[
     { id:'bury_auto',  name:'Bury bones',      label:'Bones buried',  category:'Burying',
@@ -2988,6 +3030,7 @@ const COLLECTION_LOG_SOURCES = [
   { id:'boss_ancient_lich',name:'Ancient Lich', category:'Bosses', items:[{id:'ancient_scroll',name:'Ancient scroll',icon:'📜'}]},
   { id:'boss_void_herald', name:'Void Herald',  category:'Bosses', items:[{id:'herald_amulet',name:"Herald's amulet",icon:'📿'},{id:'dragonstone_charm',name:'Dragonstone charm',icon:'✨'}]},
   { id:'boss_phoenix',     name:'Phoenix',      category:'Bosses', items:[{id:'phoenix_bow',name:'Phoenix bow',icon:'🏹'},{id:'pet_phoenix_chick',name:'Phoenix Chick',icon:'🔥'}]},
+  { id:'boss_tungsten_titan', name:'Tungsten Titan', category:'Bosses', items:[{id:'tungsten_ingot',name:'Tungsten ingot',icon:'⚙️'},{id:'pet_tungsten_shard',name:'Tungsten Shard',icon:'🪨'}]},
   // Infused Magic Gear
   { id:'infused_magic_gear', name:'Infused Magic Gear', category:'Runecrafting', items:[
     {id:'stormwing_staff',  name:'Stormwing staff',  icon:'🌩️'},
@@ -3467,6 +3510,13 @@ const ITEM_STATS = {
   dragonstone_ring:{ attack:10, defence:10 }, dragonstone_amulet:{ attack:20, defence:15 },
   onyx_ring:{ attack:20, defence:20 }, onyx_amulet:{ attack:30, defence:20 },
   hydrix_ring:{ dropRate:5 }, hydrix_amulet:{ attack:40, defence:25 },
+  tungsten_ring:  {attack:15, defence:15, desc:"10% chance to counter-strike after taking a hit."},
+  alloy_ring:     {attack:18, defence:18, desc:"8% chance per attack to negate the mob's next hit."},
+  depth_ring:     {defence:22,            desc:"6% chance when mining to receive the next-tier ore."},
+  tungsten_amulet:{attack:12, defence:25, desc:"15% chance any incoming hit deals only 1 damage."},
+  core_amulet:    {attack:10, defence:22, desc:"8% chance when smithing to produce an extra item."},
+  forge_amulet:   {attack:8,  defence:18, desc:"6% chance when crafting/fletching/runecrafting/divination to produce an extra item."},
+  pet_tungsten_shard: {type:'pet', desc:'A tiny shard of the Tungsten Titan, still warm.'},
   emerald_amulet:{ defence:5 }, sapphire_amulet:{ mage:7 },
   shortbow:{range:10,attackInterval:3}, oak_shortbow:{range:18,attackInterval:3}, willow_shortbow:{range:27,attackInterval:3}, teak_shortbow:{range:33,attackInterval:3},
   maple_shortbow:{range:40,attackInterval:3}, mahogany_shortbow:{range:46,attackInterval:3}, yew_shortbow:{range:55,attackInterval:3}, magic_shortbow:{range:69,attackInterval:3},
@@ -3597,6 +3647,8 @@ const EQUIP_SLOTS = {
   basilisk_amulet:'neck', silk_amulet:'neck', soul_amulet:'neck', bone_charm:'neck',
   sapphire_amulet:'neck', emerald_amulet:'neck', ruby_amulet:'neck', diamond_amulet:'neck',
   dragonstone_amulet:'neck', onyx_amulet:'neck', hydrix_amulet:'neck', gold_amulet:'neck',
+  tungsten_ring:'ring', alloy_ring:'ring', depth_ring:'ring',
+  tungsten_amulet:'neck', core_amulet:'neck', forge_amulet:'neck',
   shortbow:'weapon', oak_shortbow:'weapon', willow_shortbow:'weapon', teak_shortbow:'weapon',
   maple_shortbow:'weapon', mahogany_shortbow:'weapon', yew_shortbow:'weapon', magic_shortbow:'weapon',
   elder_shortbow:'weapon', eternal_shortbow:'weapon',
@@ -3768,7 +3820,7 @@ function freshState(){
     stats:     { attack:1, range:1, mage:1, defence:1, prayer:1, summoning:1, dropRate:0 },
     farming:      { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false, readyAt:null },
     tree_farming: { seed:null, seedName:null, tree:null, treeName:null, plantedAt:null, ready:false, autoReplant:false, readyAt:null, autoHarvest:false },
-    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, selectedFoodType:null, attackTimer:0, kills:{}, potionBoosts:{}, bleed:{dmg:0, ticks:0}, burn:{dmg:0, ticks:0}, stunNextMobAttack:false, bossSpecTick:0, bossPhased:false, autoDrink:false },
+    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, selectedFoodType:null, attackTimer:0, kills:{}, potionBoosts:{}, bleed:{dmg:0, ticks:0}, burn:{dmg:0, ticks:0}, stunNextMobAttack:false, bossSpecTick:0, bossPhased:false, autoDrink:false, slagCursed:false },
     upgrades:       {},
     quests:         {},  // { questId: true } — completed quests
     autoOpenItems:  false,
@@ -4107,6 +4159,12 @@ function _describePerk(p){
     case 'ore_shatter':        return `${pct(p.value)} chance mining yields 5× ore`;
     case 'ranged_bleed':       return `${pct(p.value)} chance Ranged hits apply a 3-tick bleed`;
     case 'prayer_refund':      return `${pct(p.value)} chance each drained prayer point is refunded`;
+    case 'counter_strike':     return `${pct(p.value)} chance to retaliate after taking a hit`;
+    case 'slag_curse':         return `${pct(p.value)} chance per attack to negate mob's next hit`;
+    case 'ore_upgrade':        return `${pct(p.value)} chance to receive next-tier ore when mining`;
+    case 'damage_cap':         return `${pct(p.value)} chance any incoming hit deals only 1 damage`;
+    case 'smith_double':       return `${pct(p.value)} chance to produce an extra item when smithing`;
+    case 'craft_double':       return `${pct(p.value)} chance to produce an extra item when crafting/fletching/runecrafting/divination`;
     default:                   return p.type;
   }
 }
@@ -4681,6 +4739,9 @@ function combatTick(){
     // Jewelry: stun_on_hit (troll_amulet) — 8% chance to stun mob
     if (playerDmg > 0 && Math.random() < getJewelryBonus('stun_on_hit', null))
       state.combat.stunNextMobAttack = true;
+    // Jewelry: slag_curse (alloy_ring) — 8% chance to negate mob's next hit
+    if (playerDmg > 0 && Math.random() < getJewelryBonus('slag_curse', null))
+      state.combat.slagCursed = true;
     // Jewelry: melee_lifesteal (fang_ring) — 5% lifesteal on melee
     if (state.current.skillId === 'melee' && playerDmg > 0){
       const _mls = getJewelryBonus('melee_lifesteal', null);
@@ -4705,6 +4766,7 @@ function combatTick(){
   // Mob damage with spell effects applied
   let mobDmg = calcMobDamage(action);
   if (state.combat.stunNextMobAttack){ mobDmg = 0; state.combat.stunNextMobAttack = false; }
+  if (state.combat.slagCursed){ mobDmg = 0; state.combat.slagCursed = false; if (!silent) log('💢 Slag curse blocked the mob\'s hit!'); }
   const _spell = state.current.skillId === 'magic' && state.equipment.ammo
     ? RUNE_SPELLS[state.equipment.ammo] : null;
   if (_spell){
@@ -4720,7 +4782,15 @@ function combatTick(){
   }
   const _dodgeChance = getJewelryBonus('dodge', null);
   if (_dodgeChance > 0 && Math.random() < _dodgeChance) mobDmg = 0;
+  // Jewelry: damage_cap (tungsten_amulet) — 15% chance to cap incoming hit at 1
+  if (mobDmg > 1 && Math.random() < getJewelryBonus('damage_cap', null)) mobDmg = 1;
   state.combat.hp = Math.max(0, state.combat.hp - mobDmg);
+  // Jewelry: counter_strike (tungsten_ring) — 10% chance to retaliate after taking a hit
+  if (mobDmg > 0 && state.combat.mobHp > 0 && Math.random() < getJewelryBonus('counter_strike', null)){
+    const _csDmg = Math.max(1, Math.floor((calcStats().attack || 1) * 0.5));
+    state.combat.mobHp = Math.max(0, state.combat.mobHp - _csDmg);
+    if (!silent) log(`⚡ Counter-strike! ${_csDmg} dmg.`);
+  }
   // Boss special attack
   if (action.spec && action.category === 'Bosses'){
     state.combat.bossSpecTick = (state.combat.bossSpecTick || 0) + 1;
@@ -6246,6 +6316,17 @@ function completeAction(action, silent){
       { grantItem(action.item, action.itemName, qty); if (!silent) log('🔮 Rune Sprite: double runes!'); }
     if (_pet === 'pet_chisel_gnome' && skillId === 'construction' && action.category === 'Furniture' && Math.random() < 0.10)
       { grantItem(action.item, action.itemName, 1); if (!silent) log(`🪵 Chisel Gnome: buy one get one! (+1 ${action.itemName})`); }
+    // Jewelry: smith_double (core_amulet) — 8% chance extra smithing output
+    if (skillId === 'smithing' && Math.random() < getJewelryBonus('smith_double', null)){
+      grantItem(action.item, action.itemName, action.count || 1);
+      if (!silent) log(`🔥 Volcanic Core! Extra ${action.itemName}.`);
+    }
+    // Jewelry: craft_double (forge_amulet) — 6% chance extra crafting/fletching/runecrafting/divination output
+    if (['crafting','fletching','runecrafting','divination'].includes(skillId)
+        && Math.random() < getJewelryBonus('craft_double', null)){
+      grantItem(action.item, action.itemName, 1);
+      if (!silent) log(`🔨 Master Crafter! Extra ${action.itemName}.`);
+    }
     // Chef Mouse: successful cook also yields 1 burnt food
     if (_pet === 'pet_chef_mouse'   && skillId === 'cooking')
       grantItem('burnt_food', 'Burnt food', 1);
@@ -6568,6 +6649,16 @@ function checkBonusDrop(skillId, action){
     grantItem(action.item, action.itemName, 4); // +4 extra (already got 1 from main grant)
     if (!silent) log(`💥 Shatter strike! Extra ore burst!`);
   }
+  // Mining: ore_upgrade (depth_ring) — 6% chance to receive next-tier ore
+  if (skillId === 'mining' && Math.random() < getJewelryBonus('ore_upgrade', null)){
+    const _oreTiers = {
+      copper_ore:['iron_ore','Iron ore'], iron_ore:['coal_ore','Coal ore'],
+      coal_ore:['gold_ore','Gold ore'],   gold_ore:['mithril_ore','Mithril ore'],
+      mithril_ore:['adamantite_ore','Adamantite ore'], adamantite_ore:['rune_ore','Runite ore'],
+    };
+    const _up = _oreTiers[action.item];
+    if (_up){ grantItem(_up[0], _up[1], 1); if (!silent) log(`⛏️ Ore Sense! Upgraded to ${_up[1]}.`); }
+  }
   // Mining: geodes (5% per ore; tier based on level req)
   if (skillId === 'mining' && Math.random() < 0.05){
     const hi = action.levelReq > 50;
@@ -6737,12 +6828,14 @@ const QUEST_NAMES = {
   goblin_diplomacy:    'Goblin Diplomacy',
   echoes_of_deep:      'Echoes of the Deep',
   rise_of_the_phoenix: 'Rise of the Phoenix',
+  heart_of_deep:       'Heart of the Deep',
 };
 const QUEST_COMPLETE_MSGS = {
   lost_city:           'The Crystal course is now accessible.',
   goblin_diplomacy:    'The Goblin King now roams — challenge him in the Bosses tab.',
   echoes_of_deep:      'The Void Herald can now be challenged in the Bosses tab.',
   rise_of_the_phoenix: 'The Phoenix has been defeated — it now roams the volcanic peaks.',
+  heart_of_deep:       'The Titan has fallen — tungsten ingots can now be claimed from its remains in the Bosses tab.',
 };
 const QUEST_DATA = [
   {
@@ -6790,6 +6883,18 @@ const QUEST_DATA = [
       {type:'item',  id:'phoenix_ember', label:'Phoenix ember (rare drop from burning elder logs)'},
     ],
     rewards: 'Access to the Phoenix boss. Drops phoenix feathers for fletching and the rare Phoenix bow.',
+    progressNote: 'Track progress in the Combat → Quests tab.',
+  },
+  {
+    id: 'heart_of_deep',
+    name: 'Heart of the Deep',
+    icon: '⚙️',
+    lore: 'Deep beneath the mountains, a titan of living metal guards a vein of tungsten unlike any ore ever seen. Defeat it, and the rarest material in the world is yours.',
+    requirements: [
+      {type:'combat', level:90, label:'Combat level 90'},
+      {type:'skill', id:'crafting', level:85, label:'Crafting 85'},
+    ],
+    rewards: 'Tungsten ingots · Tungsten jewelry crafting (lv 100–107) · Farmable Tungsten Titan boss',
     progressNote: 'Track progress in the Combat → Quests tab.',
   },
 ];
@@ -8709,6 +8814,7 @@ const MATERIAL_ITEM_IDS = new Set([
   'goblin_sigil','ancient_bone','troll_tooth','werewolf_fang','shadow_shard',
   'basilisk_eye','fire_essence','wyvern_heart','void_crystal','tunnel_silk',
   'grit_crystal','hound_pelt','soul_fragment',
+  'tungsten_ingot',
 ]);
 function getItemCat(id){
   if (id.startsWith('pet_'))                     return 'Pets';
@@ -8961,6 +9067,7 @@ function init(){
   if (state.slayer.autoTask         === undefined) state.slayer.autoTask         = false;
   if (state.slayer.autoTaskMasterId === undefined) state.slayer.autoTaskMasterId = 'turael';
   if (state.combat.autoDrink        === undefined) state.combat.autoDrink        = false;
+  if (state.combat.slagCursed       === undefined) state.combat.slagCursed       = false;
   const _nameRenames = {
     'spirit_tz_kih_pouch':  'Spirit Bat pouch',
     'spirit_dagannoth_pouch':'Spirit Shark pouch',
