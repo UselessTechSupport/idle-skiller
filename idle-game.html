@@ -5595,7 +5595,7 @@ function tick(){
     }
   }
   if (state.current){
-    if (COMBAT_SKILL_IDS.has(state.current.skillId)){
+    if (COMBAT_SKILL_IDS.has(state.current.skillId) && state.current.skillId !== 'summoning'){
       combatTick();
     } else if (state.current.skillId === 'thieving' && (state.current.stunTicks || 0) > 0){
       state.current.stunTicks--;
@@ -5995,7 +5995,7 @@ function completeAction(action, silent){
     return;
   }
   // Combat: multi-skill XP distribution + loot drops
-  if (skillId && COMBAT_SKILL_IDS.has(skillId)){
+  if (skillId && COMBAT_SKILL_IDS.has(skillId) && skillId !== 'summoning'){
     const styleId = skillId;
     const base    = action.xp;
     const xpGrants = [
