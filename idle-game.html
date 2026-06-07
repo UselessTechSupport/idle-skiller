@@ -3825,7 +3825,7 @@ function freshState(){
     quests:         {},  // { questId: true } — completed quests
     autoOpenItems:  false,
     uiCollapsed:    {},  // { sectionId: true } — collapsed UI sections
-    settings:       { theme:'dark', compactMode:false, hideLocked:false, logLimit:60 },
+    settings:       { theme:'dark', compactMode:false, hideLocked:false, hideUnaffordable:false, logLimit:60 },
     archaeology:    { artifacts:{}, activePerks:{} },
     slayer:         { points:0, task:null, unlocks:{}, totalTasksDone:0, autoTask:false, autoTaskMasterId:'turael' },
     batch:          { limit:0, done:0 },
@@ -7942,6 +7942,9 @@ function renderSettings(){
   row(playGrp, 'Hide locked actions', 'Globally hide actions you can\'t use yet',
     toggleBtn(s.hideLocked, () => { s.hideLocked = !s.hideLocked; renderSettings(); renderActiveSkill(); }));
 
+  row(playGrp, 'Hide unaffordable', 'Hide actions you don\'t have the materials to make',
+    toggleBtn(s.hideUnaffordable, () => { s.hideUnaffordable = !s.hideUnaffordable; renderSettings(); renderActiveSkill(); }));
+
   row(playGrp, 'Auto-open items', 'Automatically open clue scrolls and loot bags',
     toggleBtn(state.autoOpenItems, () => { toggleAutoOpen(); renderSettings(); }));
 
@@ -8298,6 +8301,8 @@ function renderActiveSkill(){
   }
   const hideLocked = !!(state.settings?.hideLocked);
   let visibleActions = hideLocked ? actions.filter(a => lvl >= a.levelReq) : actions;
+  if (state.settings?.hideUnaffordable)
+    visibleActions = visibleActions.filter(a => !a.ingredients || !canAfford(a));
 
   // Sub-tabs for skills with multiple categories
   const cats = [...new Set(actions.map(a => a.category).filter(Boolean))];
@@ -9092,7 +9097,8 @@ function init(){
   if (!state.settings) state.settings = { theme:'dark', compactMode:false, hideLocked:false, logLimit:60 };
   if (state.settings.theme       == null) state.settings.theme       = 'dark';
   if (state.settings.compactMode == null) state.settings.compactMode = false;
-  if (state.settings.hideLocked  == null) state.settings.hideLocked  = false;
+  if (state.settings.hideLocked       == null) state.settings.hideLocked       = false;
+  if (state.settings.hideUnaffordable == null) state.settings.hideUnaffordable = false;
   if (state.settings.logLimit    == null) state.settings.logLimit    = 60;
   applySettings();
   if (!state.uiCollapsed) state.uiCollapsed = {};
