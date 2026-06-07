@@ -19,5 +19,9 @@ capacitor.config.json
 package.json
 package-lock.json
 sync.sh
+publish.sh
+update-app.sh
+CONTRIBUTING.md
+
 privacy-policy.html
 store-listing.md
