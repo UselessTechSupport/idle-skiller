@@ -1332,7 +1332,7 @@ const SELL_PRICES = {
   // Salamander weapons
   swamp_lizard:300, orange_salamander:800, red_salamander:2000, black_salamander:5000,
   // Other missing equipment
-  ice_gloves:5000, warlord_helm:80000,
+  ice_gloves:5000, warlord_helm:80000, prospector_helm:75000,
   // High-tier bars (extends bronze_bar:30 → rune_bar:800 curve)
   orikalkum_bar:1500, necronium_bar:2600, bane_bar:4000,
   elder_rune_bar:6000, primal_bar:10000,
@@ -3323,6 +3323,7 @@ const OPENABLE_ITEMS = {
     {id:'uncut_emerald',     name:'Uncut emerald',     weight:30},
     {id:'uncut_ruby',        name:'Uncut ruby',        weight:15},
     {id:'uncut_diamond',     name:'Uncut diamond',     weight:5},
+    {id:'prospector_helm',   name:'Prospector helm',   weight:1},
   ]},
   igneous_geode:{rewards:[
     {id:'rune_essence',      name:'Rune essence',      weight:50, minCount:50,  maxCount:150},
@@ -3330,6 +3331,7 @@ const OPENABLE_ITEMS = {
     {id:'uncut_diamond',     name:'Uncut diamond',     weight:30},
     {id:'uncut_dragonstone', name:'Uncut dragonstone', weight:25},
     {id:'uncut_onyx',        name:'Uncut onyx',        weight:5},
+    {id:'prospector_helm',   name:'Prospector helm',   weight:5},
   ]},
   metamorphic_geode:{rewards:[
     {id:'rune_essence',       name:'Rune essence',       weight:50000, minCount:150, maxCount:500},
@@ -3338,6 +3340,7 @@ const OPENABLE_ITEMS = {
     {id:'coins',              name:'Coins',              weight:20000, count:50000},
     {id:'dragonstone_charm',  name:'Dragonstone charm',  weight:4999},
     {id:'uncut_hydrix',       name:'Uncut hydrix',       weight:1},
+    {id:'prospector_helm',    name:'Prospector helm',    weight:15000},
   ]},
   birds_nest_seeds:{rewards:[
     {id:'acorn',       name:'Acorn',       weight:20},
@@ -3546,6 +3549,7 @@ const ITEM_STATS = {
   black_chinchompa:{range:18, bleed:{dmg:6, ticks:5}},
   ice_gloves:{defence:25},
   warlord_helm:{defence:40, attack:10},
+  prospector_helm:{defence:12, desc:"Senses companion ores while mining — yields one paired ore per action for certain rocks. No XP is granted for the bonus ore."},
   harbinger_amulet:{attack:15, range:15, mage:15, defence:20, dropRate:5},
   herald_amulet:   {attack:10, range:10, mage:10, defence:15, dropRate:3, desc:"A tri-stat amulet from the Void Herald. Boosts all combat styles and increases drop rates."},
   leviathan_fang:  {desc:'A relic from the Leviathan Kings. Needed for the Echoes of the Deep quest.'},
@@ -3615,7 +3619,7 @@ const EQUIP_SLOTS = {
   birch_staff:'weapon', oak_staff:'weapon',   willow_staff:'weapon', teak_staff:'weapon',
   maple_staff:'weapon', yew_staff:'weapon',   magic_staff:'weapon',
   swamp_lizard:'weapon', orange_salamander:'weapon', red_salamander:'weapon', black_salamander:'weapon',
-  void_drake_head:'head', leather_cowl:'head', kebbit_cowl:'head', cloth_hat:'head', splitbark_helm:'head', lunar_helm:'head',
+  void_drake_head:'head', leather_cowl:'head', kebbit_cowl:'head', cloth_hat:'head', splitbark_helm:'head', lunar_helm:'head', prospector_helm:'head',
   ancient_platebody:'body', warlord_chestplate:'body',
   kebbit_body:'body', kyatt_body:'body',
   phantom_vambraces:'gloves', phantom_chaps:'legs', phantom_body:'body', apex_phantom_body:'body',
@@ -6658,6 +6662,23 @@ function checkBonusDrop(skillId, action){
     };
     const _up = _oreTiers[action.item];
     if (_up){ grantItem(_up[0], _up[1], 1); if (!silent) log(`⛏️ Ore Sense! Upgraded to ${_up[1]}.`); }
+  }
+  // Mining: prospector helm companion ore
+  if (skillId === 'mining' && state.equipment?.head === 'prospector_helm'){
+    const _pairs = {
+      copper_ore:      ['tin_ore',         'Tin ore'],
+      tin_ore:         ['copper_ore',      'Copper ore'],
+      iron_ore:        ['coal',            'Coal'],
+      mithril_ore:     ['coal',            'Coal'],
+      adamantite_ore:  ['luminite_ore',    'Luminite ore'],
+      runite_ore:      ['luminite_ore',    'Luminite ore'],
+      orichalcite_ore: ['drakolith_ore',   'Drakolith ore'],
+      drakolith_ore:   ['orichalcite_ore', 'Orichalcite ore'],
+      necrite_ore:     ['phasmatite_ore',  'Phasmatite ore'],
+      phasmatite_ore:  ['necrite_ore',     'Necrite ore'],
+    };
+    const _p = _pairs[action.item];
+    if (_p) grantItem(_p[0], _p[1], 1);
   }
   // Mining: geodes (5% per ore; tier based on level req)
   if (skillId === 'mining' && Math.random() < 0.05){
