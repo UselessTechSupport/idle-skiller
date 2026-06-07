@@ -573,7 +573,6 @@
 
     <div class="footer-actions" style="margin-top:8px;">
       <button class="mini" id="saveBtn">💾 Save</button>
-      <button class="mini" id="resetBtn">🗑 Reset</button>
     </div>
   </div>
 </div>
@@ -8535,12 +8534,6 @@ function init(){
 // buttons
 $('stopBtn').onclick = stopAction;
 $('saveBtn').onclick = () => { save(); log('Saved.'); };
-$('resetBtn').onclick = () => {
-  if (confirm('Wipe your save and start over?')){
-    state = freshState(); logLines = []; viewedSkill = 'woodcutting';
-    save(); render(); renderLog(); log('Save reset.');
-  }
-};
 $('offlineClose').onclick = () => $('offlineModal').classList.remove('show');
 $('catchSpiritBtn').onclick = () => {
   if (!fireSpirit) return;
