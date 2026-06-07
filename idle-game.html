@@ -2297,7 +2297,7 @@ const ACTIONS = {
              {item:'blue_charm',   itemName:'Blue charm',   chance:0.02, min:1,max:1, notable:true},
              {item:'cooked_shark', itemName:'Cooked shark', chance:0.10, min:1,max:2, notable:false}]},
     // ── Bosses ────────────────────────────────────────────────────────────────
-    {id:'burrower',   name:'The Burrower',         category:'Bosses', levelReq:30,  xp:565,   ticks:50,  stats:{hp:500,  attack:18, defence:12},
+    {id:'burrower',   name:'The Burrower',         category:'Bosses', levelReq:30,  xp:565,   ticks:50,  spec:{type:'big_hit', interval:15, dmg:15, msg:'The Burrower slams you from below!'}, stats:{hp:500,  attack:18, defence:12},
       drops:[{item:'big_bones',       itemName:'Big bones',          chance:1.00, min:1,max:1, notable:false},
              {item:'coins',           itemName:'Coins',              chance:1.00, min:200,max:1000, notable:false},
              {item:'mole_skin',       itemName:'Mole skin',          chance:1.00, min:1,max:1, notable:true},
@@ -2305,7 +2305,7 @@ const ACTIONS = {
              {item:'green_charm',     itemName:'Green charm',        chance:0.03, min:1,max:1, notable:false},
              {item:'pet_baby_mole',   itemName:'Baby Mole',          chance:0.002,min:1,max:1, notable:true},
              {item:'cooked_salmon',   itemName:'Cooked salmon',      chance:0.15, min:2,max:4, notable:false}]},
-    {id:'void_dragon',        name:'Void Dragon',   category:'Bosses', levelReq:60,  xp:6266,  ticks:130, stats:{hp:1500, attack:45, defence:35},
+    {id:'void_dragon',        name:'Void Dragon',   category:'Bosses', levelReq:60,  xp:6266,  ticks:130, spec:{type:'big_hit', interval:20, dmg:25, msg:'The Void Dragon breathes void fire!'}, stats:{hp:1500, attack:45, defence:35},
       drops:[{item:'dragon_bones',    itemName:'Dragon bones',       chance:1.00, min:1,max:1, notable:false},
              {item:'coins',           itemName:'Coins',              chance:1.00, min:500,max:2000, notable:false},
              {item:'void_drake_head',       itemName:'Void drake head',          chance:0.05, min:1,max:1, notable:true},
@@ -2315,7 +2315,7 @@ const ACTIONS = {
              {item:'crimson_charm',   itemName:'Crimson charm',      chance:0.03, min:1,max:1, notable:true},
              {item:'pet_void_wyrm',   itemName:'Void Wyrm',          chance:0.002,min:1,max:1, notable:true},
              {item:'cooked_swordfish',itemName:'Cooked swordfish',   chance:0.15, min:2,max:4, notable:false}]},
-    {id:'deep_kings',  name:'Leviathan Kings',     category:'Bosses', levelReq:75,  xp:12960, ticks:180, stats:{hp:2500, attack:55, defence:45},
+    {id:'deep_kings',  name:'Leviathan Kings',     category:'Bosses', levelReq:75,  xp:12960, ticks:180, spec:{type:'drain_prayer', interval:25, pts:2, msg:'The Leviathan Kings curse your prayers!'}, stats:{hp:2500, attack:55, defence:45},
       drops:[{item:'big_bones',       itemName:'Big bones',          chance:1.00, min:1,max:1, notable:false},
              {item:'coins',           itemName:'Coins',              chance:1.00, min:800,max:3000, notable:false},
              {item:'berserker_ring',  itemName:'Berserker ring',     chance:0.04, min:1,max:1, notable:true},
@@ -2325,7 +2325,7 @@ const ACTIONS = {
              {item:'blue_charm',      itemName:'Blue charm',         chance:0.02, min:1,max:1, notable:true},
              {item:'pet_deep_spawn',  itemName:'Deep Spawn',         chance:0.00133,min:1,max:1,notable:true},
              {item:'cooked_monkfish', itemName:'Cooked monkfish',    chance:0.15, min:2,max:4, notable:false}]},
-    {id:'ancient_lich', name:'Ancient Lich', category:'Bosses', levelReq:90, xp:28000, ticks:280, stats:{hp:4500, attack:75, defence:65},
+    {id:'ancient_lich', name:'Ancient Lich', category:'Bosses', levelReq:90, xp:28000, ticks:280, spec:{type:'drain_prayer', interval:20, pts:3, msg:'The Ancient Lich drains your spiritual energy!'}, stats:{hp:4500, attack:75, defence:65},
      drops:[
       {item:'dragon_bones',  itemName:'Dragon bones',  chance:1.0,  min:1,   max:1,   notable:false},
       {item:'coins',         itemName:'Coins',         chance:1.0,  min:500, max:3000,notable:false},
@@ -2339,7 +2339,7 @@ const ACTIONS = {
       {item:'pet_lich_familiar',itemName:'Lich Familiar',chance:0.00133,min:1,max:1,  notable:true},
       {item:'cooked_great_white_shark',itemName:'Cooked great white shark',chance:0.15,min:2,max:4,notable:false},
     ]},
-    {id:'solara',    name:'Commander Solara',   category:'Bosses', levelReq:85,  xp:19844, ticks:220, stats:{hp:3000, attack:65, defence:55},
+    {id:'solara',    name:'Commander Solara',   category:'Bosses', levelReq:85,  xp:19844, ticks:220, spec:{type:'big_hit', interval:20, dmg:35, msg:'Solara fires a celestial arrow!'}, stats:{hp:3000, attack:65, defence:55},
       drops:[{item:'dragon_bones',    itemName:'Dragon bones',       chance:1.00, min:1,max:1, notable:false},
              {item:'coins',           itemName:'Coins',              chance:1.00, min:1000,max:4000, notable:false},
              {item:'celestial_sword', itemName:'Celestial sword',    chance:0.02, min:1,max:1, notable:true},
@@ -2349,7 +2349,7 @@ const ACTIONS = {
              {item:'blue_charm',      itemName:'Blue charm',         chance:0.02, min:1,max:1, notable:true},
              {item:'pet_solar_hawk',  itemName:'Solar Hawk',         chance:0.00133,min:1,max:1,notable:true},
              {item:'cooked_shark',    itemName:'Cooked shark',       chance:0.15, min:2,max:4, notable:false}]},
-    {id:'karg',   name:'General Karg',    category:'Bosses', levelReq:85,  xp:19844, ticks:220, stats:{hp:3000, attack:68, defence:52},
+    {id:'karg',   name:'General Karg',    category:'Bosses', levelReq:85,  xp:19844, ticks:220, spec:{type:'big_hit', interval:15, dmg:30, msg:'Karg charges with his warlord axe!'}, stats:{hp:3000, attack:68, defence:52},
       drops:[{item:'dragon_bones',      itemName:'Dragon bones',     chance:1.00, min:1,max:1, notable:false},
              {item:'coins',             itemName:'Coins',            chance:1.00, min:1000,max:4000, notable:false},
              {item:'warlord_chestplate', itemName:'Warlord chestplate',chance:0.02, min:1,max:1, notable:true},
@@ -2366,6 +2366,7 @@ const ACTIONS = {
     // Regular Boss — unlocked after Goblin Diplomacy quest
     {id:'goblin_king', name:'Goblin King', category:'Bosses', levelReq:30, xp:2000, ticks:100,
       questReq:'goblin_diplomacy',
+      spec:{type:'heal', interval:20, healPct:0.10, msg:'The Goblin King rallies his goblins!'},
       stats:{hp:900, attack:40, defence:30},
       drops:[
         {item:'big_bones',    itemName:'Big bones',    chance:1.0,  min:1,  max:1,   notable:false},
@@ -2388,6 +2389,7 @@ const ACTIONS = {
     // Farmable Boss — unlocked after Echoes of the Deep quest
     {id:'void_herald', name:'Void Herald', category:'Bosses', levelReq:90, xp:26000, ticks:260,
       questReq:'echoes_of_deep',
+      spec:{type:'phase', threshold:0.5, healPct:0.25, msg:'The Void Herald fractures reality and mends!'},
       stats:{hp:4500, attack:75, defence:65},
       drops:[
         {item:'dragon_bones',      itemName:'Dragon bones',      chance:1.00, min:1,   max:1,    notable:false},
@@ -2407,6 +2409,7 @@ const ACTIONS = {
     // Farmable Boss — unlocked after Rise of the Phoenix quest
     {id:'phoenix', name:'Phoenix', category:'Bosses', questReq:'rise_of_the_phoenix',
       levelReq:70, xp:14000, ticks:150,
+      spec:{type:'phase', threshold:0.5, healPct:0.20, msg:'The Phoenix rises from the ashes!'},
       stats:{hp:2200, attack:60, defence:45},
       drops:[
         {item:'phoenix_feather',  itemName:'Phoenix feather', chance:1.00, min:1, max:3,   notable:false},
@@ -2420,7 +2423,7 @@ const ACTIONS = {
         {item:'pet_phoenix_chick',itemName:'Phoenix Chick',   chance:0.002,min:1, max:1,   notable:true },
         {item:'cooked_monkfish',  itemName:'Cooked monkfish', chance:0.15, min:2, max:4,   notable:false},
       ]},
-    {id:'harbinger',        name:'The Harbinger',                 category:'Bosses', levelReq:100, xp:42315, ticks:350, stats:{hp:6000, attack:85, defence:70},
+    {id:'harbinger',        name:'The Harbinger',                 category:'Bosses', levelReq:100, xp:42315, ticks:350, spec:{type:'big_hit', interval:20, dmg:45, msg:'The Harbinger unleashes a void surge!'}, stats:{hp:6000, attack:85, defence:70},
       drops:[{item:'dragon_bones',    itemName:'Dragon bones',       chance:1.00, min:1,max:1, notable:false},
              {item:'coins',           itemName:'Coins',              chance:1.00, min:2000,max:8000, notable:false},
              {item:'ancient_platebody', itemName:'Ancient platebody',    chance:0.01, min:1,max:1, notable:true},
@@ -2808,86 +2811,86 @@ const CHARM_IDS = new Set(['gold_charm','green_charm','crimson_charm','blue_char
 const ACHIEVEMENTS = [
   // Skills — level 50 + max cap
   {id:'wc_50',   name:'Axe Hand',        desc:'Reach Woodcutting 50',    icon:'🪓', category:'Skills', checkFn:()=>levelForXp(state.skills.woodcutting.xp)>=50},
-  {id:'wc_110',  name:'Elder Cutter',    desc:'Reach Woodcutting 110',   icon:'🪓', category:'Skills', checkFn:()=>levelForXp(state.skills.woodcutting.xp)>=110},
+  {id:'wc_110',  name:'Elder Cutter',    desc:'Reach Woodcutting 110',   icon:'🪓', category:'Skills', checkFn:()=>levelForXp(state.skills.woodcutting.xp)>=110,   bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'woodcutting'},
   {id:'mn_50',   name:'Rock Hound',      desc:'Reach Mining 50',         icon:'⛏️', category:'Skills', checkFn:()=>levelForXp(state.skills.mining.xp)>=50},
-  {id:'mn_110',  name:'Ore Master',      desc:'Reach Mining 110',        icon:'⛏️', category:'Skills', checkFn:()=>levelForXp(state.skills.mining.xp)>=110},
+  {id:'mn_110',  name:'Ore Master',      desc:'Reach Mining 110',        icon:'⛏️', category:'Skills', checkFn:()=>levelForXp(state.skills.mining.xp)>=110,        bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'mining'},
   {id:'fish_50', name:'Angler',          desc:'Reach Fishing 50',        icon:'🎣', category:'Skills', checkFn:()=>levelForXp(state.skills.fishing.xp)>=50},
-  {id:'fish_99', name:'Sailfish Master', desc:'Reach Fishing 99',        icon:'🎣', category:'Skills', checkFn:()=>levelForXp(state.skills.fishing.xp)>=99},
+  {id:'fish_99', name:'Sailfish Master', desc:'Reach Fishing 99',        icon:'🎣', category:'Skills', checkFn:()=>levelForXp(state.skills.fishing.xp)>=99,        bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'fishing'},
   {id:'farm_50', name:'Gardener',        desc:'Reach Farming 50',        icon:'🌿', category:'Skills', checkFn:()=>levelForXp(state.skills.farming.xp)>=50},
-  {id:'farm_120',name:'Master Farmer',   desc:'Reach Farming 120',       icon:'🌿', category:'Skills', checkFn:()=>levelForXp(state.skills.farming.xp)>=120},
+  {id:'farm_120',name:'Master Farmer',   desc:'Reach Farming 120',       icon:'🌿', category:'Skills', checkFn:()=>levelForXp(state.skills.farming.xp)>=120,       bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'farming'},
   {id:'hunt_50', name:'Trapper',         desc:'Reach Hunter 50',         icon:'🦎', category:'Skills', checkFn:()=>levelForXp(state.skills.hunter.xp)>=50},
-  {id:'hunt_99', name:'Master Hunter',   desc:'Reach Hunter 99',         icon:'🦎', category:'Skills', checkFn:()=>levelForXp(state.skills.hunter.xp)>=99},
+  {id:'hunt_99', name:'Master Hunter',   desc:'Reach Hunter 99',         icon:'🦎', category:'Skills', checkFn:()=>levelForXp(state.skills.hunter.xp)>=99,         bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'hunter'},
   {id:'div_50',  name:'Memory Keeper',   desc:'Reach Divination 50',     icon:'✨', category:'Skills', checkFn:()=>levelForXp(state.skills.divination.xp)>=50},
-  {id:'div_99',  name:'Seer',            desc:'Reach Divination 99',     icon:'✨', category:'Skills', checkFn:()=>levelForXp(state.skills.divination.xp)>=99},
+  {id:'div_99',  name:'Seer',            desc:'Reach Divination 99',     icon:'✨', category:'Skills', checkFn:()=>levelForXp(state.skills.divination.xp)>=99,      bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'divination'},
   {id:'sm_50',   name:'Smelter',         desc:'Reach Smithing 50',       icon:'🔨', category:'Skills', checkFn:()=>levelForXp(state.skills.smithing.xp)>=50},
-  {id:'sm_110',  name:'Master Smith',    desc:'Reach Smithing 110',      icon:'🔨', category:'Skills', checkFn:()=>levelForXp(state.skills.smithing.xp)>=110},
+  {id:'sm_110',  name:'Master Smith',    desc:'Reach Smithing 110',      icon:'🔨', category:'Skills', checkFn:()=>levelForXp(state.skills.smithing.xp)>=110,       bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'smithing'},
   {id:'fm_50',   name:'Firemaker',       desc:'Reach Firemaking 50',     icon:'🔥', category:'Skills', checkFn:()=>levelForXp(state.skills.firemaking.xp)>=50},
-  {id:'fm_110',  name:'Inferno',         desc:'Reach Firemaking 110',    icon:'🔥', category:'Skills', checkFn:()=>levelForXp(state.skills.firemaking.xp)>=110},
+  {id:'fm_110',  name:'Inferno',         desc:'Reach Firemaking 110',    icon:'🔥', category:'Skills', checkFn:()=>levelForXp(state.skills.firemaking.xp)>=110,     bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'firemaking'},
   {id:'cook_50', name:'Chef',            desc:'Reach Cooking 50',        icon:'🍳', category:'Skills', checkFn:()=>levelForXp(state.skills.cooking.xp)>=50},
-  {id:'cook_99', name:'Master Chef',     desc:'Reach Cooking 99',        icon:'🍳', category:'Skills', checkFn:()=>levelForXp(state.skills.cooking.xp)>=99},
+  {id:'cook_99', name:'Master Chef',     desc:'Reach Cooking 99',        icon:'🍳', category:'Skills', checkFn:()=>levelForXp(state.skills.cooking.xp)>=99,         bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'cooking'},
   {id:'fl_50',   name:'Fletcher',        desc:'Reach Fletching 50',      icon:'🪃', category:'Skills', checkFn:()=>levelForXp(state.skills.fletching.xp)>=50},
-  {id:'fl_110',  name:'Bowmaster',       desc:'Reach Fletching 110',     icon:'🪃', category:'Skills', checkFn:()=>levelForXp(state.skills.fletching.xp)>=110},
+  {id:'fl_110',  name:'Bowmaster',       desc:'Reach Fletching 110',     icon:'🪃', category:'Skills', checkFn:()=>levelForXp(state.skills.fletching.xp)>=110,      bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'fletching'},
   {id:'cr_50',   name:'Artisan',         desc:'Reach Crafting 50',       icon:'💍', category:'Skills', checkFn:()=>levelForXp(state.skills.crafting.xp)>=50},
-  {id:'cr_110',  name:'Master Crafter',  desc:'Reach Crafting 110',      icon:'💍', category:'Skills', checkFn:()=>levelForXp(state.skills.crafting.xp)>=110},
+  {id:'cr_110',  name:'Master Crafter',  desc:'Reach Crafting 110',      icon:'💍', category:'Skills', checkFn:()=>levelForXp(state.skills.crafting.xp)>=110,       bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'crafting'},
   {id:'herb_50', name:'Apothecary',      desc:'Reach Herblore 50',       icon:'🌿', category:'Skills', checkFn:()=>levelForXp(state.skills.herblore.xp)>=50},
-  {id:'herb_120',name:'Master Herbalist',desc:'Reach Herblore 120',      icon:'🌿', category:'Skills', checkFn:()=>levelForXp(state.skills.herblore.xp)>=120},
+  {id:'herb_120',name:'Master Herbalist',desc:'Reach Herblore 120',      icon:'🌿', category:'Skills', checkFn:()=>levelForXp(state.skills.herblore.xp)>=120,       bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'herblore'},
   {id:'rc_50',   name:'Runecrafting',    desc:'Reach Runecrafting 50',   icon:'🔮', category:'Skills', checkFn:()=>levelForXp(state.skills.runecrafting.xp)>=50},
-  {id:'rc_110',  name:'Runemaster',      desc:'Reach Runecrafting 110',  icon:'🔮', category:'Skills', checkFn:()=>levelForXp(state.skills.runecrafting.xp)>=110},
+  {id:'rc_110',  name:'Runemaster',      desc:'Reach Runecrafting 110',  icon:'🔮', category:'Skills', checkFn:()=>levelForXp(state.skills.runecrafting.xp)>=110,   bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'runecrafting'},
   {id:'con_50',  name:'Builder',         desc:'Reach Construction 50',   icon:'🏠', category:'Skills', checkFn:()=>levelForXp(state.skills.construction.xp)>=50},
-  {id:'con_99',  name:'Architect',       desc:'Reach Construction 99',   icon:'🏠', category:'Skills', checkFn:()=>levelForXp(state.skills.construction.xp)>=99},
+  {id:'con_99',  name:'Architect',       desc:'Reach Construction 99',   icon:'🏠', category:'Skills', checkFn:()=>levelForXp(state.skills.construction.xp)>=99,    bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'construction'},
   {id:'agil_50', name:'Parkour',         desc:'Reach Agility 50',        icon:'🏃', category:'Skills', checkFn:()=>levelForXp(state.skills.agility.xp)>=50},
-  {id:'agil_99', name:'Nimble Feet',     desc:'Reach Agility 99',        icon:'🏃', category:'Skills', checkFn:()=>levelForXp(state.skills.agility.xp)>=99},
+  {id:'agil_99', name:'Nimble Feet',     desc:'Reach Agility 99',        icon:'🏃', category:'Skills', checkFn:()=>levelForXp(state.skills.agility.xp)>=99,         bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'agility'},
   {id:'th_50',   name:'Pickpocket',      desc:'Reach Thieving 50',       icon:'🪝', category:'Skills', checkFn:()=>levelForXp(state.skills.thieving.xp)>=50},
-  {id:'th_99',   name:'Master Thief',    desc:'Reach Thieving 99',       icon:'🪝', category:'Skills', checkFn:()=>levelForXp(state.skills.thieving.xp)>=99},
+  {id:'th_99',   name:'Master Thief',    desc:'Reach Thieving 99',       icon:'🪝', category:'Skills', checkFn:()=>levelForXp(state.skills.thieving.xp)>=99,         bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'thieving'},
   {id:'slay_sk_50',  name:'Slayer',      desc:'Reach Slayer 50',         icon:'💀', category:'Skills', checkFn:()=>levelForXp(state.skills.slayer.xp)>=50},
-  {id:'slay_sk_120', name:'Exterminator',desc:'Reach Slayer 120',        icon:'💀', category:'Skills', checkFn:()=>levelForXp(state.skills.slayer.xp)>=120},
+  {id:'slay_sk_120', name:'Exterminator',desc:'Reach Slayer 120',        icon:'💀', category:'Skills', checkFn:()=>levelForXp(state.skills.slayer.xp)>=120,         bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'slayer'},
   {id:'dg_50',   name:'Dungeoneer',      desc:'Reach Dungeoneering 50',  icon:'🗝️', category:'Skills', checkFn:()=>levelForXp(state.skills.dungeoneering.xp)>=50},
-  {id:'dg_120',  name:'Floor Master',    desc:'Reach Dungeoneering 120', icon:'🗝️', category:'Skills', checkFn:()=>levelForXp(state.skills.dungeoneering.xp)>=120},
+  {id:'dg_120',  name:'Floor Master',    desc:'Reach Dungeoneering 120', icon:'🗝️', category:'Skills', checkFn:()=>levelForXp(state.skills.dungeoneering.xp)>=120,  bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'dungeoneering'},
   {id:'arch_50', name:'Archaeologist',   desc:'Reach Archaeology 50',    icon:'🏺', category:'Skills', checkFn:()=>levelForXp(state.skills.archaeology.xp)>=50},
-  {id:'arch_120',name:'Site Director',   desc:'Reach Archaeology 120',   icon:'🏺', category:'Skills', checkFn:()=>levelForXp(state.skills.archaeology.xp)>=120},
+  {id:'arch_120',name:'Site Director',   desc:'Reach Archaeology 120',   icon:'🏺', category:'Skills', checkFn:()=>levelForXp(state.skills.archaeology.xp)>=120,    bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'archaeology'},
   {id:'pray_50', name:'Devout',          desc:'Reach Prayer 50',         icon:'🙏', category:'Skills', checkFn:()=>levelForXp(state.skills.prayer.xp)>=50},
-  {id:'pray_99', name:'High Priest', desc:'Reach Prayer 99',         icon:'🙏', category:'Skills', checkFn:()=>levelForXp(state.skills.prayer.xp)>=99},
+  {id:'pray_99', name:'High Priest',     desc:'Reach Prayer 99',         icon:'🙏', category:'Skills', checkFn:()=>levelForXp(state.skills.prayer.xp)>=99,           bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'prayer'},
   {id:'sum_50',  name:'Summoner',        desc:'Reach Summoning 50',      icon:'🧿', category:'Skills', checkFn:()=>levelForXp(state.skills.summoning.xp)>=50},
-  {id:'sum_99',  name:'Master Summoner', desc:'Reach Summoning 99',      icon:'🧿', category:'Skills', checkFn:()=>levelForXp(state.skills.summoning.xp)>=99},
+  {id:'sum_99',  name:'Master Summoner', desc:'Reach Summoning 99',      icon:'🧿', category:'Skills', checkFn:()=>levelForXp(state.skills.summoning.xp)>=99,        bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'summoning'},
   {id:'mel_50',  name:'Warrior',         desc:'Reach Melee 50',          icon:'⚔️', category:'Skills', checkFn:()=>levelForXp(state.skills.melee.xp)>=50},
-  {id:'mel_120', name:'Grandmaster',     desc:'Reach Melee 120',         icon:'⚔️', category:'Skills', checkFn:()=>levelForXp(state.skills.melee.xp)>=120},
+  {id:'mel_120', name:'Grandmaster',     desc:'Reach Melee 120',         icon:'⚔️', category:'Skills', checkFn:()=>levelForXp(state.skills.melee.xp)>=120,          bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'melee'},
   {id:'rng_50',  name:'Marksman',        desc:'Reach Ranged 50',         icon:'🏹', category:'Skills', checkFn:()=>levelForXp(state.skills.ranged.xp)>=50},
-  {id:'rng_120', name:'Sharpshooter',    desc:'Reach Ranged 120',        icon:'🏹', category:'Skills', checkFn:()=>levelForXp(state.skills.ranged.xp)>=120},
+  {id:'rng_120', name:'Sharpshooter',    desc:'Reach Ranged 120',        icon:'🏹', category:'Skills', checkFn:()=>levelForXp(state.skills.ranged.xp)>=120,          bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'ranged'},
   {id:'mag_50',  name:'Mage',            desc:'Reach Magic 50',          icon:'🔮', category:'Skills', checkFn:()=>levelForXp(state.skills.magic.xp)>=50},
-  {id:'mag_120', name:'Archmage',        desc:'Reach Magic 120',         icon:'🔮', category:'Skills', checkFn:()=>levelForXp(state.skills.magic.xp)>=120},
+  {id:'mag_120', name:'Archmage',        desc:'Reach Magic 120',         icon:'🔮', category:'Skills', checkFn:()=>levelForXp(state.skills.magic.xp)>=120,           bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'magic'},
   {id:'def_50',  name:'Defender',        desc:'Reach Defence 50',        icon:'🛡️', category:'Skills', checkFn:()=>levelForXp(state.skills.defence.xp)>=50},
-  {id:'def_99',  name:'Fortress',        desc:'Reach Defence 99',        icon:'🛡️', category:'Skills', checkFn:()=>levelForXp(state.skills.defence.xp)>=99},
+  {id:'def_99',  name:'Fortress',        desc:'Reach Defence 99',        icon:'🛡️', category:'Skills', checkFn:()=>levelForXp(state.skills.defence.xp)>=99,          bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'defence'},
   {id:'con_hp50',name:'Tough',           desc:'Reach Constitution 50',   icon:'❤️', category:'Skills', checkFn:()=>levelForXp(state.skills.constitution.xp)>=50},
-  {id:'con_hp99',name:'Unstoppable',     desc:'Reach Constitution 99',   icon:'❤️', category:'Skills', checkFn:()=>levelForXp(state.skills.constitution.xp)>=99},
+  {id:'con_hp99',name:'Unstoppable',     desc:'Reach Constitution 99',   icon:'❤️', category:'Skills', checkFn:()=>levelForXp(state.skills.constitution.xp)>=99,     bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'constitution'},
 
   // Total Level
-  {id:'tl_250',  name:'Adventurer',  desc:'Reach a total level of 250',   icon:'⭐', category:'Total Level', checkFn:()=>getTotalLevel()>=250},
-  {id:'tl_500',  name:'Veteran',     desc:'Reach a total level of 500',   icon:'⭐', category:'Total Level', checkFn:()=>getTotalLevel()>=500},
-  {id:'tl_1000', name:'Legend',      desc:'Reach a total level of 1,000', icon:'🌟', category:'Total Level', checkFn:()=>getTotalLevel()>=1000},
-  {id:'tl_2000', name:'Completionist',desc:'Reach a total level of 2,000',icon:'🌟', category:'Total Level', checkFn:()=>getTotalLevel()>=2000},
+  {id:'tl_250',  name:'Adventurer',  desc:'Reach a total level of 250',   icon:'⭐', category:'Total Level', checkFn:()=>getTotalLevel()>=250,  bonusType:'xp_pct', bonusVal:0.005},
+  {id:'tl_500',  name:'Veteran',     desc:'Reach a total level of 500',   icon:'⭐', category:'Total Level', checkFn:()=>getTotalLevel()>=500,  bonusType:'xp_pct', bonusVal:0.005},
+  {id:'tl_1000', name:'Legend',      desc:'Reach a total level of 1,000', icon:'🌟', category:'Total Level', checkFn:()=>getTotalLevel()>=1000, bonusType:'xp_pct', bonusVal:0.01},
+  {id:'tl_2000', name:'Completionist',desc:'Reach a total level of 2,000',icon:'🌟', category:'Total Level', checkFn:()=>getTotalLevel()>=2000, bonusType:'xp_pct', bonusVal:0.02},
 
   // Combat — boss kills
   {id:'kill_mole_1',   name:'Mole Hunter',    desc:'Kill the Burrower',              icon:'🦔', category:'Combat', checkFn:()=>(state.combat.kills?.burrower||0)>=1},
-  {id:'kill_mole_50',  name:'Mole Maniac',    desc:'Kill the Burrower 50 times',     icon:'🦔', category:'Combat', checkFn:()=>(state.combat.kills?.burrower||0)>=50},
+  {id:'kill_mole_50',  name:'Mole Maniac',    desc:'Kill the Burrower 50 times',     icon:'🦔', category:'Combat', checkFn:()=>(state.combat.kills?.burrower||0)>=50,                                                            bonusType:'xp_combat', bonusVal:0.005},
   {id:'kill_kbd_1',    name:'Dragonslayer',   desc:'Kill the Void Dragon',      icon:'🐉', category:'Combat', checkFn:()=>(state.combat.kills?.void_dragon||0)>=1,    lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<60},
-  {id:'kill_kbd_50',   name:'Dragon Farmer',  desc:'Kill the Void Dragon 50 times',          icon:'🐉', category:'Combat', checkFn:()=>(state.combat.kills?.void_dragon||0)>=50,   lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<60},
-  {id:'kill_dag_1',    name:'Depths Slayer',desc:'Kill the Leviathan Kings',       icon:'👑', category:'Combat', checkFn:()=>(state.combat.kills?.deep_kings||0)>=1,  lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<75},
-  {id:'kill_dag_50',   name:'Leviathan Grind', desc:'Kill the Leviathan Kings 50×',   icon:'👑', category:'Combat', checkFn:()=>(state.combat.kills?.deep_kings||0)>=50, lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<75},
+  {id:'kill_kbd_50',   name:'Dragon Farmer',  desc:'Kill the Void Dragon 50 times',  icon:'🐉', category:'Combat', checkFn:()=>(state.combat.kills?.void_dragon||0)>=50,   lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<60,  bonusType:'xp_combat', bonusVal:0.005},
+  {id:'kill_dag_1',    name:'Depths Slayer',  desc:'Kill the Leviathan Kings',       icon:'👑', category:'Combat', checkFn:()=>(state.combat.kills?.deep_kings||0)>=1,  lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<75},
+  {id:'kill_dag_50',   name:'Leviathan Grind',desc:'Kill the Leviathan Kings 50×',   icon:'👑', category:'Combat', checkFn:()=>(state.combat.kills?.deep_kings||0)>=50, lockFn:()=>levelForXp(state.skills.slayer?.xp||0)<75,  bonusType:'xp_combat', bonusVal:0.005},
   {id:'kill_zilyana_1',name:'Holy Warrior',   desc:'Kill Commander Solara',         icon:'⚔️', category:'Combat', checkFn:()=>(state.combat.kills?.solara||0)>=1,    lockFn:()=>!state.slayer.unlocks?.boss_tasks},
-  {id:'kill_zil_50',   name:'Solar Devout',    desc:'Kill Commander Solara 50×',     icon:'⚔️', category:'Combat', checkFn:()=>(state.combat.kills?.solara||0)>=50,   lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'kill_zil_50',   name:'Solar Devout',   desc:'Kill Commander Solara 50×',     icon:'⚔️', category:'Combat', checkFn:()=>(state.combat.kills?.solara||0)>=50,   lockFn:()=>!state.slayer.unlocks?.boss_tasks,            bonusType:'xp_combat', bonusVal:0.005},
   {id:'kill_graardor_1',name:'Band of Brothers',desc:'Kill General Karg',        icon:'🪖', category:'Combat', checkFn:()=>(state.combat.kills?.karg||0)>=1,   lockFn:()=>!state.slayer.unlocks?.boss_tasks},
-  {id:'kill_graard_50',name:"Warlord's Bane",    desc:'Kill General Karg 50×',      icon:'🪖', category:'Combat', checkFn:()=>(state.combat.kills?.karg||0)>=50,  lockFn:()=>!state.slayer.unlocks?.boss_tasks},
-  {id:'kill_nex_1',    name:'Ancient Foe',    desc:'Kill the Harbinger',                       icon:'💀', category:'Combat', checkFn:()=>(state.combat.kills?.harbinger||0)>=1,        lockFn:()=>!state.slayer.unlocks?.boss_tasks},
-  {id:'kill_nex_50',   name:"Harbinger's Nemesis",    desc:'Kill the Harbinger 50 times',              icon:'💀', category:'Combat', checkFn:()=>(state.combat.kills?.harbinger||0)>=50,       lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'kill_graard_50',name:"Warlord's Bane", desc:'Kill General Karg 50×',      icon:'🪖', category:'Combat', checkFn:()=>(state.combat.kills?.karg||0)>=50,  lockFn:()=>!state.slayer.unlocks?.boss_tasks,              bonusType:'xp_combat', bonusVal:0.005},
+  {id:'kill_nex_1',    name:'Ancient Foe',    desc:'Kill the Harbinger',             icon:'💀', category:'Combat', checkFn:()=>(state.combat.kills?.harbinger||0)>=1,        lockFn:()=>!state.slayer.unlocks?.boss_tasks},
+  {id:'kill_nex_50',   name:"Harbinger's Nemesis",desc:'Kill the Harbinger 50 times',icon:'💀', category:'Combat', checkFn:()=>(state.combat.kills?.harbinger||0)>=50,       lockFn:()=>!state.slayer.unlocks?.boss_tasks,            bonusType:'xp_combat', bonusVal:0.005},
   {id:'kill_lich_1',  name:'Lich Bane',   desc:'Kill the Ancient Lich',          icon:'💀', category:'Combat', checkFn:()=>(state.combat.kills?.ancient_lich||0)>=1,  lockFn:()=>!state.slayer.unlocks?.boss_tasks},
-  {id:'kill_lich_50', name:'Lich Master', desc:'Kill the Ancient Lich 50 times', icon:'💀', category:'Combat', checkFn:()=>(state.combat.kills?.ancient_lich||0)>=50, lockFn:()=>!state.slayer.unlocks?.boss_tasks},
-  {id:'kill_void_herald_1', name:'Herald Slayer',   desc:'Kill the Void Herald',             icon:'🐲', category:'Combat', checkFn:()=>(state.combat.kills?.void_herald||0)>=1,   lockFn:()=>!state.quests?.echoes_of_deep},
-  {id:'kill_void_herald_50',name:"Herald's Ruin",   desc:'Kill the Void Herald 50 times',    icon:'🐲', category:'Combat', checkFn:()=>(state.combat.kills?.void_herald||0)>=50,  lockFn:()=>!state.quests?.echoes_of_deep},
+  {id:'kill_lich_50', name:'Lich Master', desc:'Kill the Ancient Lich 50 times', icon:'💀', category:'Combat', checkFn:()=>(state.combat.kills?.ancient_lich||0)>=50, lockFn:()=>!state.slayer.unlocks?.boss_tasks,              bonusType:'xp_combat', bonusVal:0.005},
+  {id:'kill_void_herald_1', name:'Herald Slayer',  desc:'Kill the Void Herald',            icon:'🐲', category:'Combat', checkFn:()=>(state.combat.kills?.void_herald||0)>=1,   lockFn:()=>!state.quests?.echoes_of_deep},
+  {id:'kill_void_herald_50',name:"Herald's Ruin",  desc:'Kill the Void Herald 50 times',   icon:'🐲', category:'Combat', checkFn:()=>(state.combat.kills?.void_herald||0)>=50,  lockFn:()=>!state.quests?.echoes_of_deep,                bonusType:'xp_combat', bonusVal:0.005},
 
   // Slayer tasks
   {id:'slay_10',  name:'On Task',     desc:'Complete 10 Slayer tasks',   icon:'📋', category:'Slayer', checkFn:()=>(state.slayer.totalTasksDone||0)>=10},
-  {id:'slay_50',  name:'Taskmaster',  desc:'Complete 50 Slayer tasks',   icon:'📋', category:'Slayer', checkFn:()=>(state.slayer.totalTasksDone||0)>=50},
-  {id:'slay_100', name:'Executioner', desc:'Complete 100 Slayer tasks',  icon:'📋', category:'Slayer', checkFn:()=>(state.slayer.totalTasksDone||0)>=100},
+  {id:'slay_50',  name:'Taskmaster',  desc:'Complete 50 Slayer tasks',   icon:'📋', category:'Slayer', checkFn:()=>(state.slayer.totalTasksDone||0)>=50,  bonusType:'xp_pct', bonusVal:0.005, bonusSkill:'slayer'},
+  {id:'slay_100', name:'Executioner', desc:'Complete 100 Slayer tasks',  icon:'📋', category:'Slayer', checkFn:()=>(state.slayer.totalTasksDone||0)>=100, bonusType:'xp_pct', bonusVal:0.01,  bonusSkill:'slayer'},
 
   // Special / Collection
   {id:'got_hydrix',    name:'Hydrix Hunter',     desc:'Obtain an uncut hydrix',                   icon:'🟣', category:'Special', checkFn:()=>((state.collectionLog?.geode_metamorphic?.uncut_hydrix||0)+(state.collectionLog?.jar_dragon?.uncut_hydrix||0))>0},
@@ -3465,7 +3468,7 @@ function freshState(){
     stats:     { attack:1, range:1, mage:1, defence:1, prayer:1, summoning:1, dropRate:0 },
     farming:      { seed:null, seedName:null, herb:null, herbName:null, plantedAt:null, ready:false, autoReplant:false, readyAt:null },
     tree_farming: { seed:null, seedName:null, tree:null, treeName:null, plantedAt:null, ready:false, autoReplant:false, readyAt:null },
-    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, selectedFoodType:null, attackTimer:0, kills:{}, potionBoosts:{}, bleed:{dmg:0, ticks:0}, burn:{dmg:0, ticks:0}, stunNextMobAttack:false },
+    combat:    { style:'melee', defensive:false, tab:'mobs', hp:0, maxHp:0, mobHp:0, mobMaxHp:0, lastRegen:0, foodQueue:[], autoEatThreshold:50, selectedFoodType:null, attackTimer:0, kills:{}, potionBoosts:{}, bleed:{dmg:0, ticks:0}, burn:{dmg:0, ticks:0}, stunNextMobAttack:false, bossSpecTick:0, bossPhased:false },
     upgrades:       {},
     quests:         {},  // { questId: true } — completed quests
     autoOpenItems:  false,
@@ -3531,6 +3534,9 @@ function grantXp(skillId, xp, silent=false){
     const archCombat = getArchBonus('xp_combat');
     if (archCombat) xp *= (1 + archCombat);
   }
+  const achXp = getAchievementBonus('xp_pct', skillId);
+  const achXpCombat = COMBAT_SKILL_IDS.has(skillId) ? getAchievementBonus('xp_combat', null) : 0;
+  if (achXp || achXpCombat) xp *= (1 + achXp + achXpCombat);
   const sumXp = getSummonBonusForSkill('xp_pct', skillId);
   if (sumXp) xp *= (1 + sumXp);
   const capeXp = getCapeBonus('xp_pct', skillId);
@@ -3703,6 +3709,17 @@ function getArchBonus(type){
   for (const id of Object.keys(state.archaeology.activePerks)){
     const a = ARCH_ARTIFACTS.find(x => x.id === id);
     if (a?.bonusType === type) total += a.bonusVal;
+  }
+  return total;
+}
+
+function getAchievementBonus(type, skillId){
+  if (!state.achievements) return 0;
+  let total = 0;
+  for (const ach of ACHIEVEMENTS){
+    if (!state.achievements[ach.id] || !ach.bonusType || ach.bonusType !== type) continue;
+    if (ach.bonusSkill && skillId && ach.bonusSkill !== skillId) continue;
+    total += ach.bonusVal || 0;
   }
   return total;
 }
@@ -4362,6 +4379,34 @@ function combatTick(){
   const _dodgeChance = getJewelryBonus('dodge', null);
   if (_dodgeChance > 0 && Math.random() < _dodgeChance) mobDmg = 0;
   state.combat.hp = Math.max(0, state.combat.hp - mobDmg);
+  // Boss special attack
+  if (action.spec && action.category === 'Bosses'){
+    state.combat.bossSpecTick = (state.combat.bossSpecTick || 0) + 1;
+    const _spec = action.spec;
+    if (_spec.type === 'phase' && !state.combat.bossPhased && state.combat.mobHp > 0
+        && state.combat.mobHp < state.combat.mobMaxHp * (_spec.threshold || 0.5)){
+      state.combat.bossPhased = true;
+      const _heal = Math.floor(state.combat.mobMaxHp * _spec.healPct);
+      state.combat.mobHp = Math.min(state.combat.mobMaxHp, state.combat.mobHp + _heal);
+      log(`⚡ ${_spec.msg}`);
+    }
+    if (_spec.type !== 'phase' && state.combat.bossSpecTick >= _spec.interval){
+      state.combat.bossSpecTick = 0;
+      if (_spec.type === 'big_hit'){
+        state.combat.hp = Math.max(0, state.combat.hp - _spec.dmg);
+        log(`⚡ ${_spec.msg} (-${_spec.dmg} HP)`);
+      } else if (_spec.type === 'drain_prayer'){
+        if ((state.prayer?.points || 0) > 0){
+          state.prayer.points = Math.max(0, state.prayer.points - _spec.pts);
+          log(`⚡ ${_spec.msg} (-${_spec.pts} prayer)`);
+        }
+      } else if (_spec.type === 'heal'){
+        const _heal = Math.floor(state.combat.mobMaxHp * _spec.healPct);
+        state.combat.mobHp = Math.min(state.combat.mobMaxHp, state.combat.mobHp + _heal);
+        log(`⚡ ${_spec.msg}`);
+      }
+    }
+  }
   // Auto-eat: fire before death check so food can save the player
   if (state.upgrades?.auto_eat && state.combat.foodQueue.length > 0){
     const threshold = state.combat.maxHp * ((state.combat.autoEatThreshold || 50) / 100);
@@ -4395,6 +4440,8 @@ function combatTick(){
   if (state.combat.mobHp <= 0){
     completeAction(action);
     state.combat.stunNextMobAttack = false;
+    state.combat.bossSpecTick = 0;
+    state.combat.bossPhased = false;
     if (state.current){
       state.combat.mobHp    = action.stats.hp;
       state.combat.mobMaxHp = action.stats.hp;
@@ -5409,21 +5456,22 @@ function getCurrentEffTicks(action){
   const petSpeed  = getPetBonus('speed_pct', state.current?.skillId);
   const jwlSpeed  = getJewelryBonus('speed_pct', state.current?.skillId);
   const warmAura  = state.equipment?.pet === 'pet_fire_sprite' ? 0.02 : 0; // Fire Sprite: 2% faster all skills
+  const achSpeed  = getAchievementBonus('speed_pct', state.current?.skillId);
   if (state.current?.skillId === 'thieving'){
     const agilLevel = effLvl('agility');
     if (action.lock){
       const toolMult = getToolSpeedMult('thieving');
       const agilMult = 1 - (agilLevel / 99 * 0.30);
-      return Math.max(1, Math.ceil(base * toolMult * agilMult * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed)));
+      return Math.max(1, Math.ceil(base * toolMult * agilMult * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed)));
     }
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20)) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed)));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20)) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed)));
   }
   if (state.current?.skillId === 'runecrafting'){
     const agilLevel = effLvl('agility');
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed)));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed)));
   }
   const archSpeed = getArchBonus(`speed_${state.current?.skillId}`);
-  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current?.skillId) * getConstructionMult(state.current?.skillId) * (1 - archSpeed) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed)));
+  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current?.skillId) * getConstructionMult(state.current?.skillId) * (1 - archSpeed) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed)));
 }
 
 function getConstructionMult(skillId){
@@ -6886,7 +6934,15 @@ function renderAchievements(){
       const locked = !done && !!ach.lockFn?.();
       const card = document.createElement('div');
       card.className = 'ach-card' + (done ? ' done' : '') + (locked ? ' locked' : '');
-      card.innerHTML = `<span class="ach-icon">${ach.icon}</span><div><div class="ach-name">${ach.name}</div><div class="ach-desc">${ach.desc}</div></div><span class="ach-status">${done ? '✅' : locked ? '🔒' : ''}</span>`;
+      let _bonusHtml = '';
+      if (ach.bonusType){
+        const _pct = (ach.bonusVal * 100).toFixed(1).replace('.0','');
+        const _lbl = ach.bonusType === 'xp_combat' ? 'Combat XP'
+          : ach.bonusType === 'speed_pct' ? `${ach.bonusSkill ? SKILL_BY_ID[ach.bonusSkill]?.name+' ' : ''}Speed`
+          : `${ach.bonusSkill ? SKILL_BY_ID[ach.bonusSkill]?.name+' ' : ''}XP`;
+        _bonusHtml = `<span style="font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;font-weight:600;background:${done?'#16a34a':'rgba(100,100,100,0.25)'};color:${done?'#fff':'var(--dim)'}">+${_pct}% ${_lbl}</span>`;
+      }
+      card.innerHTML = `<span class="ach-icon">${ach.icon}</span><div><div class="ach-name">${ach.name}${_bonusHtml}</div><div class="ach-desc">${ach.desc}</div></div><span class="ach-status">${done ? '✅' : locked ? '🔒' : ''}</span>`;
       list.appendChild(card);
     }
   }
@@ -8409,6 +8465,8 @@ function init(){
   if (!state.lastActionData)  state.lastActionData  = { skillId: null, xp: 0 };
   if (!state.activeLog)       state.activeLog       = 'main';
   if (!state.combatLog)       state.combatLog       = [];
+  if (state.combat.bossSpecTick == null) state.combat.bossSpecTick = 0;
+  if (state.combat.bossPhased == null)   state.combat.bossPhased   = false;
   if (state.summoning.autoRenew == null) state.summoning.autoRenew = true;
   if (state.summoning.active && Date.now() >= state.summoning.active.expiresAt){
     const _pid = state.summoning.active.pouchId;
