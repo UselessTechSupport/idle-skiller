@@ -4578,15 +4578,17 @@ function renderCombatPanel(){
     const aeLabel = document.createElement('span');
     aeLabel.style.color = 'var(--dim)';
     aeLabel.textContent = 'Auto-eat at:';
+    const _prevTh = document.getElementById('autoEatThreshSel')?.value;
     const thSel = document.createElement('select');
+    thSel.id = 'autoEatThreshSel';
     thSel.style.cssText = 'background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:2px 4px;font-size:12px;';
     [25, 50, 60, 75, 90].forEach(pct => {
       const o = document.createElement('option');
       o.value = pct;
       o.textContent = pct + '% HP';
-      o.selected = (state.combat.autoEatThreshold || 50) === pct;
       thSel.appendChild(o);
     });
+    thSel.value = _prevTh || String(state.combat.autoEatThreshold || 50);
     thSel.onchange = () => { state.combat.autoEatThreshold = +thSel.value; };
     aeRow.appendChild(aeLabel);
     aeRow.appendChild(thSel);
@@ -4600,7 +4602,9 @@ function renderCombatPanel(){
     if (availableFood.length > 0){
       const addRow = document.createElement('div');
       addRow.style.cssText = 'display:flex;gap:4px;';
+      const _prevFood = document.getElementById('autoEatFoodSel')?.value;
       const sel = document.createElement('select');
+      sel.id = 'autoEatFoodSel';
       sel.style.cssText = 'flex:1;background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:3px;font-size:12px;';
       availableFood.forEach(k => {
         const opt = document.createElement('option');
@@ -4608,8 +4612,9 @@ function renderCombatPanel(){
         opt.textContent = `${state.itemNames[k] || k} ×${state.inventory[k]} (+${FOOD_HEALS[k]} HP)`;
         sel.appendChild(opt);
       });
-      if (state.combat.selectedFoodType && availableFood.includes(state.combat.selectedFoodType))
-        sel.value = state.combat.selectedFoodType;
+      const _foodPick = (_prevFood && availableFood.includes(_prevFood)) ? _prevFood
+        : (state.combat.selectedFoodType && availableFood.includes(state.combat.selectedFoodType)) ? state.combat.selectedFoodType : '';
+      if (_foodPick) sel.value = _foodPick;
       sel.onchange = () => { state.combat.selectedFoodType = sel.value; };
       const addBtn = document.createElement('button');
       addBtn.className = 'mini';
@@ -4931,6 +4936,7 @@ function renderFarmTab(){
     const availTreesT = TREE_SEEDS.filter(t => (state.inventory[t.id] || 0) > 0);
     const plantRowT = document.createElement('div');
     plantRowT.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:8px;';
+    const _prevTreeTab = document.getElementById('treeSeedDropdownTab')?.value;
     const selT = document.createElement('select');
     selT.id = 'treeSeedDropdownTab';
     selT.style.cssText = 'flex:1;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font-size:13px;';
@@ -4946,6 +4952,7 @@ function renderFarmTab(){
         opt.disabled = locked;
         selT.appendChild(opt);
       });
+      if (_prevTreeTab && availTreesT.some(t => t.id === _prevTreeTab)) selT.value = _prevTreeTab;
     }
     const plantBtnT = document.createElement('button');
     plantBtnT.className = 'mini';
@@ -5122,6 +5129,8 @@ function renderFarmSection(){
     const availTrees = TREE_SEEDS.filter(t => (state.inventory[t.id] || 0) > 0);
     const plantRow2 = document.createElement('div');
     plantRow2.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:8px;';
+    if (document.activeElement?.id === 'treeSeedDropdown') return;
+    const _prevTree = document.getElementById('treeSeedDropdown')?.value;
     const sel2 = document.createElement('select');
     sel2.id = 'treeSeedDropdown';
     sel2.style.cssText = 'flex:1;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font-size:13px;';
@@ -5137,6 +5146,7 @@ function renderFarmSection(){
         opt.disabled = locked;
         sel2.appendChild(opt);
       });
+      if (_prevTree && availTrees.some(t => t.id === _prevTree)) sel2.value = _prevTree;
     }
     const plantBtn2 = document.createElement('button');
     plantBtn2.className = 'mini';
@@ -5358,14 +5368,16 @@ function renderSlayerSection(){
     togBtn.textContent = state.slayer.autoTask ? 'ON' : 'OFF';
     togBtn.onclick = () => { state.slayer.autoTask = !state.slayer.autoTask; render(); };
     atRow.appendChild(togBtn);
+    const _prevMaster = document.getElementById('slayerMasterSel')?.value;
     const sel = document.createElement('select');
+    sel.id = 'slayerMasterSel';
     sel.style.cssText = 'background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:4px;padding:2px 6px;font-size:12px;';
     SLAYER_MASTERS.filter(m => slayerLv >= m.levelReq).forEach(m => {
       const opt = document.createElement('option');
       opt.value = m.id; opt.textContent = m.name;
-      if (m.id === (state.slayer.autoTaskMasterId || 'turael')) opt.selected = true;
       sel.appendChild(opt);
     });
+    sel.value = _prevMaster || state.slayer.autoTaskMasterId || 'turael';
     sel.onchange = () => { state.slayer.autoTaskMasterId = sel.value; };
     atRow.appendChild(sel);
     el.appendChild(atRow);
@@ -6722,14 +6734,16 @@ function renderShop(){
         const lbl = document.createElement('span');
         lbl.style.cssText = 'font-size:12px;color:var(--dim);';
         lbl.textContent = 'Auto-task:';
+        const _prevMasterQ = document.getElementById('slayerMasterQuestSel')?.value;
         const sel = document.createElement('select');
+        sel.id = 'slayerMasterQuestSel';
         sel.style.cssText = 'background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:4px;padding:2px 6px;font-size:12px;';
         SLAYER_MASTERS.filter(m => slayerLv >= m.levelReq).forEach(m => {
           const opt = document.createElement('option');
           opt.value = m.id; opt.textContent = m.name;
-          if (m.id === (state.slayer.autoTaskMasterId || 'turael')) opt.selected = true;
           sel.appendChild(opt);
         });
+        sel.value = _prevMasterQ || state.slayer.autoTaskMasterId || 'turael';
         sel.onchange = () => { state.slayer.autoTaskMasterId = sel.value; };
         atRow.appendChild(lbl); atRow.appendChild(togBtn); atRow.appendChild(sel);
         el.appendChild(atRow);
@@ -7321,15 +7335,17 @@ function renderSettings(){
   // Log
   const logGrp = group('Log');
 
+  const _prevLog = document.getElementById('logSizeSel')?.value;
   const logSel = document.createElement('select');
+  logSel.id = 'logSizeSel';
   logSel.style.cssText = 'background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:13px;';
   [20, 40, 60, 100, 200].forEach(n => {
     const opt = document.createElement('option');
     opt.value = n;
     opt.textContent = `${n} lines`;
-    opt.selected = s.logLimit === n;
     logSel.appendChild(opt);
   });
+  logSel.value = _prevLog || String(s.logLimit || 60);
   logSel.onchange = () => {
     s.logLimit = +logSel.value;
     const lim = s.logLimit;
