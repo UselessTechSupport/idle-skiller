@@ -8316,26 +8316,35 @@ const ITEM_CAT_ORDER = [
   'Openable','Equipment','Pets','Clues','Food & Potions','Seeds & Herbs',
   'Summoning Pouches','Summoning',
   'Ores & Bars','Logs','Fish','Gems & Hides','Runes & Energy',
-  'Ammo','Hunter','Currency','Other'
+  'Ammo','Hunter','Currency','Materials','Other'
 ];
+const MATERIAL_ITEM_IDS = new Set([
+  'stone_fragment','vampire_dust','leviathan_fang','solar_shard',
+  'crystal_map_fragment','goblin_diplomatic_note','phoenix_ember',
+  'ancient_scroll','krackens_beak','map_to_the_deep','cloth','fine_cloth',
+]);
 function getItemCat(id){
   if (id.startsWith('pet_'))                     return 'Pets';
   if (id.startsWith('clue_'))                    return 'Clues';
   if (OPENABLE_ITEMS[id])                        return 'Openable';
   if (SUMMON_POUCH_IDS.has(id))                  return 'Summoning Pouches';
   if (id.endsWith('_charm'))                     return 'Summoning';
-  if (id.endsWith('_arrow') || id.endsWith('_bolt') || id.includes('chinchompa')) return 'Ammo';
-  if (id.endsWith('_rune') || id.endsWith('_energy') || id.includes('_memory') || id === 'rune_essence' || id === 'pure_essence') return 'Runes & Energy';
+  if (id.endsWith('_arrow') || id.endsWith('_arrowhead') || id.endsWith('_bolt') || id.includes('chinchompa') || id === 'phoenix_feather') return 'Ammo';
+  if (id.endsWith('_rune') || id.endsWith('_energy') || id.includes('_memory') || id === 'rune_essence' || id === 'pure_essence' || id === 'divine_dust') return 'Runes & Energy';
   if (id.endsWith('bow_u'))                      return 'Equipment';
   if (EQUIP_SLOTS[id])                           return 'Equipment';
   if (FOOD_HEALS[id] || id.endsWith('_potion'))  return 'Food & Potions';
-  if (id.endsWith('_seed') || HERB_IDS.has(id))  return 'Seeds & Herbs';
+  if (id === 'acorn' || id.endsWith('_seed') || HERB_IDS.has(id)) return 'Seeds & Herbs';
   if (id === 'coins' || id.endsWith('_tokens') || id.endsWith('_points')) return 'Currency';
   if (id.endsWith('_ore') || id.endsWith('_bar') || id === 'coal' || id === 'luminite_ore' || id === 'rune_bar') return 'Ores & Bars';
-  if (id.endsWith('_logs'))                      return 'Logs';
+  if (id.endsWith('_logs') || id.endsWith('_plank') || id === 'plank' || id === 'wood_pulp' || id === 'bark') return 'Logs';
   if (id.startsWith('raw_'))                     return 'Fish';
-  if (id.startsWith('uncut_') || id.startsWith('cut_') || id.includes('dragonhide') || id.includes('leather') || id.endsWith('_fur') || id.endsWith('_hide')) return 'Gems & Hides';
-  if (id.endsWith('_bones') || id === 'bones' || id === 'raw_bird_meat' || id === 'raw_rabbit' || id === 'larupia_fur' || id === 'kyatt_fur' || id === 'kebbit_fur' || id === 'panther_pelt') return 'Hunter';
+  if (id.startsWith('uncut_') || id.startsWith('cut_') || id.includes('dragonhide') || id.includes('leather') || id.endsWith('_fur') || id.endsWith('_hide') || id.includes('hide') || id.endsWith('_scale') || id === 'crystal_shard') return 'Gems & Hides';
+  if (id.endsWith('_bones') || id === 'bones' || id === 'raw_bird_meat' || id === 'raw_rabbit'
+    || id === 'larupia_fur' || id === 'kyatt_fur' || id === 'kebbit_fur' || id === 'panther_pelt'
+    || id === 'phantom_pelt' || id === 'apex_pelt' || id === 'phantom_fang' || id === 'jaguar_tooth'
+    || id === 'mole_skin') return 'Hunter';
+  if (MATERIAL_ITEM_IDS.has(id)) return 'Materials';
   return 'Other';
 }
 
