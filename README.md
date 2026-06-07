@@ -29,7 +29,7 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Woodcutting | 110 | 13 trees (Tree → Eternal magic) | Tool upgrades (bronze axe → T100); bird's nest bonus drops |
 | Mining | 110 | 13 rocks (Copper → Primal + Rune essence) | Tool upgrades (bronze pickaxe → T100); geode bonus drops |
 | Fishing | 99 | 16 fish (Shrimps → Sailfish) | Tool upgrades (rod → Abyssal Rod); Kraken's Beak (capped at 1; blocked once Dragon Rod built) + Map to the Deep rare drops |
-| Farming | 120 | 7 herb seeds + 6 tree seeds | Background skill — two independent patches (herb + tree); herb patch grows in 5 min, harvest 3–15 herbs; tree patch grows in 1–12 hours (acorn → elder, Farming lv 15–90 required), harvest 3–15 logs; auto-replant toggle on both; XP = seed tier × qty harvested; speed up herb patch with Herb Patch upgrade |
+| Farming | 120 | 7 herb seeds + 6 tree seeds | Background skill — two independent patches (herb + tree); herb patch grows in 5 min, harvest 3–15 herbs; tree patch grows in 1–12 hours (acorn → elder, Farming lv 15–90 required), harvest 3–15 logs; auto-replant and auto-harvest toggles on both patches (auto-harvest fires one full growth cycle after the patch is ready, so timing is always consistent); XP = seed tier × qty harvested; speed up herb patch with Herb Patch upgrade |
 | Hunter | 99 | 17 actions | Bird Snare (raw bird meat), Deadfall (swifttail fur → Hunter Leather via Crafting), Box Trap (chinchompas), Net Trap (salamander weapons), Pitfall (panther pelt / jaguar fur / phantom pelt / apex pelt); **passive impling spawns** (1% per trap action, tier scales with hunter level — Baby lv17, Earth lv36, Eclectic lv50, Nature lv62, Dragon lv83, Kingly lv91); all 6 jar types openable for loot; **Sabre jaguar tooth** (1/1000 from Sabre jaguar pitfall); **Phantom Wolf** (lv90) and **Apex Phantom** (lv97) — new high-level pitfalls dropping phantom/apex pelts for lv84-96 Crafting armor; **Phantom claw** (1/500 from phantom wolf — fast 3-tick melee weapon, lv80 req); **Phantom fang** (1/1000 from apex phantom — crafted into **Phantom hunter's cape** at lv94 Crafting: range+10, +3% drop rate, Natural Predator passive: 3% chance per combat kill to spawn an impling jar) |
 | Divination | 99 | 10 wisps + 54 transmutations + 14 magic weapons | Gathers energy; transmutes logs/ores/fish/gems up one tier; 10% breakdown chance → divine dust; **channel energy into logs** to craft magic weapons — 7 wands (1H, 3-tick, lv1–80) + 7 staffs (2H, 4-tick, lv1–80); top tier magic_wand (+42 mage, 8% bonus hit) and magic_staff (+55 mage, 5% bonus hit) |
 
@@ -58,6 +58,8 @@ When creating a new character, choose between **Normal** (death restores HP and 
 | Prayer | 99 | Bury bones / use altar (×2.5 or ×3.5 XP); 16 active prayers across 4 tiers; drain system; protect prayers reduce damage 50% |
 
 **Mobs:** 13 standard + 10 slayer-locked (Scuttling Claw → Void Stalker) + 10 bosses (Goblin King, The Burrower, Void Dragon, Leviathan Kings, Ancient Lich, Commander Solara, General Karg, Void Herald, The Harbinger, **Phoenix**)
+
+**Boss special attacks** — each boss has a unique periodic mechanic that fires during the fight: big hit (direct damage spike), prayer drain (strips prayer points), heal (recovers a portion of max HP), or phase transition (heals on reaching an HP threshold and becomes more aggressive). The special attack interval or threshold is defined per-boss.
 
 **Drakes:** Emerald (lv55, green hide), Azure (lv65, blue hide), Crimson (lv72, red hide), Obsidian (lv80, black hide), Gilded (lv87, royal hide) — all drop dragon bones and dragon arrowheads
 
@@ -126,12 +128,12 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - **Right panel tab system** — Log pinned to the top of the right panel (always visible); remaining sections grouped into four tabs: Status (Equipment + Prayer), Activities (Farming, Slayer, Summoning, Clues), Items (Inventory), **Quests**; tab choice persists across saves
 - Inventory grouped by category — Openable, Equipment, Pets, Food & Potions, Seeds & Herbs, Summoning Pouches, Summoning, Ores & Bars, Logs, Fish, Gems & Hides, Runes & Energy, Ammo, Hunter, Currency, Other
 - Equipment panel with 12 slots (Head, Weapon, Offhand, Ammo, Neck, Cape, Ring, Body, Gloves, Legs, Feet, Pet) and live stat totals
-- **Item tooltips** — hover any inventory item or equipped slot to see stats, perks, spell school, heal amount, and equip requirements; mobile long-press (500ms) triggers the same tooltip
+- **Item tooltips** — hover any inventory item or equipped slot to see stats, perks, spell school, heal amount, and equip requirements; summoning pouches show effect, familiar duration, activation XP cost, and level requirement; mobile long-press (500ms) triggers the same tooltip
 - Prayer HUD in Activities tab
-- Settings menu — 9 colour themes in a 3×3 grid (Dark, Light, Ocean, Dusk, Lavender, Crimson, Midnight, Sunset, Slate), Compact mode, Hide locked actions, configurable log size, Replay Tutorial, Debug Tools access
+- Settings menu — 9 colour themes in a 3×3 grid (Dark, Light, Ocean, Dusk, Lavender, Crimson, Midnight, Sunset, Slate), Compact mode, Hide locked actions, configurable log size (up to 200 lines), Replay Tutorial, Debug Tools access; game log persists across reloads
 - **Tutorial** — opt-in at character creation (checkbox, on by default); 5-step overlay covering skills, actions, inventory, and next steps; skippable at any time; "First Steps" achievement fires on first completion or skip; replayable from Settings
 - Stop button always visible next to action progress bar
-- **Achievement system** — 87 achievements across Skills, Total Level, Combat, Slayer, and Special categories; filter by All / Hide Completed / Hide Locked; locked achievements require prerequisites (slayer unlocks, quest completion, etc.)
+- **Achievement system** — 87 achievements across Skills, Total Level, Combat, Slayer, and Special categories; filter by All / Hide Completed / Hide Locked; locked achievements require prerequisites (slayer unlocks, quest completion, etc.); select achievements grant permanent passive bonuses (XP% per skill, speed boosts) shown as green badges on the achievement card
 - **Quest log** — dedicated Quests tab listing all 4 quests with lore, skill/item requirements (✅/❌ per requirement), rewards text, and inline "Complete Quest" buttons where applicable; filters: All / Completed / Not Completed
 - **Skill icons** — emoji icon prefixed on every skill row in the sidebar
 - **Collection Log** — 34 drop sources across 6 categories (Woodcutting, Mining, Fishing, Agility, Hunter, Combat, Bosses, Pets, Clue Scrolls); tracks per-item obtain counts; unobtained items shown greyed; global and per-source progress counters; kill count shown per boss/mob source, opened count per geode/jar/spirit source, completion count per clue tier
@@ -150,13 +152,17 @@ When creating a new character, choose between **Normal** (death restores HP and 
 - All bosses: respective boss pet (1/500–1/1000 per kill)
 - Drakes (Emerald/Azure/Obsidian): dragon arrowheads (30–50% chance, 3–15 qty; used for dragon arrow assembly in Fletching)
 
-**Deferred mechanics:** PWA manifest + service worker for mobile install, Capacitor wrap for app stores
+**Deferred mechanics:** PWA manifest + service worker for mobile install
 
 **Bug fixes:**
 - Clue scroll drops now correctly fire for all skills — thieving, agility, archaeology, prayer, fletching (headless arrows), and farming previously bypassed the bonus drop check due to early returns in the action completion path.
 - Enemy HP bar now correctly depletes as the mob takes damage (was previously filling up instead).
 - XP is now correctly granted for all gathering and artisan skills — an undeclared variable in `completeAction` caused a silent crash before `grantXp` could run for any skill that produces an item. Also fixes the Gatherer's Band ring's 10% double-yield perk which was silently non-functional.
 - "Hide Completed" filter in the Achievements overlay now works correctly — achievements are checked for completion the moment the overlay opens, so earned achievements are immediately marked and the filter has accurate state to act on.
+- All metal-tier equipment (bronze through primal) now has sell prices and can be sold from the inventory — prices are generated programmatically from bar prices so they stay consistent as new tiers are added.
+- Summoning pouches now craft correctly — three separate code paths that routed summoning through combat logic have been fixed.
+- Constitution skill row no longer highlights when training summoning (crafting pouches); only skills that actually receive XP during an action are highlighted.
+- Auto-harvest (herb and tree patches) no longer fires immediately on replant — the timer now starts fresh from the moment the new crop is planted.
 
 ## Tech stack
 
