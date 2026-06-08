@@ -3813,7 +3813,7 @@ let storageOK = false;
 try { localStorage.setItem('__t','1'); localStorage.removeItem('__t'); storageOK = true; }
 catch(e){ storageOK = false; }
 const memStore = {};
-function rawSave(k,v){ try{ localStorage.setItem(k,v); } catch(e){ memStore[k]=v; if(e.name==='QuotaExceededError'||e.name==='NS_ERROR_DOM_QUOTA_REACHED'){ log('⚠ Storage full — save could not persist. Export your save as a backup.'); } } }
+function rawSave(k,v){ try{ localStorage.setItem(k,v); } catch(e){ if(e.name==='QuotaExceededError'||e.name==='NS_ERROR_DOM_QUOTA_REACHED'){ try{ localStorage.removeItem(k); localStorage.setItem(k,v); return; }catch(e2){} memStore[k]=v; log('⚠ Storage full — save could not persist. Export your save as a backup.'); }else{ memStore[k]=v; } } }
 function rawLoad(k){ try{ const v=localStorage.getItem(k); if(v!==null) return v; } catch(e){} return memStore[k]??null; }
 function rawDelete(k){ try{ localStorage.removeItem(k); } catch(e){} delete memStore[k]; }
 function encodeSave(s){ return btoa(unescape(encodeURIComponent(s))); }
