@@ -6039,6 +6039,8 @@ function tick(){
             completeAction(action);
           }
         }
+      } else {
+        state.current = null; state.progress = 0; // stale action ID from a game update — reset to idle
       }
     }
   }
@@ -8070,19 +8072,20 @@ function renderSettings(){
 }
 
 function render(){
-  renderSkillList();
-  renderActiveSkill();
-  renderEquipSection();
-  renderPrayerHud();
-  renderSummoningHud();
-  renderFarmSection();
-  renderClueSection();
-  renderSlayerSection();
-  renderItemsPanel();
-  renderQuestsTab();
-  renderTotalLevel();
-  renderLog();
-  _applyAllCollapsed();
+  const _r = fn => { try{ fn(); }catch(e){ console.error('[IdleWright] render error in ' + fn.name + ':', e); } };
+  _r(renderSkillList);
+  _r(renderActiveSkill);
+  _r(renderEquipSection);
+  _r(renderPrayerHud);
+  _r(renderSummoningHud);
+  _r(renderFarmSection);
+  _r(renderClueSection);
+  _r(renderSlayerSection);
+  _r(renderItemsPanel);
+  _r(renderQuestsTab);
+  _r(renderTotalLevel);
+  _r(renderLog);
+  _r(_applyAllCollapsed);
 }
 
 function renderTokenShop(){
@@ -8273,6 +8276,7 @@ function renderActiveSkill(){
   let actionPct = 0, doing = 'Idle — pick something below.';
   if (state.current && state.current.skillId === s.id){
     const a = getAction(s.id, state.current.actionId);
+    if (!a) return; // stale action ID; tick() clears it on next pass
     const curEffTicks = getCurrentEffTicks(a);
     actionPct = Math.min(100, (state.progress / curEffTicks) * 100);
     const batchBadge = state.batch?.limit > 0 ? ` <span style="color:var(--dim)">[${state.batch.done + 1}/${state.batch.limit}]</span>` : '';
