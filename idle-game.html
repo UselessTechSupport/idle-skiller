@@ -3813,7 +3813,7 @@ let storageOK = false;
 try { localStorage.setItem('__t','1'); localStorage.removeItem('__t'); storageOK = true; }
 catch(e){ storageOK = false; }
 const memStore = {};
-function rawSave(k,v){ try{ localStorage.setItem(k,v); } catch(e){ if(e.name==='QuotaExceededError'||e.name==='NS_ERROR_DOM_QUOTA_REACHED'){ try{ localStorage.removeItem(k); localStorage.setItem(k,v); return; }catch(e2){} memStore[k]=v; log('⚠ Storage full — save could not persist. Export your save as a backup.'); }else{ memStore[k]=v; } } }
+function rawSave(k,v){ try{ localStorage.setItem(k,v); } catch(e){ if(e.name==='QuotaExceededError'||e.name==='NS_ERROR_DOM_QUOTA_REACHED'){ const prev=localStorage.getItem(k); try{ localStorage.removeItem(k); localStorage.setItem(k,v); return; }catch(e2){ if(prev!=null) try{ localStorage.setItem(k,prev); }catch(e3){} } memStore[k]=v; log('⚠ Storage full — save could not persist. Export your save as a backup.'); }else{ memStore[k]=v; } } }
 function rawLoad(k){ try{ const v=localStorage.getItem(k); if(v!==null) return v; } catch(e){} return memStore[k]??null; }
 function rawDelete(k){ try{ localStorage.removeItem(k); } catch(e){} delete memStore[k]; }
 function encodeSave(s){ return btoa(unescape(encodeURIComponent(s))); }
@@ -7844,6 +7844,7 @@ function deleteCharacter(id){
   const remaining = list.filter(c => c.id !== id);
   saveCharIndex(remaining);
   rawDelete(`idleSkillerSave_v1_${id}`);
+  rawDelete(`idleSkillerSave_v1_${id}_log`);
   if (id === activeCharId) switchCharacter(remaining[0].id);
   else renderCharacters();
 }
@@ -7885,9 +7886,11 @@ function importCharacter(){
     JSON.parse(saveData); // validate (export format is always plain JSON)
     const id = 'char_' + Date.now();
     const name = (obj.charName || 'Imported').slice(0,24);
+    const saveKey = `idleSkillerSave_v1_${id}`;
+    rawSave(saveKey, LZString.compressToUTF16(saveData));
+    if (!rawLoad(saveKey)){ log('❌ Import failed — not enough storage space. Delete a character or clear browser data first.'); return; }
     list.push({ id, name, lastSaved:Date.now(), totalLevel:0 });
     saveCharIndex(list);
-    rawSave(`idleSkillerSave_v1_${id}`, LZString.compressToUTF16(saveData));
     log(`✅ "${name}" imported! Switching...`);
     switchCharacter(id);
   } catch(e){ log('❌ Invalid import data — paste the full export text.'); }
