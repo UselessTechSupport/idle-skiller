@@ -756,35 +756,55 @@ const MAX_OFFLINE_HOURS = 12;         // cap on offline catch-up
 const FARM_GROW_MS = 5 * 60 * 1000;  // herb growth time: 5 minutes
 
 const SKILLCAPES = [
-  {id:'woodcutting_cape', name:'Woodcutting cape', icon:'🪓', skillId:'woodcutting', cost:99000, perkType:'speed_pct',    perkValue:0.10, perkLabel:'10% faster Woodcutting'},
-  {id:'mining_cape',      name:'Mining cape',      icon:'⛏️', skillId:'mining',      cost:99000, perkType:'speed_pct',    perkValue:0.10, perkLabel:'10% faster Mining'},
-  {id:'fishing_cape',     name:'Fishing cape',     icon:'🎣', skillId:'fishing',     cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Fishing XP'},
-  {id:'farming_cape',     name:'Farming cape',     icon:'🌾', skillId:'farming',     cost:99000, perkType:'farm_speed',   perkValue:0.15, perkLabel:'Crops grow 15% faster'},
-  {id:'hunter_cape',      name:'Hunter cape',      icon:'🦎', skillId:'hunter',      cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Hunter XP'},
-  {id:'divination_cape',  name:'Divination cape',  icon:'✨', skillId:'divination',  cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Divination XP'},
-  {id:'crafting_cape',    name:'Crafting cape',    icon:'💍', skillId:'crafting',    cost:99000, perkType:'speed_pct',    perkValue:0.10, perkLabel:'10% faster Crafting'},
-  {id:'fletching_cape',   name:'Fletching cape',   icon:'🪃', skillId:'fletching',   cost:99000, perkType:'speed_pct',    perkValue:0.10, perkLabel:'10% faster Fletching'},
-  {id:'smithing_cape',    name:'Smithing cape',    icon:'🔨', skillId:'smithing',    cost:99000, perkType:'speed_pct',    perkValue:0.10, perkLabel:'10% faster Smithing'},
-  {id:'cooking_cape',     name:'Cooking cape',     icon:'🍳', skillId:'cooking',     cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Cooking XP'},
-  {id:'firemaking_cape',  name:'Firemaking cape',  icon:'🔥', skillId:'firemaking',  cost:99000, perkType:'speed_pct',    perkValue:0.10, perkLabel:'10% faster Firemaking'},
-  {id:'runecrafting_cape',name:'Runecrafting cape',icon:'🔮', skillId:'runecrafting',cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Runecrafting XP'},
-  {id:'construction_cape',name:'Construction cape',icon:'🏠', skillId:'construction',cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Construction XP'},
-  {id:'herblore_cape',    name:'Herblore cape',    icon:'🧪', skillId:'herblore',    cost:99000, perkType:'speed_pct',    perkValue:0.10, perkLabel:'10% faster Herblore'},
-  {id:'melee_cape',       name:'Melee cape',       icon:'⚔️', skillId:'melee',       cost:99000, perkType:'melee_dmg',    perkValue:0.05, perkLabel:'+5% Melee damage'},
-  {id:'defence_cape',     name:'Defence cape',     icon:'🛡️', skillId:'defence',     cost:99000, perkType:'defence_flat', perkValue:10,   perkLabel:'+10 Defence bonus'},
-  {id:'constitution_cape',name:'Constitution cape',icon:'❤️', skillId:'constitution',cost:99000, perkType:'hp_regen_mult',perkValue:0.15, perkLabel:'+15% HP regen rate'},
-  {id:'ranged_cape',      name:'Ranged cape',      icon:'🏹', skillId:'ranged',      cost:99000, perkType:'ammo_save',    perkValue:0.85, perkLabel:'85% chance to save ammo'},
-  {id:'magic_cape',       name:'Magic cape',       icon:'🪄', skillId:'magic',       cost:99000, perkType:'rune_save',    perkValue:0.85, perkLabel:'85% chance to save runes'},
-  {id:'prayer_cape',      name:'Prayer cape',      icon:'🙏', skillId:'prayer',      cost:99000, perkType:'prayer_drain', perkValue:0.15, perkLabel:'-15% Prayer drain rate'},
-  {id:'summoning_cape',   name:'Summoning cape',   icon:'🧿', skillId:'summoning',   cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Summoning XP'},
-  {id:'agility_cape',     name:'Agility cape',     icon:'🏃', skillId:'agility',     cost:99000, perkType:'speed_pct',    perkValue:0.10, perkLabel:'10% faster Agility'},
-  {id:'thieving_cape',    name:'Thieving cape',    icon:'🪝', skillId:'thieving',    cost:99000, perkType:'stun_reduction',perkValue:0.25,perkLabel:'25% reduced stun duration'},
-  {id:'slayer_cape',      name:'Slayer cape',      icon:'💀', skillId:'slayer',      cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Slayer XP'},
-  {id:'dungeoneering_cape',name:'Dungeoneering cape',icon:'🗝️',skillId:'dungeoneering',cost:99000,perkType:'dg_token_pct',perkValue:0.10,perkLabel:'+10% Dungeoneering token gain'},
-  {id:'archaeology_cape', name:'Archaeology cape', icon:'🏺', skillId:'archaeology', cost:99000, perkType:'xp_pct',       perkValue:0.15, perkLabel:'+15% Archaeology XP'},
-  {id:'max_cape',         name:'Max cape',         icon:'🎓', skillId:null,          cost:10000000, perkType:null, perkValue:0, perkLabel:'All skillcape perks combined'},
+  {id:'woodcutting_cape', name:'Woodcutting cape', icon:'🪓', skillId:'woodcutting', cost:99000, perkType:'higher_tier_log',        perkValue:0.10, perkLabel:'Old Growth: 10% chance to receive logs from 1 tier higher'},
+  {id:'mining_cape',      name:'Mining cape',      icon:'⛏️', skillId:'mining',      cost:99000, perkType:'free_bar_chance',        perkValue:0.05, perkLabel:'Raw Smelting: 5% chance to receive a smelted bar while mining'},
+  {id:'fishing_cape',     name:'Fishing cape',     icon:'🎣', skillId:'fishing',     cost:99000, perkType:'mermaid_gem',            perkValue:0.05, perkLabel:"Mermaid's Luck: 5% chance to find a gem while fishing"},
+  {id:'farming_cape',     name:'Farming cape',     icon:'🌾', skillId:'farming',     cost:99000, perkType:'farm_speed',             perkValue:0.15, perkLabel:'Crops grow 15% faster'},
+  {id:'hunter_cape',      name:'Hunter cape',      icon:'🦎', skillId:'hunter',      cost:99000, perkType:'instant_recatch',        perkValue:0.20, perkLabel:'Natural Predator: 20% chance to instantly catch again'},
+  {id:'divination_cape',  name:'Divination cape',  icon:'✨', skillId:'divination',  cost:99000, perkType:'div_prayer_xp',          perkValue:0.10, perkLabel:'Clarity: Divination XP also grants 10% as Prayer XP'},
+  {id:'crafting_cape',    name:'Crafting cape',    icon:'💍', skillId:'crafting',    cost:99000, perkType:'craft_material_save',    perkValue:0.25, perkLabel:'Eco-Craft: 25% chance all materials are returned after a craft'},
+  {id:'fletching_cape',   name:'Fletching cape',   icon:'🪃', skillId:'fletching',   cost:99000, perkType:'double_fletch_ammo',     perkValue:1,    perkLabel:'Plentiful Supply: Fletching ammo always produces double quantity'},
+  {id:'smithing_cape',    name:'Smithing cape',    icon:'🔨', skillId:'smithing',    cost:99000, perkType:'double_smelt',           perkValue:0.25, perkLabel:'Double Smelt: 25% chance to produce 2 bars per smelt'},
+  {id:'cooking_cape',     name:'Cooking cape',     icon:'🍳', skillId:'cooking',     cost:99000, perkType:'double_cook',            perkValue:1,    perkLabel:'Meal Prep: Every cooking action produces 2 food items'},
+  {id:'firemaking_cape',  name:'Firemaking cape',  icon:'🔥', skillId:'firemaking',  cost:99000, perkType:'campfire_regen',         perkValue:3,    perkLabel:'Campfire: HP regenerates 3× faster while Firemaking'},
+  {id:'runecrafting_cape',name:'Runecrafting cape',icon:'🔮', skillId:'runecrafting',cost:99000, perkType:'double_rune',            perkValue:1,    perkLabel:'Rune Mastery: Always craft double runes per action'},
+  {id:'construction_cape',name:'Construction cape',icon:'🏠', skillId:'construction',cost:99000, perkType:'construction_perk_boost',perkValue:0.25, perkLabel:'Structural Mastery: All Construction upgrade effects 25% stronger'},
+  {id:'herblore_cape',    name:'Herblore cape',    icon:'🧪', skillId:'herblore',    cost:99000, perkType:'potion_duration',        perkValue:0.25, perkLabel:'Potent Brew: Potions last 25% longer'},
+  {id:'melee_cape',       name:'Melee cape',       icon:'⚔️', skillId:'melee',       cost:99000, perkType:'melee_crit',             perkValue:0.10, perkLabel:'Crushing Blow: 10% chance to deal double melee damage'},
+  {id:'defence_cape',     name:'Defence cape',     icon:'🛡️', skillId:'defence',     cost:99000, perkType:'dmg_reduction_flat',     perkValue:1,    perkLabel:'Iron Skin: Take 1 less damage from every hit (min 1)'},
+  {id:'constitution_cape',name:'Constitution cape',icon:'❤️', skillId:'constitution',cost:99000, perkType:'max_hp_pct',             perkValue:0.20, perkLabel:'Iron Will: +20% max HP'},
+  {id:'ranged_cape',      name:'Ranged cape',      icon:'🏹', skillId:'ranged',      cost:99000, perkType:'ammo_save',              perkValue:0.85, perkLabel:'85% chance to save ammo',
+   extraPerks:[{type:'ranged_attack_speed', value:0.10, label:'Rapid Shot: 10% faster ranged attacks'}]},
+  {id:'magic_cape',       name:'Magic cape',       icon:'🪄', skillId:'magic',       cost:99000, perkType:'rune_save',              perkValue:0.85, perkLabel:'85% chance to save runes',
+   extraPerks:[{type:'magic_attack_speed', value:0.10, label:'Rapid Cast: 10% faster magic attacks'}]},
+  {id:'prayer_cape',      name:'Prayer cape',      icon:'🙏', skillId:'prayer',      cost:99000, perkType:'prayer_drain',           perkValue:0.15, perkLabel:'-15% Prayer drain rate'},
+  {id:'summoning_cape',   name:'Summoning cape',   icon:'🧿', skillId:'summoning',   cost:99000, perkType:'summon_duration',        perkValue:0.25, perkLabel:'Bond: Familiars last 25% longer'},
+  {id:'agility_cape',     name:'Agility cape',     icon:'🏃', skillId:'agility',     cost:99000, perkType:'global_speed_pct',       perkValue:0.10, perkLabel:'Flowing Motion: All skilling actions 10% faster'},
+  {id:'thieving_cape',    name:'Thieving cape',    icon:'🪝', skillId:'thieving',    cost:99000, perkType:'stun_reduction',         perkValue:0.50, perkLabel:'Master Pickpocket: 50% reduced stun duration'},
+  {id:'slayer_cape',      name:'Slayer cape',      icon:'💀', skillId:'slayer',      cost:99000, perkType:'slayer_crit',            perkValue:0.10, perkLabel:'Monster Mastery: 10% crit chance vs assigned task monsters'},
+  {id:'dungeoneering_cape',name:'Dungeoneering cape',icon:'🗝️',skillId:'dungeoneering',cost:99000,perkType:'dg_all_skills_xp',    perkValue:100,  perkLabel:'Jack of All Trades: Each floor grants 100 XP to every other skill'},
+  {id:'archaeology_cape', name:'Archaeology cape', icon:'🏺', skillId:'archaeology', cost:99000, perkType:'extra_perk_slot',        perkValue:1,    perkLabel:'Extra Slot: Allows 1 additional artefact perk active at once'},
+  {id:'max_cape',         name:'Max cape',         icon:'🎓', skillId:null,          cost:10000000,    perkType:null, perkValue:0, perkLabel:'All skillcape perks combined'},
   {id:'comp_cape',        name:'Completionist Cape',icon:'🏆',skillId:null,          cost:10000000000, perkType:null, perkValue:0, perkLabel:'All skillcape perks + powerful combat bonuses'},
 ];
+
+// Maps mined ore → its smelted bar (for Raw Smelting cape perk)
+const ORE_TO_BAR = {
+  copper_ore:      {id:'bronze_bar',      name:'Bronze bar'},
+  iron_ore:        {id:'iron_bar',        name:'Iron bar'},
+  silver_ore:      {id:'silver_bar',      name:'Silver bar'},
+  mithril_ore:     {id:'mithril_bar',     name:'Mithril bar'},
+  adamantite_ore:  {id:'adamant_bar',     name:'Adamant bar'},
+  gold_ore:        {id:'gold_bar',        name:'Gold bar'},
+  runite_ore:      {id:'rune_bar',        name:'Rune bar'},
+  orichalcite_ore: {id:'orikalkum_bar',   name:'Orikalkum bar'},
+  drakolith_ore:   {id:'orikalkum_bar',   name:'Orikalkum bar'},
+  necrite_ore:     {id:'necronium_bar',   name:'Necronium bar'},
+  phasmatite_ore:  {id:'necronium_bar',   name:'Necronium bar'},
+  banite_ore:      {id:'bane_bar',        name:'Bane bar'},
+  elder_rune_ore:  {id:'elder_rune_bar',  name:'Elder rune bar'},
+  primal_ore:      {id:'primal_bar',      name:'Primal bar'},
+};
 
 const PETS = [
   // Skilling pets — 1/5000 per action
@@ -3930,7 +3950,7 @@ function grantXp(skillId, xp, silent=false){
   sk.xp += xp;
   const after = levelForXp(sk.xp);
   if (after > before && !silent) log(`🎉 ${SKILL_BY_ID[skillId].name} level ${after}!`);
-  if (skillId === 'constitution' && after > before) state.combat.maxHp = Math.min(after, SKILL_BY_ID['constitution'].maxLevel) * 10;
+  if (skillId === 'constitution' && after > before) state.combat.maxHp = Math.round(Math.min(after, SKILL_BY_ID['constitution'].maxLevel) * 10 * (1 + getCapeBonus('max_hp_pct', null)));
   if (skillId === 'prayer' && after > before){
     state.prayer.maxPoints = Math.min(after, SKILL_BY_ID['prayer'].maxLevel);
     if (state.prayer.points === 0) state.prayer.points = 1;
@@ -3982,13 +4002,15 @@ function activateSummon(pouchId){
   state.inventory[pouchId]--;
   if (state.inventory[pouchId] <= 0) delete state.inventory[pouchId];
   grantXp('summoning', def.consumeXp);
+  const _sumDurMult = (state.equipment?.pet === 'pet_mini_familiar' ? 1.5 : 1.0) * (1 + getCapeBonus('summon_duration', null));
   state.summoning.active = {
     pouchId, pouchName:def.name, icon:def.icon,
     effectType:def.effectType, effectValue:def.effectValue,
     affectedSkills:def.affectedSkills, effectLabel:def.effectLabel,
-    expiresAt: Date.now() + 10 * 60 * 1000 * (state.equipment?.pet === 'pet_mini_familiar' ? 1.5 : 1.0),
+    expiresAt: Date.now() + 10 * 60 * 1000 * _sumDurMult,
   };
-  const _sumDur = state.equipment?.pet === 'pet_mini_familiar' ? '15 min' : '10 min';
+  const _sumDurMin = Math.round(10 * _sumDurMult);
+  const _sumDur = `${_sumDurMin} min`;
   log(`${def.icon} ${def.name} summoned! ${def.effectLabel} for ${_sumDur}.`);
   render();
 }
@@ -4028,8 +4050,8 @@ function toggleArchPerk(artifactId){
   if (state.archaeology.activePerks[artifactId]){
     delete state.archaeology.activePerks[artifactId];
   } else {
-    if (Object.keys(state.archaeology.activePerks).length >= ARCH_MAX_PERKS){
-      log(`Max ${ARCH_MAX_PERKS} perks active — deactivate one first.`);
+    if (Object.keys(state.archaeology.activePerks).length >= getMaxArchPerks()){
+      log(`Max ${getMaxArchPerks()} perks active — deactivate one first.`);
       return;
     }
     state.archaeology.activePerks[artifactId] = true;
@@ -4142,6 +4164,7 @@ function getItemTooltip(itemId){
   if (sp) lines.push(`<span class="tip-perk">🔮 ${sp.name}: ${_describeEffect(sp.effect)}</span>`);
   const cape = SKILLCAPES.find(c => c.id === itemId);
   if (cape?.perkLabel) lines.push(`<span class="tip-perk">✨ ${cape.perkLabel}</span>`);
+  for (const ep of (cape?.extraPerks || [])) lines.push(`<span class="tip-perk">✨ ${ep.label}</span>`);
   const pet = PETS.find(p => p.id === itemId);
   if (pet?.perkLabel) lines.push(`<span class="tip-perk">✨ ${pet.perkLabel}</span>`);
   const treeSeed = TREE_SEEDS.find(ts => ts.id === itemId);
@@ -4248,16 +4271,18 @@ function _positionTooltip(el, x, y){
 function getCapeBonus(type, skillId){
   const capeId = state.equipment?.cape;
   if (!capeId) return 0;
-  if (capeId === 'max_cape' || capeId === 'comp_cape'){
-    return SKILLCAPES.filter(c => c.perkType === type &&
-      (skillId == null || c.skillId === skillId || c.skillId == null))
-      .reduce((sum, c) => sum + c.perkValue, 0);
-  }
+  const _allPerks = c => [
+    ...(c.perkType ? [{type:c.perkType, value:c.perkValue, sid:c.skillId}] : []),
+    ...(c.extraPerks||[]).map(p => ({type:p.type, value:p.value, sid:c.skillId})),
+  ];
+  const _matches = p => p.type === type && (skillId == null || p.sid === skillId || p.sid == null);
+  if (capeId === 'max_cape' || capeId === 'comp_cape')
+    return SKILLCAPES.flatMap(_allPerks).filter(_matches).reduce((s,p) => s + p.value, 0);
   const cape = SKILLCAPES.find(c => c.id === capeId);
-  if (!cape || cape.perkType !== type) return 0;
-  if (skillId != null && cape.skillId !== skillId) return 0;
-  return cape.perkValue;
+  if (!cape) return 0;
+  return _allPerks(cape).filter(_matches).reduce((s,p) => s + p.value, 0);
 }
+function getMaxArchPerks(){ return ARCH_MAX_PERKS + getCapeBonus('extra_perk_slot', null); }
 
 function getJewelryBonus(type, skillId){
   let total = 0;
@@ -4353,6 +4378,9 @@ function consumeIngredients(action){
   if (!action.ingredients) return;
   const hasSaving = state.equipment?.ring === 'artisan_ring';
   const hasAshBoots = state.current?.skillId === 'firemaking' && state.equipment?.feet === 'boots_of_ash';
+  // Crafting cape: Eco-Craft — 25% chance to skip all materials
+  const _craftSave = getCapeBonus('craft_material_save', null);
+  if (_craftSave > 0 && state.current?.skillId === 'crafting' && Math.random() < _craftSave) return;
   for (const ing of action.ingredients){
     if (hasSaving && Math.random() < 0.08) continue;
     if (hasAshBoots && Math.random() < 0.03) continue;
@@ -4377,6 +4405,10 @@ function calcPlayerDamage(styleId, mob, ignoreDefence=false){
   let dmg = 1 + Math.floor(Math.random() * maxHit);
   // Deep Spawn: +10% damage while on a Slayer task
   if (state.slayer?.task && state.equipment?.pet === 'pet_deep_spawn') dmg = Math.ceil(dmg * 1.10);
+  // Melee cape: Crushing Blow — 10% crit (double damage) on melee hits
+  if (styleId === 'melee' && Math.random() < getCapeBonus('melee_crit', null)) dmg *= 2;
+  // Slayer cape: Monster Mastery — 10% crit vs assigned task monsters
+  if (state.slayer?.task?.mobId === state.current?.actionId && Math.random() < getCapeBonus('slayer_crit', null)) dmg *= 2;
   return dmg;
 }
 
@@ -4561,17 +4593,17 @@ function drinkPotion(itemId){
     log(`🧿 Drank ${name}. Familiar extended by ${effect.restore} min.`);
   } else if (effect.type === 'master') {
     if (!state.combat.potionBoosts) state.combat.potionBoosts = {};
-    const _mDur = state.upgrades?.alchemists_lab ? 1.25 : 1.0;
+    const _mDur = (state.upgrades?.alchemists_lab ? (1.0 + 0.25 * (1 + getCapeBonus('construction_perk_boost', null))) : 1.0) * (1 + getCapeBonus('potion_duration', null));
     effect.boosts.forEach(b => {
       state.combat.potionBoosts[b.boostType] = { boost:b.boost, expiresAt:Date.now() + 10*60*1000 * _mDur };
     });
-    const _mMins = state.upgrades?.alchemists_lab ? '12m 30s' : '10 min';
+    const _mMins = Math.round(10 * _mDur) + ' min';
     log(`⚗️ Drank ${name}. ${effect.label} for ${_mMins}.`);
   } else {
     if (!state.combat.potionBoosts) state.combat.potionBoosts = {};
-    const _dur = state.upgrades?.alchemists_lab ? 1.25 : 1.0;
+    const _dur = (state.upgrades?.alchemists_lab ? (1.0 + 0.25 * (1 + getCapeBonus('construction_perk_boost', null))) : 1.0) * (1 + getCapeBonus('potion_duration', null));
     state.combat.potionBoosts[effect.boostType] = { boost:effect.boost, expiresAt:Date.now() + 5*60*1000 * _dur };
-    const _mins = state.upgrades?.alchemists_lab ? '6m 15s' : '5 min';
+    const _mins = Math.round(5 * _dur) + ' min';
     log(`⚗️ Drank ${name}. ${effect.label} for ${_mins}.`);
   }
   render();
@@ -4662,7 +4694,9 @@ function combatTick(){
   }
   const wStats = getWeaponStats();
   state.combat.attackTimer = (state.combat.attackTimer || 0) + 1;
-  if (state.combat.attackTimer >= wStats.attackInterval){
+  const _atkSpeedBonus = getCapeBonus(`${state.current.skillId}_attack_speed`, null);
+  const _atkInterval = Math.max(1, Math.ceil(wStats.attackInterval * (1 - _atkSpeedBonus)));
+  if (state.combat.attackTimer >= _atkInterval){
     state.combat.attackTimer = 0;
     // Ranged: consume one ammo per attack; stop if out
     if (state.current.skillId === 'ranged'){
@@ -4808,6 +4842,9 @@ function combatTick(){
   if (_dodgeChance > 0 && Math.random() < _dodgeChance) mobDmg = 0;
   // Jewelry: damage_cap (tungsten_amulet) — 15% chance to cap incoming hit at 1
   if (mobDmg > 1 && Math.random() < getJewelryBonus('damage_cap', null)) mobDmg = 1;
+  // Defence cape: Iron Skin — take 1 less damage per hit (min 1)
+  const _dmgReduce = getCapeBonus('dmg_reduction_flat', null);
+  if (_dmgReduce > 0 && mobDmg > 0) mobDmg = Math.max(1, mobDmg - _dmgReduce);
   state.combat.hp = Math.max(0, state.combat.hp - mobDmg);
   // Jewelry: counter_strike (tungsten_ring) — 10% chance to retaliate after taking a hit
   if (mobDmg > 0 && state.combat.mobHp > 0 && Math.random() < getJewelryBonus('counter_strike', null)){
@@ -5935,36 +5972,38 @@ function getCurrentEffTicks(action){
   if (state.current?.floorTicks) return state.current.floorTicks;
   if (action.baseMaxSecs) return Math.round(calcFloorSecs(action) / (TICK_MS / 1000)); // DG fallback
   const base = action.ticks || 1;
-  const sumSpeed  = getSummonBonusForSkill('speed_pct', state.current?.skillId);
-  const capeSpeed = getCapeBonus('speed_pct', state.current?.skillId);
-  const petSpeed  = getPetBonus('speed_pct', state.current?.skillId);
-  const jwlSpeed  = getJewelryBonus('speed_pct', state.current?.skillId);
-  const warmAura  = state.equipment?.pet === 'pet_fire_sprite' ? 0.02 : 0; // Fire Sprite: 2% faster all skills
-  const achSpeed  = getAchievementBonus('speed_pct', state.current?.skillId);
+  const sumSpeed    = getSummonBonusForSkill('speed_pct', state.current?.skillId);
+  const capeSpeed   = getCapeBonus('speed_pct', state.current?.skillId);
+  const globalSpeed = getCapeBonus('global_speed_pct', null); // agility cape: all skills faster
+  const petSpeed    = getPetBonus('speed_pct', state.current?.skillId);
+  const jwlSpeed    = getJewelryBonus('speed_pct', state.current?.skillId);
+  const warmAura    = state.equipment?.pet === 'pet_fire_sprite' ? 0.02 : 0; // Fire Sprite: 2% faster all skills
+  const achSpeed    = getAchievementBonus('speed_pct', state.current?.skillId);
   if (state.current?.skillId === 'thieving'){
     const agilLevel = effLvl('agility');
     if (action.lock){
       const toolMult = getToolSpeedMult('thieving');
       const agilMult = 1 - (agilLevel / 99 * 0.30);
-      return Math.max(1, Math.ceil(base * toolMult * agilMult * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed)));
+      return Math.max(1, Math.ceil(base * toolMult * agilMult * (1 - sumSpeed) * (1 - capeSpeed) * (1 - globalSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed)));
     }
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20)) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed)));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20)) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - globalSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed)));
   }
   if (state.current?.skillId === 'runecrafting'){
     const agilLevel = effLvl('agility');
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed)));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - globalSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed)));
   }
   const archSpeed = getArchBonus(`speed_${state.current?.skillId}`);
-  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current?.skillId) * getConstructionMult(state.current?.skillId) * (1 - archSpeed) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed)));
+  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current?.skillId) * getConstructionMult(state.current?.skillId) * (1 - archSpeed) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - globalSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed)));
 }
 
 function getConstructionMult(skillId){
   let mult = 1.0;
-  if (skillId === 'woodcutting'  && state.upgrades?.sawmill)         mult *= 0.90;
-  if (skillId === 'smithing'     && state.upgrades?.furnace)         mult *= 0.90;
-  if (skillId === 'runecrafting' && state.upgrades?.study)           mult *= 0.85;
-  if (skillId === 'fletching'    && state.upgrades?.workshop)        mult *= 0.90;
-  if (skillId === 'agility'      && state.upgrades?.training_ground) mult *= 0.90;
+  const _b = getCapeBonus('construction_perk_boost', null);
+  if (skillId === 'woodcutting'  && state.upgrades?.sawmill)         mult *= 1 - (0.10 * (1 + _b));
+  if (skillId === 'smithing'     && state.upgrades?.furnace)         mult *= 1 - (0.10 * (1 + _b));
+  if (skillId === 'runecrafting' && state.upgrades?.study)           mult *= 1 - (0.15 * (1 + _b));
+  if (skillId === 'fletching'    && state.upgrades?.workshop)        mult *= 1 - (0.10 * (1 + _b));
+  if (skillId === 'agility'      && state.upgrades?.training_ground) mult *= 1 - (0.10 * (1 + _b));
   return mult;
 }
 
@@ -6047,7 +6086,9 @@ function tick(){
   // Passive HP regen — 1% maxHp every 10s
   if (state.combat.maxHp && state.combat.hp < state.combat.maxHp){
     const now = Date.now();
-    if (now - (state.combat.lastRegen || 0) >= 30000 / (1 + getArchBonus('hp_regen') + getSummonBonus('hp_regen_mult') + getCapeBonus('hp_regen_mult', null) + getPetBonus('hp_regen_mult', null) + getJewelryBonus('hp_regen_mult', null))){
+    // Campfire: 3x HP regen while firemaking (adds 2 to the regen multiplier denominator)
+    const _campfire = state.current?.skillId === 'firemaking' ? Math.max(0, getCapeBonus('campfire_regen', null) - 1) : 0;
+    if (now - (state.combat.lastRegen || 0) >= 30000 / (1 + getArchBonus('hp_regen') + getSummonBonus('hp_regen_mult') + getCapeBonus('hp_regen_mult', null) + getPetBonus('hp_regen_mult', null) + getJewelryBonus('hp_regen_mult', null) + _campfire)){
       state.combat.hp = Math.min(state.combat.maxHp, state.combat.hp + 1);
       state.combat.lastRegen = now;
     }
@@ -6249,7 +6290,7 @@ function completeAction(action, silent){
       if (count === artifact.needed){
         log(`✨ Collection complete — perk unlocked: ${artifact.perkName}!`);
         const activeCount = Object.keys(state.archaeology.activePerks).length;
-        if (activeCount < ARCH_MAX_PERKS){
+        if (activeCount < getMaxArchPerks()){
           state.archaeology.activePerks[artifact.id] = true;
           log(`   "${artifact.perkDesc}" auto-activated`);
         }
@@ -6266,20 +6307,20 @@ function completeAction(action, silent){
         if (!silent) log(`🏺 Dig Sprite uncovers a bonus ${_bonus.name} piece! (${_bprev+1}/${_bonus.needed})`);
         if (_bprev + 1 === _bonus.needed){
           const _activeCount = Object.keys(state.archaeology.activePerks).length;
-          if (_activeCount < ARCH_MAX_PERKS){ state.archaeology.activePerks[_bonus.id] = true; if (!silent) log(`✨ Collection complete — perk unlocked: ${_bonus.perkName}!`); }
+          if (_activeCount < getMaxArchPerks()){ state.archaeology.activePerks[_bonus.id] = true; if (!silent) log(`✨ Collection complete — perk unlocked: ${_bonus.perkName}!`); }
         }
         grantXp('archaeology', _bonus.xp, silent);
       }
     }
     // Relic Chamber: 20% chance to find a second artifact piece
-    if (state.upgrades?.relic_chamber && Math.random() < 0.20){
+    if (state.upgrades?.relic_chamber && Math.random() < 0.20 * (1 + getCapeBonus('construction_perk_boost', null))){
       const prev2 = state.archaeology.artifacts[artifact.id] || 0;
       if (prev2 < artifact.needed){
         state.archaeology.artifacts[artifact.id] = prev2 + 1;
         if (!silent) log(`🏺 Relic Chamber — bonus find: ${artifact.name} (${prev2 + 1}/${artifact.needed})`);
         if (prev2 + 1 === artifact.needed){
           const activeCount = Object.keys(state.archaeology.activePerks).length;
-          if (activeCount < ARCH_MAX_PERKS){
+          if (activeCount < getMaxArchPerks()){
             state.archaeology.activePerks[artifact.id] = true;
             if (!silent) log(`✨ Collection complete — perk unlocked: ${artifact.perkName}!`);
           }
@@ -6300,7 +6341,7 @@ function completeAction(action, silent){
       chance = Math.max(0, (noBadAt - level) / failDef.zeroAt * chance);
     }
     if (failDef.halvingItem && (state.inventory[failDef.halvingItem] || 0) > 0) chance *= 0.5;
-    if (skillId === 'cooking' && state.upgrades?.cooking_range) chance *= 0.5;
+    if (skillId === 'cooking' && state.upgrades?.cooking_range) chance *= (0.5 - 0.5 * getCapeBonus('construction_perk_boost', null));
     if (Math.random() < chance){
       const qty = failDef.qtyFn ? failDef.qtyFn(action) : 1;
       grantItem(failDef.product, failDef.productName, qty);
@@ -6316,19 +6357,23 @@ function completeAction(action, silent){
     let qty = action.count || 1;
     if (skillId === 'divination' && !action.transmute && action.item.endsWith('_energy'))
       qty = Math.floor(Math.random() * 5) + 1;
+    // Cape perks that modify output qty
+    if (skillId === 'cooking'      && getCapeBonus('double_cook',       null)) qty *= 2;
+    if (skillId === 'runecrafting' && getCapeBonus('double_rune',       null)) qty *= 2;
+    if (skillId === 'fletching' && (action.category === 'Arrows' || action.category === 'Headless Arrows') && getCapeBonus('double_fletch_ammo', null)) qty *= 2;
     grantItem(action.item, action.itemName, qty);
     if (MAGE_WEAPON_EFFECTS[action.item]) logCollectionDrop('infused_magic_gear', action.item, qty);
     // Gatherer's Band: 10% chance to double-yield from gathering skills
     if (SKILL_BY_ID[skillId]?.type === 'gathering' && state.equipment?.ring === 'gatherers_band' && Math.random() < 0.10)
       grantItem(action.item, action.itemName, qty);
-    // Fishing Pier: 20% chance to catch a bonus fish
-    if (skillId === 'fishing' && state.upgrades?.fishing_pier && Math.random() < 0.20)
+    // Fishing Pier: 20% chance to catch a bonus fish (construction_perk_boost amplifies)
+    if (skillId === 'fishing' && state.upgrades?.fishing_pier && Math.random() < 0.20 * (1 + getCapeBonus('construction_perk_boost', null)))
       grantItem(action.item, action.itemName, qty);
-    // Lucky Break: 5% chance to double any skilling output
-    if (state.upgrades?.lucky_break && Math.random() < 0.05)
+    // Lucky Break: 5% chance to double any skilling output (construction_perk_boost amplifies)
+    if (state.upgrades?.lucky_break && Math.random() < 0.05 * (1 + getCapeBonus('construction_perk_boost', null)))
       grantItem(action.item, action.itemName, qty);
-    // Abyssal Focus: 10% chance to double rune output
-    if (skillId === 'runecrafting' && state.upgrades?.abyssal_focus && Math.random() < 0.10)
+    // Abyssal Focus: 10% chance to double rune output (construction_perk_boost amplifies)
+    if (skillId === 'runecrafting' && state.upgrades?.abyssal_focus && Math.random() < 0.10 * (1 + getCapeBonus('construction_perk_boost', null)))
       grantItem(action.item, action.itemName, qty);
     // Pet output bonuses
     const _pet = state.equipment?.pet;
@@ -6365,6 +6410,43 @@ function completeAction(action, silent){
       const _SUPREME = {attack_potion:'supreme_attack_potion',defence_potion:'supreme_defence_potion',ranging_potion:'supreme_ranging_potion',magic_potion:'supreme_magic_potion',summoning_potion:'supreme_summoning_potion',prayer_potion:'supreme_prayer_potion'};
       const _supId = _SUPREME[action.item];
       if (_supId){ const _supName = _supId.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); grantItem(_supId,_supName,1); if (!silent) log(`🐸 Herb Frog's secret technique — ${_supName}!`); }
+    }
+    // Skillcape bonus item perks
+    // Woodcutting: Old Growth — 10% chance for logs from 1 tier higher
+    if (skillId === 'woodcutting' && Math.random() < getCapeBonus('higher_tier_log', null)){
+      const _wcIdx = ACTIONS.woodcutting.findIndex(a => a.id === state.current?.actionId);
+      if (_wcIdx >= 0){
+        const _next = ACTIONS.woodcutting[Math.min(_wcIdx + 1, ACTIONS.woodcutting.length - 1)];
+        grantItem(_next.item, _next.itemName, 1);
+        if (!silent) log(`🪓 Old Growth! Found some ${_next.itemName}.`);
+      }
+    }
+    // Mining: Raw Smelting — 5% chance to receive a smelted bar
+    if (skillId === 'mining' && Math.random() < getCapeBonus('free_bar_chance', null)){
+      const _bar = ORE_TO_BAR[action.item];
+      if (_bar){ grantItem(_bar.id, _bar.name, 1); if (!silent) log(`⛏️ Raw Smelting! Forged a ${_bar.name}.`); }
+    }
+    // Fishing: Mermaid's Luck — 5% chance to find a gem
+    if (skillId === 'fishing' && Math.random() < getCapeBonus('mermaid_gem', null)){
+      const _fLvl = levelForXp(state.skills.fishing?.xp || 0);
+      let _gem, _gemName;
+      if      (_fLvl >= 80) { _gem='uncut_dragonstone'; _gemName='Uncut dragonstone'; }
+      else if (_fLvl >= 65) { _gem='uncut_diamond';     _gemName='Uncut diamond'; }
+      else if (_fLvl >= 50) { _gem='uncut_ruby';        _gemName='Uncut ruby'; }
+      else if (_fLvl >= 35) { _gem='uncut_emerald';     _gemName='Uncut emerald'; }
+      else                  { _gem='uncut_sapphire';    _gemName='Uncut sapphire'; }
+      grantItem(_gem, _gemName, 1);
+      if (!silent) log(`🧜 Mermaid's Luck! Found a ${_gemName}.`);
+    }
+    // Hunter: Natural Predator — 20% chance to instantly catch again
+    if (skillId === 'hunter' && Math.random() < getCapeBonus('instant_recatch', null)){
+      grantItem(action.item, action.itemName, qty);
+      if (!silent) log('🦎 Natural Predator — caught again!');
+    }
+    // Smithing: Double Smelt — 25% chance for an extra bar (bars only)
+    if (skillId === 'smithing' && action.category === 'Bars' && Math.random() < getCapeBonus('double_smelt', null)){
+      grantItem(action.item, action.itemName, 1);
+      if (!silent) log(`🔨 Double Smelt! Extra ${action.itemName}.`);
     }
   }
   // Abyssal Rod: 1% chance to upgrade the caught fish to the next tier
@@ -6510,7 +6592,7 @@ function completeAction(action, silent){
       if (!silent) log(`🐾 Predator's instinct — you snatch an impling! (${jarName})`);
     }
     // Training Ground: each combat kill grants passive Agility XP
-    if (state.upgrades?.training_ground) grantXp('agility', 40, silent);
+    if (state.upgrades?.training_ground) grantXp('agility', Math.round(40 * (1 + getCapeBonus('construction_perk_boost', null))), silent);
     // Goblin Diplomatic Note — 1/100 from goblins; guaranteed at 1000kc
     if (action.id === 'goblin' && !(state.inventory['goblin_diplomatic_note'] || 0) && !state.quests?.goblin_diplomacy){
       const kc = state.combat.kills['goblin'] || 0;
@@ -6607,6 +6689,11 @@ function completeAction(action, silent){
   const _xpAmt = (skillId === 'dungeoneering' && state.upgrades?.dg_xp_boost)
     ? Math.floor(action.xp * 1.1) : action.xp;
   grantXp(skillId, _xpAmt, silent);
+  // Divination cape: Clarity — 10% of divination XP also goes to Prayer
+  if (skillId === 'divination'){
+    const _divPrayer = getCapeBonus('div_prayer_xp', null);
+    if (_divPrayer > 0) grantXp('prayer', _xpAmt * _divPrayer, silent);
+  }
   // Award DG tokens on floor completion; refresh cached values for next loop
   if (skillId === 'dungeoneering' && !silent){
     const dgLevel = levelForXp(state.skills['dungeoneering'].xp);
@@ -6619,6 +6706,12 @@ function completeAction(action, silent){
       grantItem('rune_essence','Rune essence',50);
       grantItem('torstol_seed','Torstol seed',1);
       log("🐀 Lil' Lubi' sniffs out a hidden stash! (+10 Dragon bones, +50 Rune essence, +1 Torstol seed)");
+    }
+    // Dungeoneering cape: Jack of All Trades — 100 XP to every other skill
+    const _jotXp = getCapeBonus('dg_all_skills_xp', null);
+    if (_jotXp > 0){
+      for (const _s of SKILL_ROADMAP){ if (_s.implemented && _s.id !== 'dungeoneering') grantXp(_s.id, _jotXp, true); }
+      log(`🗝️ Jack of All Trades — +${_jotXp} XP to all skills!`);
     }
     state.current.earnedTokens = tokens;
     state.current.floorTicks   = Math.round(calcFloorSecs(action) / (TICK_MS / 1000));
@@ -8621,7 +8714,7 @@ function renderActiveSkill(){
     // Info bar
     const infoDiv = document.createElement('div');
     infoDiv.className = 'dg-bonus';
-    infoDiv.innerHTML = `Archaeology level: <b>${archLvl}</b> &nbsp;·&nbsp; Perks active: <b>${activePerks.length} / ${ARCH_MAX_PERKS}</b>`;
+    infoDiv.innerHTML = `Archaeology level: <b>${archLvl}</b> &nbsp;·&nbsp; Perks active: <b>${activePerks.length} / ${getMaxArchPerks()}</b>`;
     list.appendChild(infoDiv);
 
     // Excavation Sites
@@ -8661,7 +8754,7 @@ function renderActiveSkill(){
     // Artefacts & Perks
     const perkHdr = document.createElement('div');
     perkHdr.className = 'action-category-header';
-    perkHdr.textContent = `Artefacts & Perks  (${activePerks.length}/${ARCH_MAX_PERKS} active)`;
+    perkHdr.textContent = `Artefacts & Perks  (${activePerks.length}/${getMaxArchPerks()} active)`;
     list.appendChild(perkHdr);
 
     ARCH_SITES.forEach(site => {
@@ -9109,7 +9202,7 @@ function init(){
 
   // Init player HP from constitution level (handles both new games and save migration)
   const constLvl = Math.min(levelForXp(state.skills.constitution.xp), SKILL_BY_ID['constitution'].maxLevel);
-  state.combat.maxHp = constLvl * 10;
+  state.combat.maxHp = Math.round(constLvl * 10 * (1 + getCapeBonus('max_hp_pct', null)));
   if (!state.combat.hp || state.combat.hp <= 0) state.combat.hp = state.combat.maxHp;
   state.combat.hp = Math.min(state.combat.hp, state.combat.maxHp);
   if (!('weapon' in state.equipment))  state.equipment.weapon  = null;
