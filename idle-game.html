@@ -3172,6 +3172,12 @@ const CLOG_OPEN_SOURCE = {
   firemaking_spirit:'fire_spirit',
 };
 const CHARM_IDS = new Set(['gold_charm','green_charm','crimson_charm','blue_charm']);
+const OPEN_ALL_ITEMS = new Set([
+  'sedimentary_geode','igneous_geode','metamorphic_geode',
+  'birds_nest_seeds','birds_nest_ring',
+  'birds_nest_egg_red','birds_nest_egg_blue','birds_nest_egg_green',
+  'fire_spirit',
+]);
 
 /* ---- Achievements ---- */
 const ACHIEVEMENTS = [
@@ -3862,6 +3868,10 @@ const ITEM_STATS = {
   goblin_diplomatic_note: {desc:'A diplomatic note from the Goblin King. Required for the Goblin Emissary quest.'},
   krackens_beak:          {desc:"A colossal beak wrestled from a kraken's maw. Used to craft a Crystal Rod."},
   map_to_the_deep:        {desc:'An ancient map hinting at underwater ruins. Used to unlock the deep sea fishing area.'},
+  // Geodes
+  sedimentary_geode: {desc:'A sedimentary geode. Open to discover gems and minerals.'},
+  igneous_geode:     {desc:'An igneous geode forged in volcanic heat. Open for rare minerals.'},
+  metamorphic_geode: {desc:'A metamorphic geode formed under intense pressure. Open for gems.'},
 };
 
 const EQUIP_SLOTS = {
@@ -5234,7 +5244,7 @@ function renderCombatPanel(){
     if (a){
       actionPct = state.combat.mobMaxHp
         ? (state.combat.mobHp / state.combat.mobMaxHp) * 100 : 0;
-      doing = `Fighting: <b>${a.name}</b> <span style="color:#f87171;font-size:11px;">[${state.combat.mobHp}/${state.combat.mobMaxHp} HP]</span>`;
+      doing = `Fighting: <b>${a.name}</b> <span style="color:#f87171;font-size:11px;">[${state.combat.mobHp.toLocaleString()}/${state.combat.mobMaxHp.toLocaleString()} HP]</span>`;
     }
   }
   $('nowDoing').innerHTML = doing;
@@ -5252,7 +5262,7 @@ function renderCombatPanel(){
   hpDiv.style.cssText = 'margin-bottom:10px;';
   hpDiv.innerHTML = `
     <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:3px;">
-      <span>❤️ HP</span><span>${state.combat.hp} / ${state.combat.maxHp}</span>
+      <span>❤️ HP</span><span>${state.combat.hp.toLocaleString()} / ${state.combat.maxHp.toLocaleString()}</span>
     </div>
     <div style="height:8px;background:var(--panel2);border-radius:4px;overflow:hidden;">
       <div style="height:100%;width:${hpPct}%;background:#22c55e;border-radius:4px;transition:width .3s;"></div>
@@ -6406,11 +6416,48 @@ function applyOffline(){
   state.progress = totalTicks % effTicks;
   if (maxCompleted <= 0) return null;
 
+  // Simulate prayer drain during offline combat
+  const _isCombat = COMBAT_SKILL_IDS.has(state.current.skillId);
+  if (_isCombat && state.prayer?.active && Object.keys(state.prayer.active).length > 0
+      && state.prayer.points > 0){
+    const totalDrain = Object.keys(state.prayer.active).reduce((sum, id) => {
+      const p = PRAYERS.find(pr => pr.id === id);
+      return sum + (p?.drain || 0);
+    }, 0);
+    if (totalDrain > 0){
+      const pBonus = Math.max(1, state.stats.prayer || 1);
+      const pDrainRed = getCapeBonus('prayer_drain', null) + getPetBonus('prayer_drain', null)
+                      + getJewelryBonus('prayer_drain', null);
+      const threshold = Math.max(1, Math.round(
+        10 / totalDrain * (1 + pBonus / 30) / Math.max(0.01, 1 - pDrainRed)));
+      const totalDrainTicks = offlineTicks + (state.prayer.drainCounter || 0);
+      const drainPoints = Math.floor(totalDrainTicks / threshold);
+      state.prayer.drainCounter = totalDrainTicks % threshold;
+      if (drainPoints > 0){
+        const refund = getJewelryBonus('prayer_refund', null);
+        const netDrain = Math.round(drainPoints * (1 - refund));
+        state.prayer.points = Math.max(0, state.prayer.points - netDrain);
+        if (state.prayer.points === 0) state.prayer.active = {};
+      }
+    }
+  }
+
+  const _isSingle = !!action.single;
+  const _savedSkillId  = state.current.skillId;
+  const _savedActionId = state.current.actionId;
   let completed = 0;
-  for (let i=0; i<maxCompleted; i++){
+  for (let i = 0; i < maxCompleted; i++){
     completeAction(action, true);
-    if (!state.current) break; // ran out of ingredients mid-offline
-    completed++;
+    if (!state.current){
+      if (_isSingle){
+        completed++;                          // single-action succeeded; count it
+        if (i < maxCompleted - 1)
+          state.current = { skillId: _savedSkillId, actionId: _savedActionId };
+      }
+      break;                                  // ingredient failure or last single done
+    } else {
+      completed++;
+    }
   }
   if (completed <= 0) return null;
   return { action, completed, ms: cappedMs };
@@ -6668,7 +6715,7 @@ function completeAction(action, silent){
   if (action.item && skillId === 'fishing' &&
       state.tools?.fishing === 'abyssal_rod' && Math.random() < 0.01){
     const fishActions = ACTIONS.fishing;
-    const idx = fishActions.findIndex(a => a.id === state.current.actionId);
+    const idx = fishActions.findIndex(a => a.id === state.current?.actionId);
     if (idx >= 0 && idx < fishActions.length - 1){
       const upgrade = fishActions[idx + 1];
       state.inventory[action.item]--;
@@ -7961,6 +8008,44 @@ function openItem(itemId){
   render();
 }
 
+function openAllItems(itemId){
+  const entry = OPENABLE_ITEMS[itemId];
+  if (!entry || (state.inventory[itemId] || 0) < 1) return;
+  const tally = {};
+  let count = 0;
+  while ((state.inventory[itemId] || 0) > 0){
+    if (entry.rewards.length === 1){
+      const _r = entry.rewards[0];
+      if (EQUIP_SLOTS[_r.id] === 'pet' && ((state.inventory[_r.id]||0) > 0 || state.equipment?.pet === _r.id)){
+        log(`You already have a ${_r.name} — sell the remaining ${state.itemNames[itemId]} instead.`);
+        break;
+      }
+    }
+    state.inventory[itemId]--;
+    if (!state.openCounts) state.openCounts = {};
+    state.openCounts[itemId] = (state.openCounts[itemId] || 0) + 1;
+    const totalWeight = entry.rewards.reduce((s, r) => s + r.weight, 0);
+    let roll = Math.random() * totalWeight, reward;
+    for (const r of entry.rewards){ roll -= r.weight; if (roll <= 0){ reward = r; break; } }
+    reward = reward || entry.rewards[entry.rewards.length - 1];
+    const qty = reward.minCount != null
+      ? reward.minCount + Math.floor(Math.random() * (reward.maxCount - reward.minCount + 1))
+      : (reward.count || 1);
+    grantItem(reward.id, reward.name, qty);
+    const _src = OPENABLE_CLOG_SOURCE[itemId];
+    if (_src) logCollectionDrop(_src, reward.id, qty);
+    if (!tally[reward.id]) tally[reward.id] = { name: reward.name, qty: 0 };
+    tally[reward.id].qty += qty;
+    count++;
+  }
+  if (count > 0){
+    const summary = Object.values(tally).map(t => `${t.qty.toLocaleString()}× ${t.name}`).join(', ');
+    log(`📦 Opened ${count.toLocaleString()}× ${state.itemNames[itemId]}: ${summary}`);
+    checkAchievements();
+    render();
+  }
+}
+
 function upgradeTool(skillId, tierId){
   const tiers = TOOLS[skillId];
   if (!tiers) return;
@@ -8735,7 +8820,7 @@ function renderActiveSkill(){
     // Quest-gated actions (e.g. Crystal course)
     if (a.questReq && !state.quests?.[a.questReq]){
       const reqs = a.skillReqs || [];
-      const skillReqsMet = reqs.every(r => levelForXp(state.skills[r.id].xp) >= r.lvl);
+      const skillReqsMet = reqs.every(r => levelForXp(state.skills[r.id]?.xp || 0) >= r.lvl);
       const reqText = reqs.map(r => `Lv${r.lvl} ${SKILL_BY_ID[r.id].name}`).join(', ');
       const questLabel = a.questReq === 'lost_city' ? 'Discovering the Lost City' : a.questReq;
       if (skillReqsMet){
@@ -9277,6 +9362,8 @@ function renderItemsPanel(){
         btns += `<span style="font-size:11px;color:var(--accent);">↻ auto</span>`;
       } else {
         btns += `<button class="mini" onclick="openItem('${k}')">Open</button>`;
+        if (OPEN_ALL_ITEMS.has(k) && qty > 1)
+          btns += `<button class="mini" onclick="openAllItems('${k}')">Open All</button>`;
       }
     }
     if (isPouch){
