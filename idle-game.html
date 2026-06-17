@@ -3094,6 +3094,7 @@ const COLLECTION_LOG_SOURCES = [
     {id:'pet_deep_spawn',   name:'Deep Spawn',    icon:'🦈'}, {id:'pet_lich_familiar',name:'Lich Familiar', icon:'💀'},
     {id:'pet_solar_hawk',   name:'Solar Hawk',    icon:'🌟'}, {id:'pet_war_pup',      name:'War Pup',       icon:'🐕'},
     {id:'pet_void_spawn',   name:'Void Spawn',    icon:'🌌'}, {id:'pet_void_herald',  name:'Void Herald',   icon:'🐲'},
+    {id:'pet_phoenix_chick',name:'Phoenix Chick', icon:'🔥'}, {id:'pet_tungsten_shard',name:'Tungsten Shard',icon:'🪨'},
   ]},
   // Clue Scrolls
   { id:'clue_easy',   name:'Easy Casket',   category:'Clue Scrolls', items:[
@@ -3137,6 +3138,7 @@ const MOB_CLOG_SOURCE = {
   ice_warrior:'mob_ice_warrior', vampire:'mob_vampire', ancient_lich:'boss_ancient_lich',
   void_herald:'boss_void_herald',
   phoenix:'boss_phoenix',
+  tungsten_titan:'boss_tungsten_titan',
 };
 // Openable item → collection log source ID
 const OPENABLE_CLOG_SOURCE = {
@@ -3145,6 +3147,9 @@ const OPENABLE_CLOG_SOURCE = {
   baby_impling_jar:'jar_baby', eclectic_impling_jar:'jar_eclectic', dragon_impling_jar:'jar_dragon',
   earth_impling_jar:'jar_earth', nature_impling_jar:'jar_nature', kingly_impling_jar:'jar_kingly',
   fire_spirit:'firemaking_spirit',
+  red_bird_egg:'woodcutting_bonus',
+  blue_bird_egg:'woodcutting_bonus',
+  green_bird_egg:'woodcutting_bonus',
 };
 // Collection log source ID → combat.kills key (for displaying kill counts)
 const CLOG_KILL_SOURCE = {
@@ -3649,6 +3654,214 @@ const ITEM_STATS = {
       return [id, stats];
     }))
   ),
+  // Logs
+  normal_logs:        {desc:'Freshly chopped logs. Used in Firemaking, Fletching, and Construction.'},
+  oak_logs:           {desc:'Oak logs. Used in Firemaking, Fletching, and Construction.'},
+  willow_logs:        {desc:'Willow logs. Used in Firemaking, Fletching, and Construction.'},
+  teak_logs:          {desc:'Teak logs. Used in Firemaking, Fletching, and Construction.'},
+  maple_logs:         {desc:'Maple logs. Used in Firemaking, Fletching, and Construction.'},
+  mahogany_logs:      {desc:'Mahogany logs. Used in Firemaking, Fletching, and Construction.'},
+  yew_logs:           {desc:'Yew logs. Used in Firemaking, Fletching, and Construction.'},
+  magic_logs:         {desc:'Magic logs imbued with arcane energy. Used in Firemaking and Fletching.'},
+  elder_logs:         {desc:'Elder logs from an ancient tree. Used in high-tier Firemaking and Fletching.'},
+  eternal_magic_logs: {desc:'Logs suffused with eternal magic. The rarest timber in the land.'},
+  // Planks
+  plank:         {desc:'A rough-hewn plank. Used in Construction.'},
+  oak_plank:     {desc:'A smooth oak plank. Used in Construction.'},
+  teak_plank:    {desc:'A polished teak plank. Used in Construction.'},
+  mahogany_plank:{desc:'A rich mahogany plank. Used in high-tier Construction.'},
+  magic_plank:   {desc:'A magically treated plank. Used in high-tier Construction.'},
+  elder_plank:   {desc:'A plank milled from elder wood. Used in the finest Construction projects.'},
+  eternal_plank: {desc:'An impossibly durable plank. Used in Construction masterworks.'},
+  // Ores
+  copper_ore:      {desc:'Copper ore. Smelt with tin ore to make bronze bars.'},
+  tin_ore:         {desc:'Tin ore. Smelt with copper ore to make bronze bars.'},
+  iron_ore:        {desc:'Iron ore. Smelt into iron or steel bars.'},
+  coal:            {desc:'Coal. Used as fuel when smelting most metal bars.'},
+  coal_ore:        {desc:'Coal ore. Used as fuel when smelting most metal bars.'},
+  silver_ore:      {desc:'Silver ore. Smelt into silver bars for Crafting.'},
+  mithril_ore:     {desc:'Mithril ore. Smelt with coal into mithril bars.'},
+  adamantite_ore:  {desc:'Adamantite ore. Smelt with coal into adamant bars.'},
+  gold_ore:        {desc:'Gold ore. Smelt into gold bars for Crafting and Smithing.'},
+  runite_ore:      {desc:'Runite ore. Smelt with coal into rune bars.'},
+  rune_ore:        {desc:'Rune ore. Smelt into rune bars.'},
+  luminite_ore:    {desc:'Luminite ore. A companion ore found alongside adamantite and runite.'},
+  orichalcite_ore: {desc:'Orichalcite ore. Smelt with drakolith into orikalkum bars.'},
+  drakolith_ore:   {desc:'Drakolith ore. Smelt with orichalcite into orikalkum bars.'},
+  necrite_ore:     {desc:'Necrite ore. Smelt with phasmatite into necronium bars.'},
+  phasmatite_ore:  {desc:'Phasmatite ore. Smelt with necrite into necronium bars.'},
+  banite_ore:      {desc:'Banite ore. Smelt into bane bars.'},
+  elder_rune_ore:  {desc:'Elder rune ore. Smelt into elder rune bars.'},
+  primal_ore:      {desc:'Primal ore. The most powerful metal in existence.'},
+  // Bars
+  bronze_bar:    {desc:'A bronze bar. Used in Smithing to craft basic weapons and armour.'},
+  iron_bar:      {desc:'An iron bar. Used in Smithing.'},
+  steel_bar:     {desc:'A steel bar. Used in Smithing.'},
+  silver_bar:    {desc:'A silver bar. Used in Crafting for jewellery and bolt tips.'},
+  mithril_bar:   {desc:'A mithril bar. Used in Smithing.'},
+  adamant_bar:   {desc:'An adamant bar. Used in Smithing.'},
+  gold_bar:      {desc:'A gold bar. Used in Crafting for jewellery.'},
+  rune_bar:      {desc:'A rune bar. Used in high-tier Smithing.'},
+  orikalkum_bar: {desc:'An orikalkum bar. A powerful alloy used in Smithing.'},
+  necronium_bar: {desc:'A necronium bar. Smithed from the bones of ancient creatures.'},
+  bane_bar:      {desc:'A bane bar. A superior metal for Smithing.'},
+  elder_rune_bar:{desc:'An elder rune bar. One of the finest metals known to smiths.'},
+  primal_bar:    {desc:'A primal bar. The pinnacle of Smithing materials.'},
+  tungsten_ingot:{desc:'A dense tungsten ingot. Used in high-level Crafting and dropped by the Tungsten Titan.'},
+  // Raw fish and meats
+  raw_shrimps:          {desc:'Raw shrimps. Cook them for a small heal.'},
+  raw_sardine:          {desc:'Raw sardine. Cook it to restore HP.'},
+  raw_anchovies:        {desc:'Raw anchovies. Cook them to restore HP.'},
+  raw_herring:          {desc:'Raw herring. Cook it to restore HP.'},
+  raw_trout:            {desc:'Raw trout. Cook it to restore HP.'},
+  raw_pike:             {desc:'Raw pike. Cook it to restore HP.'},
+  raw_salmon:           {desc:'Raw salmon. Cook it to restore a decent amount of HP.'},
+  raw_tuna:             {desc:'Raw tuna. Cook it to restore HP.'},
+  raw_lobster:          {desc:'Raw lobster. Cook it for a solid HP restore.'},
+  raw_swordfish:        {desc:'Raw swordfish. Cook it for a good HP restore.'},
+  raw_monkfish:         {desc:'Raw monkfish. Cook it for a great HP restore.'},
+  raw_shark:            {desc:'Raw shark. Cook it for a large HP restore.'},
+  raw_great_white_shark:{desc:'Raw great white shark. Cook it for a very large HP restore.'},
+  raw_cavefish:         {desc:'Raw cavefish from deep underground. Cook it for a powerful heal.'},
+  raw_rocktail:         {desc:'Raw rocktail. Cook it for one of the best heals available.'},
+  raw_sailfish:         {desc:'Raw sailfish from the deep sea. Cook it for the best heal in the game.'},
+  raw_rabbit:           {desc:'Raw rabbit. Cook it to restore a small amount of HP.'},
+  raw_bird_meat:        {desc:'Raw bird meat. Cook it to restore HP.'},
+  burnt_food:           {desc:'Charred beyond recognition. Not edible.'},
+  // Herbs
+  ironwort:    {desc:'Ironwort herb. Used in Herblore to brew potions.'},
+  shimmerleaf: {desc:'Shimmerleaf herb. Used in Herblore to brew potions.'},
+  thornweed:   {desc:'Thornweed herb. Used in Herblore to brew potions.'},
+  goldbloom:   {desc:'Goldbloom herb. Used in Herblore to brew potions.'},
+  duskroot:    {desc:'Duskroot herb. Used in Herblore to brew potions.'},
+  veilmoss:    {desc:'Veilmoss herb. Used in Herblore to brew potions.'},
+  crimsonherb: {desc:'Crimsonherb. Used in Herblore to brew high-tier potions.'},
+  // Herb seeds
+  ironwort_seed:    {desc:'Ironwort seed. Plant in a farming patch to grow ironwort.'},
+  shimmerleaf_seed: {desc:'Shimmerleaf seed. Plant in a farming patch to grow shimmerleaf.'},
+  thornweed_seed:   {desc:'Thornweed seed. Plant in a farming patch to grow thornweed.'},
+  goldbloom_seed:   {desc:'Goldbloom seed. Plant in a farming patch to grow goldbloom.'},
+  duskroot_seed:    {desc:'Duskroot seed. Plant in a farming patch to grow duskroot.'},
+  veilmoss_seed:    {desc:'Veilmoss seed. Plant in a farming patch to grow veilmoss.'},
+  crimsonherb_seed: {desc:'Crimsonherb seed. Plant in a farming patch to grow crimsonherb.'},
+  // Uncut gems
+  uncut_sapphire:    {desc:'An uncut sapphire. Cut with Crafting to make jewellery.'},
+  uncut_emerald:     {desc:'An uncut emerald. Cut with Crafting to make jewellery.'},
+  uncut_ruby:        {desc:'An uncut ruby. Cut with Crafting to make jewellery.'},
+  uncut_diamond:     {desc:'An uncut diamond. Cut with Crafting to make jewellery.'},
+  uncut_dragonstone: {desc:'An uncut dragonstone. Cut with Crafting to make high-tier jewellery.'},
+  uncut_onyx:        {desc:'An uncut onyx. Cut with Crafting to make the finest jewellery.'},
+  uncut_hydrix:      {desc:'An uncut hydrix. A gem of immense power. Cut with Crafting.'},
+  // Cut gems
+  sapphire:    {desc:'A cut sapphire. Used in Crafting to make rings and amulets.'},
+  emerald:     {desc:'A cut emerald. Used in Crafting to make rings and amulets.'},
+  ruby:        {desc:'A cut ruby. Used in Crafting to make rings and amulets.'},
+  diamond:     {desc:'A cut diamond. Used in Crafting to make rings and amulets.'},
+  dragonstone: {desc:'A cut dragonstone. Used in Crafting to make high-tier jewellery.'},
+  onyx:        {desc:'A cut onyx. Used in high-tier Crafting.'},
+  hydrix:      {desc:'A cut hydrix. Used in the finest Crafting recipes.'},
+  // Bones
+  bones:        {desc:'Bones dropped by creatures. Bury for Prayer XP.'},
+  big_bones:    {desc:'Large bones from powerful creatures. Bury for more Prayer XP.'},
+  dragon_bones: {desc:'Bones from a dragon. Bury for significant Prayer XP.'},
+  wyvern_bones: {desc:'Bones from a wyvern. Bury for excellent Prayer XP.'},
+  // Charms
+  gold_charm:    {desc:'A gold charm. Used in Summoning pouch crafting.'},
+  green_charm:   {desc:'A green charm. Used in Summoning pouch crafting.'},
+  crimson_charm: {desc:'A crimson charm. Used in Summoning to create powerful pouches.'},
+  blue_charm:    {desc:'A blue charm. Used in Summoning to create the strongest pouches.'},
+  // Runecrafting / Divination resources
+  rune_essence:        {desc:'Pure rune essence. Used in Runecrafting to craft runes.'},
+  divine_dust:         {desc:'Collected divine dust. Used in Summoning pouch crafting.'},
+  flickering_energy:   {desc:'Flickering energy from a divination wisp. Used in Divination.'},
+  pale_energy:         {desc:'Pale energy from a divination wisp. Used in Divination.'},
+  bright_energy:       {desc:'Bright energy from a divination wisp. Used in Divination.'},
+  gleaming_energy:     {desc:'Gleaming energy from a divination wisp. Used in Divination.'},
+  vibrant_energy:      {desc:'Vibrant energy from a divination wisp. Used in Divination.'},
+  brilliant_energy:    {desc:'Brilliant energy from a divination wisp. Used in Divination.'},
+  radiant_energy:      {desc:'Radiant energy from a divination wisp. Used in Divination.'},
+  lustrous_energy:     {desc:'Lustrous energy from a divination wisp. Used in Divination.'},
+  luminous_energy:     {desc:'Luminous energy from a divination wisp. Used in Divination.'},
+  incandescent_energy: {desc:'Incandescent energy from a divine wisp. The most potent divination resource.'},
+  // Dragonhides
+  green_dhide:      {desc:"Raw green dragonhide. Tan and craft into ranged armour."},
+  blue_dhide:       {desc:"Raw blue dragonhide. Tan and craft into ranged armour."},
+  black_dhide:      {desc:"Raw black dragonhide. Tan and craft into ranged armour."},
+  red_dhide:        {desc:"Raw red dragonhide. Tan and craft into ranged armour."},
+  royal_dhide:      {desc:"Raw royal dragonhide. Tan and craft into the finest ranged armour."},
+  green_dragonhide: {desc:"Tanned green dragonhide. Craft into green d'hide armour."},
+  blue_dragonhide:  {desc:"Tanned blue dragonhide. Craft into blue d'hide armour."},
+  black_dragonhide: {desc:"Tanned black dragonhide. Craft into black d'hide armour."},
+  red_dragonhide:   {desc:"Tanned red dragonhide. Craft into red d'hide armour."},
+  royal_dragonhide: {desc:"Tanned royal dragonhide. Craft into royal d'hide armour."},
+  // Hunter hides and furs
+  kebbit_fur:   {desc:'Kebbit fur. Craft into kebbit leather armour.'},
+  kyatt_fur:    {desc:'Kyatt fur. Craft into kyatt leather armour.'},
+  larupia_fur:  {desc:'Larupia fur. Craft into larupia leather items.'},
+  hound_pelt:   {desc:'Pelt from a spotted hound. Craft into hound leather armour.'},
+  cowhide:      {desc:'Cowhide. Tan and craft into leather items.'},
+  troll_hide:   {desc:'Thick troll hide. Used in Crafting.'},
+  werewolf_fur: {desc:'Coarse werewolf fur. Used in Crafting.'},
+  suqah_hide:   {desc:'Suqah hide. Used in Crafting.'},
+  // Fletching components
+  headless_arrow:    {desc:'An arrow shaft with no tip. Add arrowheads to complete it.'},
+  bowstring:         {desc:'A bowstring. Used to string bows during Fletching.'},
+  bronze_arrowhead:  {desc:'Bronze arrowhead. Attach to headless arrows to make bronze arrows.'},
+  iron_arrowhead:    {desc:'Iron arrowhead. Attach to headless arrows to make iron arrows.'},
+  steel_arrowhead:   {desc:'Steel arrowhead. Attach to headless arrows to make steel arrows.'},
+  mithril_arrowhead: {desc:'Mithril arrowhead. Attach to headless arrows to make mithril arrows.'},
+  adamant_arrowhead: {desc:'Adamant arrowhead. Attach to headless arrows to make adamant arrows.'},
+  rune_arrowhead:    {desc:'Rune arrowhead. Attach to headless arrows to make rune arrows.'},
+  dragon_arrowhead:  {desc:'Dragon arrowhead. Attach to headless arrows to make dragon arrows.'},
+  // Crafting materials
+  bark:       {desc:'Stripped bark. Used in Crafting.'},
+  wood_pulp:  {desc:'Processed wood pulp. Used in Crafting.'},
+  cloth:      {desc:'Woven cloth. Used to make cloth armour.'},
+  fine_cloth: {desc:'Fine-weave cloth. Used in high-tier Crafting.'},
+  tunnel_silk:{desc:'Silk harvested from underground tunnels. Used in Crafting.'},
+  // Summoning materials
+  soul_fragment:  {desc:'A shard of trapped spiritual energy. Used in high-tier Summoning.'},
+  stone_fragment: {desc:'A fragment of living stone. Used in Summoning.'},
+  shadow_shard:   {desc:'A shard from the shadow realm. Used in Summoning.'},
+  crystal_shard:  {desc:'A crystallised mana shard. Used in high-tier Summoning.'},
+  t99_tool_charm: {desc:'A gleaming tool charm imbued with skill mastery. Unlocks a powerful familiar.'},
+  t100_tool_charm:{desc:'A perfect tool charm radiating raw mastery. Unlocks the most powerful familiar.'},
+  // Impling jars
+  baby_impling_jar:     {desc:'A jar containing a baby impling. Open for rewards.'},
+  earth_impling_jar:    {desc:'A jar containing an earth impling. Open for rewards.'},
+  eclectic_impling_jar: {desc:'A jar containing an eclectic impling. Open for varied rewards.'},
+  nature_impling_jar:   {desc:'A jar containing a nature impling. Open for rewards.'},
+  dragon_impling_jar:   {desc:'A jar containing a dragon impling. Open for valuable rewards.'},
+  kingly_impling_jar:   {desc:'A jar containing a kingly impling. Open for the best rewards.'},
+  // Bird nests and eggs
+  birds_nest_seeds:     {desc:"A bird's nest full of seeds. Open to collect them."},
+  birds_nest_ring:      {desc:"A bird's nest with a ring inside. Open to retrieve it."},
+  birds_nest_egg_red:   {desc:"A bird's nest containing a red egg. Open to hatch it."},
+  birds_nest_egg_blue:  {desc:"A bird's nest containing a blue egg. Open to hatch it."},
+  birds_nest_egg_green: {desc:"A bird's nest containing a green egg. Open to hatch it."},
+  red_bird_egg:         {desc:'A red bird egg. Open to hatch a Crimson Finch pet.'},
+  blue_bird_egg:        {desc:'A blue bird egg. Open to hatch a Blue Jay pet.'},
+  green_bird_egg:       {desc:'A green bird egg. Open to hatch a Green Parrot pet.'},
+  // Special and notable drops
+  fire_spirit:            {desc:'A fire spirit that emerges from the flames. Open for a reward.'},
+  dg_tokens:              {desc:'Dungeoneering tokens. Spend them in the Dungeoneering rewards shop.'},
+  mole_skin:              {desc:'Skin from a Giant Mole. Used in Crafting.'},
+  goblin_sigil:           {desc:'A goblin war sigil, pulsing with crude magic.'},
+  ancient_bone:           {desc:'An ancient bone fragment. Useful to Archaeologists and Crafters.'},
+  void_crystal:           {desc:'A crystallised shard of void energy. Used in Crafting.'},
+  void_scale:             {desc:'A scale shed by a void dragon, humming with dark energy.'},
+  wyvern_heart:           {desc:'The preserved heart of a wyvern. Still faintly beating.'},
+  wyvern_scale:           {desc:'A wyvern scale. Used in high-tier Crafting.'},
+  fire_essence:           {desc:'Compressed elemental fire. Used in high-level Runecrafting.'},
+  vampire_dust:           {desc:'Ash-grey dust left behind by a destroyed vampire. Used in Herblore.'},
+  troll_tooth:            {desc:'A troll molar, still glistening with saliva. Used in Crafting.'},
+  werewolf_fang:          {desc:'A fang from a werewolf. Used in Crafting.'},
+  grit_crystal:           {desc:'A rough crystal cluster. Used in Crafting.'},
+  basilisk_eye:           {desc:'A petrified eye from a basilisk. Used in Crafting.'},
+  ancient_scroll:         {desc:'An ancient scroll of lost knowledge. Handle with care.'},
+  goblin_diplomatic_note: {desc:'A diplomatic note from the Goblin King. Required for the Goblin Emissary quest.'},
+  krackens_beak:          {desc:"A colossal beak wrestled from a kraken's maw. Used to craft a Crystal Rod."},
+  map_to_the_deep:        {desc:'An ancient map hinting at underwater ruins. Used to unlock the deep sea fishing area.'},
 };
 
 const EQUIP_SLOTS = {
@@ -4176,6 +4389,8 @@ function getItemTooltip(itemId){
   if (heal) lines.push(`<span class="tip-perk">❤️ Heals: +${heal} HP</span>`);
   const req = EQUIP_REQS[itemId];
   if (req) lines.push(`<span class="tip-req">Requires ${req.level} ${SKILL_BY_ID[req.skill]?.name || req.skill}</span>`);
+  const pe = POTION_EFFECTS[itemId];
+  if (pe) lines.push(`<span class="tip-perk">🧪 ${pe.label || 'Restores resources'}</span>`);
   if (lines.length === 0) return '';
   return `<span class="tip-name">${name}</span>` + lines.join('');
 }
@@ -6695,26 +6910,28 @@ function completeAction(action, silent){
     if (_divPrayer > 0) grantXp('prayer', _xpAmt * _divPrayer, silent);
   }
   // Award DG tokens on floor completion; refresh cached values for next loop
-  if (skillId === 'dungeoneering' && !silent){
+  if (skillId === 'dungeoneering'){
     const dgLevel = levelForXp(state.skills['dungeoneering'].xp);
     const tokens  = Math.max(1, Math.floor(dgLevel * action.tokenMult * (1 + getCapeBonus('dg_token_pct', null) + getPetBonus('dg_token_pct', null) + (state.upgrades?.token_surplus ? 0.15 : 0) + (state.upgrades?.token_mastery ? 0.25 : 0))));
     grantItem('dg_tokens', 'Dungeoneering tokens', tokens);
-    log(`⚔️ Floor complete! +${tokens} tokens.`);
     // Dungeon Rat: 3% chance for mini supply cache
     if (state.equipment?.pet === 'pet_dungeon_rat' && Math.random() < 0.03){
       grantItem('dragon_bones','Dragon bones',10);
       grantItem('rune_essence','Rune essence',50);
       grantItem('torstol_seed','Torstol seed',1);
-      log("🐀 Lil' Lubi' sniffs out a hidden stash! (+10 Dragon bones, +50 Rune essence, +1 Torstol seed)");
+      if (!silent) log("🐀 Lil' Lubi' sniffs out a hidden stash! (+10 Dragon bones, +50 Rune essence, +1 Torstol seed)");
     }
     // Dungeoneering cape: Jack of All Trades — 100 XP to every other skill
     const _jotXp = getCapeBonus('dg_all_skills_xp', null);
     if (_jotXp > 0){
       for (const _s of SKILL_ROADMAP){ if (_s.implemented && _s.id !== 'dungeoneering') grantXp(_s.id, _jotXp, true); }
-      log(`🗝️ Jack of All Trades — +${_jotXp} XP to all skills!`);
+      if (!silent) log(`🗝️ Jack of All Trades — +${_jotXp} XP to all skills!`);
     }
-    state.current.earnedTokens = tokens;
-    state.current.floorTicks   = Math.round(calcFloorSecs(action) / (TICK_MS / 1000));
+    if (!silent){
+      log(`⚔️ Floor complete! +${tokens} tokens.`);
+      state.current.earnedTokens = tokens;
+      state.current.floorTicks   = Math.round(calcFloorSecs(action) / (TICK_MS / 1000));
+    }
   }
   // Stop single-completion actions (floors, future one-shots)
   if (action.single){ state.current = null; state.progress = 0; }
@@ -6731,6 +6948,7 @@ function completeAction(action, silent){
     else if (_hLvl >= 36 && _hr < 75) { _jar='earth_impling_jar';    _jarName='Earth impling jar'; }
     else                               { _jar='baby_impling_jar';     _jarName='Baby impling jar'; }
     grantItem(_jar, _jarName, 1);
+    logCollectionDrop('hunter_bonus', _jar, 1);
     if (!silent) log(`🦎 Gecko scouts an impling! (${_jarName})`);
   }
   // Memory Wisp: 3% per any action to replay XP from last different skill trained
