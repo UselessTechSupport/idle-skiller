@@ -485,7 +485,6 @@
       <button class="tab-btn" data-tab="activities" onclick="switchRightTab('activities')">Activities</button>
       <button class="tab-btn" data-tab="items"       onclick="switchRightTab('items')">Items</button>
       <button class="tab-btn" data-tab="quests"      onclick="switchRightTab('quests')">Quests</button>
-      <button class="tab-btn" data-tab="legacy"      onclick="switchRightTab('legacy')">💎 Legacy</button>
     </div>
 
     <!-- Status tab: Equipment + Prayer -->
@@ -570,10 +569,6 @@
         <div id="questFilterBtns" style="display:flex;gap:4px;flex-wrap:wrap;"></div>
       </div>
       <div id="questsList"></div>
-    </div>
-
-    <div id="sec-legacy" data-right-tab="legacy" style="display:none;padding:4px 0;">
-      <div id="legacyPanel"></div>
     </div>
 
     <div class="footer-actions" style="margin-top:8px;">
@@ -7537,7 +7532,7 @@ function renderShop(){
   el.appendChild(bal);
   const tabs = document.createElement('div');
   tabs.style.cssText = 'display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:10px;';
-  for (const [key, label] of [['buy','🛒 Buy'],['sell','💰 Sell'],['upgrades','⚒️ Upgrades'],['delving','🗝️ Dungeoneering'],['construction','🏗️ Construction'],['slayer','🗡️ Slayer']]){
+  for (const [key, label] of [['buy','🛒 Buy'],['sell','💰 Sell'],['upgrades','⚒️ Upgrades'],['delving','🗝️ Dungeoneering'],['construction','🏗️ Construction'],['slayer','🗡️ Slayer'],['legacy','💎 Legacy']]){
     const b = document.createElement('button');
     b.className = 'mini';
     if (shopTab === key) b.style.cssText = 'background:var(--accent2);color:var(--text);border-color:var(--accent);font-weight:600;';
@@ -7831,6 +7826,40 @@ function renderShop(){
         atRow.appendChild(lbl); atRow.appendChild(togBtn); atRow.appendChild(sel);
         el.appendChild(atRow);
       }
+    });
+  }
+  if (shopTab === 'legacy'){
+    const shards = state.inventory['legacy_shard'] || 0;
+    const shardsHdr = document.createElement('div');
+    shardsHdr.style.cssText = 'font-size:15px;font-weight:600;margin-bottom:8px;';
+    shardsHdr.innerHTML = `💎 <span style="color:var(--accent)">${shards.toLocaleString()}</span> Legacy Shards`;
+    el.appendChild(shardsHdr);
+    const desc = document.createElement('div');
+    desc.style.cssText = 'font-size:12px;color:var(--dim);margin-bottom:14px;';
+    desc.textContent = 'Legacy Shards drop from any skill action at level 70+. Spend them here for permanent upgrades.';
+    el.appendChild(desc);
+    LEGACY_SHOP.forEach(item => {
+      const owned = !!state.upgrades?.[item.id];
+      const canAfford = shards >= item.cost;
+      const card = document.createElement('div');
+      card.className = 'upgrade-tier' + (owned ? ' equipped' : '');
+      card.style.cssText = 'flex-direction:column;align-items:flex-start;gap:4px;margin-bottom:6px;';
+      card.innerHTML = `
+        <div style="font-weight:600;">${item.name}</div>
+        <div style="font-size:12px;color:var(--dim);">${item.desc}</div>
+        <div style="font-size:12px;color:var(--dim);">Cost: 💎 ${item.cost.toLocaleString()} shards</div>`;
+      const btn = document.createElement('button');
+      btn.className = 'mini';
+      btn.style.marginTop = '4px';
+      if (owned){
+        btn.textContent = '✓ Owned'; btn.disabled = true;
+      } else {
+        btn.textContent = canAfford ? 'Buy' : `Need ${(item.cost - shards).toLocaleString()} more`;
+        btn.disabled = !canAfford;
+        btn.onclick = () => buyLegacyUpgrade(item.id);
+      }
+      card.appendChild(btn);
+      el.appendChild(card);
     });
   }
 }
@@ -8549,56 +8578,7 @@ function buyLegacyUpgrade(id){
   if (!state.upgrades) state.upgrades = {};
   state.upgrades[id] = true;
   log(`Purchased: ${item.name}!`);
-  render(); renderLegacy();
-}
-
-function renderLegacy(){
-  const el = $('legacyPanel');
-  if (!el) return;
-  const shards = state.inventory['legacy_shard'] || 0;
-  el.innerHTML = '';
-
-  const hdr = document.createElement('div');
-  hdr.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;';
-  hdr.innerHTML = `
-    <h3 style="margin:0;font-size:14px;">Legacy Exchange</h3>
-    <span style="font-size:13px;color:var(--accent);font-weight:600;">💎 ${shards.toLocaleString()} shards</span>`;
-  el.appendChild(hdr);
-
-  const desc = document.createElement('div');
-  desc.style.cssText = 'font-size:12px;color:var(--dim);margin-bottom:12px;';
-  desc.textContent = 'Legacy Shards drop from any skill action at level 70+. Spend them here for permanent upgrades.';
-  el.appendChild(desc);
-
-  const grid = document.createElement('div');
-  grid.style.cssText = 'display:flex;flex-direction:column;gap:6px;';
-
-  LEGACY_SHOP.forEach(item => {
-    const owned = !!state.upgrades?.[item.id];
-    const canAfford = shards >= item.cost;
-    const card = document.createElement('div');
-    card.className = 'upgrade-tier' + (owned ? ' equipped' : '');
-    card.style.cssText = 'flex-direction:column;align-items:flex-start;gap:4px;';
-    card.innerHTML = `
-      <div style="font-weight:600;">${item.name}</div>
-      <div style="font-size:12px;color:var(--dim);">${item.desc}</div>
-      <div style="font-size:12px;color:var(--dim);">Cost: 💎 ${item.cost.toLocaleString()} shards</div>`;
-    const btn = document.createElement('button');
-    btn.className = 'mini';
-    btn.style.marginTop = '4px';
-    if (owned){
-      btn.textContent = '✓ Owned';
-      btn.disabled = true;
-    } else {
-      btn.textContent = canAfford ? 'Buy' : `Need ${(item.cost - shards).toLocaleString()} more`;
-      btn.disabled = !canAfford;
-      btn.onclick = () => buyLegacyUpgrade(item.id);
-    }
-    card.appendChild(btn);
-    grid.appendChild(card);
-  });
-
-  el.appendChild(grid);
+  render(); renderShop();
 }
 
 function render(){
@@ -8613,7 +8593,6 @@ function render(){
   _r(renderSlayerSection);
   _r(renderItemsPanel);
   _r(renderQuestsTab);
-  _r(renderLegacy);
   _r(renderTotalLevel);
   _r(renderLog);
   _r(_applyAllCollapsed);
@@ -9587,6 +9566,8 @@ function renderLog(){
 /* ---------- 9. WIRING + STARTUP ---------- */
 function save(){
   state.lastSaved = Date.now();
+  for (const k of Object.keys(state.itemNames || {}))
+    if (!state.inventory[k]) delete state.itemNames[k];
   rawSave(getSaveKey(), LZString.compressToUTF16(JSON.stringify(state)));
   const _logLim = state?.settings?.logLimit || 60;
   rawSave(getSaveKey() + '_log', JSON.stringify(logLines.slice(0, _logLim)));
@@ -9838,6 +9819,7 @@ function init(){
   switchRightTab(state.rightTab || 'status');
   switchMobilePane('play');
 
+  save(); // persist offline progress immediately so a quick close doesn't lose it
   // the heartbeat
   setInterval(() => { try { tick(); } catch(e) { console.error('[IdleWright] tick error:', e); } }, TICK_MS);
   setInterval(save, AUTOSAVE_MS);
