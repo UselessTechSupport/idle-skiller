@@ -485,6 +485,7 @@
       <button class="tab-btn" data-tab="activities" onclick="switchRightTab('activities')">Activities</button>
       <button class="tab-btn" data-tab="items"       onclick="switchRightTab('items')">Items</button>
       <button class="tab-btn" data-tab="quests"      onclick="switchRightTab('quests')">Quests</button>
+      <button class="tab-btn" data-tab="legacy"      onclick="switchRightTab('legacy')">💎 Legacy</button>
     </div>
 
     <!-- Status tab: Equipment + Prayer -->
@@ -569,6 +570,10 @@
         <div id="questFilterBtns" style="display:flex;gap:4px;flex-wrap:wrap;"></div>
       </div>
       <div id="questsList"></div>
+    </div>
+
+    <div id="sec-legacy" data-right-tab="legacy" style="display:none;padding:4px 0;">
+      <div id="legacyPanel"></div>
     </div>
 
     <div class="footer-actions" style="margin-top:8px;">
@@ -848,6 +853,7 @@ const PETS = [
   {id:'pet_void_spawn',    name:'Void Spawn',     icon:'🌌', skillId:null,           perkType:'xp_pct',       perkValue:0.05, perkLabel:'+5% all XP'},
   {id:'pet_void_herald',   name:'Void Herald',    icon:'🐲', skillId:null,           perkType:'drop_rate_pct',perkValue:0.03, perkLabel:'+3% drop rate'},
   {id:'pet_phoenix_chick', name:'Phoenix Chick',  icon:'🔥', skillId:'firemaking',   perkType:'special',      perkValue:0,    perkLabel:'Phoenix Blessing: 1% chance per Firemaking action to bulk-burn up to 50 logs for 90% XP'},
+  {id:'pet_fragment_sprite', name:'Fragment Sprite', icon:'💎', skillId:null, perkType:'legacy_shard_chance', perkValue:0.0025, perkLabel:'+0.25% Legacy Shard drop chance'},
 ];
 
 const JEWELRY_PERKS = {
@@ -3571,6 +3577,8 @@ const ITEM_STATS = {
   pet_crimson_finch:   {type:'pet', desc:"5% extra chance per woodcutting action to find a bird's nest."},
   pet_blue_jay:        {type:'pet', desc:'5% chance per fishing action to catch a bonus fish of the same type.'},
   pet_green_parrot:    {type:'pet', desc:'5% chance per herb harvest to yield one extra herb.'},
+  legacy_shard:        {desc:'A crystallised fragment of skill mastery. Trade in the Legacy Exchange for powerful upgrades.'},
+  pet_fragment_sprite: {type:'pet', desc:'A glimmering shard-spirit that increases your chance of finding Legacy Shards.'},
   emerald_amulet:{ defence:5 }, sapphire_amulet:{ mage:7 },
   shortbow:{range:10,attackInterval:3}, oak_shortbow:{range:18,attackInterval:3}, willow_shortbow:{range:27,attackInterval:3}, teak_shortbow:{range:33,attackInterval:3},
   maple_shortbow:{range:40,attackInterval:3}, mahogany_shortbow:{range:46,attackInterval:3}, yew_shortbow:{range:55,attackInterval:3}, magic_shortbow:{range:69,attackInterval:3},
@@ -3963,6 +3971,22 @@ const DG_SHOP = [
   { id:'mysterious_geode',  name:'Mysterious Geode',      desc:'Grants 1 metamorphic geode. Open it for gems, uncut dragonstone, or a rare hydrix.',       cost:600,  repeatable:true },
 ];
 
+const LEGACY_SHOP = [
+  { id:'legacy_xp_boost_1', name:"Sage's Insight I",    desc:'+2% XP to all skills permanently.',                           cost:25   },
+  { id:'legacy_xp_boost_2', name:"Sage's Insight II",   desc:'+2% XP to all skills permanently (stacks with Insight I).',  cost:75   },
+  { id:'legacy_xp_boost_3', name:"Sage's Insight III",  desc:'+2% XP to all skills permanently (stacks with Insight II).', cost:150  },
+  { id:'legacy_drop_1',     name:"Hunter's Fortune I",  desc:'+1% drop rate permanently.',                                  cost:50   },
+  { id:'legacy_drop_2',     name:"Hunter's Fortune II", desc:'+1% drop rate permanently (stacks with Fortune I).',          cost:150  },
+  { id:'legacy_drop_3',     name:"Hunter's Fortune III",desc:'+1% drop rate permanently (stacks with Fortune II).',         cost:300  },
+  { id:'legacy_speed_1',    name:'Swift Hands I',        desc:'+3% speed to all skills permanently.',                       cost:200  },
+  { id:'legacy_speed_2',    name:'Swift Hands II',       desc:'+3% speed permanently (stacks with Swift Hands I).',         cost:500  },
+  { id:'legacy_offline',    name:"Wanderer's Cache",     desc:'+2hr offline cap (extends from base 12hr to 14hr).',         cost:100  },
+  { id:'legacy_offline_2',  name:"Wanderer's Cache II",  desc:'+2hr offline cap (stacks to 16hr total).',                  cost:250  },
+  { id:'legacy_pet',        name:'Fragment Familiar',    desc:'Unlock Fragment Sprite — a pet that grants +0.25% Legacy Shard drop chance.', cost:500 },
+  { id:'legacy_doubler',    name:'Shard Magnet',         desc:'Doubles the Legacy Shard drop chance permanently (0.5% → 1.0%).',            cost:1000},
+  { id:'legacy_ultimate',   name:'Ancient Amplifier',    desc:'+5% XP, +5% speed, and +2% drop rate to all skills permanently.',           cost:2000},
+];
+
 const FOOD_HEALS = {
   cooked_shrimps:3, cooked_sardine:4, cooked_anchovies:3,
   cooked_herring:5, cooked_trout:8, cooked_pike:10,
@@ -4164,6 +4188,8 @@ function grantXp(skillId, xp, silent=false){
   if (petXp) xp *= (1 + petXp);
   const jwlXp = getJewelryBonus('xp_pct', skillId);
   if (jwlXp) xp *= (1 + jwlXp);
+  const legacyXp = getLegacyBonus('xp_pct');
+  if (legacyXp) xp *= (1 + legacyXp);
   const neck = state.equipment?.neck, ring = state.equipment?.ring;
   if (neck === 'amulet_of_skill' && !COMBAT_SKILL_IDS.has(skillId)) xp *= 1.05;
   if (neck === 'combat_pendant'  && COMBAT_SKILL_IDS.has(skillId))  xp *= 1.07;
@@ -4529,6 +4555,28 @@ function getPetBonus(type, skillId){
   if (!pet || pet.perkType !== type) return 0;
   if (skillId != null && pet.skillId != null && pet.skillId !== skillId) return 0;
   return pet.perkValue;
+}
+
+function getLegacyBonus(type){
+  if (!state.upgrades) return 0;
+  switch(type){
+    case 'xp_pct':      return (state.upgrades.legacy_xp_boost_1 ? 0.02 : 0)
+                             + (state.upgrades.legacy_xp_boost_2 ? 0.02 : 0)
+                             + (state.upgrades.legacy_xp_boost_3 ? 0.02 : 0)
+                             + (state.upgrades.legacy_ultimate   ? 0.05 : 0);
+    case 'speed_pct':   return (state.upgrades.legacy_speed_1    ? 0.03 : 0)
+                             + (state.upgrades.legacy_speed_2    ? 0.03 : 0)
+                             + (state.upgrades.legacy_ultimate   ? 0.05 : 0);
+    case 'drop_pct':    return (state.upgrades.legacy_drop_1     ? 0.01 : 0)
+                             + (state.upgrades.legacy_drop_2     ? 0.01 : 0)
+                             + (state.upgrades.legacy_drop_3     ? 0.01 : 0)
+                             + (state.upgrades.legacy_ultimate   ? 0.02 : 0);
+    case 'offline_hrs': return (state.upgrades.legacy_offline    ? 2 : 0)
+                             + (state.upgrades.legacy_offline_2  ? 2 : 0);
+    case 'shard_rate':  return (state.upgrades.legacy_doubler    ? 0.005 : 0)
+                             + getPetBonus('legacy_shard_chance', null);
+    default: return 0;
+  }
 }
 
 function _grantClueReward(tier){
@@ -6204,21 +6252,22 @@ function getCurrentEffTicks(action){
   const jwlSpeed    = getJewelryBonus('speed_pct', state.current?.skillId);
   const warmAura    = state.equipment?.pet === 'pet_fire_sprite' ? 0.02 : 0; // Fire Sprite: 2% faster all skills
   const achSpeed    = getAchievementBonus('speed_pct', state.current?.skillId);
+  const legacySpeed = getLegacyBonus('speed_pct');
   if (state.current?.skillId === 'thieving'){
     const agilLevel = effLvl('agility');
     if (action.lock){
       const toolMult = getToolSpeedMult('thieving');
       const agilMult = 1 - (agilLevel / 99 * 0.30);
-      return Math.max(1, Math.ceil(base * toolMult * agilMult * (1 - sumSpeed) * (1 - capeSpeed) * (1 - globalSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed)));
+      return Math.max(1, Math.ceil(base * toolMult * agilMult * (1 - sumSpeed) * (1 - capeSpeed) * (1 - globalSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed) * (1 - legacySpeed)));
     }
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20)) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - globalSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed)));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.20)) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - globalSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed) * (1 - legacySpeed)));
   }
   if (state.current?.skillId === 'runecrafting'){
     const agilLevel = effLvl('agility');
-    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - globalSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed)));
+    return Math.max(1, Math.ceil(base * (1 - (agilLevel / 99 * 0.25)) * getConstructionMult('runecrafting') * (1 - getArchBonus('speed_runecrafting')) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - globalSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed) * (1 - legacySpeed)));
   }
   const archSpeed = getArchBonus(`speed_${state.current?.skillId}`);
-  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current?.skillId) * getConstructionMult(state.current?.skillId) * (1 - archSpeed) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - globalSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed)));
+  return Math.max(1, Math.ceil(base * getToolSpeedMult(state.current?.skillId) * getConstructionMult(state.current?.skillId) * (1 - archSpeed) * (1 - sumSpeed) * (1 - capeSpeed) * (1 - globalSpeed) * (1 - petSpeed) * (1 - warmAura) * (1 - jwlSpeed) * (1 - achSpeed) * (1 - legacySpeed)));
 }
 
 function getConstructionMult(skillId){
@@ -6402,7 +6451,7 @@ function applyOffline(){
   const now = Date.now();
   let elapsed = now - (state.lastSaved || now);
   if (elapsed < 0) elapsed = 0;
-  const capMs = MAX_OFFLINE_HOURS * 3600 * 1000;
+  const capMs = (MAX_OFFLINE_HOURS + getLegacyBonus('offline_hrs')) * 3600 * 1000;
   const cappedMs = Math.min(elapsed, capMs);
 
   if (!state.current || cappedMs < TICK_MS) return null;
@@ -6799,7 +6848,8 @@ function completeAction(action, silent){
     const _dropBoost = getSummonBonus('drop_rate_pct') + getPetBonus('drop_rate_pct', null)
       + calcStats().dropRate / 100
       + (state.equipment?.ring === 'masters_ring' ? 0.05 : 0)
-      + (state.upgrades?.trophy_room ? 0.10 : 0);
+      + (state.upgrades?.trophy_room ? 0.10 : 0)
+      + getLegacyBonus('drop_pct');
     const _clogSrc = MOB_CLOG_SOURCE[action.id];
     state.combat.kills[action.id] = (state.combat.kills[action.id] || 0) + 1;
     for (const drop of (action.drops || [])){
@@ -6978,6 +7028,17 @@ function completeAction(action, silent){
       log(`⚔️ Floor complete! +${tokens} tokens.`);
       state.current.earnedTokens = tokens;
       state.current.floorTicks   = Math.round(calcFloorSecs(action) / (TICK_MS / 1000));
+    }
+  }
+  // Legacy Shards — trickle in from any high-level action
+  if (skillId && state.skills[skillId] && effLvl(skillId) >= 70){
+    const _shardChance = 0.005 + getLegacyBonus('shard_rate');
+    if (Math.random() < _shardChance){
+      const _shardQty = Math.random() < 0.05
+        ? 5 + Math.floor(Math.random() * 6)
+        : 1 + Math.floor(Math.random() * 3);
+      grantItem('legacy_shard', 'Legacy Shard', _shardQty);
+      if (!silent && _shardQty >= 5) log(`💎 Legacy Shard cluster! (+${_shardQty})`);
     }
   }
   // Stop single-completion actions (floors, future one-shots)
@@ -8467,6 +8528,68 @@ function renderSettings(){
   // row(dbgGrp, 'Debug', 'Toggle the debug tools panel', dbgBtn);
 }
 
+function buyLegacyUpgrade(id){
+  const item = LEGACY_SHOP.find(i => i.id === id);
+  if (!item || state.upgrades?.[id]) return;
+  const have = state.inventory['legacy_shard'] || 0;
+  if (have < item.cost){ log(`Need ${item.cost.toLocaleString()} Legacy Shards.`); return; }
+  state.inventory['legacy_shard'] = have - item.cost;
+  if (id === 'legacy_pet') grantItem('pet_fragment_sprite', 'Fragment Sprite', 1);
+  if (!state.upgrades) state.upgrades = {};
+  state.upgrades[id] = true;
+  log(`Purchased: ${item.name}!`);
+  render(); renderLegacy();
+}
+
+function renderLegacy(){
+  const el = $('legacyPanel');
+  if (!el) return;
+  const shards = state.inventory['legacy_shard'] || 0;
+  el.innerHTML = '';
+
+  const hdr = document.createElement('div');
+  hdr.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;';
+  hdr.innerHTML = `
+    <h3 style="margin:0;font-size:14px;">Legacy Exchange</h3>
+    <span style="font-size:13px;color:var(--accent);font-weight:600;">💎 ${shards.toLocaleString()} shards</span>`;
+  el.appendChild(hdr);
+
+  const desc = document.createElement('div');
+  desc.style.cssText = 'font-size:12px;color:var(--dim);margin-bottom:12px;';
+  desc.textContent = 'Legacy Shards drop from any skill action at level 70+. Spend them here for permanent upgrades.';
+  el.appendChild(desc);
+
+  const grid = document.createElement('div');
+  grid.style.cssText = 'display:flex;flex-direction:column;gap:6px;';
+
+  LEGACY_SHOP.forEach(item => {
+    const owned = !!state.upgrades?.[item.id];
+    const canAfford = shards >= item.cost;
+    const card = document.createElement('div');
+    card.className = 'upgrade-tier' + (owned ? ' equipped' : '');
+    card.style.cssText = 'flex-direction:column;align-items:flex-start;gap:4px;';
+    card.innerHTML = `
+      <div style="font-weight:600;">${item.name}</div>
+      <div style="font-size:12px;color:var(--dim);">${item.desc}</div>
+      <div style="font-size:12px;color:var(--dim);">Cost: 💎 ${item.cost.toLocaleString()} shards</div>`;
+    const btn = document.createElement('button');
+    btn.className = 'mini';
+    btn.style.marginTop = '4px';
+    if (owned){
+      btn.textContent = '✓ Owned';
+      btn.disabled = true;
+    } else {
+      btn.textContent = canAfford ? 'Buy' : `Need ${(item.cost - shards).toLocaleString()} more`;
+      btn.disabled = !canAfford;
+      btn.onclick = () => buyLegacyUpgrade(item.id);
+    }
+    card.appendChild(btn);
+    grid.appendChild(card);
+  });
+
+  el.appendChild(grid);
+}
+
 function render(){
   const _r = fn => { try{ fn(); }catch(e){ console.error('[IdleWright] render error in ' + fn.name + ':', e); } };
   _r(renderSkillList);
@@ -8479,6 +8602,7 @@ function render(){
   _r(renderSlayerSection);
   _r(renderItemsPanel);
   _r(renderQuestsTab);
+  _r(renderLegacy);
   _r(renderTotalLevel);
   _r(renderLog);
   _r(_applyAllCollapsed);
