@@ -9793,6 +9793,20 @@ function init(){
   const _clogMobRenames = { mob_abyssal_demon:'mob_void_stalker', boss_giant_mole:'boss_burrower' };
   if (state.collectionLog) for (const [o,n] of Object.entries(_clogMobRenames))
     if (state.collectionLog[o]){ state.collectionLog[n]=state.collectionLog[o]; delete state.collectionLog[o]; }
+  // Retroactive clog fill — mark items already in inventory/equipment that predate logging
+  if (state.collectionLog){
+    const _clogEquipped = new Set(Object.values(state.equipment || {}).filter(Boolean));
+    for (const src of COLLECTION_LOG_SOURCES){
+      for (const item of src.items){
+        const inInv = state.inventory[item.id] || 0;
+        const have  = inInv > 0 ? inInv : (_clogEquipped.has(item.id) ? 1 : 0);
+        if (have > 0 && !(state.collectionLog[src.id]?.[item.id])){
+          if (!state.collectionLog[src.id]) state.collectionLog[src.id] = {};
+          state.collectionLog[src.id][item.id] = have;
+        }
+      }
+    }
+  }
   if (state.slayer?.task?.mobId && _mobIdRenames[state.slayer.task.mobId])
     state.slayer.task.mobId = _mobIdRenames[state.slayer.task.mobId];
   if (state.current?.actionId && _mobIdRenames[state.current.actionId])
