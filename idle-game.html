@@ -4116,7 +4116,7 @@ function freshState(){
     quests:         {},  // { questId: true } — completed quests
     autoOpenItems:  false,
     uiCollapsed:    {},  // { sectionId: true } — collapsed UI sections
-    settings:       { theme:'dark', compactMode:false, hideLocked:false, hideUnaffordable:false, logLimit:60 },
+    settings:       { theme:'dark', compactMode:false, hideLocked:false, hideUnaffordable:false, logLimit:60, inventorySort:'name' },
     archaeology:    { artifacts:{}, activePerks:{} },
     slayer:         { points:0, task:null, unlocks:{}, totalTasksDone:0, autoTask:false, autoTaskMasterId:'turael' },
     batch:          { limit:0, done:0 },
@@ -8464,6 +8464,17 @@ function renderSettings(){
   row(dispGrp, 'Compact mode', 'Tighter card/button padding — more content per screen',
     toggleBtn(s.compactMode, () => { s.compactMode = !s.compactMode; applySettings(); renderSettings(); }));
 
+  const invSortSel = document.createElement('select');
+  invSortSel.style.cssText = 'background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:13px;';
+  [['name','Name A–Z'],['quantity','Quantity ↓'],['level','Level ↑']].forEach(([v,l]) => {
+    const o = document.createElement('option');
+    o.value = v; o.textContent = l;
+    if (s.inventorySort === v) o.selected = true;
+    invSortSel.appendChild(o);
+  });
+  invSortSel.onchange = () => { s.inventorySort = invSortSel.value; renderItemsPanel(); };
+  row(dispGrp, 'Inventory sort', 'Order items within each category', invSortSel);
+
   // Gameplay
   const playGrp = group('Gameplay');
 
@@ -9405,6 +9416,11 @@ const ITEM_CAT_ORDER = [
   'Ores & Bars','Logs','Fish','Gems & Hides','Runes & Energy',
   'Ammo','Hunter','Currency','Materials','Other'
 ];
+const ITEM_LEVEL_MAP = (() => {
+  const m = {};
+  Object.values(ACTIONS).forEach(arr => arr.forEach(a => { if (a.item && a.levelReq) m[a.item] = a.levelReq; }));
+  return m;
+})();
 const MATERIAL_ITEM_IDS = new Set([
   'stone_fragment','vampire_dust','leviathan_fang','solar_shard',
   'crystal_map_fragment','goblin_diplomatic_note','phoenix_ember',
@@ -9449,11 +9465,14 @@ function renderItemsPanel(){
     return;
   }
 
-  // Sort: by category order, then alphabetically within category
+  // Sort: by category order, then by selected sort mode within each category
+  const _invSort = state.settings?.inventorySort || 'name';
   keys.sort((a, b) => {
     const ca = ITEM_CAT_ORDER.indexOf(getItemCat(a));
     const cb = ITEM_CAT_ORDER.indexOf(getItemCat(b));
     if (ca !== cb) return ca - cb;
+    if (_invSort === 'quantity') return (state.inventory[b]||0) - (state.inventory[a]||0) || (state.itemNames[a]||a).localeCompare(state.itemNames[b]||b);
+    if (_invSort === 'level')    return (ITEM_LEVEL_MAP[a]||0) - (ITEM_LEVEL_MAP[b]||0) || (state.itemNames[a]||a).localeCompare(state.itemNames[b]||b);
     return (state.itemNames[a]||a).localeCompare(state.itemNames[b]||b);
   });
 
@@ -9696,7 +9715,8 @@ function init(){
   if (state.settings.compactMode == null) state.settings.compactMode = false;
   if (state.settings.hideLocked       == null) state.settings.hideLocked       = false;
   if (state.settings.hideUnaffordable == null) state.settings.hideUnaffordable = false;
-  if (state.settings.logLimit    == null) state.settings.logLimit    = 60;
+  if (state.settings.logLimit        == null) state.settings.logLimit        = 60;
+  if (state.settings.inventorySort   == null) state.settings.inventorySort   = 'name';
   applySettings();
   if (!state.uiCollapsed) state.uiCollapsed = {};
   if (state.combat?.style === 'necromancy') state.combat.style = 'melee';
